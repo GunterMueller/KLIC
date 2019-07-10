@@ -1,0 +1,12 @@
+\initial {A}
+\entry {\code {\code {atom_table}}}{19}
+\initial {F}
+\entry {\code {\code {functor_table}}}{24}
+\initial {K}
+\entry {\code {\code {klicio}}}{39}
+\initial {S}
+\entry {\code {\code {system_control}}}{43}
+\initial {U}
+\entry {\code {\code {unix}}}{33}
+\initial {し}
+\entry {\code {\code {ジェネリック} (pseudo module)}}{8}

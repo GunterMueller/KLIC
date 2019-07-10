@@ -1,0 +1,774 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- module klic_comp_macro.
+
+macro(In, Out) :- macro(In, Out, _).
+
+macro(atom(otherwise),R,Tbl) :- R=otherwise, Tbl=[].
+macro(atom(alternatively),R,Tbl) :- R=alternatively, Tbl=[].
+macro(functor((H:-B)),Clause,Tbl) :- macro_1(B,Clause,H,Tbl).
+otherwise.
+macro(H,        Clause,Tbl) :- exp_one_clause(H,atom(true),atom(true),Clause,Tbl).
+
+macro_1(functor('|'(G,B)), Clause, H, Tbl) :- exp_one_clause(H,G,B,Clause,Tbl).
+otherwise.
+macro_1(B,              Clause, H, Tbl) :- exp_one_clause(H,atom(true),B,Clause,Tbl).
+
+exp_one_clause(H0,G0,B0,Clause,TableOut) :-
+    Clause = clause(NewH,NewG,NewB,Exp),
+%%    klic_comp_util:numbervars([H0,G0|B0],[H00,G00|B00],0,V00),
+    klic_comp_util:numbervars([H0,G0|B0],[H00,G00|B00],0,V00,[],VTbl),
+    dlclause(H00,G00,B00,H,G,B,V00,V0,[]),
+    countvars([H,G|B],Table),
+    exp_head(H,NewH,V0,V1,NewG0,G1),
+    linearize_guard(G,G1,[]),
+    exp_guard(NewG0,V1,V,NewG,[]),
+%%    exp_body(B,V,_,Table,Exp,[],NewB,[]).
+    exp_body(B,V,_,Table,Table0,Exp,[],NewB,[]),
+    TableOut=VTbl-Table0.
+
+% ----- DLCLAUSE ------
+% Head Goal must be functor or atom!
+dlclause(functor(H0),G0,B0,H,G,B,N0,N,V) :-
+    dlclause_1(H0,G0,B0,H,G,B,N0,N,V).
+dlclause(atom(F),G0,B0,H,G,B,N0,N,V) :-
+    dlclause_1(F,G0,B0,H,G,B,N0,N,V).
+otherwise.
+dlclause(H0,G0,B0,H,G,B,N0,N,V) :-
+    klic_comp_message:report_error("Illegal head: ~w",[H0]).
+
+ % ---------- Extra Arguments are added to the head goal ----------
+ % If Head Goal is a functor, then 
+ dlclause_1((H0 - variable(I)),G0,B0,H,G,B,N0,N,V) :- 
+     dlclause(H0,G0,B0,H,G,B,N0,N,[-I|V]).
+ dlclause_1((H0 + X),          G0,B0,H,G,B,N0,N,V) :- 
+     dlclause(H0,G0,B0,H,G,B,N0,N,[+X|V]).
+ otherwise.
+ dlclause_1(H0,G0,B0,H,G,B,N0,N,V) :-
+     initialize_info(V,N0,N1,[],Vinfo1,ExtraArgs,Vars),
+     klic_comp_util:univ(H0,[F|L],ExtraArgs), 
+     functor_table:(H=..[F|L]),
+     dlgoals(G0,G,Vars,N1,N2,Vinfo1,Vinfo2),
+     dlgoals(B0,B1,Vars,N2,N,Vinfo2,Vinfo3),
+     finalize_vars(Vars,Vinfo3,B1,B).
+ 
+ % ----- INITIALIZE INFO -----
+ initialize_info([])-N-Vinfo+EArgs+Vars :- 
+    EArgs = [], Vars = [].
+ initialize_info([-I|T])-N-Vinfo+ExtraArgs+Vars :-
+    ExtraArgs = [variable(J),variable(N)|A],  Vars = [J,N|V],
+    klic_comp_util:assoc(Vinfo,I,Ans),
+    N += 1, (I=J)=>Vinfo,
+    initialize_info_1(T)-N-Vinfo+A+V+Ans+J+I.
+ initialize_info([+X0|T])-N-Vinfo+ExtraArgs+V :-
+    ExtraArgs = [X|A],
+    replace_vars(X0,X,Vinfo),
+    initialize_info(T)-N-Vinfo+A+V.
+
+ initialize_info_1(T)-N-Vinfo+A+V+yes(X)+J+_I :-
+    J=X,
+    initialize_info(T)-N-Vinfo+A+V.
+ initialize_info_1(T)-N-Vinfo+A+V+no+J+I :-
+    J=I,
+    initialize_info(T)-N-Vinfo+A+V.
+
+ % ----- DLGOALS -----
+ dlgoals(functor((X0,Y0)),XY,Vars)-N-Vinfo :- 
+    XY = functor((X,Y)),
+    dlgoals(X0,X,Vars)-N-Vinfo,
+    dlgoals(Y0,Y,Vars)-N-Vinfo.
+ dlgoals(Funct,X,Vars)-N-Vinfo :-
+	( Funct=functor((X0;Y0)); Funct=functor((G0->B0))) |
+    dlor(Funct,X,Vars)-N-Vinfo+_.
+ dlgoals(functor(X0@Y0),XAY,Vars)-N-Vinfo :-
+    XAY=functor(X@Y),
+    dlgoal(X0,X,[])-N-Vinfo,
+    replace_vars(Y0,Y,Vinfo).
+ otherwise.
+ dlgoals(X0,X,_Vars)-N-Vinfo :-
+    dlgoal(X0,X,[])-N-Vinfo.
+
+ dlor(functor((functor((G0->B0));R0)),OR,Vars)-N-Vinfo+NC :-
+    Vinfo0=Vinfo,
+    OR=functor((functor((G->functor((B,M))));R)),
+    dlgoals(G0,G,Vars)-N-Vinfo,
+    dlgoals(B0,B,Vars)-N-Vinfo,
+    dlor(R0,R,Vars)-N+Vinfo0+_+NC,
+    merge_vinfo(Vars,NC,M)-Vinfo.
+ dlor(functor((G0->B0)),OR,Vars)-N-Vinfo+NC :-
+    OR=functor((G->functor((B,M)))),
+    dlgoals(G0,G,Vars)-N-Vinfo,
+    dlgoals(B0,B,Vars)-N-Vinfo,
+    NC=N,
+    klic_comp_util:length(Vars,L),
+    N+=L,
+    merge_vinfo(Vars,NC,M)-Vinfo.
+ otherwise.
+ dlor(functor((G0;R0)),OR,Vars)-N-Vinfo+NC :-
+    OR=functor((G;R)),
+    dlgoals(G0,G,Vars)-N-Vinfo,
+    dlor(R0,R,Vars)-N-Vinfo+NC.
+ otherwise.
+ dlor(G0,G,Vars)-N-Vinfo+_NC :-
+    dlgoals(G0,G,Vars)-N-Vinfo.
+
+  merge_vinfo([],_NC,Merged,_Vinfo1,Vinfo) :-
+      Merged=atom(true), Vinfo=[].
+  merge_vinfo([V,_|Vars],NC,Merged,Vinfo1,Vinfo) :-
+      Merged=functor((functor(variable(NC)=variable(K)),M)),
+      Vinfo=[V=NC|VinfoT],
+      klic_comp_util:assoc(Vinfo1,V,yes(K)),
+      NC1 := NC+1,
+      merge_vinfo(Vars,NC1,M,Vinfo1,VinfoT).
+
+ dlgoal(functor(M:X0),MX,V)-N-Vinfo :- M=atom(inline) |
+    MX=functor(M:X),
+    replace_vars(X0,X1,Vinfo),
+    update_info(V,Vars)-N-Vinfo,
+    dlappend_args(X1,Vars,X).
+ dlgoal(functor(M:X0),MX,V)-N-Vinfo :- M=atom(MN), MN\=inline |
+    MX=functor(M:X),
+    dlgoal(X0,X,V)-N-Vinfo.
+ dlgoal(functor(X0-variable(I)),X,V)-N-Vinfo :-
+    dlgoal(X0,X,[-I|V])-N-Vinfo.
+ dlgoal(functor(X0+Y),X,V)-N-Vinfo :-
+    dlgoal(X0,X,[+Y|V])-N-Vinfo.
+ dlgoal(atom(X0),X,V)-N-Vinfo :-
+    update_info(V,Vars)-N-Vinfo,
+    dlgoal_atom(X0,Vars,X).
+ dlgoal(functor(<==(variable(I),Term0)),X,V)-N-Vinfo :-
+    N0=N,
+    dl_update(Term0,X,V)-N-Vinfo+I+J+N0+Term+Term.
+ dlgoal(functor(variable(I)<=Term0),X,V)-N-Vinfo :-
+    N0=N,
+    dl_update(Term0,X,V)-N-Vinfo+I+J+J+Term+list([Term|variable(N0)]).
+ dlgoal(functor(Term0=>variable(I)),X,V)-N-Vinfo :-
+    N0=N,
+    dl_update(Term0,X,V)-N-Vinfo+I+J+N0+Term+list([Term|variable(J)]).
+ dlgoal(functor(variable(I)+=Expr0),X,V)-N-Vinfo :-
+    dl_compute(Expr0,X,V)-N-Vinfo+I+(+).
+ dlgoal(functor(variable(I)-=Expr0),X,V)-N-Vinfo :-
+    dl_compute(Expr0,X,V)-N-Vinfo+I+(-).
+ dlgoal(functor(variable(I)*=Expr0),X,V)-N-Vinfo :-
+    dl_compute(Expr0,X,V)-N-Vinfo+I+(*).
+ dlgoal(functor(variable(I)/=Expr0),X,V)-N-Vinfo :-
+    dl_compute(Expr0,X,V)-N-Vinfo+I+(/).
+ dlgoal(variable(X0), X, V)-N-Vinfo :-
+    klic_comp_message:report_error("Illegal goal: ~W",[variable(X0)]),
+    X=variable(X0).
+ otherwise.
+ dlgoal(X0,X,V)-N-Vinfo :-
+    replace_vars(X0,X1,Vinfo),
+    update_info(V,Vars)-N-Vinfo,
+    dlappend_args(X1,Vars,X).
+
+  dl_compute(Expr0,X,V)-N-Vinfo+I+Op :-
+    functor_table:(Expr1=..[Op,variable(J),Expr]),
+    X=functor(variable(N):=functor(Expr1)),
+    dl_common(Expr0,Expr,V)-N-Vinfo+I+J.
+
+  dl_update(Term0,X,V)-N-Vinfo+I+J+K+Term+Value :-
+    X=functor(variable(K)=Value),
+    dl_common(Term0,Term,V)-N-Vinfo+I+J.
+
+  dl_common(Term0,Term,V)-N-Vinfo+I+J :-
+    replace_vars(Term0,Term,Vinfo),
+    klic_comp_util:assoc(Vinfo,I,Ans),
+    (I=N)=>Vinfo,
+    N+=1,
+    update_info_1(V,V)-N-Vinfo+Ans+I+J.
+
+  dlgoal_atom(X0,Vars,X) :- Vars=[] | X = atom(X0).
+  dlgoal_atom(X0,Vars,X) :- Vars\=[] |
+    functor_table:(X1=..[X0|Vars]),
+    X = functor(X1).
+
+  dlappend_args(X0,Vars,X) :- Vars=[] | X=X0.
+  dlappend_args(X0,Vars,X) :- Vars\=[] |
+     ( X0=functor(F0) -> klic_comp_util:univ(F0,[F|L],Vars)
+     ; X0=atom(F0) -> F=F0, L=Vars
+     ; X0=list([Car|Cdr]) -> F='.', L=[Car,Cdr|Vars] ),
+     functor_table:(X1=..[F|L]),
+     X = functor(X1).
+
+  % ----- UPDATE INFO -----
+  update_info([],Vars,N0,N,Vinfo0,Vinfo) :-
+      N = N0, Vinfo = Vinfo0, Vars = [].
+  update_info([-I|T],Vars,N0,N,Vinfo0,Vinfo) :-
+      Vars = [variable(J),variable(N0)|V],
+      klic_comp_util:assoc(Vinfo0,I,Ans),
+      N1 := N0+1,
+      update_info_1(T,V,N1,N,[I=N0|Vinfo0],Vinfo,Ans,I,J).
+  update_info([+X0|T],Vars,N0,N,Vinfo0,Vinfo) :-
+      Vars = [X|V],
+      replace_vars(X0,X,Vinfo0),
+      update_info(T,V,N0,N,Vinfo0,Vinfo).
+
+  update_info_1(T,V,N1,N,Vinfo0,Vinfo,yes(X),I,J) :-
+      J=X,
+      update_info(T,V,N1,N,Vinfo0,Vinfo).
+  update_info_1(T,V,N1,N,Vinfo0,Vinfo,no,I,J) :-
+      J=I,
+      update_info(T,V,N1,N,Vinfo0,Vinfo).
+
+
+  % ----- REPLACE VARS -----
+  replace_vars(variable(K),Replaced,Vinfo) :-
+      Replaced = variable(J),
+      klic_comp_util:assoc(Vinfo,K,Ans),
+      replace_vars_1(Ans,J,K).
+  replace_vars(list([H0|T0]),Replaced,Vinfo) :-
+      Replaced = list([H|T]),
+      replace_vars(H0,H,Vinfo),
+      replace_vars(T0,T,Vinfo).
+  replace_vars(vector(V0),Replaced,Vinfo) :-
+	klic_comp_util:vector_to_list(V0,L0),
+	replace_vars_elems(L0,L,Vinfo),
+	generic:new(vector,V,L),
+	Replaced=vector(V).
+  replace_vars(functor(F0),Replaced,Vinfo) :-
+	klic_comp_util:univ(F0,[P|L0]),
+	replace_vars_elems(L0,L,Vinfo),
+	functor_table:(F=..[P|L]),
+	Replaced=functor(F).
+otherwise.
+  replace_vars(Term,Replaced,_) :- Replaced = Term.
+
+  replace_vars_1(yes(X),J,_K) :- J=X.
+  replace_vars_1(no , J, K) :- J=K.
+
+  replace_vars_elems([],L,Vinfo) :- L=[].
+  replace_vars_elems([H0|T0],L,Vinfo) :-
+	replace_vars(H0,H,Vinfo),
+	L = [H|T],
+	replace_vars_elems(T0,T,Vinfo).
+
+ % ----- COUNTVARS -----
+ countvars(X,Table) :- findvars(X,Vars,[]), countvars(Vars,Table,[]).
+
+ countvars([])-Tbl.
+ countvars([K|T0])-Tbl :- 
+     countsame(T0,T,K,1,N), 
+     Tbl <= (K=N),
+     countvars(T)-Tbl.
+
+  % ----- FINDVARS -----
+  findvars(variable(K))-V :- integer(K) | V <= K.
+  findvars(Vect)-V :- vector(Vect,_) |
+      klic_comp_util:vector_to_list(Vect,L),
+      findvars_elems(L)-V.
+otherwise.
+  findvars(Term)-V :-
+      klic_comp_util:univ(Term,[_|L]),
+      findvars_elems(L)-V.
+   
+  findvars_elems([])-V.
+  findvars_elems([H|T])-V :-
+      findvars(H)-V, findvars_elems(T)-V.
+  
+  % ----- COUNTSAME -----
+  countsame([],     T,_)-N :- T = [].
+  countsame([J|T0], T,K)-N :- J=:=K | N += 1, countsame(T0,T,K)-N.
+  countsame([J|T0],T1,K)-N :- J=\=K | T1 = [J|T], countsame(T0,T,K)-N.
+
+ % ----- FINALIZE VARS -----
+ finalize_vars([],         _)-B.
+ finalize_vars([I,J|VF],Info,B0,B) :-
+     klic_comp_util:assoc(Info,I,yes(K)),
+     finalize_vars(VF,Info,functor((functor(variable(J)=variable(K)),B0)),B).
+
+ % ----- EXP HEAD -----
+ exp_head(H,NewH)-V-G :- functor(H,F,Arity) |
+	NewH = functor(NewH0),
+	klic_comp_util:univ(H,[F|Args]),
+	exp_head_and_guard_top(Args,NewArgs)-V-G,
+	functor_table:(NewH0=..[F|NewArgs]).
+
+  exp_head_and_guard_top([],NewArgs)-V-G :- NewArgs = [].
+  exp_head_and_guard_top([A|Args],NewArgs0)-V-G :-
+      NewArgs0 = [variable(V)|NewArgs],
+      G <= functor(A=variable(V)),
+      V += 1,
+      exp_head_and_guard_top(Args,NewArgs)-V-G.
+
+ % ----- LINEARIZE GUARD -----
+ linearize_guard(atom(true))-G.
+ linearize_guard(functor((X,Y)))-G :- 
+     linearize_guard(X)-G, linearize_guard(Y)-G.
+ otherwise.
+ linearize_guard(Goal)-G :- G <= Goal.
+
+
+ % ----- EXP GUARD -----
+ exp_guard([])-V-G.
+ exp_guard([functor((X0;Y0))|T])-V-G :-
+     G <= functor((X;Y)),
+     linearize_guard(X0,X1,T), exp_guard(X1)-V+X+[],
+     linearize_guard(Y0,Y1,T), exp_guard(Y1)-V+Y+[].
+ otherwise.
+ exp_guard([G|T])-V+NewG0+NewG :-
+     macro_goal(G)-V+After+NewG1+NewG0+After+g,
+     exp_guard(T)-V+NewG1+NewG.
+
+ % ----- EXP BODY -----
+ exp_body(atom(true))-V-T-M-B.
+ exp_body(functor((X,Y)))-V-T-M-B :-
+     exp_body(X)-V-T-M-B, exp_body(Y)-V-T-M-B.
+ exp_body(Funct)-V-T-M-B :-
+	( Funct=functor((X->Y)); Funct=functor((X;Y)) ) |
+     M <= expanded(OR,ID),
+     B <= Goal,
+     exp_body_or(Funct,Goal,ID,V,T,OR).
+ otherwise.
+ exp_body(G)-V-T-M+B0+B :-
+     macro_goal(G)-V+After+B+B0+After+b.
+
+  % ------ EXP BODY OR ----
+  exp_body_or(X,G,ID,V,T,OR) :-
+      countvars(X,T1),
+      find_interface_vars(T1,T,IV),
+      functor_table:(G=..['$macroexpanded',ID,IV]),
+      functor_table:(G1=..['$macroexpanded',ID|IV]),
+      body_or_clauses(X,G1,V,T,OR,[]).
+
+   find_interface_vars([],       _,V) :- V = [].
+   find_interface_vars([K=N|T0],T1,V) :- 
+       klic_comp_util:assoc(T1,K,Ans),
+       find_interface_vars_1(T0,T1,V,K,N,Ans).
+ 
+    find_interface_vars_1(T0,T1,V,_K,N,yes(N)) :-
+        find_interface_vars(T0,T1,V).
+    otherwise.
+    find_interface_vars_1(T0,T1,V, K,N,_)  :-
+        V = [variable(K)|V1],
+        find_interface_vars(T0,T1,V1).
+
+   body_or_clauses(functor((X ; Rest)),H,V,T)-OR :-
+        body_or_one(X,H,V,T)-OR,
+        body_or_clauses(Rest,H,V,T)-OR.
+   otherwise.
+   body_or_clauses(Last,H,V,T)-OR :-
+        body_or_one(Last,H,V,T)-OR.
+
+    body_or_one(atom(A),_,_,_)-OR :- ( A=otherwise; A=alternatively ) |
+	 OR <= A.
+    body_or_one(functor((G->B)),H,V,T)-OR :- 
+         OR <= clause(H,NewG,NewB,Exp),
+         linearize_guard(G,G1,[]),
+         exp_guard(G1,V,V1,NewG,[]),
+%  try to patch by Fujise 19940709
+%         exp_body(B,V1,_,T,Exp,[],NewB,[]).
+	 countvars([H,G|B],NewT),
+         exp_body(B,V1,_,NewT,_,Exp,[],NewB,[]).
+    otherwise.
+    body_or_one(X,                  _,_,_)-OR :-
+         klic_comp_message:report_error("Illegal body or case: ~w", [X]).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%          ----- MACRO GOAL -----           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+macro_goal(functor(G0))-V-After-B+GB :-
+    macro_goal_functor(G0)-V-After-B+GB.
+macro_goal(atom(G))-V-After-B+GB :-
+    B <= atom(G).
+otherwise.
+macro_goal(G)-V-After-B+GB :-
+    klic_comp_message:report_error("Illegal Goal: ~w",[G]).
+
+macro_goal_functor((LHS0:=RHS0))-V-After-B+GB :-
+    macro_arg_n([.(LHS0,LHS),.(RHS0,RHS)])-V-After-B+GB,
+    macro_exp(RHS,X)-V-B,
+    B <= functor(LHS=X).
+macro_goal_functor((LHS0$:=RHS0))-V-After-B+GB :-
+    macro_arg_n([.(LHS0,LHS),.(RHS0,RHS)])-V-After-B+GB,
+    macro_float_exp(RHS,X)-V-B,
+    B <= functor(LHS=X).
+macro_goal_functor((X0\=Y0))-V-After-B+g :-
+    macro_arg_n([.(X0,X),.(Y0,Y)])-V-After-B+g,
+    B <= functor(diff(X,Y)).
+macro_goal_functor(vector(X0))-V-After-B+g :-
+    V0=V, V+=1,
+    macro_arg(X0,X,g)-V-After-B,
+    macro_goal_functor(vector(X,variable(V0)))-V-After-B+g.
+macro_goal_functor(string(X0))-V-After-B+g :-
+    V0=V, V1:=V0+1, V+=2,
+    macro_arg(X0,X,g)-V-After-B,
+    macro_goal_functor(string(X,variable(V0),variable(V1)))-V-After-B+g.
+macro_goal_functor(string(X0,Y0))-V-After-B+g :-
+    macro_arg_n([.(X0,X),.(Y0,Y)])-V-After-B+g,
+    V0=V, V+=1,
+    macro_goal_functor(string(X,Y,variable(V0)))-V-After-B+g.
+macro_goal_functor(vector_element(S,L,E,NS))-V-After-B+b :-
+    macro_goal_functor(S=NS)-V-After-B+b,
+    macro_goal_functor(vector_element(S,L,E))-V-After-B+b.
+macro_goal_functor(string(S0,L0,EL0,NS0))-V-After-B+b :-
+    macro_arg_n([.(S0,S),.(L0,L),.(EL0,EL),.(NS0,NS)])-V-After-B+b,
+    B <= functor(S=NS),
+    B <= functor(atom(generic):functor(string(S,L,EL))).
+macro_goal_functor(string_element(S0,L0,EL0,NS0))-V-After-B+b :-
+    macro_arg_n([.(S0,S),.(L0,L),.(EL0,EL),.(NS0,NS)])-V-After-B+b,
+    B <= functor(S=NS),
+    B <= functor(atom(generic):functor(element(S,L,EL))).
+macro_goal_functor(vector(S0,L0,NS0))-V-After-B+b :-
+    macro_arg_n([.(S0,S),.(L0,L),.(NS0,NS)])-V-After-B+b,
+    B <= functor(S=NS),
+    B <= functor(atom(generic):functor(size(S,L))).
+macro_goal_functor(atom(builtin)#functor(apply(F0,A0)))-V-After-B+b :-
+    macro_arg_n([.(F0,F),.(A0,A)])-V-After-B+b,
+    B <= functor(atom(generic):functor(apply(F,A))).
+otherwise.
+macro_goal_functor(G)-V-After-B+GB :- 
+    compar_macro(G,Ans)+GB,
+    macro_goal_functor_cmp(Ans)-V-After-B+GB+Goal,
+    B <= functor(Goal).
+
+macro_goal_functor_cmp(int(LHS0,RHS0,Op))-V-After-B+g+Goal :-
+      macro_arg_n([.(LHS0,LHS1),.(RHS0,RHS1)])-V-After-B+g,
+      macro_exp(LHS1,LHS)-V-B,
+      macro_exp(RHS1,RHS)-V-B,
+      functor_table:(Goal=..[Op,LHS,RHS]).
+macro_goal_functor_cmp(float(LHS0,RHS0,Op))-V-After-B+g+Goal :-
+      macro_arg_n([.(LHS0,LHS1),.(RHS0,RHS1)])-V-After-B+g,
+      macro_float_exp(LHS1,LHS)-V-B,
+      macro_float_exp(RHS1,RHS)-V-B,
+      functor_table:(Goal0=..[Op,LHS,RHS]),
+      Goal=(atom(generic):functor(Goal0)).
+macro_goal_functor_cmp(general(LHS0,RHS0,Op))-V-After-B+g+Goal :-
+      V0 = V, V += 1,
+      macro_arg_n([.(LHS0,LHS),.(RHS0,RHS)])-V-After-B+g,
+      B <= functor(compare(LHS,RHS,variable(V0))),
+      functor_table:(Goal=..[Op,variable(V0),integer(0)]).
+macro_goal_functor_cmp(no(G))-V-After-B+GB+Goal :-
+      klic_comp_util:univ(G,[F|Args]),
+      macro_args(Args,Xargs,GB)-V-After-B,
+      functor_table:(G1=..[F|Xargs]),
+      expand_goal(GB,G1,Ans),
+      make_expanded_call(Ans,Goal).
+
+make_expanded_call(yes(Module,G0),Goal) :-
+	Goal=(atom(Module):functor(G0)).
+make_expanded_call(no(G0),Goal) :-
+	Goal=G0.
+
+/* simple omission of module name */
+expand_goal(b,G,Ans) :- G=unbound(X,Y) | Ans=yes(variable,G).
+expand_goal(b,G,Ans) :- G=new_functor(F,P,A) | Ans=yes(functor_table,G).
+expand_goal(b,G,Ans) :- G=functor(F,P,A) | Ans=yes(functor_table,G).
+expand_goal(b,G,Ans) :- G=functor(F,P,A,NF) | Ans=yes(functor_table,G).
+expand_goal(b,G,Ans) :- G=setarg(I,F,E,NF) | Ans=yes(functor_table,G).
+expand_goal(b,G,Ans) :- G=setarg(I,F,O,E,NF) | Ans=yes(functor_table,G).
+expand_goal(b,G,Ans) :- G=arg(I,F,E) | Ans=yes(functor_table,G).
+expand_goal(b,G,Ans) :- G=arg(I,F,E,NF) | Ans=yes(functor_table,G).
+expand_goal(b,G,Ans) :- G=apply(A,B) | Ans=yes(generic,G).
+/* module name omission with predicate name change */
+expand_goal(b,G,Ans) :- G=string_element(S,L,EL) |
+    Ans=yes(generic,element(S,L,EL)).
+expand_goal(b,G,Ans) :- G=set_string_element(S,L,EL,NS) |
+    Ans=yes(generic,set_element(S,L,EL,NS)).
+expand_goal(b,G,Ans) :- G=vector_element(S,L,E) |
+    Ans=yes(generic,element(S,L,E)).
+expand_goal(b,G,Ans) :- G=set_vector_element(X,I,NE,NX) |
+    Ans=yes(generic,set_element(X,I,NE,NX)).
+expand_goal(b,G,Ans) :- G=set_vector_element(X,I,OE,NE,NX) |
+    Ans=yes(generic,set_element(X,I,OE,NE,NX)).
+expand_goal(b,G,Ans) :- G=string_less_than(S,L) |
+    Ans=yes(generic,less_than(S,L)).
+expand_goal(b,G,Ans) :- G=string_not_less_than(S,L) |
+    Ans=yes(generic,not_less_than(S,L)).
+expand_goal(b,G,Ans) :- G=new_string(S,L,EL) |
+    Ans=yes(generic,new(atom(string),S,L,EL)).
+expand_goal(b,G,Ans) :- G=new_vector(S,L) |
+    Ans=yes(generic,new(atom(vector),S,L)).
+expand_goal(b,G,Ans) :- G=module(A,_) |
+    Ans=yes(generic,module(A)).
+expand_goal(b,G,Ans) :- G=code(A,_,_,_) |
+    Ans=yes(generic,predicate(A)).
+expand_goal(b,G,Ans) :- G=merge(X,Y) |
+    Ans=yes(generic,new(atom(merge),X,Y)).
+expand_goal(b,G,Ans) :- G=predicate_to_code(A,B,C,D) |
+    Ans=yes(builtin_utility,predicate_to_code(A,B,C,D)).
+expand_goal(b,G,Ans) :- G=(atom(builtin)#functor(Goal)) |
+    Ans=yes(builtin_utility,Goal).
+/* guard goal expansion */
+expand_goal(g,G,Ans) :- G=string_less_than(S,L) |
+    Ans=yes(generic,less_than(S,L)).
+expand_goal(g,G,Ans) :- G=string_not_less_than(S,L) |
+    Ans=yes(generic,not_less_than(S,L)).
+expand_goal(g,G,Ans) :- G=module(A,_) |
+    Ans=yes(generic,module(A)).
+expand_goal(g,G,Ans) :- G=code(A,_,_,_) |
+    Ans=yes(generic,predicate(A)).
+otherwise.
+expand_goal(_,Goal,Ans) :- Ans=no(Goal).
+
+ % ----- COMPAR MACRO -----
+ compar_macro(G,Ans)+b :- Ans=no(G).
+ compar_macro(X<Y,Ans)+g :- Ans=int(X,Y,less_than).
+ compar_macro(X=<Y,Ans)+g :- Ans=int(X,Y,not_greater_than).
+ compar_macro(X>=Y,Ans)+g :- Ans=int(X,Y,not_less_than).
+ compar_macro(X>Y,Ans)+g :- Ans=int(X,Y,greater_than).
+ compar_macro(X=:=Y,Ans)+g :- Ans=int(X,Y,equal).
+ compar_macro(X=\=Y,Ans)+g :- Ans=int(X,Y,not_equal).
+ compar_macro(X$<Y,Ans)+g :- Ans=float(X,Y,less_than).
+ compar_macro(X$=<Y,Ans)+g :- Ans=float(X,Y,not_greater_than).
+ compar_macro(X$>=Y,Ans)+g :- Ans=float(X,Y,not_less_than).
+ compar_macro(X$>Y,Ans)+g :- Ans=float(X,Y,greater_than).
+ compar_macro(X$=:=Y,Ans)+g :- Ans=float(X,Y,equal).
+ compar_macro(X$=\=Y,Ans)+g :- Ans=float(X,Y,not_equal).
+ compar_macro(X@<Y,Ans)+g :- Ans=general(X,Y,less_than).
+ compar_macro(X@=<Y,Ans)+g :- Ans=general(X,Y,not_greater_than).
+ compar_macro(X@>=Y,Ans)+g :- Ans=general(X,Y,not_less_than).
+ compar_macro(X@>Y,Ans)+g :- Ans=general(X,Y,greater_than).
+ otherwise.
+ compar_macro(G,Ans)+GB :- Ans = no(G).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ----- MACRO ARGS -----
+macro_args([],XArgs,_GB)-V-After-B :-
+    XArgs = [].
+macro_args([H0|T0],XArgs,GB)-V-After-B :-
+    XArgs = [H|T],
+    macro_arg(H0,H,GB)-V-After-B,
+    macro_args(T0,T,GB)-V-After-B.
+
+% ----- MACRO ARG -----
+% VARIABLE
+macro_arg(T,X,_GB)-V-After-B :- T=variable(_)	| X=T.
+macro_arg(T,X,_GB)-V-After-B :- T=atom(_)	| X=T.
+macro_arg(T,X,_GB)-V-After-B :- T=integer(_)	| X=T.
+macro_arg(T,X,_GB)-V-After-B :- T=float(_)	| X=T.
+macro_arg(T,X,_GB)-V-After-B :- T=string(_)	| X=T.
+macro_arg(list([CAR|CDR]),X,GB)-V-After-B :-
+    X = list([XCAR|XCDR]),
+    macro_arg_n([.(CAR,XCAR),.(CDR,XCDR)])-V-After-B+GB.
+macro_arg(functor(F),X,GB)-V-After-B :-
+    macro_arg_functor(F,X,GB)-V-After-B.
+macro_arg(vector(Vec),A,g)-V-After-B :- vector(Vec,N) |
+    A = variable(V), V += 1,
+    After <= functor(vector(A,integer(N))),
+    macro_vec_elems(0,N,A,Vec)-V-After.
+macro_arg(vector(Vec0),A,b)-V-After-B :- vector(Vec0,N) |
+    A = vector(Vec),
+    macro_vector_elems(Vec0,Vec,0,N)-V-After-B.
+
+macro_arg_n([])-V-After-B+GB.
+macro_arg_n([.(H0,H)|T])-V-After-B+GB :-
+    macro_arg(H0,H,GB)-V-After-B,
+    macro_arg_n(T)-V-After-B+GB.
+
+ % ---- MACRO VECTOR ---- 
+
+ macro_vector_elems(Vec0,Vec,M,N)-V-After-B :- M>=N | Vec=Vec0.
+ macro_vector_elems(Vec0,Vec,M,N)-V-After-B :- M<N |
+       M1 := M+1,
+       set_vector_element(Vec0,M,E0,E,Vec1),
+       macro_arg(E0,E,b)-V-After-B,
+       macro_vector_elems(Vec1,Vec,M1,N)-V-After-B.
+
+ macro_vec_elems(K,N,A,Vec)-V-After :- K>=N | true.
+ macro_vec_elems(K,N,A,Vec)-V+After0+After :-
+	K<N, vector_element(Vec,K,E0) |
+      K1 := K+1,
+      macro_goal_functor(vector_element(A,integer(K),E0))
+		-V+After1+After2+After0+After1+g,
+      macro_vec_elems(K1,N,A,Vec)-V+After2+After.
+
+% #/1
+macro_arg_functor(Term,X,_GB)-V-After-B :-
+	functor(Term,#,1), arg(1,Term,Arg),
+	Arg=list([integer(A)|atom([])]) |
+    X = integer(A).
+macro_arg_functor(Term,X,_GB)-V-After-B:-
+	functor(Term,#,1), arg(1,Term,Arg),
+	Arg=string(A), string(A,1,_) |
+    string_element(A,0,E),
+    X = integer(E).
+% #/2
+macro_arg_functor(Term,X,_GB)-V-After-B :- 
+	functor(Term,#,2), arg(1,Term,P), arg(2,Term,Q) |
+    macro_arg_functor_sharp(P,Q,X,_GB)-V-After-B.
+% ~/1
+macro_arg_functor(Term,X,GB)-V-After-B :-
+	functor(Term,~,1), arg(1,Term,Exp0) |
+    macro_arg(Exp0,Exp,GB)-V-After-B,
+    macro_exp(Exp,X)-V-B.
+% $~/1
+macro_arg_functor(Term,X,GB)-V-After-B :-
+	functor(Term,$~,1), arg(1,Term,Exp0) |
+    macro_arg(Exp0,Exp,GB)-V-After-B,
+    macro_float_exp(Exp,X)-V-B.
+% `/1
+macro_arg_functor(Term,X,GB)-V-After-B :-
+	functor(Term,`,1), arg(1,Term,Q) |
+    macro_arg(Q,X,GB)-V-After-B.
+% ``/1
+macro_arg_functor(Term,X,_GB)-V-After-B :-
+	functor(Term,``,1), arg(1,Term,Q) |
+    X = Q.
+otherwise.
+macro_arg_functor(A,X,GB)-V-After-B :-
+    X = functor(X0),
+    klic_comp_util:univ(A,[F|Arg]),
+    macro_args(Arg,XArg,GB)-V-After-B,
+    functor_table:(X0=..[F|XArg]).
+
+% A # B
+macro_arg_functor_sharp(atom(predicate),
+	functor(atom(Module):functor(atom(Pred)/integer(Arity))),
+	X,_GB)-V-After-B :-
+    X = predicate(Module,Pred,Arity).
+macro_arg_functor_sharp(atom(c),string(A),X,_GB)-V-After-B :- string(A,1,_) |
+    string_element(A,0,E), X = integer(E).
+macro_arg_functor_sharp(atom(key),atom(lf),X,_GB)-V-After-B :-
+    X = integer(10).
+macro_arg_functor_sharp(atom(key),atom(cr),X,_GB)-V-After-B :-
+    X = integer(13).
+macro_arg_functor_sharp(integer(N),string(S),X,_GB)-V-After-B :-
+    klic_comp_util:string_to_char_list(S,L),
+    X = integer(A), macro_N_10(L,N,0,A).
+macro_arg_functor_sharp(N,vector(Val),X,_GB)-V-After-B :-
+    X = N#vector(Val).
+macro_arg_functor_sharp(atom(string),S,A,_GB)-V-After-B :- S=string(Str) |
+    A=S.
+macro_arg_functor_sharp(atom(module),atom(Mod),A,b,V,VN)-After-B :-
+    VN := V+1, A = variable(V),
+    B <= functor(atom(generic):functor(new(atom(module),A,atom(Mod)))).
+otherwise.
+macro_arg_functor_sharp(P,Q,X,GB)-V-After-B :- 
+    X = functor(PP # QQ),
+    macro_arg_n([.(P,PP),.(Q,QQ)])-V-After-B+GB.
+
+% B # [...] 
+macro_N_10([C|N],B,T,A):- C >= #"a", C =< #"z" |
+    T1 := T*B + C - #"a" + 10,
+    macro_N_10(N,B,T1,A).
+macro_N_10([C|N],B,T,A):- C >= #"A", C =< #"Z" |
+    T1 := T*B + C - #"A" + 10,
+    macro_N_10(N,B,T1,A).
+macro_N_10([C|N],B,T,A):- C >= #"0", C =< #"9" |
+    T1 := T*B + C - #"0",
+    macro_N_10(N,B,T1,A).
+macro_N_10([],_B,T,A) :- A = T.
+
+
+% ----- MACRO EXP -----
+macro_exp(T,Exp)-V-B :- (T=variable(N); T=integer(N)) |
+	Exp = T.
+macro_exp(functor(Exp0),Exp)-V-B :-
+	macro_arith_op(Exp0,Ans),
+	macro_exp_1(Exp0,Exp)-V+Ans-B.
+otherwise.
+macro_exp(Exp0,Exp)-V-B :-
+	Exp = Exp0,
+	klic_comp_message:warning("Unknown term in expression: ~W",[Exp0]).
+
+ % MACRO ARITH OP
+ macro_arith_op(_+_,Ans) :- Ans = yes(add).
+ macro_arith_op(_-_,Ans) :- Ans = yes(subtract).
+ macro_arith_op(_*_,Ans) :- Ans = yes(multiply).
+ macro_arith_op(_/_,Ans) :- Ans = yes(divide).
+ macro_arith_op(_ mod _,Ans) :- Ans = yes(modulo).
+ macro_arith_op(_/\_,Ans) :- Ans = yes(and).
+ macro_arith_op(_\/_,Ans) :- Ans = yes(or).
+ macro_arith_op(_ xor _,Ans) :- Ans = yes(exclusive_or).
+ macro_arith_op(_>>_,Ans) :- Ans = yes(shift_right).
+ macro_arith_op(_<<_,Ans) :- Ans = yes(shift_left).
+ macro_arith_op(+_,Ans) :- Ans = yes(plus).
+ macro_arith_op(-_,Ans) :- Ans = yes(minus).
+ macro_arith_op(\(_),Ans) :- Ans = yes(complement).
+ macro_arith_op(int(_),Ans) :- Ans = fix.
+ otherwise.
+ macro_arith_op(_,Ans) :- Ans = no.
+
+ macro_exp_1(Exp0,Exp,V0,V,yes(Op))-B :-
+     Exp = variable(V1),
+     klic_comp_util:univ(Exp0,[_|Args]),
+     macro_exp_args(Args,[Exp],XArgs,V0,V1)-B,
+     functor_table:(Goal=..[Op|XArgs]),
+     V := V1+1,
+     B <= functor(Goal).
+ macro_exp_1(Exp0,Exp,V0,V,fix)-B :-
+     Exp = variable(V1),
+     klic_comp_util:univ(Exp0,[_|Args]),
+     macro_float_args(Args,[Exp],XArgs,V0,V1)-B,
+     functor_table:(Goal=..[floating_point_to_integer|XArgs]),
+     V := V1+1,
+     B <= functor(Goal).
+ macro_exp_1(Exp0,Exp,V0,V,no )-B :-
+     Exp = functor(Exp0), V = V0,
+     klic_comp_message:warning("Unknown term in expression: ~W",[Exp]).
+
+  macro_exp_args([],Tail,XArgs)-V-B :-
+      XArgs = Tail.
+  macro_exp_args([A|T0],Tail,XArgs)-V-B :-
+      XArgs = [X|T],
+      macro_exp(A,X)-V-B, 
+      macro_exp_args(T0,Tail,T)-V-B.
+
+% ----- MACRO FLOAT EXP -----
+macro_float_exp(T,Exp)-V-B :- (T=variable(N); T=float(N)) |
+	Exp = T.
+macro_float_exp(functor(Exp0),Exp)-V-B :-
+	macro_float_op(Exp0,Ans),
+	macro_float_exp_1(Exp0,Exp)-V+Ans-B.
+otherwise.
+macro_float_exp(Exp0,Exp)-V-B :-
+	Exp = Exp0,
+	klic_comp_message:
+	warning("Unknown term in floating point expression: ~W",[Exp0]).
+
+ % MACRO ARITH OP
+ macro_float_op(_+_,Ans) :- Ans = yes(add).
+ macro_float_op(_-_,Ans) :- Ans = yes(subtract).
+ macro_float_op(_*_,Ans) :- Ans = yes(multiply).
+ macro_float_op(_/_,Ans) :- Ans = yes(divide).
+ macro_float_op(pow(_,_),Ans) :- Ans = yes(pow).
+ macro_float_op(sin(_),Ans) :- Ans = yes(sin).
+ macro_float_op(cos(_),Ans) :- Ans = yes(cos).
+ macro_float_op(tan(_),Ans) :- Ans = yes(tan).
+ macro_float_op(asin(_),Ans) :- Ans = yes(asin).
+ macro_float_op(acos(_),Ans) :- Ans = yes(acos).
+ macro_float_op(atan(_),Ans) :- Ans = yes(atan).
+ macro_float_op(sinh(_),Ans) :- Ans = yes(sinh).
+ macro_float_op(cosh(_),Ans) :- Ans = yes(cosh).
+ macro_float_op(tanh(_),Ans) :- Ans = yes(tanh).
+ macro_float_op(exp(_),Ans) :- Ans = yes(exp).
+ macro_float_op(log(_),Ans) :- Ans = yes(log).
+ macro_float_op(sqrt(_),Ans) :- Ans = yes(sqrt).
+ macro_float_op(ceil(_),Ans) :- Ans = yes(ceil).
+ macro_float_op(floor(_),Ans) :- Ans = yes(floor).
+ macro_float_op(float(_),Ans) :- Ans = new.
+ macro_float_op(+_,Ans) :- Ans = yes(plus).
+ macro_float_op(-_,Ans) :- Ans = yes(minus).
+ otherwise.
+ macro_float_op(_,Ans) :- Ans = no.
+
+ macro_float_exp_1(Exp0,Exp,V0,V,yes(Op))-B :-
+     Exp = variable(V1),
+     klic_comp_util:univ(Exp0,[_|Args]),
+     macro_float_args(Args,[Exp],XArgs,V0,V1)-B,
+     functor_table:(Goal=..[Op|XArgs]),
+     V := V1+1,
+     B <= functor(atom(generic):functor(Goal)).
+ macro_float_exp_1(Exp0,Exp,V0,V,new)-B :- Exp0 = float(Expr) |
+     Exp = variable(V1),
+     macro_exp(Expr,Result,V0,V1)-B,
+     functor_table:(Goal=..[new,atom(float),Exp,Result]),
+     V := V1+1,
+     B <= functor(atom(generic):functor(Goal)).
+ macro_float_exp_1(Exp0,Exp,V0,V,no )-B :-
+     Exp = functor(Exp0), V = V0,
+     klic_comp_message:warning("Unknown term in expression: ~W",[Exp]).
+
+  macro_float_args([],Tail,XArgs)-V-B :-
+      XArgs = Tail.
+  macro_float_args([A|T0],Tail,XArgs)-V-B :-
+      XArgs = [X|T],
+      macro_float_exp(A,X)-V-B, 
+      macro_float_args(T0,Tail,T)-V-B.

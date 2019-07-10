@@ -1,0 +1,3 @@
+:- module klic_comp_version.
+compiler_version(V) :- V    = 'version ##VERSION'.
+compiler_date(Date) :- Date = '##DATE'.

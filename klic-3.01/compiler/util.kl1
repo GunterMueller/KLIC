@@ -1,0 +1,149 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+% %       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+% ----------------------------------------------------------- */
+
+:- module klic_comp_util.
+
+append([],    Y, Z ) :-  Y = Z.
+append([W|X], Y, Z0) :- Z0 =[W|Z], append(X, Y, Z).
+
+assoc([H=T|_], H,Ans) :- Ans = yes(T).
+assoc([],     _H,Ans) :- Ans = no.
+otherwise.
+assoc([_|Rest],H,Ans)  :- assoc(Rest,H,Ans).
+
+nth(K,[X|_],Y) :- K=<0 | Y = X.
+nth(K,[_|T],X) :- K>0 | K1 := K-1, nth(K1,T,X).
+
+member([],    Y, A) :- A = no.
+member([X|_], X, A) :- A = yes.
+otherwise.
+member([_|T], X, A) :- member(T, X, A).
+
+qsort(L, R) :- true | qsort(L, R, []).
+
+qsort([X|L],R,R0) :- true |
+    partition(L, X, L1, L2), qsort(L2, R1, R0), qsort(L1, R, [X|R1]).
+qsort([],R,R0) :- true | R = R0.
+
+partition([X|L],Y,L1,L2) :- X=Y | partition(L,Y,L1,L2).
+partition([X|L],Y,XL1,L2) :- X@<Y | XL1 = [X|L1], partition(L,Y,L1,L2).
+partition([X|L],Y,L1,XL2) :- X@>Y | XL2 = [X|L2], partition(L,Y,L1,L2).
+partition([],_,L1,L2) :- true | L1 = [], L2 = [].
+
+max(X, Y, M) :- X >= Y | M = X.
+max(X, Y, M) :- X =< Y | M = Y.
+
+min(X, Y, M) :- X =< Y | M = X.
+min(X, Y, M) :- X >= Y | M = Y.
+
+max_vect(V,M) :- vector(V,N) | max_vect(N,V,0,M).
+
+max_vect(N,V,M0,M) :- N=<0 | M=M0.
+max_vect(N,V,M0,M) :- N>0, N1:=N-1, vector_element(V,N1,E) |
+	max(E,M0,M1), max_vect(N1,V,M1,M).
+
+remove([H|T], H, L0, L) :- remove(T, H, L0, L).
+remove([],    _, L0, L) :- L0 = L.
+otherwise.
+remove([H|T], X, L0, L) :- L0 = [H|L1], remove(T, X, L1, L).
+
+%%%%%%%%%%%%%
+length(List,N) :- length(List,N,0).
+
+length([_|L],N,K) :- K1 := K+1,length(L,N,K1).
+length([],N,K) :- N = K.
+
+vector_to_list(V,L) :- vector(V,N) | vector_to_list(V,L,[],N).
+
+vector_to_list(V,L,T,K) :- K=<0 | L=T.
+vector_to_list(V,L,T,K) :- K>0,
+	K1 := K-1,
+	vector_element(V,K1,X) |
+    vector_to_list(V,L,[X|T],K1).
+
+%%% =.. UNIV  Functor => List  /  RUNIV   Functor <= List
+univ(Funct,List) :- univ(Funct,List,[]).
+
+univ(Funct,List,Tail) :- functor(Funct,F,A) |
+	List = [F|List1],
+	univ_funct_to_list(Funct,List1,1,A,Tail).
+
+univ_funct_to_list(Funct,List,K,Max,Tail) :- K > Max | List = Tail.
+univ_funct_to_list(Funct,List,K,Max,Tail) :- K =< Max, arg(K,Funct,X) | 
+	List = [X|List1], 
+	K1 := K+1,
+	univ_funct_to_list(Funct,List1,K1,Max,Tail).
+
+%%% name
+name(X, CharList) :- atom(X) |
+	atom_table:get_atom_string(X,S),
+	string_to_char_list(S,CharList).
+name(X, CharList) :- integer(X) | 
+	name_integer(X,CharList).
+
+name_integer(X,CharList) :- X >= 0 | name_integer(X,CharList,[]).
+name_integer(X,CharList) :- X < 0 | 
+	CharList = [#"-"|L],
+	XX := -X,
+	name_integer(XX,L,[]).
+
+name_integer(X,CharList,L) :- X < 10 | 
+	C := #"0" + X,
+	CharList = [C|L].
+name_integer(X,CharList,L) :- X>=10 |
+	X1 := X / 10,
+	C := (X mod 10) + #"0",
+	name_integer(X1,CharList,[C|L]).
+
+string_to_char_list(S,CharList) :- string(S,L,8) |
+	string_to_char_list(S,CharList,[],L).
+
+string_to_char_list(S,CharList,T,K) :-  K =< 0 | CharList=T.
+string_to_char_list(S,CharList,T,K) :-  K > 0 |
+	K1 := K-1,
+	string_element(S,K1,X),
+	string_to_char_list(S,CharList,[X|T],K1).
+
+%%%
+numbervars(Term0,Term)-N :- numbervars(Term0,Term)-N+[]+_.
+
+numbervars(variable("_"), R)-N-Vars :- 
+    R = variable(N), N+=1.
+otherwise.
+numbervars(variable(X), R)-N-Vars :- string(X,_,_) |
+    assoc(Vars,X,Ans),
+    numbervars_1(Ans,R,X)-N-Vars.
+numbervars(floating_point(X), R)-N-Vars :- float(X) |
+    R=float(X).
+otherwise.
+numbervars(Term0,Term)-N-Vars :- vector(Term0,Size) |
+    numbervars_vector(Size,Term0,Term)-N-Vars.
+otherwise.
+numbervars(Term0,Term)-N-Vars :- functor(Term0,F,A) |
+    numbervars_funct(A,Term0,F,[],Term)-N-Vars.
+
+numbervars_1(yes(K), R, X)-N-V :- R = variable(K).
+numbervars_1(no,     R, X)-N-V :-
+    R = variable(N), (X=N) => V, N += 1.
+
+numbervars_vector(K,Vect0,Vect)-N-V :- K =< 0 |
+    Vect=Vect0.
+numbervars_vector(K,Vect0,Vect)-N-V :- K > 0, K1:=K-1 |
+    set_vector_element(Vect0,K1,X,X1,Vect1),
+    numbervars(X,X1)-N-V,
+    numbervars_vector(K1,Vect1,Vect)-N-V.
+
+numbervars_funct(K,_Term0,F,L,Term)-N-Vars :- K=<0 |
+    functor_table:(Term=..[F|L]).
+numbervars_funct(K,Term0,F,L,Term)-N-Vars :- K>=0, arg(K,Term0,X) |
+    K1:=K-1,
+    numbervars(X,X1)-N-Vars,
+    numbervars_funct(K1,Term0,F,[X1|L],Term)-N-Vars.
+
+make_atom(List,Atom) :-
+    new_string(Str,List,8),
+    atom_table:make_atom(Str,Atom).

@@ -1,0 +1,355 @@
+%!PS-Adobe-2.0 EPSF-1.2
+%%BoundingBox: 178 642 397 807
+%%Title: pseudo-goal
+%%CreationDate: Mon May 11 16:07:43 1998
+%%Creator: Tgif-3.0J0-p13 by William Chia-Wei Cheng (william@cs.UCLA.edu)
+
+/tgifdict 7 dict def
+tgifdict begin
+
+%%Title: neweucfont.ps
+%%Creator: mushizak@adobe.com
+%%CreationDate: Dec 6 1996
+%%BeginResource: file (neweucfont.ps)
+
+% neweucfont.ps for tgif application
+% based on eucfont.ps yohtaki@cis.ibaraki.ac.jp 1996-9-29
+% based on eudfont.ps 1996-09, kawamata@sra.co.jp
+
+/copyfont {  % fontdict n copyfont => dict
+ 1 index length add dict begin
+ {1 index dup /FID eq exch /UniqueID eq or {pop pop} {def} ifelse} forall
+ currentdict end
+} bind def
+
+/eucfont {  % /newname /asciifont /euckanjifont eucfont => -
+ dup findfont
+ dup /FontType get 0 ne {pop /eucfont errordict /rangecheck get exec} if
+ 3 -1 roll findfont 2 copyfont begin
+  /CDevProc [
+   currentdict /CDevProc known {
+    /CDevProc load dup type /operatortype ne {/exec cvx} if
+   } {
+    /pop cvx
+   } ifelse
+   {pop pop pop pop 5 index 5 index 0 0} /exec cvx
+  ] cvx bind def
+  /FontName /TGIFRoman def
+ FontName currentdict end definefont
+ exch
+ dup /FMapType get dup dup 9 eq exch 6 eq or {
+  9 eq {
+   /CIDParams/ProcSet resourcestatus {
+    pop pop false/CIDParams/ProcSet findresource/SetBuildCompatible get exec
+   } if
+   exch pop 2 index 4 1 roll
+   /CIDInit/ProcSet findresource begin
+   dup /WMode known {/WMode get 1 eq} {pop false} ifelse {
+    [exch /TGIFRoman] beginrearrangedfont
+    /WMode 1 def
+    1 beginusematrix [0 -1 1 0 -.3 0] endusematrix
+   } {
+    [exch /TGIFRoman] beginrearrangedfont
+    /WMode 0 def
+   } ifelse
+   1 usefont
+   1 beginbfrange
+    <00> <7f> <00>
+   endbfrange
+   endrearrangedfont
+   end
+   /CIDParams/ProcSet resourcestatus {
+    pop pop true/CIDParams/ProcSet findresource/SetBuildCompatible get exec
+   } if
+   findfont dup /WMode get 1 eq {
+    [0 1 -1 0 0 .3] makefont
+    dup /FontName get exch definefont
+   } if pop
+  } {
+   3 -1 roll pop
+   1 copyfont begin
+    /FDepVector FDepVector dup length array copy def
+    FDepVector exch 0 exch put
+    /FontName exch def
+    currentdict /WMode known not {/WMode 0 def} if
+    WMode 1 eq {
+     1 1 FDepVector length 1 sub {
+      dup FDepVector dup 4 1 roll exch get
+      [ 0 1 -1 0 0 0.3 ] makefont put
+     } for
+    } if
+   FontName currentdict end definefont pop
+  } ifelse
+ } {
+  dup 2 eq exch 5 eq or {
+   3 -1 roll pop
+   1 copyfont begin
+    /Encoding Encoding FMapType 2 eq {128 128} {256 256} ifelse getinterval def
+    /FontName /TGIFKanji def
+   FontName currentdict end definefont
+   12 dict begin
+    /FontType 0 def
+    /FMapType 4 def
+    /FontBBox {0 0 0 0} def
+    /Encoding [0 1] def
+    dup /WMode known {dup /WMode get} {0} ifelse /WMode exch def
+    WMode 0 eq {
+     /FontMatrix [1 0 0 1 0 0] def
+    } {
+     /FontMatrix [0 1 -1 0 0 .3] def
+     exch [0 -1 1 0 -.3 0] makefont exch
+    } ifelse
+    2 array astore /FDepVector exch def
+    /FontName exch def
+   FontName currentdict end definefont pop
+  } {
+   pop /eucfont errordict /rangecheck get exec
+  } ifelse
+ } ifelse
+} bind def
+%%EndResource
+/tgifarrowtipdict 8 dict def
+tgifarrowtipdict /mtrx matrix put
+
+/tgifarrowtip
+ { tgifarrowtipdict begin
+      /dy exch def
+      /dx exch def
+      /h exch def
+      /w exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      dy dx atan rotate
+      0 0 moveto
+      w neg h lineto
+      w neg h neg lineto
+      savematrix setmatrix
+   end
+ } def
+
+/tgifcentertext { dup stringwidth pop 2 div neg 0 rmoveto } def
+
+end
+
+%%PageBoundingBox: 178 642 397 807
+tgifdict begin
+/tgifsavedpage save def
+
+1 setmiterlimit
+1 setlinewidth
+
+0 setgray
+
+72 0 mul 72 11.70 mul translate
+72 128 div 100.000 mul 100 div dup neg scale
+
+gsave
+
+/tgiforigctm matrix currentmatrix def
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         320 64 moveto 416 64 lineto 416 96 lineto 320 96 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         320 96 moveto 416 96 lineto 416 128 lineto 320 128 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% TEXT
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H /Times-Roman /Ryumin-Light-EUC-H eucfont
+/Times-Roman-Ryumin-Light-EUC-H findfont [17 0 0 -17 0 0] makefont setfont
+   gsave
+      368 88 moveto (next) tgifcentertext show
+   grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         512 96 moveto 704 96 lineto 704 192 lineto 512 192 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% TEXT
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [17 0 0 -17 0 0] makefont setfont
+   gsave
+      608 152 moveto (trace_trigger_preds[\260\372\277\364]) tgifcentertext show
+   grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         320 128 moveto 416 128 lineto 416 256 lineto 320 256 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% TEXT
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [17 0 0 -17 0 0] makefont setfont
+   gsave
+      472 240 moveto () tgifcentertext show
+      472 260 moveto () tgifcentertext show
+   grestore
+
+% TEXT
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [17 0 0 -17 0 0] makefont setfont
+   gsave
+      368 184 moveto (\270\265\244\316) tgifcentertext show
+      368 204 moveto (\245\264\241\274\245\353\244\316) tgifcentertext show
+      368 224 moveto (\260\372\277\364) tgifcentertext show
+   grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         320 256 moveto 416 256 lineto 416 288 lineto 320 288 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         512 256 moveto 704 256 lineto 704 352 lineto 512 352 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% TEXT
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [17 0 0 -17 0 0] makefont setfont
+   gsave
+      368 280 moveto (CONS) tgifcentertext show
+   grestore
+
+% TEXT
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [17 0 0 -17 0 0] makefont setfont
+   gsave
+      368 120 moveto (REF) tgifcentertext show
+   grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         320 288 moveto 416 288 lineto 416 320 lineto 320 320 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         320 320 moveto 416 320 lineto 416 352 lineto 320 352 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% TEXT
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [17 0 0 -17 0 0] makefont setfont
+   gsave
+      616 304 moveto (\270\265\244\316\245\264\241\274\245\353\244\316) tgifcentertext show
+      616 324 moveto (\275\322\270\354\271\275\302\244\302\316) tgifcentertext show
+   grestore
+
+% POLY/OPEN-SPLINE
+0 setgray
+gsave
+   newpath
+      408 112 moveto
+      0 104 atan dup cos 8.000 mul 512 exch sub
+      exch sin 8.000 mul 112 exch sub lineto
+   tgiforigctm setmatrix
+   1 setlinewidth
+   stroke
+grestore
+gsave
+   tgiforigctm setmatrix
+   newpath
+      512 112 8.000 3.000 104 0 tgifarrowtip
+   closepath fill
+grestore
+
+% POLY/OPEN-SPLINE
+0 setgray
+gsave
+   newpath
+      408 272 moveto
+      0 104 atan dup cos 8.000 mul 512 exch sub
+      exch sin 8.000 mul 272 exch sub lineto
+   tgiforigctm setmatrix
+   1 setlinewidth
+   stroke
+grestore
+gsave
+   tgiforigctm setmatrix
+   newpath
+      512 272 8.000 3.000 104 0 tgifarrowtip
+   closepath fill
+grestore
+
+% TEXT
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [17 0 0 -17 0 0] makefont setfont
+   gsave
+      368 312 moveto (seq) tgifcentertext show
+   grestore
+
+% TEXT
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [17 0 0 -17 0 0] makefont setfont
+   gsave
+      368 344 moveto (info) tgifcentertext show
+   grestore
+
+grestore
+tgifsavedpage restore
+end
+%MatchingCreationDate: Mon May 11 16:07:43 1998

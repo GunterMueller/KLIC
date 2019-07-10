@@ -1,0 +1,11 @@
+:- module main.
+main :-	klicio:klicio([stdout(Res)]), check_stream(Res).
+
+check_stream(normal(S)) :-
+   fact(11, N), S=[putt(N),nl].
+check_stream(abnormal).
+
+fact(1, R) :- R = 1.
+fact(N, R) :- N > 1, N1 := N-1 |
+	fact(N1, R1),
+	R := R1 * N.

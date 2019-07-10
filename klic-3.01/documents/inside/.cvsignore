@@ -1,0 +1,10 @@
+a.out
+*.c
+*.o
+*.h
+*.dvi
+*.aux
+*.log
+*~
+*.toc
+

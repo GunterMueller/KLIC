@@ -1,0 +1,1301 @@
+% (C) 1998 Japan Information Processing Development Center
+% 詳細な配布条件については、COPYRIGHT-JIPDEC.jを参照してください。
+%\documentstyle[11pt,epsf]{seika}
+
+%\setpart{1}
+%\setsection{3}
+%\setsubsection{5}
+
+%\setcaptionlevel{2}
+
+%\begin{document}
+
+\chapter{メッセージ通信版}
+
+\index{めっせーじつうしんはん@メッセージ通信版}
+
+メッセージ通信版には、以下の3種類が存在する。
+
+\begin{description}
+\item[PVM版:\ ] ノードプロセスの生成、通信全てに関してPVMを利用した版。
+
+\index{PVMはん@PVM版}
+
+\item[PVM-TCP版:\ ] ノードプロセスの生成に関してはPVMを、通信に関しては
+TCP socketを用いた版。
+
+\index{PVM-TCPはん@PVM-TCP版}
+
+\item[共有メモリ版:\ ] メッセージの通信路として共有メモリを用い、
+PVMを全く利用しない版(当然、分散メモリ計算機上では動作しない)。
+\end{description}
+
+\index{きょうゆうめもりはん@共有メモリ版}
+
+上記は基本的には、ごく低レベル(バイト列)のメッセージの送受信が
+異るのみで、より上位のレベルでは同じ操作を行っている。
+実装も、上位レベルの通信と、下位レベルの通信とは明確に切り
+わけられており、上位レベルの通信に関する処理は
+通信方式に関わらず同じである(図\ref{dist-comm}参照)。
+
+他の版と共用されるソースコードについては、
+先に記述したように、メッセージ通信版では、マクロDISTをdefineする。
+「共有メモリによるメッセージ通信版」ではさらに、マクロSHM\_DIST を
+defineする。
+
+\begin{figure}
+\begin{center}
+%\epsfile{file=dist.eps,width=.4\textwidth}
+\includegraphics[width=.35\textwidth]{dist.eps}
+\end{center}
+\caption{メッセージ通信版KLICの構成}
+\label{dist-comm}
+\end{figure}
+
+この文書では、すべての通信方式に共通な部分についての説明を主に行う。
+
+\section{処理系の構成}
+
+メッセージ通信実装では以下の２つの基本方針を設定した。
+
+\begin{itemize}
+\item メッセージ通信実装のための逐次核の変更は最小限に押え、
+逐次実行時の性能を落さない。
+\item 各種の並列マシンへの移植性を高めるため、
+マシン依存の処理部分を独立させる。
+\end{itemize}
+
+上記の方針に基づくメッセージ通信実装の構成を、図\ref{d-klic-conf}に示す。
+
+\begin{figure}[htb]
+\begin{center}
+%\epsfile{file=dklic-conf.eps,width=8cm}
+\includegraphics[width=8cm]{dklic-conf.eps}
+\caption{メッセージ通信実装の構成}
+\label{d-klic-conf}
+\end{center}
+\end{figure}
+
+メッセージ通信実装では、KLICの逐次核に分散処理管理部と
+メッセージ通信処理部を付加したプロセスが複数実行される。
+これらのプロセス間では、各プロセスの分散処理管理部と
+メッセージ通信処理部を経由して通信が行われる。
+
+分散処理管理部分は、並列推論マシン PIMで用いた分散処理方式を 
+KLIC 用に再構成した方式を用いた。分散処理管理部分の
+処理方式の詳細は\REF{d-klic-fundamental}に述べられる。
+
+分散処理用のデータは、KLIC のジェネリックオブジェクトを使って実装されており、
+また、メッセージ受信処理用のメッセージハンドラルーチンは、
+逐次核の割り込みハンドラテーブルにエントリを追加する形で実装されているので、
+逐次核の主処理部分を変更せずに分散処理を実現できた。
+
+%メッセージ通信処理部分では、各マシン固有の通信路を用いて
+%プロセス間のメッセージ通信を行う。
+%メッセージ通信処理部分はマシン依存なので、各マシン毎にこの部分を
+%構築しなければならない。
+%また、複数のプロセスを立ち上げ、それらの間の通信路を確保する処理も
+%マシン依存である。
+
+%移植性を高めるために、メッセージ通信処理部分で行う処理は
+%簡単なメッセージパッシングモデルに基づく処理で実現される。
+%また、複数のプロセスを立ち上げる方式は、複数の子プロセスを
+%フォークするモデルに基づく処理で実現される。
+%これらの処理の詳細は\ref{d-klic-communication}に述べられる。
+
+%通信路もマシン依存となるが、以下に代表的な通信路の例を３つ挙げる。
+%\begin{itemize}
+%\item { 汎用通信ライブラリ} (PVM \cite{dist:PVM} 
+%及び MPI \cite{dist:MPI} など) を用いて基本通信操作を実現した処理系.  
+%対象は, 分散あるいは共有メモリ型並列計算機, 及び, 
+%ネットワーク結合のワークステーション群.  
+%\item { 共有メモリ}により基本通信操作を実現した処理系.  
+%対象は共有メモリ型並列計算機.  
+%\item その{ 並列計算機固有}の通信機能を用いて基本通信操作を実現した処理系.  
+%\end{itemize}
+%上記のような通信路で、\ref{d-klic-communication}に示される
+%メッセージ通信処理が実現できれば、分散メモリ実装の通信路として
+%使用可能である。
+
+\section{基本方式}
+
+\label{d-klic-fundamental}
+
+ここでは、基本的な実装の方式について述べる。
+
+\subsection{荘園}
+
+\index{しょうえん@荘園}
+
+分散メモリ環境において、荘園はひとつの「荘園プロセス」と 
+(一般に複数の) 「里親プロセス」からなる。
+%(図\ref{rokshoenstructure})。
+荘園プロセスとすべての里親プロセスは、
+荘園の生成時に作られ、荘園の消滅時に消滅する。
+動的な生成/消滅は行わない。
+%
+荘園プロセスと里親プロセス群はメッセージで通信する。
+ゴールはいずれかの里親プロセスで実行され、
+データは里親プロセス内に存在する。
+ここで、里親プロセスは「ノード」と呼ぶことにする。
+
+%里親プロセスは、「\mbox{{\rokmpsi}} 及び {\rokpimm} のプロセッサ」、
+%あるいは「{\rokpimp} 及び {\rokpimc} のクラスタ」に対応するものであり、
+%以下では「ノード」と呼ぶことにする。
+
+
+\begin{figure}
+\begin{center}
+%\begin{minipage}[t]{8cm}
+%\begin{center}
+%%\epsfile{file=rok_shoen_throw.eps,width=6cm}\\
+%\includegraphics[width=6cm]{rok_shoen_throw.eps}\\
+%\begin{small}
+%(1) ゴールの送信
+%\end{small}
+%\end{center}
+%\end{minipage}
+%\begin{minipage}[t]{8cm}
+%\begin{center}
+%%\epsfile{file=rok_shoen_receive_term.eps,width=6cm}\\
+%\includegraphics[width=6cm]{rok_shoen_receive_term.eps}\\
+%\begin{small}
+%(2) ゴールの受信と重みの返却
+%\end{small}
+%\end{center}
+%\end{minipage}
+%%\epsfile{file=shoen-throw-receive.eps,width=.5\textwidth}
+\includegraphics[width=.5\textwidth]{shoen-throw-receive.eps}
+\caption{WTC方式：ゴールの送受信と里親の終了}
+\label{rokthrowterm}
+\end{center}
+\end{figure}
+
+\subsubsection{終了検出}
+
+\index{WTC}
+\index{しょうえん@荘園!しゅうりょう@終了}
+
+荘園の終了検出は「WTC方式」%\cite{rok:Taki-bit,rok:WTC-ICPP}
+によって行う。
+これは、荘園プロセスに負の重みを、
+里親プロセスとメッセージには正の重みを付け、
+重みの合計をゼロに保つことによって終了検出を行うものである。
+
+荘園プロセス及び里親プロセスがメッセージを送信する時は
+メッセージに重みを付ける。
+自分の重みはメッセージにつけた分だけ減らす。
+実行を終了した (実行可能及び中断しているゴールが存在しない) 里親プロセスは
+自分の重みを{\rokterminatedmessage}で荘園プロセスへ返却する。
+重みの返却を受けたら荘園プロセスは自分の重みに加える。
+その結果ゼロになったならば荘園の終了が検出される。
+\mbox{図\ref{rokthrowterm}} にゴール ({\rokthrowmessage}メッセージ)
+の送受信と里親終了時の処理を示す。
+
+
+\begin{figure}
+\begin{center}
+%\begin{minipage}[t]{8cm}
+%\begin{center}
+%%\epsfile{file=rok_shoen_check_send.eps,width=6.5cm}\\
+%\includegraphics[width=6.5cm]{rok_shoen_check_send.eps}\\
+%{\small (1) {\rokcheckmessage}をすべての里親プロセスへ送信する。}
+%\end{center}
+%\end{minipage}
+%\begin{minipage}[t]{8cm}
+%\begin{center}
+%%\epsfile{file=rok_shoen_check_reply.eps,width=6.5cm}\\
+%\includegraphics[width=6.5cm]{rok_shoen_check_reply.eps}\\
+%{\small (2) 状態に応じて{\roksuspendedmessage}を返信する。}
+%\end{center}
+%\end{minipage}
+%%\epsfile{file=shoen-check.eps,width=.6\textwidth}
+\includegraphics[width=.5\textwidth]{shoen-check.eps}
+\caption{荘園の中断検出}
+\label{rokcheck}
+\end{center}
+\end{figure}
+
+\subsubsection{中断検出}
+
+\index{しょうえん@荘園!ちゅうだん@中断}
+
+荘園内に、実行を中断しているゴールは存在するが、
+実行可能なゴールはなく (少なくともひとつの里親プロセスは終了していない)、
+メッセージも存在しない状態を中断状態と呼ぶ。
+この荘園の中断状態を以下の処理によって検出する (図\ref{rokcheck}参照)。
+
+\begin{enumerate}
+
+\item 荘園プロセスが{\rokcheckmessage}をすべての里親プロセスへ送信する。
+{\rokcheckmessage}には重みは付けない。
+
+\item {\rokcheckmessage}を受信すると里親プロセスは
+中断している(ゴール群の)重みを {\roksuspendedmessage}で報告する 
+(返却ではない。里親プロセス自身の重みはそのままである)。
+%
+中断している(中断しているゴールはあるが実行可能なゴールはない)
+ならば「中断している重み$=$自分の重み」を報告し、
+「実行中」実行可能なゴールがある)、
+あるいは「終了」している (中断しているゴールも実行可能なゴールもない) 
+ならば「中断している重み$=$ゼロ」を報告する。
+
+\item {\roksuspendedmessage} を受信すると荘園プロセスは
+報告された「中断している重み」を加算して行く。
+%
+すべての里親プロセスから{\roksuspendedmessage}を受信した時、
+加算してきた重みの合計と荘園の重みとの和がゼロになるならば
+「荘園が中断している」ことが検出される。
+合計がゼロにはならない場合や
+途中で{\rokterminatedmessage}を受信した場合は
+「中断していない」ことがわかる。
+
+\end{enumerate}
+
+%\begin{figure}
+%\setlength{\unitlength}{1.0mm}
+%\begin{center}
+%%
+%\begin{minipage}[t]{7.1cm}
+%\begin{center}
+%%
+%\begin{picture}(65,22)(0,0)
+%\put(0,0){\rokpeBothbefore}
+%\end{picture}\\
+%{\small (1) 変数への参照を輸出表に登録して送出する.}
+%%
+%\end{center}
+%\end{minipage}
+%%
+%\begin{minipage}[t]{8.0cm}
+%\begin{center}
+%%
+%\begin{picture}(78,22)(0,0)
+%\put(0,0){\rokpeBothafter}
+%\end{picture}\\
+%{\small (2) {\rokgenexrefobject} の生成.}
+%%
+%\end{center}
+%\end{minipage}
+%%
+%\end{center}
+%\end{figure}
+
+\subsection{外部参照ポインタ}
+
+\index{がいぶさんしょうぽいんた@外部参照ポインタ}
+
+この章では、まず, {\rokgenericobject} %%\cite{rok:KLIC:PLILP}
+を用いた
+外部参照ポインタの実現方法を述べる.  
+次に, 外部参照ポインタに係わる二つの処理, 
+分散ユニフィケーションと参照値の読み出し (dereference) を述べる.  
+これらの処理における具体的な操作は, {\rokobject}の{\rokmethod}として定義され, 
+処理系核によって呼び出される.  
+KLIC 分散メモリ処理系では{\roknode}間に渡るループの生成を
+避けることはできない.  
+最後に, このループに対処する方式を述べる.  
+
+\begin{figure}
+\setlength{\unitlength}{1.0mm}
+\begin{center}
+%
+\begin{minipage}[t]{7.1cm}
+\begin{center}
+%
+\begin{picture}(65,22)(0,0)
+\put(0,0){\rokpeBothbefore}
+\end{picture}\\
+{\small (1) 変数への参照を輸出表に登録して送出する.}
+%
+\end{center}
+\vspace{18pt}
+\end{minipage}
+%
+\begin{minipage}[t]{8.0cm}
+\begin{center}
+%
+\begin{picture}(78,22)(0,0)
+\put(0,0){\rokpeBothafter}
+\end{picture}\\
+{\small (2) {\rokgenexrefobject} の生成.}
+%
+\end{center}
+\end{minipage}
+%
+\end{center}
+\caption{外部参照ポインタの生成.}
+\label{rok:fig:genexref}
+\end{figure}
+
+\subsubsection{表現形式}
+
+メッセージを他の{\roknode}に送出し, そのメッセージの引数が変数であると
+「他の{\roknode}のメモリを指すポインタ」が生まれる.  
+このポインタが{\bf 外部参照ポインタ (external reference)}である.  
+
+%外部参照ポインタは Multi-PSI, PIM(s) と同じ方式 \cite{rok:Taki-bit} で
+%実現した.  
+各ノードは{\bf 輸出表 (export table)}と呼ぶアドレス変換テーブルを持ち, 
+各外部参照ポインタは輸出表を介してデータセルを指す.  
+外部参照ポインタはノード番号と輸出表のエントリ番号の対で表現する 
+(図\ref{rok:fig:genexref} 参照).  
+\index{ゆしゅつひょう@輸出表}
+
+\subsubsection{{\rokgenericobject}を用いた実現}
+
+外部参照ポインタは{\rokgenericobject}を用いて実現した.  
+ポインタに対しては「参照値の読出し (dereference)」と「ユニフィケーション」を
+行うことがある.  
+%
+前者の処理は値の生成要求と考えられるので {\rokgeneratemethod}で実現し, 
+後者は {\rokunifymethod}で実現した.  
+
+外部参照ポインタの生成時は二つの処理とも行いうるので{\rokgenobject}で実現する.  
+ゴールの実行において, あるポインタの指す値が必要になると, 処理系核は
+そのポインタを実現している{\rokgenobject}の {\rokgeneratemethod}を呼び出す.  
+{\rokgeneratemethod}は読出し処理を行い, 
+{\rokobject}は{\rokgen}から{\rokcon}へ変化する.  
+もはや読出し処理を行う必要はないからである.  
+{\rokcon}に変わることにより冗長な読出し処理を防ぐことができる.  
+
+{\rokcons}がフックしている変数に対してユニフィケーションが行われると, 
+処理系核は各{\rokcon}の {\rokunifymethod}を呼び出す.  
+このメソッドの実行により分散ユニフィケーションが行われる.  
+
+外部参照ポインタを表わすオブジェクト ({\rokgen}, {\rokcon}) を以下では
+それぞれ{ {\rokgenexrefobject}}, { {\rokconexrefobject}}と呼ぶ.  
+\index{ゆしゅつおぶじぇくと@輸出オブジェクト}
+
+また単に{\rokexrefobject}と呼んだ時は
+{\rokgenexrefobject}あるいは{\rokconexrefobject}であることを示す.  
+
+\rokgenexrefobject
+はexrefなるクラス名称のgeneratorとして、\filename{ge\_exref.c}にて
+定義されている。\rokconexrefobject はread\_hook なる名称のconsumerとして
+\filename{ge\_readhook} として定義されている。
+%おのおのの処理内容を
+%中心に各種処理を以下で解説する。
+
+\subsubsection{輸出表}
+\index{ゆしゅつひょう@輸出表}
+
+まず、外部から参照されている(外部参照ポインタより指されている)
+オブジェクトの存在があると、以下のような問題が生じる。
+
+\begin{itemize}
+\item GCは各ノードで全く独立に行われる。あるデータはノードの内部では参照
+されていないが、他のノードからは参照されているかもしれず、そのため、
+正しくGCを行うためには
+「他のノードから参照されているデータ」を記録しておくことが必要になる。
+
+\item データのアドレスはGCにより変更される。GCは各ノードで全く独立に
+行われるため、他ノードについてデータアドレスを直接記録しておくと、
+GCの度にその記録を更新する必要が生じる。よって、外部から参照されている
+データについてはGCで移動しない、アドレス以外のIDが必要になる。
+\end{itemize}
+
+そこで、「外部から参照されているデータ群」が記録されている表を
+作り、その表のindexをもって外部からのデータのIDとすることにする。
+この表を輸出表と呼ぶ。
+よって、外部データを参照する場合、「ノード番号」と「輸出表インデックス」
+のペアをもって特定する。
+
+輸出表の構造は、\filename{include/klic/interpe.h}内で、struct exp\_entry
+として以下のように線型リストとして定義されている。
+\label{export-table}
+\begin{verbatim}
+struct exp_entry{
+    long index;
+    long wec;
+    q data;
+    struct exp_entry *next;
+};
+\end{verbatim}
+
+輸出表の根はexp\_tableである。輸出表はKLICのヒープとは別にfree list管理
+されている(\filename{export\_table.c}で定義されている
+関数群を参照)。
+
+\subsubsection{外部参照ポインタの生成}
+
+\index{がいぶさんしょうぽいんた@外部参照ポインタ!せいせい@生成}
+
+リストなどの構造体や変数を引数に持つメッセージを
+他のノードへ送る時に、送付先で外部参照ポインタは生まれる。
+送信元ノードは変数などを輸出表に登録しアドレスを 
+「ノード番号＆輸出表エントリの ID」 (これを「外部参照アドレス」と呼ぶ)
+に変換して送る。これを「輸出」処理と呼ぶ。
+この処理は、\filename{datamsg.c}中のencode\_data()内で行われており、
+この処理はデータのエンコード時、つまりメッセージ送信時に行われる。
+
+一方、そのメッセージを受信した側では、受信データ内に「外部参照」を
+意味するものが含まれている場合には、(そのデータを始めて受信したならば)
+\rokgenexrefobject を生成する。この処理は\filename{datamsg.c}内の
+decode\_exref()内で行われている。
+
+\subsubsection{外部参照ポインタの解放}
+
+\index{がいぶさんしょうぽいんた@外部参照ポインタ!かいほう@解放}
+
+外部参照ポインタの GC (分散 GC) は, %Multi-PSI, PIM(s) と同じく, 
+重み付け参照カウント (WRC = Weighted Reference Counting) %\cite{rok:WRC:Bevan}
+を用いたアルゴリズムを適用する。\index{WRC}\index{WEC}
+この、WRCアルゴリズムを外部参照ポインタGCに適用したものを
+特にWEC(Weighted Export Counter)と読んでいる。
+このアルゴリズムは、輸出表エントリと外部参照ポインタが正の任意の重み
+(WEC)を持ち、
+「ある輸出表エントリの重み」と
+「そのエントリを指す外部参照ポインタの重みの合計」が
+等しくなるように制御するものである。
+ある輸出表エントリの重みがゼロならば、
+そのエントリを指す外部参照ポインタは存在しない
+(そのエントリがゴミになった)ことが保証される。
+このWECは「輸出表」\REFER{export-table}と
+exref class、read\_hook classのオブジェクトの内部に記録されている。
+通常のリファレンスカウントであると、参照側の重みはつねに1として、
+参照数を正確に数えることにより参照管理を行うが、WEC(= WRC)方式では、
+重みが1にかぎらない。
+その結果、参照を他のノードにコピーする際に、参照元と通信を行うなどして
+参照数の管理を管理する必要なく、自分の「重み」を他のノードに「分割する」
+ことにより参照をコピーすることができ、効率的な分散参照管理が可能となる。
+
+すなわち、
+{\rokgen}外部参照ポインタを「分割」して他のノードへ渡す時は、
+重みを分割し、一方を他ノードへ渡すポインタに付け、
+もう一方はノード内に残す。
+これを「分割輸出」と呼ぶ(図\ref{roksplitrelease}~(1))。
+重みが分割できない時は「間接輸出」を行う。
+これは変数と同じように外部参照ポインタを
+輸出表に登録して輸出するものである(図\ref{rokindirectexport})。
+{\rokcon}外部参照ポインタはいつも間接輸出を行う。
+
+さて、外部参照ポインタは以下の時に「解放」する。
+
+\begin{enumerate}
+\item {\rokmesanswer}の受信、あるいは具体化
+によって参照値がわかった時。
+どちらの場合も、最終的には
+\filename{ge\_exref.c}、または\filename{ge\_readhook.c}内の
+unify メソッドでの処理される。
+
+\item ノード内一括GCによってどこからも参照されていないことがわかった時。
+
+この処理のために、そのノード内に存在する外部参照を
+すべて記録している。この記録されている表を「輸入表」と呼ぶ。
+この輸入表は、\filename{import\_table.c}内で定義されている各種関数で
+メンテナンスされている。GCが終了したときには、scan\_imp\_table() が呼びだされ、
+この輸入表を各オブジェクト毎に嘗めコピーされたかどうかを判断する。
+\end{enumerate}
+
+外部参照ポインタを解放した時は
+ポインタが指すノードへ{\rokmesrelease}を送信し
+ポインタが持っていた重みを返却する(図\ref{roksplitrelease}~(2))。
+{\rokmesrelease}を受信すると、
+対応する輸出表エントリの重みから返却された重みを引く。
+引いた結果ゼロになったならば輸出表エントリを解放する。
+
+\rokmesrelease はsend\_release()関数(\filename{cntlmsg.c})を
+呼び出すことにより行われる。このメッセージを受けた場合には、
+対象オブジェクトを輸出表から外す。その結果、もしそのデータが
+そのノード内でも参照されていなければ、次のGCではゴミになる。
+
+これらの処理は、データをencodeする関数encode\_data()
+(\filename{datamsg.c})
+exref classについては、
+データ送信時に呼びだされるencode methodにより
+以下のように実装されている。
+
+\begin{enumerate}
+\item 送出対象がgeneratorである場合、
+\begin{itemize}
+\item encode methodを呼びだす。
+
+\item encode method内ではWECを調べ、一定未満(MIN\_WECの倍)以下であれば、
+encodeをやめる。さもなければ、encodeを行い、WECを分割する。
+
+\item encode\_data() では、
+encode methodが終了し、成功していたならばそのまま処理を続ける。
+失敗していたならば間接輸出処理(label Make\_exref 以降)を行う。
+\end{itemize}
+\item 送出対象がconsumerである場合には、間接輸出処理をして終了。
+\end{enumerate}
+
+\begin{figure}
+\begin{center}
+\begin{minipage}[t]{8cm}
+\begin{center}
+%\epsfile{file=rok_split_export.eps,width=6.5cm}\\
+\includegraphics[width=5.6cm]{rok_split_export.eps}\\
+{\small (1) 重みを分割して輸出する。}
+\end{center}
+\vspace{18pt}
+\end{minipage}
+\begin{minipage}[t]{8cm}
+\begin{center}
+%\epsfile{file=rok_release_exref.eps,width=6.5cm}\\
+\includegraphics[width=5.6cm]{rok_release_exref.eps}\\
+{\small (2) 解放により重みを返却する。}
+\end{center}
+\end{minipage}
+
+\caption{外部参照ポインタの分割輸出と解放}
+\label{roksplitrelease}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+%\epsfile{file=rok_indirect_export.eps,scale=1.0}
+\includegraphics[scale=0.85]{rok_indirect_export.eps}
+\caption{外部参照ポインタの間接輸出}
+\label{rokindirectexport}
+\end{center}
+\end{figure}
+
+\subsection{分散ユニフィケーション}
+\index{ぶんさんゆにふぃけーしょん@分散ユニフィケーション}
+
+{\rokexrefobject}に係わるユニフィケーションを{ 分散ユニフィケーション}と呼ぶ.  
+分散ユニフィケーションは, {\rokexrefobject}がフックしている変数に
+何かのデータがユニファイされると起きる.  
+このユニフィケーションを実行するため処理系核は以下の処理を行う.  
+\begin{enumerate}
+\item 変数をデータで書換える.  
+\item フックしている{\rokexrefobject}について {\rokunifymethod} を呼び出す
+(複数の{\rokconexrefobject}がフックしている時は, 
+それぞれの{\rokcon}について {\rokunifymethod} を呼び出す).  
+\item \rokunifymethod を呼びだした結果``失敗''したならば、
+\rokgeneratemethod を呼びだし、再度単一化処理を行う。
+\end{enumerate}
+これらの処理の結果として分散ユニフィケーションが行われる.  
+分散ユニフィケーションの詳細を以下に示す.  
+
+\subsubsection{\rokexrefobject X と具体値 value}
+
+処理系核は, X がフックしている変数に具体値 value を書込み, 
+X の {\rokunifymethod}を呼び出す.  
+{\rokmethod}の実行により, X の指す{\roknode}へ
+「具体値とのユニフィケーションを依頼するメッセージ ({\rokmesunifyXvalue})」が
+送られ, X は解放される (図\ref{rok:fig:exrefvalue}).  
+このメッセージを受信した{\roknode}では, 
+X の指すデータと具体値 {\tt value} のユニフィケーションが行われる.  
+
+変数に複数の{\rokconexrefobject} がフックしていた時は, 
+それぞれの{\rokcon}についてメッセージが送信される.  
+
+\subsubsection{{\rokgenexrefobject} X と, 
+{\rokcons} あるいは中断ゴール (群) がフックした変数 Y}
+処理系核は以下の処理を行う.  
+\begin{enumerate}
+\item  X の {\rokgeneratemethod}を呼び出す.  
+{\rokmethod}の実行により, 参照値の読出しを依頼するメッセージ ({\rokmesread}) が
+送信され, X は{\rokcon}に変わる.  
+\item {\rokcon} となった X のフックしている変数と 
+Y のユニフィケーションを行う.  
+この結果, {\rokcons} と中断ゴール (群) はひとつにまとまり, 
+二つの変数はポインタでつながる (図\ref{rok:fig:exrefgencon}).  
+\end{enumerate}
+
+\begin{figure}
+\setlength{\unitlength}{1.2mm}
+\begin{center}
+\begin{picture}(80,27)(0,0)
+\put(0,0){\rokpeexrefobjXandVrelease}
+\end{picture}
+\end{center}
+\caption{{\rokexrefobject} X と具体値のユニフィケーション.}
+\label{rok:fig:exrefvalue}
+\end{figure}
+
+\begin{figure}[t]
+\setlength{\unitlength}{1.2mm}
+\begin{center}
+\begin{picture}(64,43)(0,-4)
+\put(0,0){\rokpegenexrefobjandcon}
+\end{picture}
+\end{center}
+\caption{{\rokgenexrefobject} X と {\rokcons}のユニフィケーション.}
+\label{rok:fig:exrefgencon}
+\end{figure}
+
+\subsubsection{{\rokgenexrefobject} 同士 (X, Y)}
+一方の{\rokgen} (X とする) の {\rokunifymethod}を呼び出す.  
+{\rokmethod}の実行により, X が指す{\roknode}へ {\rokmesunifyXY} が送られ, 
+「X がフックしている変数」に「Y がフックしている変数へのポインタ」が書込まれ, 
+X は解放される.  
+
+\subsubsection{{\rokconexrefobjects} がフックしている変数同士}
+二つの変数をユニファイし, 二つの {\rokcons} をひとつにまとめる.  
+このユニフィケーションでは{\rokmethod}の呼び出しは行われない.  
+処理系核の処理だけで完結する.  
+
+\subsubsection{{\rokexrefobject} X と変数 V}
+処理系核は, X がフックしている変数へのポインタを V に書込む.  
+この処理も処理系核の処理だけで完結する.  
+
+%\input{fetch}
+\begin{figure}[p]
+\setlength{\unitlength}{1.0mm}
+\vspace*{-1.2cm}
+\begin{center}
+%
+\begin{picture}(120,20)(0,0)
+\put(0,0){\rokpebothfetchbefore}
+\end{picture}\\
+{\small (1) 読出し開始前.  
+外部参照ポインタは{\rokgenexrefobject}で実現されている.  }\\
+%
+\begin{picture}(120,39)(0,0)
+\put(0,0){\rokpebothfetchread}
+\end{picture}\\
+{\small (2) 返信先を設け, {\rokmesread} を送信する.  
+{\rokgen}は{\rokcon}に変化する.  }\\
+%
+\begin{picture}(120,39)(0,0)
+\put(0,0){\rokpebothfetchhook}
+\end{picture}\\
+{\small (3) 参照先が変数なので{\rokreplyobject}を生成しフックする.  }\\
+%
+\begin{picture}(120,39)(0,0)
+\put(0,0){\rokpebothfetchanswer}
+\end{picture}\\
+{\small (4) {\rokmesanswer}を返信し参照値を送る.  }\\
+%
+\begin{picture}(120,39)(0,0)
+\put(0,0){\rokpebothfetchrelease}
+\end{picture}\\
+{\small (5) 具体値を書き込み, {\rokconexrefobject}を解放する.  }
+
+\end{center}
+\caption{外部参照ポインタが指す参照値の読出し.}
+\label{rok:fig:fetchingvalue}
+\end{figure}
+
+\subsubsection{具体的な実装}
+以上で挙げた処理の具体的な実装は、概略、通常のユニフィケーションの
+処理で行われる(unify(), unify\_value(), \filename{unify.c})。
+つまり、以下の処理である。
+
+\begin{itemize}
+\item どちらかが\rokgenexrefobject であること確認する。
+\item \rokgenexrefobject であることがわかれば、もういっぽうの項を引数にして、
+unify methodを発行する。
+\item Unifyに失敗したならば、generateを行い、それともう一方の項との
+ユニフィケーションをする。
+\end{itemize}
+
+これより先の処理(もう一方の項の判定、および、メッセージの送信)は、
+\rokgenexrefobject のmethodにより実装されている。 
+
+\subsection{参照値の読出し (dereference)}
+
+\label{rok:section:fetch}
+
+ゴールの実行において, ある外部参照ポインタの指す値が必要になると, 
+処理系核はそのポインタの{\rokgeneratemethod}を呼び出す.  
+{\rokgeneratemethod}の実行により{ 参照値の読出し}処理が行われる.  
+
+{\rokgen} X の {\rokgeneratemethod}が呼ばれると, 
+X が指す{\roknode}へ {\rokmesreadXR} が送られ, X は{\rokcon}に変わる.  
+{\rokvarRet} は参照値の返信先であり, X がフックしている変数を
+指す外部参照ポインタである (図\ref{rok:fig:fetchingvalue} (1), (2)).  
+
+{\rokmesreadXR} を受信した{\roknode}は, {\rokvarX} の
+{ 参照先が具体化されていれば} 「参照値を運ぶメッセージ
+({\rokmesanswer})」を直ちに返信して参照値を送る.  
+
+{ 参照先が変数}\footnote{{\rokcons} や中断ゴールがフックしている
+変数も含む.  }の場合は, 返信先を記録した{\rokconobject} 
+({ {\rokreplyobject}}と呼ぶ) を生成し変数にフックする
+(図\ref{rok:fig:fetchingvalue} (3)).  
+変数が具体化されると{\rokreplyobject}の {\rokunifymethod}が呼ばれ, 
+{\rokmesanswer} が返信される(図\ref{rok:fig:fetchingvalue} (4)).  
+
+{\bf 参照先が{\rokgenexrefobject} X'} の場合は, 
+X' が指す{\roknode}へ {\rokmesreadXXR} を転送する.  
+返信先はそのままであり, 
+最初に {\rokmesread} を送信した{\roknode}へ参照値が直接送られる.  
+%
+外部参照ポインタがチェインしている (外部参照ポインタの指す先が
+外部参照ポインタである) 場合, {\rokmesread} の転送が
+具体値を持つ{\roknode}に到着するまで繰り返されるが, 
+参照値の返信は 1回のメッセージ送受信で済む.  
+
+{\rokmesanswerRvalue} を受信すると, 
+返信先 {\rokvarRet} が指す変数を具体値 {\tt value} で書換え, 
+変数にフックしていた中断ゴール (群) は実行を再開し, 
+{\rokconexrefobject}は解放する (図\ref{rok:fig:fetchingvalue} (5)).  
+
+以上の処理で、\rokmesread メッセージ送信側(読み出し側)の処理は、
+\rokgenexrefobject に対して、
+generate メソッドを発行することにより行われる(suspend\_goal()
+\filename{faisus.c})。これは\ref{fail-suspend}で記述した
+一般的な中断処理の枠組みで行われる。
+一方、\rokmesread メッセージ受信側の処理は、
+メッセージの転送処理も含め、
+decode\_read() (\filename{cntlmsg.c})で行われる。
+\rokreplyconobject は、\filename{ge\_replyhook.c} で定義されている、
+class reply\_hook により実現されている。また、answer\_messageの送信も
+この関数内で直接行われている。
+
+%\input{loop}
+\subsection{ループへの対処}
+
+ユニフィケーションによって
+{\roknode}間に渡るループが生じることがある.  
+また外部参照ポインタに対する参照値の読出し処理の過程でもループが作られる.  
+以下ではそれぞれのループについて生成, 問題点, 解決方法を述べる.  
+
+\subsubsection{ユニフィケーションによるループ}
+
+\begin{figure}
+\setlength{\unitlength}{1.0mm}
+\begin{center}
+%
+\begin{picture}(120,33)(0,0)
+\put(0,0){\rokpebothunifyloop}
+\end{picture}\\
+
+\end{center}
+\caption{ユニフィケーションによるループの生成.}
+\label{rok:fig:loopcreationbyunify}
+\end{figure}
+
+\subsubsection{生成}
+
+変数と KL1 データのユニフィケーションは, KL1 データへのポインタを
+変数に書き込むことによって行う.  
+このため変数と外部参照ポインタのユニフィケーションによって
+{\roknode}間に渡るループが生じることがある.  
+図\ref{rok:fig:loopcreationbyunify} にその例を示す.  
+
+\subsubsection{問題点}
+
+{\rokgenexrefobject}のみからなるループが存在する可能性がある.  
+このため, 受信した {\rokmesread} の参照先が{\rokgenexrefobject}であった場合, 
+\ref{rok:section:fetch} で述べたように単純に {\rokmesread} を転送すると, 
+転送がいつまでも終わらなくなってしまうおそれがある.  
+
+\subsubsection{解決方法}
+
+{\rokmesread} に{ 転送可能カウンタ}を持たせることで解決した.  
+{\rokmesread} の参照先が{\rokgenexrefobject}の場合, 
+カウンタ値が 1 以上ならば $-1$ して転送する.  
+0 ならば転送は行わず, {\rokreplyobject}を生成してフックし
+{\rokgeneratemethod}を呼び出す.  
+
+これらの処理により転送の終了が保証できる.  
+ループに {\rokmesread} が入り込んだ場合, 
+ループを構成する{\rokgens}の少なくともひとつは{\rokcon}に変わるので, 
+いつか{\rokcon}のフックする変数に出会い転送は終了するからである.  
+%
+カウンタの初期値を適当な値, 例えば, ノード台数に設定することによって, 
+{\rokmesread} を最初に送信したノードに {\rokmesanswer} がいつでも
+直接返ることが期待できる.  
+
+\subsubsection{読出し処理によるループ}
+
+\begin{figure}[t]
+\setlength{\unitlength}{1.0mm}
+\begin{center}
+%
+\begin{picture}(120,33)(0,0)
+\put(0,0){\rokpebothfetchmsusp}
+\end{picture}\\
+{\small (1) 多重待ちのゴールがフックしている.  }\\
+%
+\begin{picture}(120,37)(0,0)
+\put(0,0){\rokpebothfetchresumed}
+\end{picture}\\
+{\small (2) {\rokmesanswer} を受信することなくゴールは実行を再開した.  }\\
+
+\end{center}
+\caption{ゴミのループが生まれてしまったかもしれない.}
+\label{rok:fig:garbageloop}
+\end{figure}
+
+\subsubsection{生成}
+
+\ref{rok:section:fetch} で述べたように, 
+受信した {\rokmesread} の参照先が変数であった場合は
+{\rokreplyobject}を生成し変数にフックする.  
+この時, 元の{\rokexrefobject}と, フックした{\rokreplyobject}はループを構成する.  
+(図\ref{rok:fig:fetchingvalue} (3)).  
+
+\subsubsection{問題点}
+
+元の{\rokexrefobject}側に中断ゴールがフックしている間は, 
+{\rokreplyobject}からのポインタは意味がある.  
+変数が具体化され, {\rokmesanswer}が送信され, ゴールは実行を再開し, 
+ループの回収されることが期待される (図\ref{rok:fig:fetchingvalue} (4), (5)).  
+
+しかし中断ゴールが多重待ちの場合は {\rokmesanswer} を受信することなく
+ゴールが実行を再開するかもしれない.  
+そして変数は具体化されないかもしれない.  
+この場合, ループは「(局所処理では) 回収できないゴミ」となってしまう
+(図\ref{rok:fig:garbageloop}).  
+「変数が具体化されない」という状況は, 非決定的処理あるいは見込み計算を
+行うプログラムの実行ではいくらでも起こりうることである.  
+特別のことではない.  
+
+\begin{figure}[t]
+\setlength{\unitlength}{1.0mm}
+\begin{center}
+%
+\begin{picture}(120,33)(0,0)
+\put(0,0){\rokpebothcancelsendwithmsg}
+\end{picture}\\
+{\small (1) 中断ゴールがないので {\rokmescancel} を送信する.  }\\
+%
+\begin{picture}(120,38)(0,0)
+\put(0,0){\rokpebothcancelrelease}
+\end{picture}\\
+{\small (2) {\rokreplyobject}を解放し {\rokmesrelease} を送信した.  }\\
+
+\end{center}
+\caption{読出し処理によって生まれたループの回収.}
+\label{rok:fig:looprelease}
+\end{figure}
+
+\subsubsection{解決方法}
+
+{\rokmesread} は送信したが中断ゴールがフックしていないような場合, 
+既に送信した {\rokmesread} は取り消してもよい.  
+その {\rokmesread} の応答である {\rokmesanswer} を待つゴールはないからである.  
+
+局所GC で, 中断ゴールがフックしていない{\rokconexrefobject} X が
+見つかったならば以下の処理を行う.  
+\begin{enumerate}
+\item {\rokconexrefobject} X を{\rokgenexrefobject}に変える (戻す).  
+\item X が指していた{\roknode}へ以下の「読出し要求取り消しメッセージ」
+を送る.  
+\begin{quote}
+{\rokmescancelXR}
+\end{quote}
+メッセージの引数 {\rokvarRet} は, 
+取り消す読出し要求を特定するためのものである.  
+\end{enumerate}
+
+{\rokmescancelXR} を受信した{\roknode}は以下の処理を行う.  
+\begin{description}
+\item [参照先が変数ならば] フックしている{\rokcons}を検索し, 
+{\rokvarRet} と同じ返信先を記憶している{\rokreplyobject}を
+解放し {\rokmesrelease} を送信する.  
+\item [参照先が具体値ならば] 何も行わない.  
+これは既に {\rokmesanswer} が送信されている場合である.  
+\end{description}
+
+以上の処理により (図\ref{rok:fig:looprelease}参照), ゴミとなったループを, 
+すべてではないが, 局所処理によって解放することができる.  
+
+%------------------------------
+
+\section{詳細な実装}
+\label{d-klic-communication}
+
+以下の点についてより詳細に実装方式を説明する。
+
+\begin{itemize}
+\item 分散プロセス立ち上げの方式
+
+\item メッセージ送受信の方式
+
+\item 分散処理用ジェネリックオブジェクトの詳細
+\end{itemize}
+
+\subsection{分散プロセス立ち上げ方式}
+
+\index{ぶんさんぷろせすたちあげほうしき@分散プロセス立ち上げ方式}
+
+具体的なワーカ群立ち上げ方式はマシン依存であるが、
+ワーカ群を立ち上げた結果、図\ref{d-klic-initproc} に示されるように
+ 1 つの荘園プロセスと n 個のワーカが通信路によって結合されている状態
+になることが要求される。
+
+\begin{figure}[htb]
+\begin{center}
+%\epsfile{file=dklic-initproc.eps,width=8cm}
+\includegraphics[width=8cm]{dklic-initproc.eps}
+\caption{ワーカ群立ち上げ後の状態}
+\label{d-klic-initproc}
+\end{center}
+\end{figure}
+
+入出力用に他のプロセスが必要な場合は、I/O 用のプロセスが起動され、
+各ワーカ及び荘園プロセスとの間で通信路が設定される。
+
+また、ワーカ群立ち上げ後の状態では、各ワーカに
+以下の情報が設定されていなければならない。
+
+\begin{itemize}
+\item プログラム起動時に指定されたパラメータ
+\item 自ワーカ番号
+\item 他のワーカへの通信方法
+\item I/O用のプロセスとの通信方法
+\end{itemize}
+
+n 個のワーカを立ち上げた場合、各ワーカには 0 から n-1 までの
+いずれかのワーカ番号が設定される。荘園はワーカの仕事は行わないが、
+ワーカ番号 n が設定される。
+ワーカ番号 0 のワーカはマスターワーカとなり、KL1 プログラムの
+{\tt main:main} 述語はワーカ番号 0 のワーカで実行される。
+
+\subsection{メッセージの送信/受信}
+
+\index{めっせーじのそうしん/じゅしん@メッセージの送信/受信}
+
+メッセージの送信、受信についての方式を述べる。
+
+\subsubsection{メッセージの送信}
+
+基本的に、各メッセージの送出は以下のように行われる。
+
+\begin{enumerate}
+\item ノードより通信バッファをとりだす。
+
+\item その通信バッファに対して、エンコード(encode\_XXXX)を試みる。
+XXXX はメッセージの名称(read, releaseなど)である。これらの処理は、
+\filename{cntlmsg.c} に記述されている。
+
+\item encodeの結果により、以下の処理を行う。
+
+\begin{itemize}
+\item WTC不足のときにはエンコードが失敗するので、
+message\_suspend()(\filename{sendrecv.c})
+を呼びだし、WTCを要求し、かつメッセージの内容を
+susp\_msg内に保持し、susp\_msg\_list に接続しておく。
+
+\item エンコードに成功した場合には、エンコード結果をsend\_message()
+(\filename{sendrecv.})により送信する。
+\end{itemize}
+\end{enumerate}
+
+
+%各々のメッセージを送信する関数と簡単な説明を付ける。
+
+%\begin{description}
+%\item[\rokmesanswer:\ ] send\_answer\_value()。
+%read メッセージに対しての返事で、
+%外部参照の実体を返す。
+%\item[\rokmesread:\ ] send\_read()。外部参照の指す先を尋ねる。
+%\item[\rokmesrelease:\ ] send\_release()。外部参照がゴミになったことを参照元に
+%報せる。
+%\item[\rokmesunify:\ ] send\_unify()。具体化項との単一化を要求する。
+%\item[\rokthrowmessage:\ ] send\_throw\_goal()。ゴールを投げ、外部ノードで実行させる。
+%\item[\rokterminatedmessage:\ ] send\_terminate\_msg。里親の処理を終了させる。
+%\end{description}
+
+\subsubsection{メッセージの受信}
+
+KLICでは、送信するメッセージはencode\_XXXにより生成されるが、
+基本的に以下のようになっている(詳細な構造は実装に依存する)。
+
+\begin{itemize}
+\item 受信時に起動すべき処理関数のアドレス
+
+\item WTC
+
+\item その他必要なデータ(KL1のデータなど)
+\end{itemize}
+
+受信時には、このメッセージ内の「処理関数のアドレス」を参照し、
+その関数に残りのデータを渡すことによりdecode処理を行うことになっている。
+つまり、decodeのdispatchはメッセージ中に記述されている関数を
+直接呼びだすことにより行われている。
+\footnote{よって、KLICでは、関数のアドレスがずれるような状況、例えば、
+ノード間でloadmoduleのリンクの順などが異るため関数アドレスがずれている場合、
+また、ノード間で命令コードアーキテクチャが異る場合などは、
+このままでは対応できない)。}
+
+なお、各種decode処理は、各々のメッセージに応じて、decode\_XXXなる名称で
+\filename{cntlmsg.c}内で定義されている。
+
+この受信に関する処理は、\filename{sendrecv.c}内でrecv\_message()により
+定義されている。
+
+なお、受信処理のきっかけは、以下の2つを併用している。
+
+\begin{description}
+\item[送信時に送信元から送られるUSR1シグナル:\ ]
+送信者は、送信後にUSR1シグナルを送信先に送ることになっている。
+よって、基本的には受信者はUSR1シグナルを受信したらメッセージが到着している
+と判断し、メッセージ受信を試みる。
+
+\item[intervalタイマによる一定間隔のポーリング:\ ] PVMを用いた処理系では、
+現実的には、シグナルがメッセージを追い越し、USR1シグナルを受信したにも
+関わらず、メッセージが未到着な場合がある。このようなケースを補完するため、
+一定時間毎にメッセージ受信を試みている。
+\end{description}
+
+割り込み、タイマとも、\REF{interrupt}, \REF{timer}で記述された方法を用い、
+実際の処理は、リダクションの切れ目で行われるように設定されている。
+
+receive\_message()の下位では、実装依存のreceive\_packe()関数を呼びだしており、
+これが実装間のインターフェースになっている。
+
+\subsection{分散処理用{\rokgenericobject}の詳細}
+
+ここでは{\rokgenexrefobject}と{\rokconexrefobject}及び
+{\rokreplyconobject}の詳細を述べる。おのおの、exref class、
+read\_hook class, reply\_hook classのジェネリックオブジェクトとして
+実装されている。
+
+\subsubsection{{\rokgenexrefobject}の詳細}
+
+\index{ゆしゅつひょう@輸出表}
+\index{ゆしゅつおぶじぇくと@輸出オブジェクト}
+
+この{\rokobject}の保持するデータとメソッドの処理内容を以下に示す。
+exref classとして、\filename{ge\_exref.c}で定義されている。
+
+\begin{enumerate}
+
+\item 保持するデータ
+
+(輸出元)ノード番号、輸出表エントリのID、重み(WEC)。
+
+より詳細には、\filename{include/klic/ge\_exref.h}に以下のように定義されている。
+
+\begin{verbatim}
+struct exref_object{
+  struct generator_object_method_table *method_table;
+  long node;         /* ノード番号 */
+  long index;        /* 輸出表エントリ */
+  long wec;          /* 重み */
+  q    to_exref;     /* generator二重ループの入口 */
+  long gc_flag;      /* GCメソッドがよびだされたかどうかのフラグ */
+};
+\end{verbatim}
+
+\item {\rokderef}メソッド (引数：なし)
+
+返信先を用意して{\rokmesread}を送信し{\rokconexrefobject}を作成する。
+\index{ゆしゅつおぶじぇくと@輸出オブジェクト}
+{\rokconexrefobject}の作成時に与える引数群のうち、
+ノード番号、輸出表エントリのID 及び WEC は、
+自分が保持しているデータをそのまま渡す。
+作成した{\rokobject}へのポインタを{\rokderef}メソッドの返り値とする。
+
+\item {\rokactiveunify}メソッド (引数：『対象データ』)
+
+(メソッドの引数の)『対象データ』に従って以下のいずれかの処理を行う。
+
+\begin{description}
+
+\item [『対象データ』が具体値] 自分に具体値を書込み、
+以下のメッセージを自分が指していたノードへ送る。
+\begin{quote}
+        {\rokunifymessageARG{{\rokvarTn}$=$初期値}{自分の参照先}{具体値}}
+\end{quote}
+
+\item [『対象データ』が{\rokconobject}] 自分の{\rokderef}メソッドを呼出し、
+その返り値と『対象データ』の具体化を行う。
+
+\item [『対象データ』が{\rokgenexrefobject} ]  『 対象データ 』 
+を指すポインタを自分に書込み、
+以下のメッセージを自分が指していたノードへ送る。
+\begin{quote}
+        {\rokunifymessageARG{{\rokvarTn}$=$初期値}
+                {自分の参照先}{『対象データ』}}
+\end{quote}
+
+\item [『対象データ』が ({\rokgenexrefobject}以外の) {\rokgenobject}] 
+『対象データ』の{\rokderef}メソッドを呼出し、
+その返り値と自分の具体化を行う。
+
+\end{description}
+
+\item {\rokmesread}受信メソッド (引数：{\rokmesread}の引数群)
+
+{\rokmesread}の転送上限引数{\rokvarTn}の値に従い
+以下のいずれかの処理を行う。
+\begin{description}
+\item [{\rokvarTn}$>$1] 自分が指すノードへ以下のメッセージを送信する。
+\begin{quote}
+        {\rokreadmessageARG{{\rokvarTn}$-1$}
+                {自分の参照先}{(前のままの)返信先}}
+\end{quote}
+\item [{\rokvarTn}$=$1] {\rokreplyconobject}を作成し、
+自分の{\rokderef}メソッドを呼出す。
+そして{\rokderef}メソッド呼出しの返り値と、
+作成した{\rokreplyconobject}とのボディユニフィケーションを行う。
+\end{description}
+
+\end{enumerate}
+
+\subsubsection{{\rokconexrefobject}の詳細}
+
+この{\rokobject}の保持するデータとメソッドの処理内容を以下に示す。
+read\_hook classとして、ge\_readhook.c で定義されている。
+\index{ゆしゅつおぶじぇくと@輸出オブジェクト}
+
+\begin{enumerate}
+
+\item 保持するデータ
+
+(輸出元)ノード番号、輸出表エントリのID、重み(WEC)、
+送信した{\rokmesread}の返信先
+
+より詳細には以下である。
+
+\begin{verbatim}
+struct consumer_object_method_table *method_table;
+  long node;         /* ノード番号 */
+  long index;        /* 輸出表エントリID l*/
+  long wec;          /* 重み */
+  q to_read_hook;    /* 二重ループエントリ */
+  long return_index; /* 返信先 */
+};
+\end{verbatim}
+
+\item {\rokactiveunify}メソッド (引数：『対象データ』)
+
+以下のメッセージを自分が指していたノードへ送る。
+\begin{quote}
+        {\rokunifymessageARG{{\rokvarTn}$=$初期値}
+                {自分の参照先}{『対象データ』}}
+\end{quote}
+
+\item {\rokmesanswer}受信メソッド (引数：『対象データ』、『返信先』)
+
+自分が持つ返信先と(メソッド引数の)『返信先』が一致するならば
+以下のメッセージを、
+\begin{quote}
+        {\rokreleasemessageARG{自分の参照先}}
+\end{quote}
+返信先が一致しない場合は以下のメッセージを自分が指すノードへ送信する。
+\begin{quote}
+        {\rokunifymessageARG{{\rokvarTn}$=$初期値}
+                {自分の参照先}{『対象データ』}}
+\end{quote}
+
+\end{enumerate}
+
+\subsection{{\rokreplyconobject}の詳細}
+
+reply\_hook クラスとして、\filename{ge\_replyhook.c}で定義されている。
+
+\begin{enumerate}
+\item {\rokobject}の保持するデータ
+
+返信先、重み(WEC)
+
+より詳細には、以下。
+
+\begin{verbatim}
+struct reply_hook_object{
+  struct consumer_object_method_table *method_table;
+  long node;     /* 返信先のノード */
+  long index;    /* 返信先の輸出表インデックス */
+  long wec;      /* 返却すべきWEC */
+};
+\end{verbatim}
+
+\item {\rokactiveunify}メソッド (引数：『対象データ』)
+
+以下のメッセージを(自分の保持している)返信先が指すノードへ送信する。
+\begin{quote}
+        {\rokanswermessageARG{返信先}{『対象データ』}}
+\end{quote}
+
+\end{enumerate}
+
+
+
+%\subsection{ワーカ間通信方式}
+%\label{d-klic-comm-method}
+
+%メッセージ通信実装では、マシン依存の通信路を用いてメッセージ通信を行う。
+%メッセージ送信側ワーカ、受信側ワーカの基本処理手順は以下の通りである。
+
+%\begin{itemize}
+%\item メッセージ送信処理：
+%\begin{itemize}
+%\item 送信するメッセージをエンコードする （通信路独立処理）
+%\item エンコードされたメッセージを送信バッファに入れる （通信路依存処理）
+%\item 受信側ワーカにメッセージを送信する （通信路依存処理）
+%\end{itemize}
+
+%\item メッセージ受信処理：
+%\begin{itemize}
+%\item メッセージを受信バッファに受信する （通信路依存処理）
+%\item 受信したメッセージを受信バッファから取り出す （通信路依存処理）
+%\item 受信したメッセージをデコードする （通信路独立処理）
+%\end{itemize}
+%\end{itemize}
+
+%またメッセージを受信したワーカは、メッセージ到着後ある規定時間以内に
+%そのメッセージの受信処理を行わなければならない。
+%このような、非同期通信（又は疑似非同期通信）を実現する手段は
+%マシン依存であるが、以下に実現手段の例を列挙する。
+
+%\begin{enumerate}
+%\item メッセージ送信処理において、メッセージ送信後、受信側プロセスに
+%      シグナル等で割り込みを掛ける。但し、メッセージ本体の送信と
+%      シグナル送信の順序が保証されなければならない。
+%\item 各ワーカ毎にインタバルタイマをセットしておき、
+%      そのタイマ割り込みと同期してメッセージ受信処理を行う。
+%\item アクティブメッセージを用いて、メッセージ受信時に
+%      直ちにメッセージに指定されている処理を行う。
+%\end{enumerate}
+
+%上記の手段の内、複数個の手段を併用して使用することも可能である。
+
+%\section{メッセージ送受信}
+
+%この章ではメッセージの送受信について
+%より詳細な、具体的な実装の詳細について述べる。
+%以下に記述は、通信路に依存しない部分に留める。
+
+%\section{UNIX上のメッセージパッシングライブラリとのインタフェース}
+
+%KLICでのPVM版では、UNIX上のマルチプロセス間のデータ交換に、
+%PVM (Parallel Virtual Machine) を用いている。
+%ここでは、KLIC と PVM のインタフェースの仕様について説明する。
+%つまり、ここでの解説はPVM版に限る。
+
+%KLICにおいて、PVMを用いてメッセージを他プロセスに送出する方式を
+%図\ref{klic-pvm}に示す。
+
+%\begin{figure}[htb]
+%%\epsfile{file=klic-pvm.eps,width=15cm}
+%\includegraphics{file=klic-pvm.eps,width=15cm}
+%\caption{KLICとPVMのインタフェース}
+%\label{klic-pvm}
+%\end{figure}
+
+%図\ref{klic-pvm}に示す例では、以下の手順にしたがってメッセージの送受信を
+%行う。
+
+%\begin{enumerate}
+
+%\item KLICのバッファにメッセージを入れる。
+
+%KLICのバッファは整数の配列として実現されている。
+%この整数配列に送りたいメッセージを順次エンコードして行く。
+
+%\item PVMの送信バッファにメッセージを入れる。
+
+%{\tt pvm\_pkint}関数を用いてKLICのバッファの内容を PVM のバッファに
+%エンコードする。
+
+%\item プロセス間でデータの送受信を行う。
+
+%{\tt pvm\_send}関数を用いて相手プロセスにメッセージを送り、
+%その後 {\tt pvm\_sentsig}関数を用いて相手プロセスにメッセージを
+%送ったことを知らせる。
+
+%\item メッセージをKLICの受信バッファに取り込む。
+
+%送信元プロセスから割り込みを受けとると、
+%{\tt pvm\_nrecv}関数を用いて、メッセージを PVM の受信バッファに取り込む。
+
+%\item メッセージをPVMの受信バッファに取り込む。
+
+%PVMレベルの受信完了後、{\tt pvm\_upkint}関数を用いて
+%PVM の受信バッファの内容を KLIC の受信バッファにコピーする。
+%KLIC の受信バッファは整数配列で実現される。
+
+%\end{enumerate}
+

@@ -1,0 +1,571 @@
+total 126
+-rw-r--r--   1 sekita   sekita       5248 Jul  3 15:09 COPYRIGHT
+-rw-r--r--   1 sekita   sekita        311 Jul  3 15:09 COPYRIGHT-JIPDEC
+-rw-r--r--   1 sekita   sekita        262 Jul  3 15:09 COPYRIGHT-JIPDEC.j
+-rw-r--r--   1 sekita   sekita       3794 Jul  3 15:09 COPYRIGHT.j
+-rw-r--r--   1 sekita   sekita      27409 Jul  3 15:09 ChangeLog
+-rwxr-xr-x   1 sekita   sekita      28298 Jul  3 15:09 Configure*
+-rw-r--r--   1 sekita   sekita       1496 Jul  3 15:09 FOR-DEVELOPERS
+-rw-r--r--   1 sekita   sekita       1390 Jul  3 15:09 FOR-DEVELOPERS.j
+-rw-r--r--   1 sekita   sekita       5332 Jul  3 15:09 INSTALL
+-rw-r--r--   1 sekita   sekita       1048 Jul  3 15:09 INSTALL.j
+-rw-r--r--   1 sekita   sekita       1586 Jul  3 15:09 KL1PP.j
+-rw-r--r--   1 sekita   sekita          0 Jul  3 15:25 MANIFEST
+-rw-r--r--   1 sekita   sekita       6228 Jul  3 15:09 Makefile.tail
+-rw-r--r--   1 sekita   sekita       6937 Jul  3 15:09 README
+-rw-r--r--   1 sekita   sekita       7232 Jul  3 15:09 README.j
+drwxrwxr-x   2 sekita   sekita       2048 Jul  3 15:25 compiler/
+-rw-r--r--   1 sekita   sekita        468 Jul  3 15:09 config.h.sh
+drwxrwxr-x   3 sekita   sekita       1024 Jul  3 15:09 disttest/
+drwxrwxr-x   2 sekita   sekita       1024 Jul  3 15:10 documents/
+drwxrwxr-x   3 sekita   sekita       1024 Jul  3 15:25 include/
+-rw-r--r--   1 sekita   sekita          6 Jul  3 15:09 klic-version
+drwxrwxr-x   2 sekita   sekita       1024 Jul  3 15:10 rmon/
+-rw-r--r--   1 sekita   sekita        360 Jul  3 15:09 root.mk.sh
+drwxrwxr-x   3 sekita   sekita       5120 Jul  3 15:25 runtime/
+drwxrwxr-x   3 sekita   sekita       1024 Jul  3 15:10 shmtest/
+drwxrwxr-x   2 sekita   sekita       4096 Jul  3 15:25 test/
+-rw-r--r--   1 sekita   sekita         58 Jul  3 15:09 version.sed
+-rw-r--r--   1 sekita   sekita         45 Jul  3 15:09 version.sed.tmplt
+
+compiler:
+total 1718
+-rw-r--r--   1 sekita   sekita       5114 Jul  3 15:09 Makefile
+-rw-rw-r--   1 sekita   sekita      16609 Jul  3 15:13 atom.c
+-rw-rw-r--   1 sekita   sekita      23775 Jul  3 15:13 atom.h
+-rw-rw-r--   1 sekita   sekita      15367 Jul  3 15:13 bb.c
+-rw-rw-r--   1 sekita   sekita       2126 Jul  3 15:13 bb.ext
+-rw-r--r--   1 sekita   sekita       3847 Jul  3 15:09 bb.kl1
+-rw-rw-r--   1 sekita   sekita      27136 Jul  3 15:13 cmacro.c
+-rw-rw-r--   1 sekita   sekita        926 Jul  3 15:13 cmacro.ext
+-rw-r--r--   1 sekita   sekita       3403 Jul  3 15:09 cmacro.kl1
+-rw-rw-r--   1 sekita   sekita      11838 Jul  3 15:13 extern.c
+-rw-rw-r--   1 sekita   sekita        522 Jul  3 15:13 extern.ext
+-rw-r--r--   1 sekita   sekita       1757 Jul  3 15:09 extern.kl1
+-rw-rw-r--   1 sekita   sekita      13048 Jul  3 15:13 funct.c
+-rw-rw-r--   1 sekita   sekita      23916 Jul  3 15:13 funct.h
+-rw-rw-r--   1 sekita   sekita      24838 Jul  3 15:13 gb.c
+-rw-rw-r--   1 sekita   sekita       2053 Jul  3 15:13 gb.ext
+-rw-r--r--   1 sekita   sekita       4182 Jul  3 15:09 gb.kl1
+-rw-rw-r--   1 sekita   sekita     237966 Jul  3 15:13 generate.c
+-rw-rw-r--   1 sekita   sekita       6186 Jul  3 15:13 generate.ext
+-rw-r--r--   1 sekita   sekita      28228 Jul  3 15:09 generate.kl1
+-rw-rw-r--   1 sekita   sekita      54366 Jul  3 15:13 insert.c
+-rw-rw-r--   1 sekita   sekita       1632 Jul  3 15:13 insert.ext
+-rw-r--r--   1 sekita   sekita      10422 Jul  3 15:09 insert.kl1
+-rw-rw-r--   1 sekita   sekita      83326 Jul  3 15:13 kl1cmp.c
+-rw-rw-r--   1 sekita   sekita       2763 Jul  3 15:13 kl1cmp.ext
+-rw-r--r--   1 sekita   sekita      14272 Jul  3 15:09 kl1cmp.kl1
+-rw-r--r--   1 sekita   sekita       1832 Jul  3 15:09 kl1pp.kl1
+-rw-r--r--   1 sekita   sekita      16263 Jul  3 15:09 klic.c
+-rw-r--r--   1 sekita   sekita        487 Jul  3 15:09 klic.h
+-rw-r--r--   1 sekita   sekita      19643 Jul  3 15:09 klicdb.c
+-rw-rw-r--   1 sekita   sekita     196958 Jul  3 15:13 macro.c
+-rw-rw-r--   1 sekita   sekita       6010 Jul  3 15:13 macro.ext
+-rw-r--r--   1 sekita   sekita      27901 Jul  3 15:09 macro.kl1
+-rw-r--r--   1 sekita   sekita       7170 Jul  3 15:09 macropp.kl1
+-rw-rw-r--   1 sekita   sekita       3332 Jul  3 15:13 main.c
+-rw-rw-r--   1 sekita   sekita        119 Jul  3 15:13 main.ext
+-rw-r--r--   1 sekita   sekita        692 Jul  3 15:09 main.kl1
+-rw-rw-r--   1 sekita   sekita      18980 Jul  3 15:13 msg.c
+-rw-rw-r--   1 sekita   sekita        963 Jul  3 15:13 msg.ext
+-rw-r--r--   1 sekita   sekita       3032 Jul  3 15:09 msg.kl1
+-rw-rw-r--   1 sekita   sekita     203497 Jul  3 15:13 normalize.c
+-rw-rw-r--   1 sekita   sekita       5799 Jul  3 15:13 normalize.ext
+-rw-r--r--   1 sekita   sekita      28784 Jul  3 15:09 normalize.kl1
+-rw-rw-r--   1 sekita   sekita     141660 Jul  3 15:13 obj.c
+-rw-rw-r--   1 sekita   sekita       4044 Jul  3 15:13 obj.ext
+-rw-r--r--   1 sekita   sekita      19086 Jul  3 15:09 obj.kl1
+-rw-r--r--   1 sekita   sekita        540 Jul  3 15:09 options.c
+-rw-rw-r--   1 sekita   sekita     206137 Jul  3 15:13 predicates.c
+-rw-rw-r--   1 sekita   sekita      39147 Jul  3 15:13 util.c
+-rw-rw-r--   1 sekita   sekita       1484 Jul  3 15:13 util.ext
+-rw-r--r--   1 sekita   sekita       4525 Jul  3 15:09 util.kl1
+-rw-rw-r--   1 sekita   sekita       1565 Jul  3 15:13 version.c
+-rw-rw-r--   1 sekita   sekita        199 Jul  3 15:13 version.ext
+-rw-rw-r--   1 sekita   sekita         78 Jul  3 15:11 version.h
+-rw-r--r--   1 sekita   sekita         60 Jul  3 15:09 version.h.tmplt
+-rw-rw-r--   1 sekita   sekita        138 Jul  3 15:13 version.kl1
+-rw-r--r--   1 sekita   sekita        120 Jul  3 15:09 version.kl1.tmplt
+-rw-rw-r--   1 sekita   sekita     101808 Jul  3 15:13 write.c
+-rw-rw-r--   1 sekita   sekita       2126 Jul  3 15:13 write.ext
+-rw-r--r--   1 sekita   sekita      14411 Jul  3 15:09 write.kl1
+
+disttest:
+total 291
+-rw-r--r--   1 sekita   sekita      23091 Jul  3 15:09 Makefile
+drwxrwxr-x   2 sekita   sekita       1024 Jul  3 15:09 cmpdir/
+-rw-r--r--   1 sekita   sekita       6943 Jul  3 15:09 dlife.kl1
+-rw-r--r--   1 sekita   sekita       1642 Jul  3 15:09 forward_goal.kl1
+-rw-r--r--   1 sekita   sekita       4691 Jul  3 15:09 general_unify_1.kl1
+-rw-r--r--   1 sekita   sekita       3011 Jul  3 15:09 general_unify_2.kl1
+-rw-r--r--   1 sekita   sekita       1849 Jul  3 15:09 lib.kl1
+-rw-r--r--   1 sekita   sekita        822 Jul  3 15:09 mesh.kl1
+-rw-r--r--   1 sekita   sekita       7510 Jul  3 15:09 multiple_wait.kl1
+-rw-r--r--   1 sekita   sekita       2178 Jul  3 15:09 nq13.kl1
+-rw-r--r--   1 sekita   sekita       2285 Jul  3 15:09 nqueen.kl1
+-rw-r--r--   1 sekita   sekita        877 Jul  3 15:09 read.kl1
+-rwxr-xr-x   1 sekita   sekita        754 Jul  3 15:09 report.perl*
+-rw-r--r--   1 sekita   sekita        257 Jul  3 15:09 rlib.kl1
+-rw-r--r--   1 sekita   sekita       6962 Jul  3 15:09 slife.kl1
+-rw-r--r--   1 sekita   sekita        658 Jul  3 15:09 stat.perl
+-rw-r--r--   1 sekita   sekita       2797 Jul  3 15:09 statistics.pl
+-rw-r--r--   1 sekita   sekita      12138 Jul  3 15:09 t0thr1.kl1
+-rw-r--r--   1 sekita   sekita       7909 Jul  3 15:09 t0thr2.kl1
+-rw-r--r--   1 sekita   sekita       6640 Jul  3 15:09 t0thr3.kl1
+-rw-r--r--   1 sekita   sekita        896 Jul  3 15:09 throw.kl1
+-rw-r--r--   1 sekita   sekita        637 Jul  3 15:09 unify.kl1
+-rw-r--r--   1 sekita   sekita       3837 Jul  3 15:09 unify_exrefs.kl1
+-rw-r--r--   1 sekita   sekita     144108 Jul  3 15:09 vect.log
+-rw-r--r--   1 sekita   sekita       9358 Jul  3 15:09 vector_built.kl1
+-rw-r--r--   1 sekita   sekita       9498 Jul  3 15:09 vector_built_2.kl1
+-rw-r--r--   1 sekita   sekita       3218 Jul  3 15:09 wec_exhaust_1.kl1
+-rw-r--r--   1 sekita   sekita       5522 Jul  3 15:09 wec_exhaust_2.kl1
+-rw-r--r--   1 sekita   sekita       3954 Jul  3 15:09 wec_exhaust_3.kl1
+-rw-r--r--   1 sekita   sekita       8933 Jul  3 15:09 wec_indirect.kl1
+
+disttest/cmpdir:
+total 18
+-rw-r--r--   1 sekita   sekita        110 Jul  3 15:09 forward_goal.out
+-rw-r--r--   1 sekita   sekita        280 Jul  3 15:09 general_unify_1.out
+-rw-r--r--   1 sekita   sekita        195 Jul  3 15:09 general_unify_2.out
+-rw-r--r--   1 sekita   sekita        145 Jul  3 15:09 multiple_wait.out
+-rw-r--r--   1 sekita   sekita          6 Jul  3 15:09 nqueen12.out
+-rw-r--r--   1 sekita   sekita          6 Jul  3 15:09 nqueen13.out
+-rw-r--r--   1 sekita   sekita          7 Jul  3 15:09 nqueen14.out
+-rw-r--r--   1 sekita   sekita          0 Jul  3 15:09 read.out
+-rw-r--r--   1 sekita   sekita          4 Jul  3 15:09 slife.out
+-rw-r--r--   1 sekita   sekita        283 Jul  3 15:09 t0thr1.out
+-rw-r--r--   1 sekita   sekita        157 Jul  3 15:09 t0thr2.out
+-rw-r--r--   1 sekita   sekita        175 Jul  3 15:09 t0thr3.out
+-rw-r--r--   1 sekita   sekita          0 Jul  3 15:09 throw.out
+-rw-r--r--   1 sekita   sekita          0 Jul  3 15:09 unify.out
+-rw-r--r--   1 sekita   sekita        272 Jul  3 15:09 unify_exrefs.out
+-rw-r--r--   1 sekita   sekita        391 Jul  3 15:09 vector_built.out
+-rw-r--r--   1 sekita   sekita        409 Jul  3 15:09 vector_built_2.out
+-rw-r--r--   1 sekita   sekita        177 Jul  3 15:09 wec_exhaust_1.out
+-rw-r--r--   1 sekita   sekita        209 Jul  3 15:09 wec_exhaust_2.out
+-rw-r--r--   1 sekita   sekita        159 Jul  3 15:09 wec_exhaust_3.out
+-rw-r--r--   1 sekita   sekita        157 Jul  3 15:09 wec_indirect.out
+
+documents:
+total 795
+-rw-r--r--   1 sekita   sekita     209238 Jul  3 15:10 KLIC.info
+-rw-r--r--   1 sekita   sekita     223336 Jul  3 15:10 KLICj.info
+-rw-r--r--   1 sekita   sekita       1174 Jul  3 15:10 Makefile
+-rw-r--r--   1 sekita   sekita       3133 Jul  3 15:10 klic.1
+-rw-r--r--   1 sekita   sekita     188203 Jul  3 15:10 klic.tex
+-rw-r--r--   1 sekita   sekita        475 Jul  3 15:10 klicj-info.el
+-rw-r--r--   1 sekita   sekita     179996 Jul  3 15:10 klicj.tex
+
+include:
+total 4
+-rw-r--r--   1 sekita   sekita       1705 Jul  3 15:10 Makefile.tail
+drwxrwxr-x   2 sekita   sekita       2048 Jul  3 15:25 klic/
+
+include/klic:
+total 160
+-rw-r--r--   1 sekita   sekita        701 Jul  3 15:10 alloc.h
+-rw-r--r--   1 sekita   sekita        463 Jul  3 15:10 asyncio.h
+-rw-r--r--   1 sekita   sekita        582 Jul  3 15:10 atomstuffs.h
+-rw-r--r--   1 sekita   sekita       1368 Jul  3 15:10 basic.h
+-rw-r--r--   1 sekita   sekita      11205 Jul  3 15:10 bb.h
+-rw-r--r--   1 sekita   sekita       1849 Jul  3 15:10 control.h
+-rw-r--r--   1 sekita   sekita        599 Jul  3 15:10 functorstuffs.h
+-rw-r--r--   1 sekita   sekita       3752 Jul  3 15:10 g_basic.h
+-rw-r--r--   1 sekita   sekita        717 Jul  3 15:10 g_extern.h
+-rw-r--r--   1 sekita   sekita        564 Jul  3 15:10 g_extinl.h
+-rw-r--r--   1 sekita   sekita        696 Jul  3 15:10 g_float.h
+-rw-r--r--   1 sekita   sekita       3341 Jul  3 15:10 g_methtab.h
+-rw-r--r--   1 sekita   sekita        463 Jul  3 15:10 g_pointer.h
+-rw-r--r--   1 sekita   sekita       1239 Jul  3 15:10 g_string.h
+-rw-r--r--   1 sekita   sekita        485 Jul  3 15:10 g_termarray.h
+-rw-r--r--   1 sekita   sekita       1139 Jul  3 15:10 g_vector.h
+-rw-r--r--   1 sekita   sekita       6240 Jul  3 15:10 gb.h
+-rw-r--r--   1 sekita   sekita      13101 Jul  3 15:10 gc_macro.h
+-rw-r--r--   1 sekita   sekita       1318 Jul  3 15:10 gc_methtab.h
+-rw-r--r--   1 sekita   sekita        646 Jul  3 15:10 gcobject.h
+-rw-r--r--   1 sekita   sekita      13523 Jul  3 15:10 gd_macro.h
+-rw-r--r--   1 sekita   sekita       1798 Jul  3 15:10 gd_methtab.h
+-rw-r--r--   1 sekita   sekita        650 Jul  3 15:10 gdobject.h
+-rw-r--r--   1 sekita   sekita        512 Jul  3 15:10 ge_exref.h
+-rw-r--r--   1 sekita   sekita       1477 Jul  3 15:10 generic.h
+-rw-r--r--   1 sekita   sekita       8362 Jul  3 15:10 gg_macro.h
+-rw-r--r--   1 sekita   sekita       1505 Jul  3 15:10 gg_methtab.h
+-rw-r--r--   1 sekita   sekita       1081 Jul  3 15:10 gmodule.h
+-rw-r--r--   1 sekita   sekita        326 Jul  3 15:10 goalobj.h
+-rw-r--r--   1 sekita   sekita       2845 Jul  3 15:10 gobj.h
+-rw-r--r--   1 sekita   sekita       1568 Jul  3 15:10 gobjutil.h
+-rw-r--r--   1 sekita   sekita       1216 Jul  3 15:10 index.h
+-rw-r--r--   1 sekita   sekita       4747 Jul  3 15:10 interpe.h
+-rw-r--r--   1 sekita   sekita        670 Jul  3 15:10 klichdr.h
+-rw-r--r--   1 sekita   sekita       1080 Jul  3 15:10 msgfmt.h
+-rw-r--r--   1 sekita   sekita       1919 Jul  3 15:10 newatom.h
+-rw-r--r--   1 sekita   sekita       3141 Jul  3 15:10 options.h
+-rw-r--r--   1 sekita   sekita       1138 Jul  3 15:10 param.h
+-rw-r--r--   1 sekita   sekita        548 Jul  3 15:10 predinfo.h
+-rw-r--r--   1 sekita   sekita        415 Jul  3 15:10 primitives.h
+-rw-r--r--   1 sekita   sekita       1676 Jul  3 15:10 rmon.h
+-rw-r--r--   1 sekita   sekita        549 Jul  3 15:10 schedule.h
+-rw-r--r--   1 sekita   sekita       7113 Jul  3 15:10 shm.h
+-rw-r--r--   1 sekita   sekita       6627 Jul  3 15:10 shm_machine.h
+-rw-r--r--   1 sekita   sekita        978 Jul  3 15:10 sighndl.h
+-rw-r--r--   1 sekita   sekita      10099 Jul  3 15:10 struct.h
+-rw-r--r--   1 sekita   sekita       3376 Jul  3 15:10 susp.h
+-rw-r--r--   1 sekita   sekita       1506 Jul  3 15:10 timer.h
+-rw-r--r--   1 sekita   sekita        972 Jul  3 15:10 timing.h
+-rw-r--r--   1 sekita   sekita       1590 Jul  3 15:10 trace.h
+-rw-r--r--   1 sekita   sekita        709 Jul  3 15:10 traceio.h
+-rw-r--r--   1 sekita   sekita       1939 Jul  3 15:10 unify.h
+
+rmon:
+total 7
+-rw-r--r--   1 sekita   sekita        591 Jul  3 15:10 Makefile
+-rw-r--r--   1 sekita   sekita        865 Jul  3 15:10 README.j
+-rwxr-xr-x   1 sekita   sekita       3461 Jul  3 15:10 klic-rmonitor.tcl*
+-rwxr-xr-x   1 sekita   sekita        447 Jul  3 15:10 make-com*
+
+runtime:
+total 1484
+-rw-r--r--   1 sekita   sekita        662 Jul  3 15:10 Makefile.head
+-rw-r--r--   1 sekita   sekita      61923 Jul  3 15:10 Makefile.tail
+-rw-r--r--   1 sekita   sekita       2586 Jul  3 15:10 alloc.c
+-rw-r--r--   1 sekita   sekita       6744 Jul  3 15:10 asyncio.c
+-rw-rw-r--   1 sekita   sekita       7450 Jul  3 15:11 atom.c
+-rw-rw-r--   1 sekita   sekita      10867 Jul  3 15:11 atom.h
+-rw-rw-r--   1 sekita   sekita      11832 Jul  3 15:11 atomt.c
+-rw-rw-r--   1 sekita   sekita        433 Jul  3 15:11 atomt.ext
+-rw-r--r--   1 sekita   sekita       1964 Jul  3 15:10 atomt.kl1
+-rw-rw-r--   1 sekita   sekita       1060 Jul  3 15:11 bag.c
+-rw-rw-r--   1 sekita   sekita         58 Jul  3 15:11 bag.ext
+-rw-r--r--   1 sekita   sekita        428 Jul  3 15:10 bag.kl1
+-rw-rw-r--   1 sekita   sekita       2163 Jul  3 15:11 bagk.c
+-rw-rw-r--   1 sekita   sekita        141 Jul  3 15:11 bagk.ext
+-rw-r--r--   1 sekita   sekita        563 Jul  3 15:10 bagk.kl1
+-rw-rw-r--   1 sekita   sekita      30630 Jul  3 15:11 bagks.c
+-rw-rw-r--   1 sekita   sekita       1236 Jul  3 15:11 bagks.ext
+-rw-r--r--   1 sekita   sekita       3481 Jul  3 15:10 bagks.kl1
+-rw-rw-r--   1 sekita   sekita      22301 Jul  3 15:11 bags.c
+-rw-rw-r--   1 sekita   sekita        840 Jul  3 15:11 bags.ext
+-rw-r--r--   1 sekita   sekita       2718 Jul  3 15:10 bags.kl1
+-rw-r--r--   1 sekita   sekita       6384 Jul  3 15:10 bb.c
+-rw-rw-r--   1 sekita   sekita       6170 Jul  3 15:11 bodyblt.c
+-rw-rw-r--   1 sekita   sekita        258 Jul  3 15:11 bodyblt.ext
+-rw-r--r--   1 sekita   sekita       3165 Jul  3 15:10 bodyblt.kl1
+-rw-r--r--   1 sekita   sekita       1588 Jul  3 15:10 clearmes.perl
+-rw-r--r--   1 sekita   sekita       3688 Jul  3 15:10 cmphsh.c
+-rw-r--r--   1 sekita   sekita      17324 Jul  3 15:10 cntlmsg.c
+-rw-rw-r--   1 sekita   sekita       1750 Jul  3 15:11 compare.c
+-rw-rw-r--   1 sekita   sekita         64 Jul  3 15:11 compare.ext
+-rw-r--r--   1 sekita   sekita        562 Jul  3 15:10 compare.kl1
+drwxrwxr-x   5 sekita   sekita       1024 Jul  3 15:10 config/
+-rw-r--r--   1 sekita   sekita       2066 Jul  3 15:10 config.h
+-rw-r--r--   1 sekita   sekita        398 Jul  3 15:10 config.tmp
+-rw-r--r--   1 sekita   sekita       6879 Jul  3 15:10 datamsg.c
+-rw-r--r--   1 sekita   sekita       5701 Jul  3 15:10 debug.c
+-rw-r--r--   1 sekita   sekita       4383 Jul  3 15:10 export_table.c
+-rw-r--r--   1 sekita   sekita       8323 Jul  3 15:10 faisus.c
+-rw-rw-r--   1 sekita   sekita      11034 Jul  3 15:11 farith.c
+-rw-rw-r--   1 sekita   sekita       1487 Jul  3 15:11 farith.ext
+-rw-r--r--   1 sekita   sekita       1386 Jul  3 15:10 farith.kl1
+-rw-rw-r--   1 sekita   sekita       5052 Jul  3 15:11 funct.c
+-rw-rw-r--   1 sekita   sekita       8614 Jul  3 15:11 funct.h
+-rw-rw-r--   1 sekita   sekita      13334 Jul  3 15:11 functt.c
+-rw-rw-r--   1 sekita   sekita        407 Jul  3 15:11 functt.ext
+-rw-r--r--   1 sekita   sekita       2348 Jul  3 15:10 functt.kl1
+-rw-r--r--   1 sekita   sekita      19889 Jul  3 15:10 gc.c
+-rw-rw-r--   1 sekita   sekita       1927 Jul  3 15:11 gcmerge.c
+-rw-rw-r--   1 sekita   sekita         57 Jul  3 15:11 gcmerge.ext
+-rw-r--r--   1 sekita   sekita        567 Jul  3 15:10 gcmerge.kl1
+-rw-r--r--   1 sekita   sekita       6188 Jul  3 15:10 gcode.c
+-rw-r--r--   1 sekita   sekita       4632 Jul  3 15:10 ge_exref.c
+-rw-r--r--   1 sekita   sekita       2960 Jul  3 15:10 ge_readhook.c
+-rw-r--r--   1 sekita   sekita       1902 Jul  3 15:10 ge_replyhook.c
+-rw-rw-r--   1 sekita   sekita       3151 Jul  3 15:11 gen.c
+-rw-rw-r--   1 sekita   sekita         69 Jul  3 15:11 gen.ext
+-rw-r--r--   1 sekita   sekita       1350 Jul  3 15:10 gen.kl1
+-rw-r--r--   1 sekita   sekita       6510 Jul  3 15:10 generic.c
+-rw-r--r--   1 sekita   sekita       9771 Jul  3 15:10 gfloat.c
+-rw-r--r--   1 sekita   sekita       1521 Jul  3 15:10 gg_shbusy.c
+-rw-r--r--   1 sekita   sekita       8464 Jul  3 15:10 gg_shvar.c
+-rw-r--r--   1 sekita   sekita       8989 Jul  3 15:10 ggoal.c
+-rw-r--r--   1 sekita   sekita      11423 Jul  3 15:10 gio.c
+-rw-r--r--   1 sekita   sekita       3981 Jul  3 15:10 gmerge.c
+-rw-r--r--   1 sekita   sekita       3262 Jul  3 15:10 gmodule.c
+-rw-r--r--   1 sekita   sekita      17413 Jul  3 15:10 gmvv.c
+-rw-r--r--   1 sekita   sekita       1636 Jul  3 15:10 gpointer.c
+-rw-r--r--   1 sekita   sekita      20655 Jul  3 15:10 gstring.c
+-rw-r--r--   1 sekita   sekita       1951 Jul  3 15:10 gtermarray.c
+-rw-rw-r--   1 sekita   sekita      72081 Jul  3 15:11 gunix.c
+-rw-rw-r--   1 sekita   sekita       1952 Jul  3 15:11 gunix.ext
+-rw-r--r--   1 sekita   sekita      23846 Jul  3 15:10 gunix.kl1
+-rw-rw-r--   1 sekita   sekita      10662 Jul  3 15:11 iarith.c
+-rw-rw-r--   1 sekita   sekita        574 Jul  3 15:11 iarith.ext
+-rw-r--r--   1 sekita   sekita        841 Jul  3 15:10 iarith.kl1
+-rw-r--r--   1 sekita   sekita       5289 Jul  3 15:10 import_table.c
+-rw-r--r--   1 sekita   sekita       1445 Jul  3 15:10 init_dist.c
+-rw-r--r--   1 sekita   sekita       2927 Jul  3 15:10 intrpt.c
+-rw-rw-r--   1 sekita   sekita      16425 Jul  3 15:11 io.c
+-rw-rw-r--   1 sekita   sekita        474 Jul  3 15:11 io.ext
+-rw-r--r--   1 sekita   sekita       3585 Jul  3 15:10 io.kl1
+-rw-rw-r--   1 sekita   sekita      19638 Jul  3 15:11 itimer.c
+-rw-rw-r--   1 sekita   sekita        378 Jul  3 15:11 itimer.ext
+-rw-r--r--   1 sekita   sekita       3991 Jul  3 15:10 itimer.kl1
+-rw-rw-r--   1 sekita   sekita       6502 Jul  3 15:11 klic.db
+-rw-rw-r--   1 sekita   sekita         10 Jul  3 15:11 klicdb.atoms
+-rw-rw-r--   1 sekita   sekita       1239 Jul  3 15:11 klicdb.fncts
+-rw-rw-r--   1 sekita   sekita       1249 Jul  3 15:11 klicdb.init
+-rw-rw-r--   1 sekita   sekita        310 Jul  3 15:11 klicdb.refs
+-rw-r--r--   1 sekita   sekita      12249 Jul  3 15:10 kmain.c
+-rw-r--r--   1 sekita   sekita       4699 Jul  3 15:10 ktimer.c
+-rw-rw-r--   1 sekita   sekita      17003 Jul  3 15:11 libklic.db
+-rw-r--r--   1 sekita   sekita        476 Jul  3 15:10 main.c
+-rw-r--r--   1 sekita   sekita       1354 Jul  3 15:10 makeChangelog.perl
+-rwxr-xr-x   1 sekita   sekita       1641 Jul  3 15:10 mmakedepend*
+-rwxr-xr-x   1 sekita   sekita        611 Jul  3 15:10 myrcsdiff*
+-rw-r--r--   1 sekita   sekita      10524 Jul  3 15:10 newatom.c
+-rw-r--r--   1 sekita   sekita       3498 Jul  3 15:10 options.c
+-rw-r--r--   1 sekita   sekita       2922 Jul  3 15:10 otbl.c
+-rw-rw-r--   1 sekita   sekita      78324 Jul  3 15:11 parse.c
+-rw-rw-r--   1 sekita   sekita       2599 Jul  3 15:11 parse.ext
+-rw-r--r--   1 sekita   sekita       9273 Jul  3 15:10 parse.kl1
+-rw-r--r--   1 sekita   sekita       2960 Jul  3 15:10 pipedio.c
+-rw-rw-r--   1 sekita   sekita       5552 Jul  3 15:11 predicates.c
+-rw-r--r--   1 sekita   sekita       4263 Jul  3 15:10 print.c
+-rw-r--r--   1 sekita   sekita       3201 Jul  3 15:10 profile.c
+-rwxr-xr-x   1 sekita   sekita        441 Jul  3 15:10 prot.perl*
+-rw-rw-r--   1 sekita   sekita       8596 Jul  3 15:11 queue.c
+-rw-rw-r--   1 sekita   sekita        299 Jul  3 15:11 queue.ext
+-rw-r--r--   1 sekita   sekita       1560 Jul  3 15:10 queue.kl1
+-rw-r--r--   1 sekita   sekita       3033 Jul  3 15:10 random.c
+-rw-rw-r--   1 sekita   sekita      29355 Jul  3 15:11 read.c
+-rw-rw-r--   1 sekita   sekita       1158 Jul  3 15:11 read.ext
+-rw-r--r--   1 sekita   sekita       3349 Jul  3 15:10 read.kl1
+-rw-r--r--   1 sekita   sekita       3191 Jul  3 15:10 recsusp.c
+-rw-rw-r--   1 sekita   sekita      95578 Jul  3 15:11 scan.c
+-rw-rw-r--   1 sekita   sekita       2164 Jul  3 15:11 scan.ext
+-rw-r--r--   1 sekita   sekita      13384 Jul  3 15:10 scan.kl1
+-rw-r--r--   1 sekita   sekita      14029 Jul  3 15:10 sched.c
+-rw-r--r--   1 sekita   sekita      12909 Jul  3 15:10 sendrecv.c
+-rw-rw-r--   1 sekita   sekita       2163 Jul  3 15:11 setk.c
+-rw-rw-r--   1 sekita   sekita        141 Jul  3 15:11 setk.ext
+-rw-r--r--   1 sekita   sekita        563 Jul  3 15:10 setk.kl1
+-rw-rw-r--   1 sekita   sekita      22589 Jul  3 15:11 setks.c
+-rw-rw-r--   1 sekita   sekita        954 Jul  3 15:11 setks.ext
+-rw-r--r--   1 sekita   sekita       2799 Jul  3 15:10 setks.kl1
+-rwxr-xr-x   1 sekita   sekita       1703 Jul  3 15:10 setupcomm*
+-rw-r--r--   1 sekita   sekita      27336 Jul  3 15:10 shm_gc.c
+-rw-r--r--   1 sekita   sekita      10075 Jul  3 15:10 shm_obj.c
+-rw-r--r--   1 sekita   sekita       9850 Jul  3 15:10 shm_rsv.c
+-rw-r--r--   1 sekita   sekita      16007 Jul  3 15:10 shm_throw.c
+-rw-r--r--   1 sekita   sekita       4330 Jul  3 15:10 signal.c
+-rw-rw-r--   1 sekita   sekita      41355 Jul  3 15:11 splay.c
+-rw-rw-r--   1 sekita   sekita       1212 Jul  3 15:11 splay.ext
+-rw-r--r--   1 sekita   sekita       4395 Jul  3 15:10 splay.kl1
+-rw-rw-r--   1 sekita   sekita       5439 Jul  3 15:11 stack.c
+-rw-rw-r--   1 sekita   sekita        246 Jul  3 15:11 stack.ext
+-rw-r--r--   1 sekita   sekita       1193 Jul  3 15:10 stack.kl1
+-rw-r--r--   1 sekita   sekita       9107 Jul  3 15:10 step.c
+-rw-rw-r--   1 sekita   sekita       4143 Jul  3 15:11 sysc.c
+-rw-rw-r--   1 sekita   sekita        221 Jul  3 15:11 sysc.ext
+-rw-r--r--   1 sekita   sekita       1560 Jul  3 15:10 sysc.kl1
+-rw-rw-r--   1 sekita   sekita      81752 Jul  3 15:11 termio.c
+-rw-rw-r--   1 sekita   sekita       2550 Jul  3 15:11 termio.ext
+-rw-r--r--   1 sekita   sekita      10077 Jul  3 15:10 termio.kl1
+-rw-r--r--   1 sekita   sekita       4076 Jul  3 15:10 timer.c
+-rw-r--r--   1 sekita   sekita        599 Jul  3 15:10 timing.c
+-rw-r--r--   1 sekita   sekita      48773 Jul  3 15:10 trace.c
+-rw-r--r--   1 sekita   sekita      15484 Jul  3 15:10 unify.c
+-rw-r--r--   1 sekita   sekita       1982 Jul  3 15:10 unify2.c
+-rw-rw-r--   1 sekita   sekita      73234 Jul  3 15:11 unparse.c
+-rw-rw-r--   1 sekita   sekita       2156 Jul  3 15:11 unparse.ext
+-rw-r--r--   1 sekita   sekita       9074 Jul  3 15:10 unparse.kl1
+-rw-rw-r--   1 sekita   sekita       4434 Jul  3 15:11 uterms.c
+-rw-rw-r--   1 sekita   sekita        194 Jul  3 15:11 uterms.ext
+-rw-r--r--   1 sekita   sekita        993 Jul  3 15:10 uterms.kl1
+-rw-rw-r--   1 sekita   sekita      23445 Jul  3 15:11 var.c
+-rw-rw-r--   1 sekita   sekita        774 Jul  3 15:11 var.ext
+-rw-r--r--   1 sekita   sekita       3337 Jul  3 15:10 var.kl1
+-rw-rw-r--   1 sekita   sekita         86 Jul  3 15:12 version.c
+-rw-r--r--   1 sekita   sekita         68 Jul  3 15:10 version.c.tmplt
+-rw-r--r--   1 sekita   sekita         45 Jul  3 15:10 version.sed.tmplt
+-rw-r--r--   1 sekita   sekita       1619 Jul  3 15:10 wakeup.c
+-rw-r--r--   1 sekita   sekita       1538 Jul  3 15:10 xio.c
+
+runtime/config:
+total 4
+-rw-r--r--   1 sekita   sekita        617 Jul  3 15:10 Makefile
+drwxrwxr-x   2 sekita   sekita       1024 Jul  3 15:10 pvm/
+drwxrwxr-x   2 sekita   sekita       1024 Jul  3 15:10 pvm-tcp/
+drwxrwxr-x   6 sekita   sekita       1024 Jul  3 15:10 shm/
+
+runtime/config/pvm:
+total 54
+-rw-r--r--   1 sekita   sekita        483 Jul  3 15:10 Makefile
+-rw-r--r--   1 sekita   sekita        822 Jul  3 15:10 config.h.sh
+-rw-r--r--   1 sekita   sekita        883 Jul  3 15:10 configure
+-rw-r--r--   1 sekita   sekita       6624 Jul  3 15:10 distio.c
+-rw-r--r--   1 sekita   sekita       2556 Jul  3 15:10 distio.h
+-rw-r--r--   1 sekita   sekita       6808 Jul  3 15:10 distpkt.c
+-rw-r--r--   1 sekita   sekita       3248 Jul  3 15:10 distpkt.h
+-rw-r--r--   1 sekita   sekita      13055 Jul  3 15:10 distproc.c
+-rw-r--r--   1 sekita   sekita       3448 Jul  3 15:10 distproc.h
+-rw-r--r--   1 sekita   sekita       2492 Jul  3 15:10 distrmon.c
+-rw-r--r--   1 sekita   sekita        399 Jul  3 15:10 include.mk.sh
+-rw-r--r--   1 sekita   sekita       2894 Jul  3 15:10 rmon_server.c
+-rw-r--r--   1 sekita   sekita        552 Jul  3 15:10 root.mk.sh
+-rw-r--r--   1 sekita   sekita       1294 Jul  3 15:10 runtime.mk.sh
+-rw-r--r--   1 sekita   sekita       1355 Jul  3 15:10 runtimedep.mk
+
+runtime/config/pvm-tcp:
+total 25
+-rw-r--r--   1 sekita   sekita        543 Jul  3 15:10 Makefile
+-rw-r--r--   1 sekita   sekita        533 Jul  3 15:10 configure
+-rw-r--r--   1 sekita   sekita      17770 Jul  3 15:10 distpkt.c
+-rw-r--r--   1 sekita   sekita       3357 Jul  3 15:10 distpkt.h
+
+runtime/config/shm:
+total 51
+drwxrwxr-x   2 sekita   sekita       1024 Jul  3 15:10 INTEL/
+drwxrwxr-x   2 sekita   sekita       1024 Jul  3 15:10 MIPS/
+-rw-r--r--   1 sekita   sekita        541 Jul  3 15:10 Makefile
+drwxrwxr-x   2 sekita   sekita       1024 Jul  3 15:10 PARISC/
+drwxrwxr-x   2 sekita   sekita       1024 Jul  3 15:10 SPARC/
+-rw-r--r--   1 sekita   sekita        628 Jul  3 15:10 config.h.sh
+-rw-r--r--   1 sekita   sekita       1406 Jul  3 15:10 configure
+-rw-r--r--   1 sekita   sekita       1223 Jul  3 15:10 distio.c
+-rw-r--r--   1 sekita   sekita       2562 Jul  3 15:10 distio.h
+-rw-r--r--   1 sekita   sekita       7147 Jul  3 15:10 distpkt.c
+-rw-r--r--   1 sekita   sekita       4878 Jul  3 15:10 distpkt.h
+-rw-r--r--   1 sekita   sekita       6337 Jul  3 15:10 distproc.c
+-rw-r--r--   1 sekita   sekita       3295 Jul  3 15:10 distproc.h
+-rw-r--r--   1 sekita   sekita       3180 Jul  3 15:10 distrmon.c
+-rw-r--r--   1 sekita   sekita        399 Jul  3 15:10 include.mk.sh
+-rw-r--r--   1 sekita   sekita       4598 Jul  3 15:10 rmon_server.c
+-rw-r--r--   1 sekita   sekita        552 Jul  3 15:10 root.mk.sh
+-rw-r--r--   1 sekita   sekita       1227 Jul  3 15:10 runtime.mk.sh
+-rw-r--r--   1 sekita   sekita       1355 Jul  3 15:10 runtimedep.mk
+
+runtime/config/shm/INTEL:
+total 1
+-rw-r--r--   1 sekita   sekita        592 Jul  3 15:10 lock.s
+
+runtime/config/shm/MIPS:
+total 2
+-rw-r--r--   1 sekita   sekita       1351 Jul  3 15:10 lock.s
+
+runtime/config/shm/PARISC:
+total 1
+-rw-r--r--   1 sekita   sekita        726 Jul  3 15:10 lock.s
+
+runtime/config/shm/SPARC:
+total 2
+-rw-r--r--   1 sekita   sekita        743 Jul  3 15:10 lock.c
+-rw-r--r--   1 sekita   sekita        981 Jul  3 15:10 lock.s
+
+shmtest:
+total 150
+-rw-r--r--   1 sekita   sekita      23990 Jul  3 15:10 Makefile
+drwxrwxr-x   2 sekita   sekita       1024 Jul  3 15:10 cmpdir/
+-rw-r--r--   1 sekita   sekita       6943 Jul  3 15:10 dlife.kl1
+-rw-r--r--   1 sekita   sekita       1642 Jul  3 15:10 forward_goal.kl1
+-rw-r--r--   1 sekita   sekita       4691 Jul  3 15:10 general_unify_1.kl1
+-rw-r--r--   1 sekita   sekita       3011 Jul  3 15:10 general_unify_2.kl1
+-rw-r--r--   1 sekita   sekita       1849 Jul  3 15:10 lib.kl1
+-rw-r--r--   1 sekita   sekita        822 Jul  3 15:10 mesh.kl1
+-rw-r--r--   1 sekita   sekita       7510 Jul  3 15:10 multiple_wait.kl1
+-rw-r--r--   1 sekita   sekita       2178 Jul  3 15:10 nq13.kl1
+-rw-r--r--   1 sekita   sekita       2285 Jul  3 15:10 nqueen.kl1
+-rw-r--r--   1 sekita   sekita        877 Jul  3 15:10 read.kl1
+-rwxr-xr-x   1 sekita   sekita        754 Jul  3 15:10 report.perl*
+-rw-r--r--   1 sekita   sekita        257 Jul  3 15:10 rlib.kl1
+-rw-r--r--   1 sekita   sekita       6962 Jul  3 15:10 slife.kl1
+-rw-r--r--   1 sekita   sekita        597 Jul  3 15:10 stat.perl
+-rw-r--r--   1 sekita   sekita       2797 Jul  3 15:10 statistics.pl
+-rw-r--r--   1 sekita   sekita      12138 Jul  3 15:10 t0thr1.kl1
+-rw-r--r--   1 sekita   sekita       7909 Jul  3 15:10 t0thr2.kl1
+-rw-r--r--   1 sekita   sekita       6640 Jul  3 15:10 t0thr3.kl1
+-rw-r--r--   1 sekita   sekita        896 Jul  3 15:10 throw.kl1
+-rw-r--r--   1 sekita   sekita        637 Jul  3 15:10 unify.kl1
+-rw-r--r--   1 sekita   sekita       3837 Jul  3 15:10 unify_exrefs.kl1
+-rw-r--r--   1 sekita   sekita       9358 Jul  3 15:10 vector_built.kl1
+-rw-r--r--   1 sekita   sekita       9498 Jul  3 15:10 vector_built_2.kl1
+-rw-r--r--   1 sekita   sekita       3218 Jul  3 15:10 wec_exhaust_1.kl1
+-rw-r--r--   1 sekita   sekita       5522 Jul  3 15:10 wec_exhaust_2.kl1
+-rw-r--r--   1 sekita   sekita       3954 Jul  3 15:10 wec_exhaust_3.kl1
+-rw-r--r--   1 sekita   sekita       8933 Jul  3 15:10 wec_indirect.kl1
+
+shmtest/cmpdir:
+total 18
+-rw-r--r--   1 sekita   sekita        110 Jul  3 15:10 forward_goal.out
+-rw-r--r--   1 sekita   sekita        280 Jul  3 15:10 general_unify_1.out
+-rw-r--r--   1 sekita   sekita        195 Jul  3 15:10 general_unify_2.out
+-rw-r--r--   1 sekita   sekita        145 Jul  3 15:10 multiple_wait.out
+-rw-r--r--   1 sekita   sekita          6 Jul  3 15:10 nqueen12.out
+-rw-r--r--   1 sekita   sekita          6 Jul  3 15:10 nqueen13.out
+-rw-r--r--   1 sekita   sekita          7 Jul  3 15:10 nqueen14.out
+-rw-r--r--   1 sekita   sekita          0 Jul  3 15:10 read.out
+-rw-r--r--   1 sekita   sekita          4 Jul  3 15:10 slife.out
+-rw-r--r--   1 sekita   sekita        283 Jul  3 15:10 t0thr1.out
+-rw-r--r--   1 sekita   sekita        157 Jul  3 15:10 t0thr2.out
+-rw-r--r--   1 sekita   sekita        175 Jul  3 15:10 t0thr3.out
+-rw-r--r--   1 sekita   sekita          0 Jul  3 15:10 throw.out
+-rw-r--r--   1 sekita   sekita          0 Jul  3 15:10 unify.out
+-rw-r--r--   1 sekita   sekita        272 Jul  3 15:10 unify_exrefs.out
+-rw-r--r--   1 sekita   sekita        391 Jul  3 15:10 vector_built.out
+-rw-r--r--   1 sekita   sekita        409 Jul  3 15:10 vector_built_2.out
+-rw-r--r--   1 sekita   sekita        177 Jul  3 15:10 wec_exhaust_1.out
+-rw-r--r--   1 sekita   sekita        209 Jul  3 15:10 wec_exhaust_2.out
+-rw-r--r--   1 sekita   sekita        159 Jul  3 15:10 wec_exhaust_3.out
+-rw-r--r--   1 sekita   sekita        157 Jul  3 15:10 wec_indirect.out
+
+test:
+total 93
+-rw-r--r--   1 sekita   sekita       4519 Jul  3 15:10 Makefile
+-rw-r--r--   1 sekita   sekita      10424 Jul  3 15:10 atomfunc.kl1
+-rw-r--r--   1 sekita   sekita       1705 Jul  3 15:10 atomfunc.perl
+-rw-r--r--   1 sekita   sekita          0 Jul  3 15:10 atomfunc.res.cmp
+-rw-r--r--   1 sekita   sekita        616 Jul  3 15:10 client.kl1
+-rw-r--r--   1 sekita   sekita        137 Jul  3 15:10 cmac.kl1
+-rw-r--r--   1 sekita   sekita          6 Jul  3 15:10 cmac.res.cmp
+-rw-r--r--   1 sekita   sekita        828 Jul  3 15:10 deriv.kl1
+-rw-r--r--   1 sekita   sekita       1306 Jul  3 15:10 deriv.res.cmp
+-rw-r--r--   1 sekita   sekita        150 Jul  3 15:10 fact.kl1
+-rw-r--r--   1 sekita   sekita          9 Jul  3 15:10 fact.res.cmp
+-rw-r--r--   1 sekita   sekita       1005 Jul  3 15:10 hanoi.kl1
+-rw-r--r--   1 sekita   sekita          5 Jul  3 15:10 hanoi.res.cmp
+-rw-r--r--   1 sekita   sekita        266 Jul  3 15:10 iotest.kl1
+-rw-r--r--   1 sekita   sekita        266 Jul  3 15:10 iotest.res.cmp
+-rw-r--r--   1 sekita   sekita       1353 Jul  3 15:10 kkqueen.kl1
+-rw-r--r--   1 sekita   sekita          4 Jul  3 15:10 kkqueen.res.cmp
+-rw-r--r--   1 sekita   sekita       6960 Jul  3 15:10 life.kl1
+-rw-r--r--   1 sekita   sekita          4 Jul  3 15:10 life.res.cmp
+-rw-r--r--   1 sekita   sekita       3286 Jul  3 15:10 mastermind.kl1
+-rw-r--r--   1 sekita   sekita          4 Jul  3 15:10 mastermind.res.cmp
+-rw-r--r--   1 sekita   sekita        463 Jul  3 15:10 merge.kl1
+-rw-r--r--   1 sekita   sekita          0 Jul  3 15:10 merge.res.cmp
+-rw-r--r--   1 sekita   sekita       1045 Jul  3 15:10 parsetest.kl1
+-rw-r--r--   1 sekita   sekita          0 Jul  3 15:10 parsetest.res.cmp
+-rw-r--r--   1 sekita   sekita       1727 Jul  3 15:10 pascal.kl1
+-rw-r--r--   1 sekita   sekita       2768 Jul  3 15:10 pascal.res.cmp
+-rw-r--r--   1 sekita   sekita        235 Jul  3 15:10 pp.kl1
+-rw-r--r--   1 sekita   sekita          0 Jul  3 15:10 pp.res.cmp
+-rw-r--r--   1 sekita   sekita        669 Jul  3 15:10 primes.kl1
+-rw-r--r--   1 sekita   sekita          5 Jul  3 15:10 primes.res.cmp
+-rw-r--r--   1 sekita   sekita        683 Jul  3 15:10 primesp.kl1
+-rw-r--r--   1 sekita   sekita          4 Jul  3 15:10 primesp.res.cmp
+-rw-r--r--   1 sekita   sekita        295 Jul  3 15:10 prio.kl1
+-rw-r--r--   1 sekita   sekita         20 Jul  3 15:10 prio.res.cmp
+-rw-r--r--   1 sekita   sekita       9635 Jul  3 15:10 puzzle.kl1
+-rw-r--r--   1 sekita   sekita          3 Jul  3 15:10 puzzle.res.cmp
+-rw-r--r--   1 sekita   sekita       1598 Jul  3 15:10 qlay.kl1
+-rw-r--r--   1 sekita   sekita          3 Jul  3 15:10 qlay.res.cmp
+-rw-r--r--   1 sekita   sekita        634 Jul  3 15:10 qsort.kl1
+-rw-r--r--   1 sekita   sekita        146 Jul  3 15:10 qsort.res.cmp
+-rw-r--r--   1 sekita   sekita        414 Jul  3 15:10 server.kl1
+-rw-r--r--   1 sekita   sekita       3369 Jul  3 15:10 turtles.kl1
+-rw-r--r--   1 sekita   sekita        298 Jul  3 15:10 turtles.res.cmp
+-rw-r--r--   1 sekita   sekita        366 Jul  3 15:10 vecstr.kl1
+-rw-r--r--   1 sekita   sekita         14 Jul  3 15:10 vecstr.res.cmp
+-rw-r--r--   1 sekita   sekita       7394 Jul  3 15:10 wave.kl1
+-rw-r--r--   1 sekita   sekita          0 Jul  3 15:10 wave.res.cmp

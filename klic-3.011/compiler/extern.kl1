@@ -1,0 +1,58 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+% %       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+% ----------------------------------------------------------- */
+%
+%  referring modules.
+%       klic_comp_util
+%
+
+:- module klic_comp_extern.
+
+make_ext_table([])-E.
+make_ext_table([One|Rest])-E :-
+	ext_struct(One)-E,
+	make_ext_table(Rest)-E.
+
+ext_struct(funct(FA))-E :- E <= funct(FA).
+ext_struct(ext(M,_,_))-E :- E <= module(M).
+ext_struct(gnew(Class))-E :- E <= class(Class).
+ext_struct(const(_,Const))-E :- ext_struct(Const)-E.
+ext_struct(atom([]))-E.
+ext_struct(atom(.))-E.
+ext_struct(atom(Atom))-E :- Atom\=[], Atom\=(.) |
+	E <= atom(Atom).
+ext_struct(integer(_))-E.
+ext_struct(float(_))-E :-
+	E <= class(float).
+ext_struct(predicate(M,P,_))-E :-
+	E <= class(predicate),
+	E <= module(M),
+	E <= atom(M),
+	E <= atom(P).
+ext_struct(string(_))-E :-
+	E <= class(byte_string).
+ext_struct(list([H|T]))-E :-
+	ext_struct(H)-E, ext_struct(T)-E.
+ext_struct(functor(S))-E :- functor(S,Funct,Arity) |
+	E <= funct(Funct/Arity),
+	ext_struct_funct(0,Arity,S)-E.
+ext_struct(vector(V))-E :- vector(V,Size) |
+	E <= class(vector),
+	ext_struct_vector(0,Size,V)-E.
+otherwise.
+ext_struct(_)-E.
+
+ext_struct_funct(K,Arity,S)-E :- K>=Arity | true.
+ext_struct_funct(K,Arity,S)-E :-
+        K < Arity, K1 := K + 1, arg(K1,S,X) |
+	ext_struct(X)-E,
+	ext_struct_funct(K1,Arity,S)-E.
+
+ext_struct_vector(K,Size,V)-E :- K>=Size | true.
+ext_struct_vector(K,Size,V)-E :-
+	K < Size, K1 := K + 1, vector_element(V,K,X) |
+	ext_struct(X)-E,
+	ext_struct_vector(K1,Size,V)-E.

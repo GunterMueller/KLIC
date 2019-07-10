@@ -1,0 +1,48 @@
+	    =============================================
+	    KL1 to C compiler system: KLIC (version 3.01)
+
+			     May 21, 2016
+
+		   Kazunori UEDA, Waseda University
+		   ueda -at- ueda.info.waseda.ac.jp
+	    =============================================
+
+This version of KLIC is essentially a maintenance release of
+klic-3.003 (official version released from ICOT and JIPDEC) and
+its extension, klic-3.005 (developed at Waseda University by
+Hiroshi Igarashi, Yusuke Takagi, Ryo Matsumura and Yusuke Kaneki).
+
+It contains a sequential core and a distributed-memory parallel
+implementation.  It is known to work on
+
+- Linux (Ubuntu 16.04 with GCC 5.3.0, 4.3.0-Gentoo with GCC 4.9.4,
+  CentOS release 6.7 with GCC 4.4.7),
+- Mac OS X version 10.11.4 (El-Capitan) with GCC 6.1.0 and
+  LLVM 7.3.0 (see Note below), and
+- Cygwin (32-bit) version 2.5.1-1 with GCC 5.3.0.
+
+Despite its name, the distributed-memory parallel implementation runs
+perfectly on recent SMP (symmetric multiprocessor) systems as well as
+single-processor systems with multi-core CPUs.
+
+Please see README or README.j (Japanese) for the rest of the
+introduction, which is still valid except for hardware-specific
+information and contact addresses.
+
+Detailed installation procedure can be found in INSTALL and INSTALL.j
+(Japanese).  This distribution includes configuration files containing
+typical settings for several OSes (config.sh.*).  We'd suggest copying
+one of them to config.sh, making changes to library paths etc. (if
+necessary), and run "./Configure".
+
+  Note: for Mac OS X Darwin, LLVM 7.0-7.3 with -O2 may not properly
+  compile C files generated from KLIC.  In this case, please use -O1
+  to compile C files generated from KLIC (see and use the setting of
+  DEF_KLICCFLAGS in config.sh.MacOSX).  Alternatviely, you can
+  download GNU GCC from http://hpc.sourceforge.net/ or elsewhere and
+  use it.
+
+Implementation details of KLIC can be found in the (revived) document
+"Inside KLIC" (in documents/inside).  Detailed changelog can be found
+in ChangeLog.  Compiler developers may need to consult FOR-DEVELOPERS
+or FOR-DEVELOPERS.j.

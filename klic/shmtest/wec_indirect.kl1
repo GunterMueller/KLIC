@@ -1,0 +1,229 @@
+% Test for "WEC: indirect export"
+
+:- module main.
+
+main :- lib:io(Os), 
+	lib:prsl(Os,Os2,'### InterNode Test [WEC Indirect Exportation] Begin ###',_), 
+	lib:prs(Os2,Os3,'indirect export (a-f) : ',_), 
+	tr00(Os3,Os4), 
+	lib:prsl(Os4,[],'### InterNode Test [WEC Indirect Exportation] End ###',_). 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	import Node		import Node		export Node
+%          (L)                     (M)                     (R)
+%	+-------+		+-------+		+-------+
+%       |       |-------------->| WEC=1 |-------------->| EUNDF |
+%	+-------+   %read->	+-------+		+-------+
+%        ^Read                                           ^Unify
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr00(Os,OsE):- cn_node(CP,NP), tr00(Os,OsE,CP,NP).
+tr00(Os,OsE,CP,NP):- wait(NP) | tr00M(X,F,CP)@node(NP), tr00R(Os,OsE,X,F).
+tr00R(Os,OsE,X,ack(F)):- X=term, tr00Rw(Os,OsE,F).
+tr00Rw(Os,OsE,ack):- lib:prs(Os,Os2,a,_), tr00next(Os2,OsE).
+otherwise.
+tr00Rw(Os,OsE,_):- lib:prs_err(Os,Os2,a,_), tr00next(Os2,OsE).
+
+tr00M(X,F,CP):- consumeWEC(X,CP,W), n_node(NP), tr00M(X,F,NP,W).
+tr00M(X,F,NP,ack):- wait(NP) | tr00L(X,F)@node(NP).
+
+tr00L(X,F):- F=ack(F2), tr00Lw(X,F2).
+tr00Lw(term,F):- F=ack.
+otherwise.
+tr00Lw(_,F):- F=nak.
+
+tr00next(Os,OsE):- n_node(Node), tr00next(Os,OsE,Node).
+tr00next(Os,OsE,Node):- wait(Node) | tr01(Os,OsE)@node(Node).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	import Node		import Node		export Node
+%          (L)                     (M)                     (R)
+%	+-------+		+-------+		+-------+
+%       |       |-------------->| WEC=1 |-------------->| EUNDF |
+%	+-------+   %unify->	+-------+		+-------+
+%        ^Unify                                          ^Read
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr01(Os,OsE):- cn_node(CP,NP), tr01(Os,OsE,CP,NP).
+tr01(Os,OsE,CP,NP):- wait(NP) | tr01M(X,CP)@node(NP), tr01Rw(Os,OsE,X).
+
+tr01Rw(Os,OsE,term):- lib:prs(Os,Os2,b,_), tr01next(Os2,OsE).
+otherwise.
+tr01Rw(Os,OsE,_):- lib:prs_err(Os,Os2,b,_), tr01next(Os2,OsE).
+
+tr01M(X,CP):- consumeWEC(X,CP,W), n_node(NP), tr01M(X,NP,W).
+tr01M(X,NP,ack):- wait(NP) | tr01L(X)@node(NP).
+
+tr01L(X):- X=term.
+
+tr01next(Os,OsE):- n_node(Node), tr01next(Os,OsE,Node).
+tr01next(Os,OsE,Node):- wait(Node) | tr02(Os,OsE)@node(Node).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	import Node		import Node		export Node
+%          (L1)                    (M)                     (R)
+%	+-------+   %unify->	+-------+		+-------+
+%       |       |-------------->| WEC=1 |-------------->| EUNDF |
+%	+-------+	    +-->+-------+		+-------+
+%          (L2)             |
+%	+-------+           |
+%       |       |-----------+
+%	+-------+   %read->
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr02(Os,OsE):- cn_node(CP,NP), tr02(Os,OsE,CP,NP).
+tr02(Os,OsE,CP,NP):- wait(NP) | tr02M(X,F,CP)@node(NP), tr02Rw(Os,OsE,F).
+
+tr02Rw(Os,OsE,ack):- lib:prs(Os,Os2,c,_), tr02next(Os2,OsE).
+otherwise.
+tr02Rw(Os,OsE,_):- lib:prs_err(Os,Os2,c,_), tr02next(Os2,OsE).
+
+tr02M(X,F,CP):- consumeWEC(X,CP,W), n_node2(N1,N2), tr02M(X,F,N1,N2,W).
+tr02M(X,F,N1,N2,ack):- wait(N1), wait(N2) |
+	tr02L1(X,G)@node(N1), tr02L2(X,G,F)@node(N2).
+
+tr02L1(X,ack):- X=term.
+
+tr02L2(X,G,F):- G=ack, tr02Lw(X,F).
+tr02Lw(term,F):- F=ack.
+otherwise.
+tr02Lw(_,F):- F=nak.
+
+tr02next(Os,OsE):- n_node(Node), tr02next(Os,OsE,Node).
+tr02next(Os,OsE,Node):- wait(Node) | tr03(Os,OsE)@node(Node).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	import Node		import Node		export Node
+%          (L1)
+%	+-------+
+%       |       |-----------+
+%	+-------+  %read->  |
+%          (L2)             |      (M)                     (R)
+%	+-------+  %read->  +-->+-------+		+-------+
+%       |       |-------------->| WEC=1 |-------------->| EUNDF |
+%	+-------+	    +-->+-------+		+-------+
+%          (L3)             |                            ^Unify
+%	+-------+           |
+%       |       |-----------+
+%	+-------+  %read->
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr03(Os,OsE):- cn_node(CP,NP), tr03(Os,OsE,CP,NP).
+tr03(Os,OsE,CP,NP):- wait(NP) | 
+	tr03M(X,F1,F2,F3,CP)@node(NP), tr03R(Os,OsE,X,F1,F2,F3).
+tr03R(Os,OsE,X,ack(F1),ack(F2),ack(F3)):- X=term, tr03Rw(Os,OsE,F1,F2,F3).
+tr03Rw(Os,OsE,ack,ack,ack):- lib:prs(Os,Os2,d,_), tr03next(Os2,OsE).
+otherwise.
+tr03Rw(Os,OsE,_,_,_):- lib:prs_err(Os,Os2,d,_), tr03next(Os2,OsE).
+
+tr03M(X,F1,F2,F3,CP):- true |
+	consumeWEC(X,CP,W), n_node3(N1,N2,N3), tr03M(X,F1,F2,F3,N1,N2,N3,W).
+tr03M(X,F1,F2,F3,N1,N2,N3,ack):- wait(N1),wait(N2),wait(N3) |
+	tr03L(X,F1)@node(N1), tr03L(X,F2)@node(N2),
+	tr03L(X,F3)@node(N3).
+
+tr03L(X,F):- F=ack(F2), tr03Lw(X,F2).
+tr03Lw(term,F):- F=ack.
+otherwise.
+tr03Lw(_,F):- F=nak.
+
+tr03next(Os,OsE):- n_node(Node), tr03next(Os,OsE,Node).
+tr03next(Os,OsE,Node):- wait(Node) | tr04(Os,OsE)@node(Node).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	import Node		import Node		export Node
+%          (L)                     (M)                     (R)
+%	+-------+		+-------+		+-------+
+%       |       |-------------->| WEC=1 |-------------->| EUNDF |
+%	+-------+   %read->	+-------+		+-------+
+%        ^Read-2                 ^Read-1                 ^Unify
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr04(Os,OsE):- cn_node(CP,NP), tr04(Os,OsE,CP,NP).
+tr04(Os,OsE,CP,NP):- wait(NP) | tr04M(X,F,CP)@node(NP), tr04R(Os,OsE,X,F).
+tr04R(Os,OsE,X,ack(F1,F2)):- X=term, tr04Rw(Os,OsE,F1,F2).
+tr04Rw(Os,OsE,ack,ack):- lib:prs(Os,Os2,e,_), tr04next(Os2,OsE).
+otherwise.
+tr04Rw(Os,OsE,_,_):- lib:prs_err(Os,Os2,e,_), tr04next(Os2,OsE).
+
+tr04M(X,F,CP):- consumeWEC(X,CP,W), n_node(NP), tr04M(X,F,NP,W).
+tr04M(X,F,NP,ack):- wait(NP) | tr04L(X,F2)@node(NP), tr04Mw(X,F,F2).
+tr04Mw(X,F,ack(F0,F1)):- F=ack(F0,F2), tr04Mw(X,F1,F2).
+tr04Mw(term,F1,F2):- F1=ack, F2=ack.
+otherwise.
+tr04Mw(_,F1,F2):- F1=ack, F2=nak.
+
+tr04L(X,F):- F=ack(F0,F1), tr04Lw(X,F0,F1).
+tr04Lw(X,F,ack):- tr04Lw(X,F).
+tr04Lw(term,F):- F=ack.
+otherwise.
+tr04Lw(_,F):- F=nak.
+
+tr04next(Os,OsE):- n_node(Node), tr04next(Os,OsE,Node).
+tr04next(Os,OsE,Node):- wait(Node) | tr05(Os,OsE)@node(Node).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%	import Node		import Node		export Node
+%          (L1)
+%	+-------+   {term}
+%       |       |-----------+
+%	+-------+ %unify->  |
+%          (L2)             |      (M)                     (R)
+%	+-------+   {A}     +-->+-------+		+-------+
+%       |       |-------------->| WEC=1 |-------------->| EUNDF |
+%	+-------+ %unify->  +-->+-------+		+-------+
+%          (L3)             |                            ^Unify
+%	+-------+   {A}     |
+%       |       |-----------+
+%	+-------+ %unify->
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr05(Os,OsE):- cn_node(CP,NP), tr05(Os,OsE,CP,NP).
+tr05(Os,OsE,CP,NP):- wait(NP) | 
+	tr05M(X,F2,F3,CP)@node(NP), tr05Rw(Os,OsE,F2,F3).
+tr05Rw(Os,OsE,ack,ack):- lib:prs(Os,Os2,f,_), tr05next(Os2,OsE).
+otherwise.
+tr05Rw(Os,OsE,_,_):- lib:prs_err(Os,Os2,f,_), tr05next(Os2,OsE).
+
+tr05M(X,F2,F3,CP):- true |
+	consumeWEC(X,CP,W), n_node3(N1,N2,N3), tr05M(X,F2,F3,N1,N2,N3,W).
+tr05M(X,F2,F3,N1,N2,N3,ack):- wait(N1),wait(N2),wait(N3) |
+	tr05L1(X,S1)@node(N1), tr05L2(X,F2,S2)@node(N2),
+	tr05L2(X,F3,S3)@node(N3), tr05Ms(S1,S2,S3).
+tr05Ms(ack(F1),ack(F2),ack(F3)):- F1=ack, F2=ack, F3=ack.
+
+tr05L1(X,S):- S=ack(W), tr05L1u(X,W).
+tr05L1u(X,ack):- X={term}.
+
+tr05L2(X,F,S):- S=ack(W), tr05L2u(X,F,W).
+tr05L2u(X,F,ack):- X={A}, tr05L2w(A,F).
+tr05L2w(term,F):- F=ack.
+otherwise.
+tr05L2w(_,F):- F=nak.
+
+tr05next(Os,OsE):- n_node(Node), tr05next(Os,OsE,Node).
+tr05next(Os,OsE,Node):- wait(Node) | tr06(Os,OsE)@node(Node).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr06(Os,OsE):- lib:prsl(Os,OsE,' ...done',_). 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+nextnode(Add,Next):- 
+	current_node(Current,NumberOfNodes), 
+	modNode(~(Current+Add),NumberOfNodes,Next).  
+nextnode(Add,Current,Next):- 
+	current_node(Current,NumberOfNodes), 
+	modNode(~(Current+Add),NumberOfNodes,Next).  
+
+modNode(CalNode,NumberOfNodes,Node) :- CalNode >= 0 | 
+	Node := CalNode mod NumberOfNodes.
+modNode(CalNode,NumberOfNodes,Node) :- CalNode <  0 | 
+	CalNode2 := CalNode + NumberOfNodes, 
+	modNode(CalNode2,NumberOfNodes,Node).
+
+n_node(Next) :- nextnode(1,Next).
+cn_node(Current,Next):- nextnode(1,Current,Next). 
+n_node2(Next1,Next2):- nextnode(1,Next1), nextnode(2,Next2). 
+n_node3(Next1,Next2,Next3):- 
+	nextnode(1,Next1), nextnode(2,Next2), nextnode(3,Next3). 
+
+consumeWEC(X,PP,F):- wait(PP) | consumeWEC(X,PP,F,ack,30).
+consumeWEC(X,PP,F,ack,N):- N>0, NN:=N-1 |
+	sendBackWEC(X,A)@node(PP), consumeWEC(X,PP,F,A,NN).
+consumeWEC(_,_,F,ack,0):- F=ack.
+
+sendBackWEC(_,F):- F=ack.

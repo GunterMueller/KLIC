@@ -1,0 +1,356 @@
+%!PS-Adobe-2.0 EPSF-1.2
+%%BoundingBox: 179 640 343 820
+%%Title: single-susp
+%%CreationDate: Thu Nov 27 13:32:44 1997
+%%Creator: Tgif-3.0J-p13 by William Chia-Wei Cheng (william@cs.UCLA.edu)
+
+/tgifdict 8 dict def
+tgifdict begin
+
+%%Title: eucfont.ps
+% old eucfont.ps(OCFeucfont) and new eucfont.ps(CIDeucfont) were combined.
+%  1996-09, kawamata@sra.co.jp
+% Sample Usage:
+%   Operands are only font names permitted. Don't put fontdict itself.
+% /Courier-Ryumin /Courier /Ryumin-Light-EUC-V eucfont
+
+%%Title: CIDeucfont.ps
+%%Creator: yohtaki@cis.ibaraki.ac.jp
+%%CreationDate: 1996-9-29
+%%EndComments
+%
+% <newfont> <asciifont> <kanjifont> CIDeucfont
+/CIDeucfont {
+dup findfont /WMode get 1 eq 4 1 roll % push direction info.
+12 dict begin
+  /CIDInit /ProcSet findresource begin
+  exch [ 3 1 roll ] beginrearrangedfont
+      3 -1 roll {   % pop direction info
+         /WMode 1 def	% vertical font
+         0 beginusematrix [ 0 1 -1 0 0 0.3 ] endusematrix
+      } if
+      1 usefont
+      1 beginbfrange
+         <00> <7F> <00>
+       endbfrange
+     endrearrangedfont
+  end
+end
+} def
+
+%%Title: OCFeucfont.ps
+%%Creator: shikida@cs.titech.ac.jp, ueno@cs.titech.ac.jp
+%%CreationDate: 1991-2-27
+%%EndComments
+% <font> OCFcopyfont <font>
+/OCFcopyfont {
+    dup maxlength 1 add dict begin
+    {
+	1 index /FID ne 2 index /UniqueID ne and
+	{def} {pop pop} ifelse
+    } forall
+    currentdict
+    end
+} bind def
+% <newfont> <asciifont> <kanjifont> OCFeucfont
+/OCFeucfont {
+      12 dict begin
+	dup type /nametype eq { findfont } if
+	dup /WMode known {
+	    dup /WMode get /WMode exch def
+	    WMode 1 eq {
+		[0.0 1.0 -1.0 0.0 0.0 0.30] makefont
+	    } if
+	} if
+	OCFcopyfont dup begin
+	    /Encoding Encoding
+	    FMapType dup 2 eq {
+		pop 128 128
+	    } { 5 eq {
+		256 256
+	    } {
+		/compositefont errordict /invalidfont get exec
+	    } ifelse
+	    } ifelse
+	    getinterval def
+	end
+	/kanjifont exch definefont
+	exch
+
+	dup type /nametype eq { findfont } if
+	exch
+
+	/FDepVector [ 4 2 roll ] def
+	/FontType 0 def
+	/FMapType 4 def
+	/FontMatrix matrix def
+	/Encoding [ 0 1 ] def
+	/FontBBox {0 0 0 0} def
+	dup /FontName exch def
+	currentdict
+    end
+    definefont pop
+} def
+
+% <newfont> <asciifont> <kanjifont> eucfont
+/eucfont {
+	dup findfont
+	/FMapType get 9 eq
+		{ CIDeucfont}
+		{ OCFeucfont} ifelse
+} def
+/tgifarrowtipdict 8 dict def
+tgifarrowtipdict /mtrx matrix put
+
+/tgifarrowtip
+ { tgifarrowtipdict begin
+      /dy exch def
+      /dx exch def
+      /h exch def
+      /w exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      dy dx atan rotate
+      0 0 moveto
+      w neg h lineto
+      w neg h neg lineto
+      savematrix setmatrix
+   end
+ } def
+
+end
+
+%%PageBoundingBox: 179 640 343 820
+tgifdict begin
+/tgifsavedpage save def
+
+1 setmiterlimit
+1 setlinewidth
+
+0 setgray
+
+72 0 mul 72 11.70 mul translate
+72 128 div 100.000 mul 100 div dup neg scale
+
+gsave
+
+/tgiforigctm matrix currentmatrix def
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         352 96 moveto 416 96 lineto 416 128 lineto 352 128 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         448 96 moveto 512 96 lineto 512 128 lineto 448 128 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% POLY/OPEN-SPLINE
+0 setgray
+gsave
+   newpath
+      404 112 moveto
+      0 44 atan dup cos 8.000 mul 448 exch sub
+      exch sin 8.000 mul 112 exch sub lineto
+   tgiforigctm setmatrix
+   1 setlinewidth
+   stroke
+grestore
+gsave
+   tgiforigctm setmatrix
+   newpath
+      448 112 8.000 3.000 44 0 tgifarrowtip
+   1 setgray closepath fill
+   0 setgray
+   newpath
+      448 112 8.000 3.000 44 0 tgifarrowtip
+   closepath fill
+grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         448 128 moveto 512 128 lineto 512 160 lineto 448 160 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         448 160 moveto 512 160 lineto 512 192 lineto 448 192 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         544 260 moveto 608 260 lineto 608 356 lineto 544 356 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% POLY/OPEN-SPLINE
+0 setgray
+gsave
+   newpath
+      320 112 moveto
+      0 32 atan dup cos 8.000 mul 352 exch sub
+      exch sin 8.000 mul 112 exch sub lineto
+   tgiforigctm setmatrix
+   1 setlinewidth
+   stroke
+grestore
+gsave
+   tgiforigctm setmatrix
+   newpath
+      352 112 8.000 3.000 32 0 tgifarrowtip
+   1 setgray closepath fill
+   0 setgray
+   newpath
+      352 112 8.000 3.000 32 0 tgifarrowtip
+   closepath fill
+grestore
+
+% POLY/OPEN-SPLINE
+0 setgray
+gsave
+   newpath
+      500 112 moveto
+      518.67 112.00 528.00 100.00 528.00 76.00 curveto
+      528.00 52.00 494.67 40.00 428.00 40.00 curveto
+      361.33 40.00 328.00 52.00 328.00 76.00 curveto
+      328.00 100.00 336.00 112.00
+      0 24 atan dup cos 8.000 mul 352 exch sub
+      exch sin 8.000 mul 112 exch sub curveto
+   tgiforigctm setmatrix
+   1 setlinewidth
+   stroke
+grestore
+gsave
+   tgiforigctm setmatrix
+   newpath
+      352 112 8.000 3.000 24 0 tgifarrowtip
+   1 setgray closepath fill
+   0 setgray
+   newpath
+      352 112 8.000 3.000 24 0 tgifarrowtip
+   closepath fill
+grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         544 260 moveto 608 260 lineto 608 284 lineto 544 284 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         600 260 moveto 608 260 lineto 608 284 lineto 600 284 lineto
+      closepath
+      stroke
+   grestore
+grestore
+
+% POLY/OPEN-SPLINE
+0 setgray
+gsave
+   newpath
+      504 172 moveto
+      517.33 172.00 524.00 189.33 524.00 224.00 curveto
+      524.00 258.67 532.00 276.00
+      0 24 atan dup cos 8.000 mul 548 exch sub
+      exch sin 8.000 mul 276 exch sub curveto
+   tgiforigctm setmatrix
+   1 setlinewidth
+   stroke
+grestore
+gsave
+   tgiforigctm setmatrix
+   newpath
+      548 276 8.000 3.000 24 0 tgifarrowtip
+   1 setgray closepath fill
+   0 setgray
+   newpath
+      548 276 8.000 3.000 24 0 tgifarrowtip
+   closepath fill
+grestore
+
+% TEXT
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H /Times-Roman /Ryumin-Light-EUC-H eucfont
+/Times-Roman-Ryumin-Light-EUC-H findfont [12 0 0 -12 0 0] makefont setfont
+   gsave
+      560 324 moveto (\245\264\241\274\245\353) show
+   grestore
+
+% POLY/OPEN-SPLINE
+0 setgray
+gsave
+   newpath
+      512 144 moveto
+      520.00 141.33 524.00 134.67 524.00 124.00 curveto
+      524.00 113.33 509.33 108.00 480.00 108.00 curveto
+      450.67 108.00 436.00 114.67 436.00 128.00 curveto
+      436.00 141.33 440.00 146.67
+      -4 12 atan dup cos 8.000 mul 448 exch sub
+      exch sin 8.000 mul 144 exch sub curveto
+   tgiforigctm setmatrix
+   1 setlinewidth
+   stroke
+grestore
+gsave
+   tgiforigctm setmatrix
+   newpath
+      448 144 8.000 3.000 12 -4 tgifarrowtip
+   1 setgray closepath fill
+   0 setgray
+   newpath
+      448 144 8.000 3.000 12 -4 tgifarrowtip
+   closepath fill
+grestore
+
+grestore
+tgifsavedpage restore
+end
+%MatchingCreationDate: Thu Nov 27 13:32:44 1997

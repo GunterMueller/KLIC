@@ -1,0 +1,43 @@
+/*-----------------------------------------------------------------------------
+Program: Towers of Hanoi
+Author:  E. Tick
+Date:    June 15 1988
+
+Notes:
+1. To run:
+    ?- go(M,N).
+
+where N = 2**M - 1
+
+This is a true binary process tree: each recursive call spawns two children.
+There is one "move" per call, thus we get the relation N = 2**M - 1.
+The output list is superfluous, but I included it because it existed in
+a Prolog version of the algorithm.
+
+A good test is M=14. 
+-----------------------------------------------------------------------------*/
+:- module main.
+
+main :-
+	klicio:klicio([stdout(Res)]),
+	check_outstream(Res).
+
+check_outstream(normal(S)) :-
+	go(12,X),
+        S=[putt(X),nl].
+check_outstream(abnormal).
+
+go(N, X) :-
+	move(N, left, center, right, O, []), count(O, X).
+
+move(N, A, B, C, O1, O4) :- N>0 |
+    M := N-1,
+%    move(M, A, C, B, O1, O2),
+%    O2 = 
+    move(M, A, C, B, O1, [m(A,B)|O3]),
+    move(M, C, B, A, O3, O4).
+move(0, _, _, _, O1, O2) :- true | O1 = O2.
+
+count(L,N) :- true | count(L,0,N).
+count([X|Xs],M,N) :- M1 := M+1, count(Xs,M1,N).
+count([],M,N) :- true | M = N.

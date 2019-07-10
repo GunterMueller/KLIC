@@ -1,0 +1,1513 @@
+% (C) 1998 Japan Information Processing Development Center
+% 詳細な配布条件については、COPYRIGHT-JIPDEC.jを参照してください。
+\chapter{KLICの基本的な動作}\label{basic-run}
+
+本章では、KLICでの、KL1プログラムの基本的な動作について
+説明をする。
+
+\section{動作モデル}\label{foundamental-model}
+\index{どうさもでる@動作モデル}
+
+KLICでのKL1プログラムの動作モデルは以下の通りである。
+
+\begin{enumerate}
+\item 処理系は実行可能ゴールスタックから、1つゴールを選択し、
+ガード実行を試みる(try操作)。
+
+\item ガード実行を試みた結果により、通常以下のどちらかの動作をする。
+\begin{enumerate}
+\item ガード実行を試みた結果、そのゴールが中断することが判明した場合には、
+中断の原因となった未定義変数とゴールとを
+「ペア」にして記憶しておく(中断操作)。
+
+\item ガード実行できた場合には、ボディ実行を行う。
+その結果、以下のようなことが行われる可能性がある
+
+\begin{itemize}
+\item 単一化(単一化操作)。
+その結果、未定義変数の具体化により、中断ゴールが再開可能
+になる可能性がある。その場合には中断ゴールを実行可能ゴールスタックに入れる。
+
+\item あらたなゴールのエンキュー(エンキュー操作)。
+
+\item 実行の失敗(失敗操作)。
+\end{itemize}
+
+さらに、ガード実行を試みた結果、「失敗」する(どの候補節にもコミットしない)
+可能性がある(ガード失敗操作)。
+\end{enumerate}
+
+\item 以上を繰り返し、実行可能スタックにゴールがなくなれば、実行は終了
+(top-level succeed操作)。
+\end{enumerate}
+
+以上のような処理の各々は、KLICのコンパイラによりKL1プログラムから生成された
+コンパイルコード(すなわちmodule型関数)
+と、KLICの実行時ライブラリとが協調することにより
+実現されている。その概略を以下で説明する。
+
+\section{トップレベルループ}
+
+\index{とっぷれべるるーぷ@トップレベルループ}
+
+先に説明した動作モデルをごく単純化すると、「ゴールの選択」
+$\Rightarrow$ 「実行」 $\Rightarrow$ 「ゴールの選択」\ldots
+という「ループ」であることがわかる。これをKLICのトップレベルループと
+呼ぶ。このループは \filename{kmain.c}内のtoploop関数により実現されている。
+
+もう少し正確、詳細に解説すると、
+モジュールはmodule型関数で実装されるが、この関数は以下のように動作する。
+このモジュール型の関数はKLICのコンパイラで出力されるものであり、
+ユーザが定義したモジュール、システムで定義されているモジュール各々に
+一関数ずつある。
+
+\begin{itemize}
+\item この関数は、当該モジュール内で
+定義されているモジュール内の述語群の実行の連鎖が続く限り、returnしない。
+
+\item 外部モジュールで定義されている実行の呼び出しが起きたり、
+割り込み処理が起きたりしたことにより、KL1述語の実行以外の
+「例外的な処理」\label{exceptional-execution}
+を行う必要が生じたときにはreturnし、トップレベルループに
+戻る。
+
+\end{itemize}
+
+この関数が終了した後には、大域変数current\_queueにその時の
+実行可能queueの先頭がセットされているので、それをqpに戻し、
+次のモジュールの実行を行う。
+
+以下がmodule型関数を呼び出す toploop関数の全てである。
+
+{\addtolength{\baselineskip}{-3pt}
+\begin{verbatim}
+    static void toploop()
+    {
+      declare_globals;
+      struct goalrec *qp = current_queue;
+      Const struct predicate *toppred = qp->pred;
+      module func = (module)toppred->func;
+      while (1) {
+        func = ((module (*)())func)(glbl, qp, heapp, toppred);
+        qp = current_queue;
+        toppred = qp->pred;
+      }
+    }
+\end{verbatim}
+}
+
+\index{ごーるすたっく@ゴールスタック}
+
+current\_queueとあるのが(現在実行中の優先度の)実行可能ゴールスタックであり、
+struct goalrecの線型リストとなっている。先頭をqpにとりだし、
+述語レコード(struct predicate)をとりだし、モジュールを実現する関数
+(func)をさらに取りだしている。そして、
+その関数を呼びだすことを繰り返すwhileループに突入する。
+
+ここで、module型関数の引数は以下のようになっている。
+
+\begin{description}
+\item[glbl:\ ] 大域データ構造へのポインタ(\REF{data:glbl}参照)
+
+\item[qp:\ ] 現在の実行優先度の実行可能キュー
+
+\item[heapp:\ ] ヒープ割付点
+
+\item[toppred:\ ] (この文脈で判明するように)これから実行する
+述語のレコード
+\end{description}
+
+%以下で、より詳細な解説を行うため、動作モジュール型関数の
+%内部に立ち入る。
+%以下では、このmodule型関数の内部を naive
+%reverseのコードを例として説明する。
+
+\section{コンパイルドコード}
+
+\subsection{モジュールの原則}
+
+\index{module}\index{もじゅーる@モジュール}
+
+出力コードの原則として、モジュール全体の構造について解説する。
+
+\begin{itemize}
+\item 1モジュール、1関数。
+
+\item アトムID、ファンクタについては別ファイル(各々atom.h, funct.h)に
+(少なくとも)リンク対象となるモジュールに含まれるもの、
+KLICの実行可能ライブラリで利用されているものが全て記述され、
+それをincludeする。
+
+\item コードは以下の様な順で記述されている。
+
+\begin{enumerate}
+\item ヘッダのinclude。常に固定して、\filename{klic/klichdr.h}, 
+\filename{atom.h},\filename{funct.h}がincludeされる。
+
+\item 出力対象となるモジュール関数のforward宣言がなされる。
+これはこの直後にて、必要なデータを出力するための措置である。
+モジュール関数のCレベルの名称は規則的にエンコードされるが、その規則については、
+\REF{module-encoding}を参照のこと。
+
+\item 当該モジュールで定義されている述語の全述語構造体が
+大域変数の形で出力される。
+述語構造体のCレベルの名称は規則的にエンコードされるが、その規則については、
+\REF{predicate-encoding}を参照のこと。
+
+\item この後、モジュール関数が出力される。
+\begin{enumerate}
+\item モジュール関数の関数宣言がなされる。
+
+\item 最初に、「定数の構造体」のデータ構造が出力される。
+詳細は\REF{structured-const}参照のこと。
+\index{ていすうこうぞうたい@定数構造体}
+
+\item その直後に、KL1で記述された内容を実行するCのコードが出力される。
+このコードは概要としては以下のような構造になっている。
+
+\begin{itemize}
+\item まず、引数レジスタを模す、a0, a1といった変数が確保される。
+この変数は必要な分(すなわち、当該モジュール中の述語の最大引数数)
+だけ確保される。
+
+\item switch\_on\_pred なるマクロにより、述語間のdispatchを行うコードが
+出力される。
+
+\item 以降に各述語を実現するコードが出力される。
+
+\item 末尾(ラベルinterrupt\_$N$ 以降)に、モジュール関数を抜ける時の処理
+が出力される。「モジュール関数を抜けるとき」原因には、
+他のモジュールの述語の呼び出しの発生、割り込みや、メモリ不足(を解消のため
+GCを行う)などがある。
+\end{itemize}
+\end{enumerate}
+\end{enumerate}
+\end{itemize}
+
+以上の説明の内容を、後述する例の出力コード図\ref{sample-all}全体を簡略化
+したコードにより図\ref{sample-frame}に示す。
+
+\begin{figure}
+{\addtolength{\baselineskip}{-3pt}
+\begin{verbatim}
+<インクルード部分>
+<モジュール関数のフォワード宣言>
+<述語の構造体の定義>
+module module_XXXX(glbl, qp, allocp, topred) /* モジュール関数 */
+    ....
+{
+   <定数構造体、局所変数定義>
+  module_top:
+    switch_on_pred() {
+      case_pred(0, main_0_top);
+        case_pred(1, nrev_2_top);
+        last_case_pred(2, append_3_top);
+    }
+
+    main_0_top: {
+      <main/0のコード>
+    }
+
+    nrev_2_top: {
+      <nrev/2のコード>
+    }
+
+    append_3_top: {
+      <append/3のコード>
+    }
+}
+\end{verbatim}
+}
+\caption{「モジュール」の構成}
+\label{sample-frame}
+\end{figure}
+
+
+\subsection{述語呼び出しの実現}\label{call-pred}
+
+\index{じゅつごよびだし@述語呼び出し}
+\index{execute}
+\index{ごーる@ゴール!えんきゅー@エンキュー}
+\index{ごーる@ゴール!デキュー@デキュー}
+\index{ごーる@ゴール!つうじょうよびだし@通常呼び出し}
+\index{ごーる@ゴール!ちょくせつよびだし@直接呼び出し}
+
+述語の呼び出しは、大別して、以下の2通りの実装がある。
+
+\begin{description}
+\item[通常呼び出し:\ ] KLICでは述語を呼び出すためには、基本的に、
+
+\begin{enumerate}
+\item ゴールレコードを作成し、そこに述語情報、引数情報を書きこみ、
+ゴールスタックにエンキューする。これを必要な回数繰り返す。
+
+\item 実行している述語が終了したならば、ゴールスタックより
+ゴールをデキューして、その述語を次の実行対象にする。
+\end{enumerate}
+
+という手続が行われる。
+
+\item[直接呼び出し:\ ] 上記のような呼び出し手続を行う場合、
+基本的には、直前にエンキューした述語をデキューし実行することになる。
+よって、ゴールレコードのエンキューとデキューとが連続する場合には、
+ゴールレコード作成、エンキュー、デキューという処理を介さずに
+直接実行対象とするという最適化が考えられる。
+これを直接呼び出しと呼ぶ。
+\end{description}
+
+KLICでは、中断がなければユーザが記述した順にゴールを実行するように
+コードを出力する。そのために、ユーザが記述した順と逆の順でゴールを
+準備し、エンキューしていくようなコードが出力される。よって、
+上記の直接呼び出しの最適化が行われる対象となるゴールは
+最後にエンキューされたゴール、すなわち、最初に記述された
+ゴールであり、この最適化をFGO(First Goal Optimization)と呼ぶ。
+
+このFGOは、呼び出し側と同じ述語と同じモジュールに対しての呼び出しに対してのみ
+行っており、この場合には、Cのgoto 文によるジャンプ
+が出力されるようになっている。
+C言語では他の関数の中間に飛び込む、という機能はないため、
+「最初に記述されたゴール」が他モジュールの場合にはFGO最適化を行わず
+通常呼び出しを行う。
+
+また、以上のような最適化を行っているため、例外的な場合
+\REFER{exception}を除き、当該モジュールだけで実行されている間は
+この関数からreturnはされない。
+
+なお、通常呼び出しのデキュー処理は、preceed()なるマクロで実現されている。
+\label{proceed}
+また、直接呼び出しはexecuteなるマクロで実現されている。
+\label{execute}
+
+\subsection{述語の原則}
+
+\index{じゅつご@述語!しゅつりょくけいしき@出力形式}
+
+次にある述語に着目した出力コードの原則について解説する。
+つまり、\REF{sample-frame}にて\verb|<nrev/2のコード>|と
+記述した部分について解説する。
+図\ref{sample-all}のnrev/2の出力部分、すなわち、84 -- 125行目部分を
+模式化した図を図\ref{sample-pred}に示す。
+
+\begin{figure}
+{\addtolength{\baselineskip}{-3pt}
+\begin{verbatim}
+nrev_2_top: {            <通常呼び出しの入口>
+  q x0, x1, x2;
+  a0 = qp->args[0];      <ゴールレコード内の引数の読み出し>
+  a1 = qp->args[1];
+  qp = qp->next;
+  nrev_2_clear_reason:   <特殊の直接呼び出しの入口>
+  reasonp = reasons;     
+  nrev_2_0:              <通常な直接呼び出しの入口>
+  nrev_2_1:
+  switch (ptagof(a0)) {
+     <nrev/2のコード部分>
+     .....
+     .....
+  }
+ nrev_2_ext_interrupt:   <直接呼び出し時の例外処理入口>
+  reasonp = 0l;
+ nrev_2_interrupt:       <例外処理入口>
+  goto interrupt_2;
+  }
+\end{verbatim}
+}
+\caption{述語の構造}
+\label{sample-pred}
+\end{figure}
+
+図\ref{sample-pred}内に記述された各説明についての概説を以下に記述する。
+
+\begin{description}
+\item[通常呼び出しの入口:\ ]
+述語が通常呼び出しされた場合には、モジュール関数の入口を経由し、
+switch\_on\_pred マクロを経由してこの部分より実行される。
+このあち、ゴールレコード内に格納されている引数をa0, a1 \ldots a{\em n} といった
+変数に読みこむ。
+
+\item[特殊な直接呼び出しの入口:\ ] 通常、直接呼び出しの際には、
+この箇所にgoto文により飛び込む。直接呼び出しでは、
+ゴールレコードを用いずに、引数(a0\ldots{\em n})は、
+すでに呼び出し側で用意しているため、引数の読み出し処理は必要ない。
+
+この入口の直後では、\verb|reasonp = reasons;|なる操作が行われる。
+reasonpは中断スタックの先頭を指すことになっている変数である。
+中断スタックとは、KL1での「中断操作」を実装するために用いられている
+スタックである。KLICでのガード実行中に、具体化されていることが必要である
+データがまだ具体化されていない場合には、この中断スタックにそのデータへの
+ポインタを積む。当該述語の全ての節の実行可能性を確認した後、どの述語も
+実行することができない場合には、後述する「例外処理入口」に飛ぶ
+(これは、上記でのinterrupt\_2 にgotoした後に行われる)。
+その結果、例外処理中でこの中断スタックが調査され、
+空かどうか検査を行う。空でなければ、積まれているデータが中断した原因であり、
+中断操作を行う。中断スタックが空であれば、中断する要因はなかったことになり、
+「fail操作」が行われることになる。
+
+この「特殊な直接呼び出しの入口」の直後ではこの中断スタックを空にする
+操作が行われる。つまり、直接呼び出しを行う時点で中断スタックが空ではない
+可能性がある場合にはこの部分に飛びこむようなコードが出力される。
+
+\item[通常の直接呼び出しの入口:\ ] ここに飛び込むのは、
+直前の述語(直接呼び出しを行う述語)で直接呼び出しを行った
+時点で中断スタックが空であるような場合にここに飛び込むコードが出力される。
+KL1のかなり多くの述語では、「中断要因が積まれた(=中断スタックが空ではない)」
+にも関らず述語の実行ができることはなく、多くの場合には直接呼び出し時には
+こちらの方を呼び出すことができる。これができない(つまり、中断スタックが
+空ではない状態で次の述語を直接呼び出しする可能性がある)のは
+多重待ちをしている場合である。
+
+\item[nrev/2のコード部分:\ ] 実際のnrev/2のコードが出力される。
+これらのついては、\REF{sample-all}を参照のこと。
+
+\item[直接呼び出し時の例外処理入口:\ ] この部分は、
+当該述語(nrev/2)が他の述語を直接呼び出しする際に、例外が発見された
+(例えば、ヒープが溢れた場合。詳細は\REF{exception}を参照)場合にはこの部分
+に飛びこまれる。その結果reasonpが0に初期化され、
+例外処理で判定され、当該処理が行われる。
+\label{make-zero}
+
+\item[例外処理入口:\ ] 述語のガード部で失敗または
+中断したことが発見された場合には、
+この部分に飛び込まれる。その結果、reasonp は中断スタックの底、または
+いくつかデータが積まれた状態の先頭を指しており、
+例外処理\REFER{exception}で判定され、当該処理が行われる。
+\end{description}
+
+\subsection{データのキャッシュ}
+
+プログラム実行上、アクセス頻度の高い大域変数は、
+できるだけローカル変数にキャッシュしてからアクセスし、大域変数への
+アクセスはできるだけ少なくなるようにしている。
+アクセス頻度の高いローカル変数は
+最近のプロセッサ、コンパイラではレジスタに置かれる可能性が高く、
+その結果、出力されるnativeな命令が単純になり、アクセスも高速化する。
+
+特に、allocp(ヒープ割付点)、qp (ゴールスタック先頭)については留意されており、
+通常にモジュール関数を実行している間には
+殆んど大域変数への書き戻しなく実行される。
+
+また、コンパイルドコードより、実行時ライブラリを呼び出す場合があり、
+その実行時ライブラリ内でヒープ割付を行ったり、ゴールをエンキューしたり
+する時がある。
+そのような実行時ライブラリについては、
+naiveには上記のキャッシュされている値を大域変数に書きもどすか、
+引数により値を渡し、戻り値、または大域変数経由で戻すようにする必要がある。
+KLICでは、qp, allocp各々について以下のように対処している。
+
+\begin{itemize}
+\item qpに対しては、
+例えば、単一化を実行時ライブラリで行った結果中断中のゴールが
+実行可能になった際にエンキューされるなどによりアクセスされる可能性があるが、
+基本的には実行時ライブラリでアクセスされる可能性は低い。そのため、
+qpは実行時ライブラリには渡さないこととした。
+その代りに、「例外的なエンキュー用のゴールスタック」を設け、
+実行時ライブラリ内で、エンキュー、デキューされたゴールを保持するようにした。
+この例外的なゴールスタックは
+リダクションの切れ目で検査され、空でない場合にはその保持している
+ゴール群を通常のゴールスタックに再度エンキューする
+こととした\REFER{re-push}。\label{decache}
+
+\item allocpに対しては、
+比較的アクセス頻度が高いと思われる実行時ライブラリには引数で渡し、
+戻り値、または大域変数heapp(glbl-$>$heapp0)を経由して戻すこととした。
+
+また、アクセス頻度が低いと思われる実行時ライブラリでは、allocpを
+渡さずに、システムヒープ\REFER{system-heap}に割り付けを行うこととした。
+\end{itemize}
+
+\section{例外的な処理}\label{exception}
+
+\index{れいがいしょり@例外処理}
+
+KLICでは、基本的に、先\REFER{foundamental-model}に述べた動作モデルのように、
+KL1で書かれたコードを実行しつづける。しかしながら、
+以下に記述するような理由により、「例外的な処理」を行う必要が生じるときがある。
+
+\begin{itemize}
+\item ヒープ溢れによるGC処理
+
+\item 現在よりも、より高い優先度を持ったゴールの再開可能化
+
+\item 割り込み(タイマ、I/Oなど)
+\end{itemize}
+
+これらの「例外的処理」は必要に応じて、「述語実行の切れ目」で
+行う。つまり、1つの述語が終了し、次の述語を実行する間に
+例外的処理を行う必要があるかどうかを判断し、もし必要であれば、
+必要な処理(例えば、GC)を行う。
+
+KLICでは、1つのゴールのリダクション途中では、
+様々な変数(一時変数, 引数変数、ヒープ割付点などなど)
+が更新された状態にあり、GC等を含み得るような処理をするために
+必要なこうした変数の退避は難しく、効率も悪いため、
+述語の実行中は「他の処理」\REFER{exceptional-execution}
+を行わず、述語実行に専念するようにしている。
+
+よって、述語実行中に
+「例外的処理」が必要になった場合には(例えば、割り込みハンドラで)
+「次の述語実行の切れ目でわかるように」覚えておくだけで、すぐに通常の
+述語実行を継続する。そして述語実行の切れ目では、「例外的処理」を行う必要が
+あるかどうか検出し、必要あれば、他の処理を行う。
+
+この「例外的処理」要求の検出が、allocpとheaplimitの比較である。
+allocpはヒープ割付点であり、heaplimitは、ヒープの上限である。
+つまり、通常のヒープ溢れはこの比較で検出され、GCが起動される。
+他の「割り込み」については、人為的(一時的)にこのheaplimitを0にすることにより
+割込まれたことを記憶しておく、という方式をとっている。
+したがって、この大小比較のみで、「例外的処理」要求有無の検出ができる。
+
+この例外処理は、モジュール関数の末尾で呼び出される実行時ライブラリ、
+interrupt\_goal で行われる。この内部ではreasonpの値により、
+どのような例外が起きたのか判定され、適切な処理が行われる。
+これらの処理をひきおこすコード箇所については、\REF{sample-pred}を
+参照のこと。\label{interrupt-abs}
+
+\begin{description}
+\item[他にすべき処理が生じた時:\ ] この場合には、reasonp には 0が
+セットされている。
+この場合には、resumed\_goals にgoalを格納し、
+他の処理をすべくreturnする。
+
+\item[述語が「失敗」したとき:\ ] この場合には中断スタックポインタは
+中断スタックの底を
+指している。
+失敗の処理(関数do\_fail())が呼び出される。
+
+\item[述語が「中断」しそうなとき:\ ]
+これまでの説明で判明したように、KLICでは、3段以上REFの連鎖がある場合には
+コンパイルコード中では追跡をあきらめ、interrupt\_goal の呼び出しを行って
+いる。これは、通常それほど長いREF鎖はあまりないこと。
+その結果、コンパイルコード量が
+増加するわりには、実行速度向上がないことに起因している。
+
+この場合には、「中断原因の候補」は中断スタックに積まれているので、
+それを調べ、候補が全て真に未定義変数(含む中断構造)であれば中断処理を行う。
+候補のいずれかが具体値であることが判明すれば、resume\_same\_prio()関数
+により、当該ゴールを「再開」する(つまり、エンキューしてしまう)。
+\end{description}
+
+\subsection{ヒープの使い方}
+
+%KLICのコンパイルドコードの説明の最初として、
+%ヒープの基本的な利用方法について解説する。
+
+\index{ひーぷ@ヒープ}
+
+KLICのコードでは、以下のようにヒープを利用する。
+
+\begin{itemize}
+\item ゴールレコードは、ヒープ上に確保する。
+\item KL1データはヒープ上に確保する。
+\end{itemize}
+
+通常の述語実行中は、allocpなるポインタを介して
+そこからの相対アドレスをもってヒープアクセスをする。
+述語開始時にはallocpはヒープ割付点を指しており、そこから相対アドレスで
+正の方向は空領域である。
+具体的には、コード中では \verb|allocp[|$x$\verb|]| ($x \ge 0$)
+なる記述でヒープアクセスが行われる。
+
+例えば、以下の、nrev/2の1節の出力コードを例にとりヒープの割付の解説を行う。
+
+\begin{verbatim}
+nrev([A|X], Y) :- nrev(X, X1), append(X1, [A], Y).
+\end{verbatim}
+
+この節のコードは、前述の84行目より109行目に出力されているが、ここでは以下の
+ようにヒープを利用している(図\ref{heap-alloc}参照)。以下で
+ヒープ割付に関連する部分のみコンパイルドコードを掲載するとともに
+解説する(全体のコードは\REF{code-detail-desc}に再掲する)。
+
+\begin{figure}
+\begin{center}
+%\epsfile{file=heap-alloc.eps,width=.6\textwidth}
+\includegraphics[width=.7\textwidth]{heap-alloc.eps}
+\end{center}
+\caption{ヒープ割付の説明}
+\label{heap-alloc}
+\end{figure}
+
+\begin{itemize}
+\item まず\verb|[A]|を作成する。このためには\verb|allocp[0| -- \verb|1]|が用いられる(95 -- 97行目)。
+
+\begin{verbatim}
+    95    allocp[0] = NILATOM;
+    96    x1 = car_of(a0);
+    97    allocp[1] = x1;
+\end{verbatim}
+
+\item 次に、\verb|allocp[2| -- \verb|6]|を用いて、append/3のゴールレコード
+が作成され、引数が準備される(99 -- 103行目)。
+
+\begin{verbatim}
+    99    allocp[2] = (q)qp;
+   100    allocp[3] = (q)(&predicate_main_xappend_3);
+   101    allocp[4] = x2 = makeref(&allocp[4]);
+   102    allocp[5] = x0;
+   103    allocp[6] = a1;
+\end{verbatim}
+
+\item 最後に、これまで利用されてきたヒープ領域を確保するため、
+allocp を 7ワード足しこむ(107行目)。
+
+\begin{verbatim}
+   107    allocp += 7;
+\end{verbatim}
+
+\end{itemize}
+
+\subsection{エンコーディング規則}
+
+\index{encoding}
+
+\index{えんこーでぃんぐきそく@エンコーディング規則}
+
+モジュール関数の名称、述語構造体の名称は、基本的にKL1レベルの各々の定義
+に用いられた名称等をCで用いられる名前にエンコードすることにより実装している。
+そのエンコード規則についてここで記述する。
+
+\subsubsection{基本規則}
+
+基本的に、KL1言語レベルのモジュール名、述語名(これはKL1のアトムである)
+は、以下のようにエンコードされる。
+
+\begin{itemize}
+\item KL1レベルの名前で、$[$A-z0-9$]$についてはそのまま。
+
+\item KL1レベルの'\_' は、'\_\_' に変換される。
+
+\item 上記にあてはまらない文字は、'\_$HH$' と 3文字に変換される。$HH$の
+2文字は元の文字の文字コードをあらわす2桁の
+16進文字列で、0-9,A-Fの16文字のうち何れのうち2文字。
+\end{itemize}
+
+表\ref{encoding}にいくつか例をあげる。
+
+\begin{table}
+\caption{変換の例}
+\label{encoding}
+\begin{center}
+\begin{tabular}{c|c}
+\hline
+KL1での名前 & エンコーディング後\\
+\hline\hline
+\verb|foo| & \verb|foo| \\
+\verb|foo_bar| & \verb|foo__bar|\\
+\verb|'foo<>bar'| & \verb|foo_3C_3Ebar|\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsubsection{モジュール関数名エンコード規則}\label{module-encoding}
+
+モジュール関数名は、以下のようにエンコードされる。
+
+\[
+{\tt module\_} + KL1モジュール名を基本規則によりエンコードした文字列
+\]
+
+たとえば、\verb|foo|モジュールは、``\verb|module_foo|''となり、
+\verb|foo_bar| モジュールは、``\verb|module_foo__bar|''となり、
+\verb|'foo<>bar'|モジュールは``\verb|module_foo_3C_3Ebar|''となる。
+
+\subsubsection{述語名エンコード規則}\label{predicate-encoding}
+述語名エンコード規則は以下のようになっている。
+
+\[
+\begin{array}{r}
+{\tt predicate\_} + KL1モジュール名を基本規則によりエンコードした文字列\\
++ {\tt \_x} + KL1述語名を基本規則によりエンコードした文字列\\
++ {\tt \_} +  引数個数
+\end{array}
+\]
+
+\subsubsection{定数構造体のコンパイル}\label{structured-const}
+
+\index{ていすうこうぞうたい@定数構造体}
+
+
+ソースコード中に、全ての要素が定数であるような構造体が出現することがある。
+これを定数構造体と呼ぶ。例を以下に示す。
+
+\begin{center}
+\verb|[1, a, 10, [2, x]]|\\
+\verb|foo([1,2], bar, 3)|
+\end{center}
+
+プログラムを実行する際には、最終的にこれらの構造をメモリ中に置くこととなる。
+Naiveには、この構造の組み立ては動的に行う(つまり、定数でなかった場合
+と同様に行う)が、すべてが定数である場合には、あらかじめ静的に
+構造を作成しておくことが可能であり、これは、以下の意味での最適化になる。
+
+\begin{itemize}
+\item コード実行時に動的に構造を構築する時間を節約できること。
+
+\item 幾度も同じ構造を必要とするようなプログラムの場合
+(例えば、\verb|foo(X) :- X=[1,2,3]|なる述語で、
+\verb|foo(X)|が幾度も呼びだされる場合)、
+静的に1つ確保することによりメモリを節約できることがあることがある
+(静的に確保してしまうため、GCの対象にはならず、領域が不要となっても
+領域の回収はできないため、必ずしも常に節約になるとは限らない)。
+
+\item さらにコンパイラ/アセンブラ/ローダが(KL1では、
+一度具体化されたデータは書きかわることがないため、
+この領域は変更されることがないため)
+この領域をプロセス間で共有できる領域に置く可能性があり、同時に同じプログラムが
+動作する(たとえば共有メモリ実装でのKLICの実行)場合、メモリの節約になること。
+\end{itemize}
+
+例えば、\verb|foo([1,2,3])|という構造は以下のようにメモリ中に置かれる。
+
+\begin{verbatim}
+  static Const q cons_const_0[] = {  /* (1) */
+    NILATOM,
+    makeint(3),
+  };
+  static Const q cons_const_1[] = {  /* (2) */
+    makecons(cons_const_0),
+    makeint(2),
+  };
+  static Const q cons_const_2[] = {  /* (3) */
+    makecons(cons_const_1),
+    makeint(1),
+  };
+  static Const q funct_const_3[] = { /* (4) */
+    makesym(functor_foo_1),
+    makecons(cons_const_2),
+  };
+\end{verbatim}
+
+Cでは、参照される変数を
+参照する側よりも先に定義する必要があるため、ボトムアップに出力される。
+
+まず(1)で、\verb|[3]| がq型の配列cons\_const\_0 として出力されている。
+makeintによりタグを付けていること、先にCDRが出ていることに注意。
+
+次に(2)で、その\verb|[3]|へのポインタにconsタグを付加し(makecons)、CDRとし、
+さらにmakeint(2)をCARとして、\verb|[2,3]|が作成される。
+同様に、(3)で、\verb|[1,2,3]|が作成される。
+
+最後に(4)では、fooに対してのファンクタIDと、\verb|[1,2,3]|へのポインタを
+並べることにより、\verb|foo([1,2,3])|が生成される。実際にこの構造を利用する時
+には、\verb|makefunc(funct_const_3)| としてコード中で参照される。
+
+以上で判明するように、定数構造体については、その実体はヒープ中にとられない。
+KLICのGCでは、ヒープ外へのポインタ(REF, CONS,
+FUNCタグつきのもの)を
+発見したときには、そのポインタをコピーするだけで、その先はコピーの対象と
+しない。よって、定数構造体についてはGC時にコピーがなされない。
+つまり、長期間参照されるような定数構造体については、
+GC時にコピーをしない、という最適化も行われていることになる。
+
+\section{例}\label{code-detail-desc}
+以下のようなKL1プログラム``naive reverse''を例として説明をする。
+
+\index{naive reverse}
+
+{\addtolength{\baselineskip}{-3pt}
+\begin{verbatim}
+    :- module main.
+
+    main :-
+           nrev([1,2,3], X),
+           klicio:klicio([stdout(normal([putt(X),nl]))]).
+
+    nrev([], Y) :- Y=[].
+    nrev([A|X], Y) :- nrev(X, X1), append(X1, [A], Y).
+
+    append([], Y, Z) :- Y=Z.
+    append([A|X], Y, Z) :- Z=[A|Z1], append(X, Y, Z1).
+\end{verbatim}
+}
+
+このコードをKLICコンパイラでコンパイルすると以下のようなCコードになる。
+\label{sample-all}
+
+{\addtolength{\baselineskip}{-3pt}
+\begin{verbatim}
+   1  /* Compiled by KLIC compiler version 3.002 (Wed Sep 17 15:37:13 JST 1997) */
+   2  #include <klic/klichdr.h>
+   3  #include "atom.h"
+   4  #include "funct.h"
+   5  
+   6  module module_main();
+   7  Const struct predicate predicate_main_xmain_0 =
+   8     { module_main, 0, 0 };
+   9  Const struct predicate predicate_main_xnrev_2 =
+  10     { module_main, 1, 2 };
+  11  Const struct predicate predicate_main_xappend_3 =
+  12     { module_main, 2, 3 };
+  13  extern Const struct predicate predicate_klicio_xklicio_1;
+  14  
+  15  module module_main(glbl, qp, allocp, toppred)
+  16    struct global_variables *glbl;
+  17    struct goalrec *qp;
+  18    register q *allocp;
+  19    Const struct predicate *toppred;
+  20  {
+  21    static Const q cons_const_0[] = {
+  22      NILATOM,
+  23      makeint(3),
+  24    };
+  25    static Const q cons_const_1[] = {
+  26      makecons(cons_const_0),
+  27      makeint(2),
+  28    };
+  29    static Const q cons_const_2[] = {
+  30      makecons(cons_const_1),
+  31      makeint(1),
+  32    };
+  33    static Const q cons_const_3[] = {
+  34      NILATOM,
+  35      makesym(atom_nl),
+  36    };
+  37    q a0, a1, a2;
+  38  
+  39    q *reasonp;
+  40   module_top:
+  41    switch_on_pred() {
+  42      case_pred(0, main_0_top);
+  43      case_pred(1, nrev_2_top);
+  44      last_case_pred(2, append_3_top);
+  45    }
+  46  
+  47   main_0_top: {
+  48    q x0, x1, x2, x3, x4, x5;
+  49    qp = qp->next;
+  50   main_0_clear_reason:
+  51    reasonp = reasons;
+  52   main_0_0:
+  53    allocp[0] = (q)qp;
+  54    allocp[1] = (q)(&predicate_main_xnrev_2);
+  55    allocp[2] = makecons(cons_const_2);
+  56    allocp[3] = x0 = makeref(&allocp[3]);
+  57    allocp[4] = makesym(functor_putt_1);
+  58    allocp[5] = x0;
+  59    x1 = makefunctor(&allocp[4]);
+  60    allocp[6] = makecons(cons_const_3);
+  61    allocp[7] = x1;
+  62    x2 = makecons(&allocp[6]);
+  63    allocp[8] = makesym(functor_normal_1);
+  64    allocp[9] = x2;
+  65    x3 = makefunctor(&allocp[8]);
+  66    allocp[10] = makesym(functor_stdout_1);
+  67    allocp[11] = x3;
+  68    x4 = makefunctor(&allocp[10]);
+  69    allocp[12] = NILATOM;
+  70    allocp[13] = x4;
+  71    x5 = makecons(&allocp[12]);
+  72    allocp[14] = (q)(struct goalrec*)&allocp[0];
+  73    allocp[15] = (q)(&predicate_klicio_xklicio_1);
+  74    allocp[16] = x5;
+  75    qp = (struct goalrec*)&allocp[14];
+  76    allocp += 17;
+  77    proceed();
+  78   main_0_ext_interrupt:
+  79    reasonp = 0l;
+  80   main_0_interrupt:
+  81    goto interrupt_0;
+  82   }
+  83  
+  84   nrev_2_top: {
+  85    q x0, x1, x2;
+  86    a0 = qp->args[0];
+  87    a1 = qp->args[1];
+  88    qp = qp->next;
+  89   nrev_2_clear_reason:
+  90    reasonp = reasons;
+  91   nrev_2_0:
+  92   nrev_2_1:
+  93    switch (ptagof(a0)) {
+  94   case CONS:
+  95    allocp[0] = NILATOM;
+  96    x1 = car_of(a0);
+  97    allocp[1] = x1;
+  98    x0 = makecons(&allocp[0]);
+  99    allocp[2] = (q)qp;
+ 100    allocp[3] = (q)(&predicate_main_xappend_3);
+ 101    allocp[4] = x2 = makeref(&allocp[4]);
+ 102    allocp[5] = x0;
+ 103    allocp[6] = a1;
+ 104    a0 = cdr_of(a0);
+ 105    a1 = x2;
+ 106    qp = (struct goalrec*)&allocp[2];
+ 107    allocp += 7;
+ 108    execute(nrev_2_0);
+ 109    goto nrev_2_ext_interrupt;
+ 110   case ATOMIC:
+ 111    if (a0 != NILATOM) goto nrev_2_interrupt;
+ 112    x0 = NILATOM;
+ 113    unify_value(a1, x0);
+ 114    proceed();
+ 115   case VARREF:
+ 116    deref_and_jump(a0,nrev_2_1);
+ 117    *reasonp++ =  a0;
+ 118    goto nrev_2_interrupt;
+ 119    };
+ 120    goto nrev_2_interrupt;
+ 121   nrev_2_ext_interrupt:
+ 122    reasonp = 0l;
+ 123   nrev_2_interrupt:
+ 124    goto interrupt_2;
+ 125   }
+ 126  
+ 127   append_3_top: {
+ 128    q x0, x1, x2;
+ 129    a0 = qp->args[0];
+ 130    a1 = qp->args[1];
+ 131    a2 = qp->args[2];
+ 132    qp = qp->next;
+ 133   append_3_clear_reason:
+ 134    reasonp = reasons;
+ 135   append_3_0:
+ 136   append_3_1:
+ 137    switch (ptagof(a0)) {
+ 138   case CONS:
+ 139    allocp[0] = x1 = makeref(&allocp[0]);
+ 140    x2 = car_of(a0);
+ 141    allocp[1] = x2;
+ 142    x0 = makecons(&allocp[0]);
+ 143    allocp += 2;
+ 144    unify_value(a2, x0);
+ 145    a0 = cdr_of(a0);
+ 146    a2 = x1;
+ 147    execute(append_3_0);
+ 148    goto append_3_ext_interrupt;
+ 149   case ATOMIC:
+ 150    if (a0 != NILATOM) goto append_3_interrupt;
+ 151    unify(a1, a2);
+ 152    proceed();
+ 153   case VARREF:
+ 154    deref_and_jump(a0,append_3_1);
+ 155    *reasonp++ =  a0;
+ 156    goto append_3_interrupt;
+ 157    };
+ 158    goto append_3_interrupt;
+ 159   append_3_ext_interrupt:
+ 160    reasonp = 0l;
+ 161   append_3_interrupt:
+ 162    goto interrupt_3;
+ 163   }
+ 164   interrupt_3:
+ 165    allocp[4] = a2;
+ 166   interrupt_2:
+ 167    allocp[3] = a1;
+ 168   interrupt_1:
+ 169    allocp[2] = a0;
+ 170   interrupt_0:
+ 171    allocp = interrupt_goal(allocp, toppred, reasonp);
+ 172   proceed_label:
+ 173    loop_within_module(module_main);
+ 174  }
+\end{verbatim}
+}
+
+\subsection{コード説明} 
+
+このコードを先頭から順に説明する。
+
+\begin{itemize}
+\item 2--4行目には、コンパイルするに必要なファイルのincludeリストがならぶ。
+\incfilename{atom.h}, \incfilename{funct.h}は各々、アトム番号、
+ファンクタ番号が記録されたファイルで、マクロの羅列になっている。
+つまり、アトム番号、ファンクタ番号はCのコンパイルを行うときには
+すでに確定されている。
+
+\begin{verbatim}
+     2  #include <klic/klichdr.h>
+     3  #include "atom.h"
+     4  #include "funct.h"
+\end{verbatim}
+
+\item 6 行目はこのモジュールで定義されるmodule型関数のmodule\_mainの宣言。
+%この関数の名前は、基本的に、``module\_'' $+$ ``KL1でのモジュール名''となる。
+
+\begin{verbatim}
+     6  module module_main();
+\end{verbatim}
+
+\item 7 -- 12 行目は、
+このモジュール内で定義される述語、main/0, nrev/2, append/3
+の述語構造体(struct predicate)の定義。このように述語構造体は
+定数としてコンパイル時に生成される。\label{predicate-decl}
+
+\begin{verbatim}
+     7  Const struct predicate predicate_main_xmain_0 =
+     8     { module_main, 0, 0 };
+     9  Const struct predicate predicate_main_xnrev_2 =
+    10     { module_main, 1, 2 };
+    11  Const struct predicate predicate_main_xappend_3 =
+    12     { module_main, 2, 3 };
+\end{verbatim}
+
+\item 13行目は、参照している外部モジュールである、klicio:klicio/1の
+述語構造体の宣言。当然、klicioモジュールを実装するCファイル中に
+実体は定義されている筈である。
+
+\begin{verbatim}
+    13  extern Const struct predicate predicate_klicio_xklicio_1;
+\end{verbatim}
+
+\item 15行目からmodule\_mainの定義がはじまる。引数はすでに説明をした通り。
+
+\begin{verbatim}
+    15  module module_main(glbl, qp, allocp, toppred)
+    16    struct global_variables *glbl;
+    17    struct goalrec *qp;
+    18    register q *allocp;
+    19    Const struct predicate *toppred;
+    20  {
+\end{verbatim}
+
+\item 21 -- 36 行目には\verb|[1,2,3]|を実現するリスト構造が
+定義されている。このように、コンパイル時に確定している構造は、
+コンパイル時に静的に生成される\REFER{structured-const}。
+
+\begin{verbatim}
+    21    static Const q cons_const_0[] = {
+    22      NILATOM,
+    23      makeint(3),
+    24    };
+    25    static Const q cons_const_1[] = {
+    26      makecons(cons_const_0),
+    27      makeint(2),
+    28    };
+    29    static Const q cons_const_2[] = {
+    30      makecons(cons_const_1),
+    31      makeint(1),
+    32    };
+    33    static Const q cons_const_3[] = {
+    34      NILATOM,
+    35      makesym(atom_nl),
+    36    };
+\end{verbatim}
+
+\item 37行目に、述語間引数用変数(引数レジスタの気分)の宣言。
+これは必要な数だけコンパイラが生成する。
+
+\begin{verbatim}
+    37    q a0, a1, a2;
+\end{verbatim}
+
+\item 39行目にあるのは、中断スタック(詳細後述)の先頭ポインタの宣言。
+\begin{verbatim}
+    39    q *reasonp;
+\end{verbatim}
+
+\item 40行目に、module\_topなるラベルが定義されている。
+一般的に``モジュール名'' + ``\_top''なる名称のラベルが実行行の先頭に
+定義される。
+
+\item 41--45行目以降にあるのは、switch文となるマクロ。KLICの制御構造は、
+\incfilename{control.h}内でマクロ化されている。このswitchは、
+{\tt toppred->pred}を参照し、それが、0, 1, 2 のいずであるかにより
+各々、ラベルmain\_0\_top, nrev\_2\_top, append\_3\_top に飛ぶ。
+predicate型のpred fieldはこのようにswitchするため、
+モジュール内でuniqueな番号になるようにコンパイラが定めている。
+
+\begin{verbatim}
+    40   module_top:
+    41    switch_on_pred() {
+    42      case_pred(0, main_0_top);
+    43      case_pred(1, nrev_2_top);
+    44      last_case_pred(2, append_3_top);
+    45    }
+\end{verbatim}
+
+\item 47行目にはラベル main\_0\_top の定義がなされている。
+各述語の先頭には、''述語名\_" + 引数個数 + ``\_top''なる名称の
+ラベルが生成され、swicth\_on\_predからジャンプされる。
+
+\begin{verbatim}
+    47   main_0_top: {
+\end{verbatim}
+
+\item 48 行目にあるのは述語内で使われる一時変数(一時レジスタの気分)。
+
+\begin{verbatim}
+    48    q x0, x1, x2, x3, x4, x5;
+\end{verbatim}
+
+\item qp の先頭を49行目でずらす。
+
+\begin{verbatim}
+    49    qp = qp->next;
+\end{verbatim}
+
+\item 50行目のラベルは51行目のサスペンションスタックを初期化する
+操作に対してのラベルである。述語mainの実行にあたり、
+reasonp の設定が済んでいることがわかっている場合には
+こではなく、52行目に入る。
+
+\begin{verbatim}
+    50   main_0_clear_reason:
+    51    reasonp = reasons;
+\end{verbatim}
+
+\item 52行目から述語メインの実際の動作が開始される。53--56で,
+\verb|nrev([1,2,3],Y)|に対応するゴールレコード
+が生成される。allocpとあるのはヒープ割り付けである。このように
+KLICではゴールレコードもヒープ中に生成される。ゴールレコードのnextに
+相当する先頭にはqpが格納されている。
+
+また、基本的にKLICプログラム中で記述した順とは逆にゴールが生成され、
+エンキューされていく。
+%これは、実行可能ゴールスタックは(名前に反して)
+%スタック的に用いているためであり、実行時には
+%KL1プログラム中で記述したのと同じ順で試されるようしている。
+56行目で純粋未定義変数を生成しているのに注意。
+
+\begin{verbatim}
+    52   main_0_0:
+    53    allocp[0] = (q)qp;
+    54    allocp[1] = (q)(&predicate_main_xnrev_2);
+    55    allocp[2] = makecons(cons_const_2);
+    56    allocp[3] = x0 = makeref(&allocp[3]);
+\end{verbatim}
+
+
+\item 57 -- 71では、{\tt $[$stdout(normal($[$putt(X),nl$]$))$]$}に対応した
+構造を組みたてている。構造の末端からくみたてていることに注意。
+
+\begin{verbatim}
+    57    allocp[4] = makesym(functor_putt_1);
+    58    allocp[5] = x0;
+    59    x1 = makefunctor(&allocp[4]);
+    60    allocp[6] = makecons(cons_const_3);
+    61    allocp[7] = x1;
+    62    x2 = makecons(&allocp[6]);
+    63    allocp[8] = makesym(functor_normal_1);
+    64    allocp[9] = x2;
+    65    x3 = makefunctor(&allocp[8]);
+    66    allocp[10] = makesym(functor_stdout_1);
+    67    allocp[11] = x3;
+    68    x4 = makefunctor(&allocp[10]);
+    69    allocp[12] = NILATOM;
+    70    allocp[13] = x4;
+    71    x5 = makecons(&allocp[12]);
+\end{verbatim}
+
+\item 72 -- 74 では{\tt klic:klicio(...)}に対応したゴールレコードが生成
+される。next fieldには先に作成した{\tt nrev(...)}のゴールレコードを
+格納することに注意。
+
+\begin{verbatim}
+    72    allocp[14] = (q)(struct goalrec*)&allocp[0];
+    73    allocp[15] = (q)(&predicate_klicio_xklicio_1);
+    74    allocp[16] = x5;
+\end{verbatim}
+
+\item 75行目では、今組み立てた{\tt klic:klicio(...)}のゴールをqpに
+格納している。つまり、通常呼び出しのためのゴールスタックへのエンキューを
+行っている。
+
+\begin{verbatim}
+    75    qp = (struct goalrec*)&allocp[14];
+\end{verbatim}
+
+\item 76行目でヒープ割付点を更新している。
+
+\begin{verbatim}
+    76    allocp += 17;
+\end{verbatim}
+
+\item 77行目のproceed()は\incfilename{control.h}内で定義されているmacroで、
+module型関数内で必ず定義されているproceed\_labelなるラベルに飛ぶ。
+
+\begin{verbatim}
+    77    proceed();
+\end{verbatim}
+
+ここでは、さらに実行するゴールがないため、
+ゴールスタックのデキュー操作を行うためproceed()が出力されている
+\REFER{proceed}。
+
+\item 78--80行目は中断、失敗するためのコードである。引数がない
+(= 中断も失敗もしない)main/0では意味がない。
+\footnote{KLICではこのような無駄なコードを生成する場合がある。
+しかしながら、さらに、Cコンパイラでの最適化が行われ、
+通常は除去されるため、最適化済コードの大きさには影響しないことが期待され、
+実際、GCCでは大きさには関係がない。}
+
+\begin{verbatim}
+    78   main_0_ext_interrupt:
+    79    reasonp = 0l;
+    80   main_0_interrupt:
+\end{verbatim}
+
+\item 84行目はnrev/2の入口である。
+外部モジュールからmain:nrev/2が呼び出された時や、
+モジュール内でもゴールスタックよりnrev/2を呼ぶコードが取り出された時には
+ここに飛ぶ。
+
+\begin{verbatim}
+    84   nrev_2_top: {
+\end{verbatim}
+
+\item 85行目は一時変数の宣言。
+
+\begin{verbatim}
+    85    q x0, x1, x2;
+\end{verbatim}
+
+\item 86 -- 87行目で引数を引数レジスタにコピーしている。
+
+\begin{verbatim}
+    86    a0 = qp->args[0];
+    87    a1 = qp->args[1];
+\end{verbatim}
+
+\item 88行目 で実行可能キューをデキュー。
+
+\begin{verbatim}
+    88    qp = qp->next;
+\end{verbatim}
+
+\item 89 -- 92行目に述語の先頭の処理が記述される。
+
+\begin{verbatim}
+    89   nrev_2_clear_reason:
+    90    reasonp = reasons;
+    91   nrev_2_0:
+    92   nrev_2_1:
+\end{verbatim}
+
+\item 93行目 から始まるswitch文で、a0のタグにより分岐する。
+
+\begin{verbatim}
+    93    switch (ptagof(a0)) {
+\end{verbatim}
+
+\item 94 -- 109行目はCONSタグの場合。
+
+\begin{verbatim}
+    94   case CONS:
+    95    allocp[0] = NILATOM;
+    96    x1 = car_of(a0);
+    97    allocp[1] = x1;
+    98    x0 = makecons(&allocp[0]);
+    99    allocp[2] = (q)qp;
+   100    allocp[3] = (q)(&predicate_main_xappend_3);
+   101    allocp[4] = x2 = makeref(&allocp[4]);
+   102    allocp[5] = x0;
+   103    allocp[6] = a1;
+   104    a0 = cdr_of(a0);
+   105    a1 = x2;
+   106    qp = (struct goalrec*)&allocp[2];
+   107    allocp += 7;
+   108    execute(nrev_2_0);
+   109    goto nrev_2_ext_interrupt;
+\end{verbatim}
+
+\begin{itemize}
+\item 95 -- 98 で\verb|[A]| を組みたて、x0にセットする。
+
+\item 99 -- 103で、append/3 のゴールを作成し、エンキューしている。
+
+\item 104 -- 108 で、nrev/2 の呼び出しを行っている。
+
+ここでは、nrev/2が「直接呼び出し」されている。
+
+%先に記述したが、KLICでは通常の述語呼び出しは、ゴールを生成し、
+%enqueueする、というコードが生成されるが、最後のゴール(つまり、
+%ユーザが書いた最初のゴール)がモジュール内呼びだしである場合には、
+%ゴールの生成を省略し、直接その述語のコードに飛ぶ、という「FGO
+%= First Goal Optimization 呼び出し」を採用している。
+%このnrev/2の呼び出しはそのように最適化されたコードである。
+
+この時には、引数レジスタ群(a0, a1, \ldots)は、呼び出された先でもそのまま
+(ゴールからひきあげることなく)利用されるため、executeまでの間に
+引数レジスタ群に適当な引数を用意しておく必要がある。
+
+\begin{itemize}
+\item まず、104行目で\verb|X|を第0引数ににセット。
+\item 105行目では、
+純粋未定義変数である\verb|X1|(x2に載っている)を第一引数にセット。
+
+\item 106行目 で、append/3 をqpにセット(つまり、append/3のエンキュー)
+
+\item 107行目 でヒープ割付点の更新。
+
+\item 108行目でexecuteで直接呼びだしする。これは、\incfilename{control.h}で
+以下のように定義されたマクロである。
+
+\begin{verbatim}
+#define execute(label)\
+{\
+  if (allocp < heaplimit) goto label;\
+}
+\end{verbatim}
+
+ここで、allop とheaplimitを比較している。これは\REF{exceptional-execution}
+で述べた、「例外的処理の有無」の検出である。
+ここで「例外的処理処理」要求が検出できなかった場合には
+指定されたラベル(ここでは、
+nrev\_2\_0 に飛ぶ)。検出された場合には109行以降の処理を行う。
+
+nrev\_2\_0 とはすでに経過した部分であり、91行目にある。
+これは、「ゴールから引数が引き上げ」られたのと「引数の検査」の
+切れ目に存在するラベルである。これは、execute実行の場合には前述のように
+引数(a$_x$レジスタ)はすでに正しい内容を持っているため「ゴールからの引数の
+引き上げ」は不要であり、省略するためにこのようなラベルに飛ぶようになっている。
+つまり、述語が開始されるには、一般的には以下の2通りがある\REFER{call-pred}。
+
+\begin{description}
+\item[通常呼び出しによる実行:\ ] ``述語\_引数個数'' + ``\_top''。
+直後にゴール引数の引き上げがある。
+
+\item[直接呼び出しによる実行:\ ] ``述語\_引数個数'' + ``\_0''。
+ゴール引数の引き上げは省略。
+\end{description}
+
+\end{itemize}
+
+\end{itemize}
+
+\item 直前のexecuteで、「他の処理」に対する要求があった場合には、
+109行目を実行し、その後121に飛ぶ。その結果、中断スタックポインタ
+を0にして
+からinterrupt\_2に飛ぶ。
+中断スタックには、通常はゴール実行の原因となった未定義変数を
+プッシュする。しかしながら、中断スタックポインタが0である場合には、
+ヒープ溢れの検出による中断であることを示す \REFER{interrupt-check}。
+interrupt\_2 とは、「2引数用の割出し処理
+ラベル」であり、引数レジスタ上の2つの引数をゴール引数部に格納してから、
+「他の処理」の実行のため、関数interrupt\_goalに制御を移す。
+
+\item 110行目からは、a0がアトミックな場合の処理である。
+
+\begin{verbatim}
+   111    if (a0 != NILATOM) goto nrev_2_interrupt;
+   112    x0 = NILATOM;
+   113    unify_value(a1, x0);
+   114    proceed();
+\end{verbatim}
+
+\begin{itemize}
+\item 111行目
+はa0がNILATOMかどうかを検査し、NILATOMでなければnrev\_2\_interrputに
+飛ぶ。nrev\_2\_interruptでは、中断スタックポインタを0にすることなく、
+中断スタックの底を指す(つまりスタックを空にする)状態にする。
+これは、リダクション実行の失敗を示す\REFER{interrupt-check}。
+その後引数を退避し、関数interrupt\_goal に制御を移す。
+
+\item 112では、x0 にNILATOMを代入し、a1とunify\_value()により
+\verb|Y=[]| が実行される。unify\_value は、第2引数が具体値であることが
+判明しているときに呼びだされるmacroで、一般的にはdo\_unify()が呼びだされる。
+これら2つはマクロであり、\incfilename{unify.h} に定義されている。
+unify\_value の場合には第0引数が純粋未定義変数である場合には、
+実行時ルーチンを呼ばずに、その場で具体化を行う。
+この「単純な場合」以外は、
+\filename{unify.c}で
+定義されているC関数、do\_unify, do\_unify\_valueが呼びだされる。
+
+\item 114行目 ではproceedする。
+\end{itemize}
+
+\item 115--118行目 ではa0がREFタグの場合処理が記されている。
+
+\begin{verbatim}
+   115   case VARREF:
+   116    deref_and_jump(a0,nrev_2_1);
+   117    *reasonp++ =  a0;
+   118    goto nrev_2_interrupt;
+\end{verbatim}
+
+116行目のderef\_and\_jumpは\incfilename{index.h}に定義されるマクロで、
+deref\_and\_jump(レジスタ、ラベル)という引数をとる。
+具体的には以下のようなマクロである。
+
+\begin{verbatim}
+#define deref_and_jump(x, loop) \
+{ \
+  q temp0 = derefone(x); \
+  if(!isref(temp0)) { \
+    (x) = temp0; \
+    goto loop; \
+  } \
+}
+\end{verbatim}
+
+これを以下で解説する。
+
+\begin{itemize}
+\item レジスタを1段手繰り(マクロderefone())、
+\begin{itemize}
+\item 具体値であれば書き戻し、ラベルに飛ぶ。その結果第0引数(a0)の
+検査を最初から行うことを示す。
+
+\item 具体値でなければ、次の行に進む。
+\end{itemize}
+
+117行目では、(少なくとも2段以上)REFであったa0を中断スタックに詰み、
+nrev\_2\_interrptに飛ぶ。その結果、最終的には
+引数を退避し、関数interrupt\_goal()が呼びだされる。
+\end{itemize}
+
+\item 127行目からはappend/3のコードである。
+128 -- l34行目 までで引数の引き上げ、中断スタックポインタの初期化が行われる。
+
+\begin{verbatim}
+   127   append_3_top: {
+   128    q x0, x1, x2;
+   129    a0 = qp->args[0];
+   130    a1 = qp->args[1];
+   131    a2 = qp->args[2];
+   132    qp = qp->next;
+   133   append_3_clear_reason:
+   134    reasonp = reasons;
+\end{verbatim}
+
+\item 137行目 で、a0の型検査が行われる。
+CONSであれば、139 -- 144行目
+で 単一化がなされ、147行目でappend/3が直接呼び出しされる。
+
+\begin{verbatim}
+   137    switch (ptagof(a0)) {
+   138   case CONS:
+   139    allocp[0] = x1 = makeref(&allocp[0]);
+   140    x2 = car_of(a0);
+   141    allocp[1] = x2;
+   142    x0 = makecons(&allocp[0]);
+   143    allocp += 2;
+   144    unify_value(a2, x0);
+   145    a0 = cdr_of(a0);
+   146    a2 = x1;
+   147    execute(append_3_0);
+   148    goto append_3_ext_interrupt;
+\end{verbatim}
+
+\item
+ATOMICであれば、150行目でNILATOMかどうか検査され、NILATOMであれば、
+2つの引数を単一化し、proceed()する。NILATOMでなければ、append\_3\_interruptに
+飛び、引数が書き戻され、interrupt\_goalsが呼びだされる。
+
+\begin{verbatim}
+   149   case ATOMIC:
+   150    if (a0 != NILATOM) goto append_3_interrupt;
+   151    unify(a1, a2);
+   152    proceed();
+\end{verbatim}
+
+\item 153 -- 156行目はREFの時のコードであり、nrevと同様に手繰りの後に検査され、
+再度137より検査されるか、interrupt\_goalが呼びだされるかする。
+
+
+\begin{verbatim}
+   153   case VARREF:
+   154    deref_and_jump(a0,append_3_1);
+   155    *reasonp++ =  a0;
+   156    goto append_3_interrupt;
+\end{verbatim}
+
+\item 164 -- 169行目 は引数をゴールレコードに書きもどす処理である。
+
+\begin{verbatim}
+   164   interrupt_3:
+   165    allocp[4] = a2;
+   166   interrupt_2:
+   167    allocp[3] = a1;
+   168   interrupt_1:
+   169    allocp[2] = a0;
+\end{verbatim}
+
+\item 171行目でinterrupt\_goal を呼び出している。この関数呼びだしが起きる時は、
+以下いずれかであり、おのおの中断スタックの状態により
+interrupt\_goal関数内で適切な処理が行われる。
+interupt\_goal関数内の処理の概要は\REF{interrupt-abs}を参照のこと。
+
+\begin{verbatim}
+   170   interrupt_0:
+   171    allocp = interrupt_goal(allocp, toppred, reasonp);
+\end{verbatim}
+
+なお、interupt\_goals(allocp, toppred, reasonp)の関数specは以下の通り。
+
+\begin{description}
+\item[allocp:\ ] ヒープ割付点。
+
+\item[toppred:\ ] 失敗/中断を起した述語の述語構造体。
+この例ではなかったが、各述語よりinterrupt\_Xに飛ぶコードが出る直前で、
+toppredに当該述語の構造体がセットされる。この例では出現しなかった理由は、
+以下である。
+
+\begin{itemize}
+\item モジュール内でのexecuteによるジャンプを考えなければ、
+このtoppredはmodule型関数を呼びだすときに設定されているので、
+内部であらたに設定する必要はない。つまり、executeされる場合に
+考慮する必要がある。
+
+\item ここの例で、executeされるものは、nrev, appendが共に自分自身を呼び出す
+ものしかなかった。よって、この例では、executeによりtoppredと実際に
+実行している述語とがずれる可能性はないため、このような処理は必要がない。
+\end{itemize}
+
+\item[reasonp:\ ] 中断スタックポインタ。
+\end{description}
+
+また、戻り値としては更新されたヒープ割付点を返す。
+
+どちらにしても、このinterrupt\_goalが呼び出された後には、
+レジスタなどは「中途半端 な状態」にはなく、すべてgoal recordに
+収められている。
+
+\item 最終的に、\incfilename{control.h}で定義されている、
+loop\_within\_module なるマクロに制御が移される。
+
+\begin{verbatim}
+   172   proceed_label:
+   173    loop_within_module(module_main);
+\end{verbatim}
+
+具体的には
+以下のような定義である。
+
+\begin{verbatim}
+#define loop_within_module(f)                           \
+{ \
+  module (*func)(); \
+  if (allocp >= heaplimit) { \
+    allocp = klic_interrupt(allocp, qp); \
+    qp = current_queue; \
+  } \
+  if ((func = (toppred = qp->pred)->func) == (f)) \
+    goto module_top; \
+  heapp = allocp; \
+  current_queue = qp; \
+  return (module) func; \
+}
+\end{verbatim}
+
+ここでは、
+
+\begin{enumerate}
+\item allocp と heaplimitを比較する。つまり、「例外的な処理(GC要求を含む)」
+があるか
+どうか検査する。「例外的処理が」ある場合には、
+\filename{intrrpt.c}で定義されている関数 klic\_interruptが
+呼びだされ、「例外的処理」が処理される。
+
+\item 必要ならば「例外的な処理」を終了したあとに、
+「次に実行される述語の属するモジュール関数」が、
+現在のモジュール関数であるかどうか調べられる。
+現在のモジュール関数であれば、returnはせずに、関数の実行部分の先頭である
+module\_topに飛ぶ。現在のモジュールでなければ、allocpをheappに、
+qp をcurrent\_queueに退避し、次に実行すべきmodule型関数を返し、
+トップレベルループに戻る。
+\end{enumerate}
+
+先に「例外的な処理」の検査、措置を行う理由は、以下の通りである。
+\begin{itemize}
+\item 「例外的な処理」を行った結果、ゴールがエンキューされる場合がある。
+\item そのゴールは、最高の優先である可能性があり、その場合には、
+そのゴールの実行を例外的処理の措置の前のキュー先頭のゴールよりも先に
+行う必要がある。
+\end{itemize}
+\end{itemize}
+
+% Local Variables:
+% mode: japanese-latex
+% TeX-master: "master.tex"
+% Ends:
+

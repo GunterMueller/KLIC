@@ -1,0 +1,35 @@
+:- module main.
+main :-	klicio:klicio([stdout(Res)]),
+        check_outstream(Res).
+
+check_outstream(normal(S)) :-
+	test(0,S,S1),
+	test(1,S1,S2),
+	test(2,S2,S3),
+	test(3,S3,[]).
+check_outstream(abnormal).
+
+test(N,S0,S) :-
+	problem(N,Expr),
+	S0=[putt(Expr),nl,putt(Deriv),nl|S],
+	d(Expr,x,Deriv).
+
+problem(0,Expr) :-
+	Expr=((((((((x*x)*x)*x)*x)*x)*x)*x)*x)*x.
+problem(1,Expr) :-
+	Expr=((((((((x/x)/x)/x)/x)/x)/x)/x)/x)/x.
+problem(2,Expr) :-
+	Expr=log(log(log(log(log(log(log(log(log(log(x)))))))))).
+problem(3,Expr) :-
+	Expr=(x+1)*(x^2+2)*(x^3+3).
+
+d(U+V,X,D) :- D=DU+DV, d(U,X,DU), d(V,X,DV).
+d(U-V,X,D) :- D=DU-DV, d(U,X,DU), d(V,X,DV).
+d(U*V,X,D) :- D=DU*V+U*DV, d(U,X,DU), d(V,X,DV).
+d(U/V,X,D) :- D=(DU*V-U*DV)/V^2, d(U,X,DU), d(V,X,DV).
+d(U^N,X,D) :- integer(N) | N1 := N-1, D=DU*N*U^N1, d(U,X,DU).
+d(exp(U),X,D) :- D=exp(U)*DU, d(U,X,DU).
+d(log(U),X,D) :- D=DU/U, d(U,X,DU).
+d(X,X,D) :- D=1.
+otherwise.
+d(C,_X,D) :- D=0.

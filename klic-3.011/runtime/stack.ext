@@ -1,0 +1,14 @@
+module_stack
+predicate_stack_xcreate_1
+predicate_stack_xmain_3
+predicate_stack_xmessage_3
+atom_yes
+atom_no
+functor_do_1
+functor_empty_1
+functor_put_1
+functor_get_1
+functor_get__if__any_1
+functor_get__all_1
+functor_carbon__copy_1
+ref_class_vector

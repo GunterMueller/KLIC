@@ -1,0 +1,44 @@
+		For Compiler Developers
+
+			Daigo Sekita (Mitsubishi Research Inst., Inc)
+
+With KLIC, the KL1 compiler which are written in KL1 language is
+provided, and this program become executable bye compiling and linking
+with KLIC system.
+
+Thus, some special treatment is needed if you want to hack the KLIC
+compiler.
+
+1) KLIC system must be installed in an ordinary way once. Please be
+ sure to 'make install' to keep the compiled compiler.
+
+2) Do 'make clean'.
+
+3) Change the compiler code(s) in the compiler/ directory.
+
+4) 'Configure' again with the argument 'builddist':
+
+	% ./Configure bultddist
+
+This time, Configure program will ask you 'the directory which the
+KLIC compiler has been installed'. Then enter the right path to the
+directory (The directory was indicated as "KLIC Library Directory"
+when you configure'ed at the first time). 
+
+5) Make again.
+
+And the following targets are provided for the convinience of the
+developpers.
+
+* clean: Removes all executables, '*.o' and '*.a", and does not remove
+the files which are created by the Configure program. Then you can
+rebuild the system by just typing 'make'.
+
+* distclean: Removes above files and the files which are created by
+the Configure program. This target is convenient to distribute KLIC
+to any other platforms.
+
+* verify: Recompiles *.kl1 files to *.c file and compares with the
+corresponding old files. This target is to verify the compiler, and if
+some differences between versions are found, your compiler may have
+some bugs.

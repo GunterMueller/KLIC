@@ -1,0 +1,84 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+:- inline:"extern unsigned long enter_functor();".
+:- module functor_table.
+
+new_functor(Funct,'.',2) :- Funct=[0|0].
+otherwise.
+new_functor(Funct,Atom,0) :- atom(Atom) | Funct=Atom.
+new_functor(Funct,Atom,Arity):- 
+	Arity > 0,
+        inline:"{
+  long i, arity = intval(%1);
+  allocp[0] = makesym(enter_functor(symval(%0),arity));
+  for (i=1; i<=arity; i++) allocp[i] = makeint(0);
+  %2 = makefunctor(allocp);
+  allocp += arity+1;
+}":[Atom+atom,Arity+int,Funct0-functor] |
+	Funct = Funct0.
+
+F=..[PF] :- F=PF.
+F=..['.',X,Y] :- F=[X|Y].
+otherwise.
+F=..[PF|L] :-
+	length(L,0,Arity),
+	new_functor(F0,PF,Arity),
+	fill_args(L,0,F0,F).
+
+length([],K,N) :- N=K.
+length([_|T],K,N) :- length(T,~(K+1),N).
+
+fill_args([],_,F0,F) :- F=F0.
+fill_args([H|T],K,F0,F) :- inline:"
+{
+  struct functor *f = functorp(%0);
+  f->args[intval(%1)] = %2;
+  %3 = makefunctor(f);
+}":[F0+functor,K+int,H+any,F1-functor] |
+	K1 := K+1,
+	fill_args(T,K1,F1,F).
+
+functor(Funct,Atom,Arity) :-
+	functor(Funct,Atom0,Arity0) |
+	Atom = Atom0, Arity = Arity0.
+
+functor(Funct,Atom,Arity,NFunct) :-
+	functor(Funct,Atom0,Arity0) |
+	Atom = Atom0, Arity = Arity0, NFunct = Funct.
+
+arg(Index,Funct,Ele) :-
+	arg(Index,Funct,Ele0) |
+	Ele = Ele0.
+
+arg(Index,Funct,Ele,NFunct) :-
+	arg(Index,Funct,Ele0) |
+	Ele = Ele0, NFunct = Funct.
+
+setarg(Index,Funct,Old,Ele,NFunct) :- 
+    arg(Index,Funct,Old0) |
+    Old=Old0,
+    setarg(Index,Funct,Ele,NFunct).
+
+setarg(N,[_Car|Cdr],NewCar,NFunct) :- N=1 | NFunct=[NewCar|Cdr].
+setarg(N,[Car|_Cdr],NewCdr,NFunct) :- N=2 | NFunct=[Car|NewCdr].
+setarg(Index,Funct,Ele,NFunct) :- inline:"
+{
+  if (isfunctor(%0)) {
+    struct functor *f = functorp(%0);
+    int index = intval(%1);
+    q pf = f->functor;
+    int size = arityof(pf);
+    int k;
+    allocp[0] = pf;
+    for (k=1; k<=size; k++) {
+      allocp[k] = (k == index ? %3 :  f->args[k-1]);
+    }
+    %2 = makefunctor(allocp);
+    allocp += size+1;
+  } else goto %f;
+}":[Funct+functor,Index+int,NF0-functor,Ele+any] |
+    NFunct=NF0.

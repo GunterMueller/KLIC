@@ -1,0 +1,12 @@
+:- module main.
+
+main :-
+	loop([1,0,1,0,1,0]).
+
+
+loop([]).
+loop([P|R]) :-
+	dummy(1),
+	loop(R)@node(P).
+
+dummy(_).

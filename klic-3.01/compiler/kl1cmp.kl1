@@ -1,0 +1,394 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1993,1995 Institute for New Generation Computer Technology 
+% %       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+% ----------------------------------------------------------- */
+% 
+%  referring modules.
+%       klic_utility, 
+%       klic_comp_util, klic_comp_version, klic_comp_obj,
+%       klic_comp_macro, klic_comp_normalize, klic_comp_write,
+%	klic_comp_message
+
+:- module klic_comp_kl1cmp.
+
+% --------------------------------------
+% When the compilation of Infile programs, 
+% 'normal' will be returned to 'Report'.
+%
+
+%%% 1. Check the input file name is "xxx.kl1" or not!
+klcmp(InFile,Report) :- string(InFile,FL,_) |
+    FL1 := FL - 1,
+    generic:search_character(InFile,FL1,1,#".",Split),
+    ( Split>0 -> generic:split(InFile,Split,Name,Ext)
+    ; Split=<0 -> Name=InFile, Ext="" ),
+    klcmp1(InFile,Name,Ext,Report).
+otherwise.
+klcmp(InFile,Report) :- Report = abnormal(inputfile,InFile).
+
+
+% If the extention of the input file is ".kl1", then ...
+klcmp1(InFile,Name,".kl1",Report) :-
+    generic:join(Name,".c",OutFile),
+    generic:join(Name,".ext",HdrFile),
+    compile(InFile,OutFile,HdrFile,Report).
+otherwise.
+klcmp1(InFile,_,_,Report) :-
+    Report = abnormal(inputfile,InFile),
+    klic_comp_message:report_error(
+	"File name extension of ~s is not kl1\n",[InFile]).
+
+%%% 2. Open Files 
+compile(InFile,OutFile,HdrFile,Report) :-
+    klic_comp_message:see(InFile,In),
+    klic_comp_message:tell(OutFile,Out),
+    klic_comp_message:tell(HdrFile,HdrOut),
+    compile1(In,Out,HdrOut,Report).
+
+%%% see and tell was moved to message.kl1\
+
+%%% 3. Read programs
+compile1(normal(In),normal(Out),normal(HdrOut),Report) :-
+% constant macro pool
+    keyed_set:create(Pool),
+    read_in(ReadResult)+In+[]+Pool+[],
+    compile2(ReadResult,Report)+Out+[]+HdrOut+[].
+otherwise.
+compile1(_In,_Out,_HdrOut,Report) :-
+    close_streams([_In,_Out,_HdrOut]),
+    Report = abnormal(fileopen,(_In,_Out,_HdrOut)).
+
+  close_streams([]).
+  close_streams([normal(S)|L]) :- S = [], close_streams(L).
+  otherwise.
+  close_streams([_|L]) :- close_streams(L).
+
+read_in(Result)-In-CP :-
+    Result = normal(Terms,Inline),
+    In <= getwt(Term),
+    read_inline(Term,Inline,Terms)-In-CP.
+
+  %%%%% 3.1  (:- inline xxxx)
+  read_inline(normal(functor((:- functor(atom(inline):X)))),
+	      Inline,Terms)-In-CP :- 
+      Inline=[X|Rest],
+      In <= getwt(More),
+      read_inline(More,Rest,Terms)-In-CP.
+  otherwise.
+  read_inline(normal(X),Inline,Terms)-In-CP :- 
+      Inline = [],
+      read_all(X,Terms)-In-CP.
+  otherwise.
+  read_inline(X,Inline,Terms)-In-CP :-
+      handle_exception(X).
+
+
+  %%%%% 3.2  (:- module xxxx) Check!
+  read_all(end_of_file,    Tail )-In-CP :- Tail = [].
+  read_all(empty,          Tail )-In-CP :- Tail = [].
+  read_all(functor((:- functor(module(X)))),Terms)-In-CP :- 
+    read_all_1(X,Terms)-In-CP.
+  otherwise.
+  read_all(_,Terms)-In-CP :-
+      Terms = [],
+      klic_comp_message:report_error("Module declaration is not found", []).
+
+  read_all_1(atom(X),Terms)-In-CP :-
+      Terms = [module(X,One)|Tail],
+      In <= getwt(More),
+      read_one_module(More,One,Next)-In-CP,
+      read_all(Next,Tail)-In-CP.
+  otherwise.
+  read_all_1(X,Terms)-In-CP :-
+      Terms = [],
+      klic_comp_message:report_error("Module name is not an atom :~w", [X]).
+
+  %%%%% 3.3  Read module
+  read_one_module(normal(end_of_file),    One,Next)-In-CP :- 
+      One = [], Next = end_of_file.
+  read_one_module(normal(empty),          One,Next)-In-CP:- 
+      One = [], Next = end_of_file.
+  read_one_module(normal(functor((:- functor(module(atom(X)))))),
+		                                One,Next)-In-CP :- 
+      One = [], Next = functor((:- functor(module(atom(X))))).
+% constant macro
+  read_one_module(normal(functor((:- functor(with(Defs))))),
+                                                One,Next)-In-CP :-
+      klic_comp_cmacro:insDefs(Defs)-CP,
+      In <= getwt(X),
+      read_one_module(X,One,Next)-In-CP.
+  otherwise.
+  read_one_module(normal(functor((:- _))),Tail,Next)-In-CP :- 
+      In <= getwt(X),
+      read_one_module(X,Tail,Next)-In-CP.
+  otherwise.
+  read_one_module(normal(One0),Result,Next)-In-CP :-
+% constant macro processing
+      klic_comp_cmacro:replaceClause(One0, One1)-CP,
+      klic_comp_macro:macro(One1,One),  %%% ------------>  macro.kl1
+                                  % 'One' will be returned as
+                                  % 1) clause(Head,Guard,Body,Expanded)
+                                  % 2) otherwise
+                                  % 3) alternatively
+                                  % 4) end_of_file
+      Result = [One|Tail],
+      In <= getwt(X),
+      read_one_module(X,Tail,Next)-In-CP.
+  otherwise.
+  read_one_module(X,Result,Next)-In-CP :-
+    handle_exception(X).
+
+%%% 4. Write headers
+compile2(normal(Modules,Inline),Report)-Out-HdrOut :-
+    write_file_header               -Out,
+    write_inline_header(Inline)     -Out,
+    Out<= #"\n",
+    compile_modules(Modules,Report) -Out-HdrOut.
+
+  %%%%% 4.1 Write File Header
+  write_file_header-Out :-
+      klic_comp_version:compiler_version(Version),  % version.kl1
+      klic_comp_version:compiler_date(Date),        %
+      klic_comp_obj:klicformat(
+	"/* Compiled by KLIC compiler ~w (~w) */\n"
+	"#include <klic/klichdr.h>\n"
+	"#include \"atom.h\"\n"
+	"#include \"funct.h\"\n",
+	[Version,Date])-Out.
+
+  %%%%% 4.2 Write Inline Header
+  write_inline_header([])-Out.
+  write_inline_header([String|Rest])-Out :-
+      klic_comp_obj:write_inline(String,[],[],[])-Out,
+      write_inline_header(Rest)-Out.
+
+%%% 5. Compile modules  (Analyze)
+compile_modules([],Report)+Out0+Out+HOut0+HOut :- 
+    klic_comp_obj:flush(Status0,Out0,Out),
+    klic_comp_obj:flush(Status1,HOut0,HOut),
+    wait_output_end(Status0,Status1,Report).
+compile_modules([One|Rest],Report)+Out0+Out+HOut0+HOut :-
+    analyze(One,Module),
+    klic_comp_write:write_out(Module,Out0,Out1),           % write.kl1
+    klic_comp_write:write_header_file(Module,HOut0,HOut1), %
+    compile_modules(Rest,Report)+Out1+Out+HOut1+HOut.
+
+%wait_output_end(normal,normal,Report) :- Report = normal.
+wait_output_end(0,0,Report) :- Report = normal.
+otherwise.
+wait_output_end(X,Y,Report) :- Report = abnormal(fileoutput,(X,Y)).
+
+
+analyze(module(Name,Module),Result) :-
+    Result = module(Name,Predicates,Ex),
+%    pool:keyed_set([empty(A)|Pool]),
+    keyed_sorted_set:create([empty(A)|Pool]),
+    analyze1(Module,Name,Predicates,Ex,A,Pool).
+otherwise.
+analyze(_,_Result) :-
+    klic_comp_message:report_error("Internal error in analyze ",[]).
+
+analyze1(Module,Name,Predicates,Ex,yes,Pool) :-
+    Pool = [put(compiling_module,Name,_)|Pool1],
+    analyze_preds(Module,0,Predicates,Ex,[],Pool1).
+otherwise.
+analyze1(_Module,_Name,_Predicates,_Ex,_,Pool) :-
+	Pool=[],
+    klic_comp_message:report_error("Internal error in analyze1 ",[]).
+
+  %%%%% 5.1 Analyze predicates
+  analyze_preds([],_,Predicates,Ex0,Ex,Pool) :- 
+      Predicates = [], Ex = Ex0, Pool = [].
+  analyze_preds([clause(Head,Guard,Body,Exp0)|Rest0],
+		  Seq0,Predicates,Ex0,Ex, Pool) :-
+          get_clause_name(Head,Name,Arity),
+          Pool = [put(compiling_predicate,Name/Arity,_)|Pool1],
+
+          Predicates = [pred(Name,Arity,Seq0,Works,Object)|OtherPreds],
+          Clauses = [clause(Name/Arity/0,Head,Guard,Body)|OtherClauses],
+ % a) Collect same predicate clauses
+	  collect_same(Rest0,Rest1,Name,Arity,1,OtherClauses,Exp0,Exp),
+          klic_comp_util:name(Name,NameS),
+	  klic_comp_util:name(Arity,ArityS),
+	  klic_comp_util:append(NameS,[#"/"|ArityS],Prefix),
+ % b) Rename macro expansion
+	  rename_macro_preds(Exp,Prefix,0,Rest1,Rest),
+ % c) Generate => normalize.kl1
+	  klic_comp_normalize:generate((Name/Arity),Clauses,
+				       Works,Exx,[],Object,Pool1,Pool2),
+	                                                       
+	  klic_comp_util:remove(Exx,exec(Name/Arity),Ex0,Ex1),
+	  Seq1 := Seq0+1,
+	  analyze_preds(Rest,Seq1,OtherPreds,Ex1,Ex,Pool2).
+
+   get_clause_name(functor(Head),Name,Arity) :- functor(Head,N,A) |
+	Name = N, Arity = A.
+   get_clause_name(atom(Head),Name,Arity) :- 
+        Name = Head, Arity = 0.
+
+  %%%%%%% a) Collect same clauses
+  collect_same([Clause|Rest0],Rest,Name,Arity,K,
+	       Clauses,Exp0,Exp) :-
+      Clause = clause(Head,Guard,Body,Exp1) |
+	  get_clause_name(Head,Name0,Arity0),
+          collect_same_1([Clause|Rest0],Rest,Name,Arity,K,Clauses,Exp0,Exp,
+		         Name0,Arity0).
+  collect_same([otherwise|Rest0],Rest,Name,Arity,K,
+	       Clauses,Exp0,Exp) :- 
+      Clauses = [otherwise|OtherClauses],
+      collect_same(Rest0,Rest,Name,Arity,K,OtherClauses,Exp0,Exp).
+  collect_same([alternatively|Rest0],Rest,Name,Arity,K,
+	       Clauses,Exp0,Exp) :- 
+      Clauses = [alternatively|OtherClauses],
+      collect_same(Rest0,Rest,Name,Arity,K,OtherClauses,Exp0,Exp).
+  otherwise.
+  collect_same(Rest,RestT,_Name,_Arity,_K,Clauses,Exp0,Exp) :-
+      RestT = Rest, Clauses = [], Exp = Exp0.
+
+   collect_same_1([clause(Head,Guard,Body,Exp1)|Rest0],Rest,Name,Arity,
+		      K,Clauses,Exp0,Exp,Name,Arity) :-
+      Clauses = [clause(Name/Arity/K,Head,Guard,Body)|OtherClauses],
+      K1 := K+1,
+      klic_comp_util:append(Exp1,Exp0,Exp2),
+      collect_same(Rest0,Rest,Name,Arity,K1,OtherClauses,Exp2,Exp).
+   otherwise.
+   collect_same_1(Rest,RestT,_Name,_Arity,_K,Clauses,Exp0,Exp,_,_) :-
+      RestT = Rest, Clauses = [], Exp = Exp0.
+
+  %%%%%%% b) Rename Macro Expansion
+  rename_macro_preds([],_,_,Rest0,Rest) :- Rest = Rest0.
+  rename_macro_preds([expanded(OR,NewName)|Exp],Prefix,K,Rest0,Rest) :-
+      klic_comp_util:name(K,KS),
+      klic_comp_util:append(Prefix,[#"$"|KS],NewNameS),
+%  patched by Fujise
+%      atom_table:make_atom(NewNameS,NewName),
+      klic_comp_util:make_atom(NewNameS,NewName),
+      rename_macro_clauses(OR,Rest1,Rest0),
+      K1 := K+1,
+      rename_macro_preds(Exp,Prefix,K1,Rest1,Rest).
+
+  rename_macro_clauses([],Rest,Rest0) :- Rest = Rest0.
+  rename_macro_clauses([otherwise|T],Rest1,Rest) :-
+      Rest1 = [otherwise|Rest0],
+      rename_macro_clauses(T,Rest0,Rest).
+  rename_macro_clauses([alternatively|T],Rest1,Rest) :-
+      Rest1 = [alternatively|Rest0],
+      rename_macro_clauses(T,Rest0,Rest).
+  rename_macro_clauses([clause(H0,G,B,Exp)|T],Rest1,Rest) :-
+      Rest1 = [clause(H,G,B,Exp)|Rest0],
+      shift_vector(H0,H),
+      rename_macro_clauses(T,Rest0,Rest).
+
+  %  H0=..[_,NewName|Args], H=..[NewName|Args],
+% rewritten  by Fujise
+  shift_vector(H0,H) :- functor(H0,_,A) |
+  	A1 := A - 1,
+  	shift_vector(A1,H0,H).
+  shift_vector(A1,H0,H) :- A1 > 0,
+	arg(1,H0,F) |
+	functor_table:new_functor(H1,F,A1),
+	shift_vector(1,A1,H0,H1,H).
+  shift_vector(A1,H0,H) :- A1 =:= 0,
+	arg(1,H0,F) |
+	H = atom(F).
+
+  shift_vector(P,A1,H0,H1,H) :- A1 >= P,
+	Pm1 := P-1,
+	Pp1 := P+1,
+	arg(Pp1,H0,X) |
+	functor_table:setarg(P,H1,_,X,H2),
+	shift_vector(Pp1,A1,H0,H2,H).
+  otherwise.
+  shift_vector(_P,_A1,_H0,H1,H) :- H = functor(H1).
+
+
+%%%%%%% OTHER ROUTINE
+
+% report_error, warning was moved to error.kl1
+
+% ------ HANDLE EXCEPTION -----
+% handle_exception(syntax_error(_,between(_,_),Msg,Tokens,After)) :-
+%     tell(user_error,Out),
+%     klic_comp_obj:klicformat("Syntax error: ",[],   Out, Out1),
+%     complain_words(Msg)                            +Out1+Out2,
+%     klic_comp_obj:nl(                               Out2,Out3),
+%     klic_comp_util:length(Tokens,Len),
+%     Pos := Len-After,
+%     complain_tokens(0,Pos,Tokens, Rest)            +Out3+Out4,
+%     klic_comp_obj:klicformat("\n*** Here ***\n",[], Out4,Out5),
+%     complain_tokens(Rest)                          +Out5+Out6,
+%     klic_comp_obj:nl(                               Out6,[]),
+%     compilation_error.
+
+% temporary ?
+%% I found the interface was 'abnormal(error({TL,Ps}))' in the PIMOS manual, 
+%% but the parser gave like the following argument.
+handle_exception(abnormal(error(Ps,TL))) :-
+    handle_exception(Ps,TL,[]).
+handle_exception(abnormal(ambiguous(Ps,TL))) :-
+    handle_exception(Ps,TL,[ambiguous,token,was,found]).
+handle_exception(abnormal(error({TL,Reason,Ps}))) :-
+    klic_comp_message:tell(user_error,Out),
+    klic_comp_obj:klicformat("!! Error !!\nTL = ~w\nReason = ~wPs = \n",
+			     [TL,Reason,Ps])-Out,
+    klic_comp_obj:flush(Status)-Out,
+    Out=[],
+    klic_comp_message:compilation_error(Status).
+otherwise.
+handle_exception(Exception) :-
+    klic_comp_message:tell(user_error,Out),
+    klic_comp_obj:klicformat("~w\n",[Exception], Out, Out1),
+    klic_comp_obj:flush(Status,                  Out1,[]),
+    klic_comp_message:compilation_error(Status).
+
+handle_exception(Ps,TL,Msg) :-
+    klic_comp_message:tell(user_error,Out),
+    klic_comp_obj:klicformat("Syntax error: ")-Out,
+    complain_words(Msg)-Out,
+    Out <= #"\n",
+    complain_tokens(0,Ps,TL,Rest)-Out,
+    klic_comp_obj:klicformat("\n*** Here ***\n")-Out,
+    complain_tokens(Rest)-Out,
+    Out <= #"\n",
+    klic_comp_obj:flush(Status)-Out,
+    Out=[],
+    klic_comp_message:compilation_error(Status).
+
+complain_tokens(K,K,T,R)+O0+O :-  R = T, O = O0.
+otherwise.
+complain_tokens(K,N,[H|T],R)-O :-
+    complain_token(H)-O,
+    K1 := K+1,
+    complain_tokens(K1,N,T,R)-O.
+
+complain_tokens([])+O0+O :- O = O0.
+complain_tokens([H|T])-O :-
+    complain_token(H)-O,
+    complain_tokens(T)-O.
+
+complain_token(atom(A)    )-O :- klic_comp_obj:klicformat("~w",[A])-O.
+complain_token(integer(N) )-O :- klic_comp_obj:klicformat("~w",[N])-O.
+complain_token(string(S)  )-O :- 
+    klic_comp_util:string_to_char_list(S,L),
+    complain_string(L)-O.
+complain_token('$VAR'(_,V))-O :- klic_comp_obj:klicformat("~s",[V])-O.
+complain_token(open(F)    )-O :- klic_comp_obj:klicformat("~w(",[F])-O.
+complain_token(end        )-O :- klic_comp_obj:klicformat(".\n")-O.
+otherwise.
+complain_token(X	  )-O :- klic_comp_obj:klicformat("~w",[X])-O.
+
+complain_string([])-O.
+complain_string([#"\""|T])-O :-
+    klic_comp_obj:klicformat("\\\"")-O,
+    complain_string(T)-O.
+otherwise.
+complain_string([H|T])-O :-
+    klic_comp_obj:klicformat("~c",[H])-O,
+    complain_string(T)-O.
+
+complain_words([])-O.
+complain_words([H|T])-O :-
+    klic_comp_obj:klicformat("~w~c",[H,#" "])-O,
+    complain_words(T)-O.

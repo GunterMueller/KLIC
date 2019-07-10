@@ -1,0 +1,122 @@
+/*-----------------------------------------------------------------------------
+Program: Turtles (layered-streams: nil check)
+Author:  E. Tick
+Date:    July 25 1989
+
+Notes:
+1. To run:
+    ?- go(N,A).
+where output N=4 and output A is the list of four solutions.
+-----------------------------------------------------------------------------*/
+
+:- module main.
+main :-  
+	klicio:klicio([stdout(Res)]),
+	check_stream(Res).
+
+check_stream(normal(S)) :-
+	go(4,A),
+	S = [putt(A),nl].
+check_stream(abnormal).
+
+go(N,A) :-  
+    cards(C),
+    constraints(D),
+    spawn(D,C,begin,A),
+    count(A,N).
+
+cards(Cards) :-  
+    Cards=[[tg,tp,hb,ho],[tg,tp,hb,ho],[tb,tp,hb,ho],
+           [tg,hb,hp,to],[to,hb,hg,tp],[hg,hp,tb,to],
+           [tb,tp,hg,ho],[tg,to,hg,hp],[to,tp,hg,hb]].
+
+constraints(D) :-  
+    D = [[],[t],[x,r],[t,r,x],[x,x,x,l],[t,x,x,l,x],
+         [x,x,x,x,x,b],[l,x,b,x,x,x,x],[x,r,x,x,x,b,x,x]].
+
+spawn([],_C,S0,S2) :- fromLStoL(S0,S1),final(S1,S2).
+spawn([D|Ds],C,S0,S2) :- orient(1,D,C,S0,S1),spawn(Ds,C,S1,S2).
+
+orient(_,_,[],_,S) :- S=[].
+orient(I,D,[C|Cs],In,S) :- I>1, I1 := I+1 |
+    rotate(I,D,C,In,S,S1),
+    orient(I1,D,Cs,In,S1).
+orient(1,D,[[T,R,B,L]|Cs],In,S) :-
+    set(In,card(1,T,R,B,L),D,S,S1),
+    orient(2,D,Cs,In,S1).
+
+rotate(I,D,[T,R,B,L],In,S0,S4) :- 
+    set(In,card(I,T,R,B,L),D,S0,S1),
+    set(In,card(I,R,B,L,T),D,S1,S2),
+    set(In,card(I,B,L,T,R),D,S2,S3),
+    set(In,card(I,L,T,R,B),D,S3,S4).
+
+set(In,Card,D,Out,T) :-  Out=[[Card|Out1]|T],filter(D,In,Card,Out1).
+
+filter(_,[],_,O) :- O=[].
+filter(_,begin,_,O) :- O=begin.
+filter(D,[[card(J,_,_,_,_)|_]|Is],C,O) :- card(J,_,_,_,_)=C |
+    filter(D,Is,C,O).
+otherwise.
+filter([x|Ds],[[C1|Ts]|Is],C2,O) :-
+    filter1(yes,C1,C2,Is,Ts,x,Ds,O).
+filter([t|Ds],[[C1|Ts]|Is],C2,O) :- card(_,T,_,_,_)=C1, card(_,_,_,B,_)=C2 |
+    flip(T,B,Status),
+    filter1(Status,C1,C2,Is,Ts,t,Ds,O).
+filter([r|Ds],[[C1|Ts]|Is],C2,O) :- card(_,_,R,_,_)=C1, card(_,_,_,_,L)=C2 |
+    flip(R,L,Status),
+    filter1(Status,C1,C2,Is,Ts,r,Ds,O).
+filter([b|Ds],[[C1|Ts]|Is],C2,O) :- card(_,_,_,B,_)=C1, card(_,T,_,_,_)=C2 |
+    flip(B,T,Status),
+    filter1(Status,C1,C2,Is,Ts,b,Ds,O).
+filter([l|Ds],[[C1|Ts]|Is],C2,O) :- card(_,_,_,_,L)=C1, card(_,_,R,_,_)=C2 |
+    flip(L,R,Status),
+    filter1(Status,C1,C2,Is,Ts,l,Ds,O).
+
+filter1( no,    _,Card2,Is, _,D,Ds,O) :- filter([D|Ds],Is,Card2,O).
+filter1(yes,Card1,Card2,Is,Ts,D,Ds,O) :-
+    filter(Ds,Ts,Card2,O1),
+    send(O1,Card1,O,Os),
+    filter([D|Ds],Is,Card2,Os).
+
+send([],_,S0,S1) :- S0=S1.
+otherwise.
+send( T,H,S0,S1) :- S0=[[H|T]|S1].
+
+flip(tg,hg,S) :- S=yes.
+flip(tp,hp,S) :- S=yes.
+flip(to,ho,S) :- S=yes.
+flip(tb,hb,S) :- S=yes.
+flip(hg,tg,S) :- S=yes.
+flip(hp,tp,S) :- S=yes.
+flip(ho,to,S) :- S=yes.
+flip(hb,tb,S) :- S=yes.
+otherwise.
+flip(_,_,S) :- S=no.
+
+final([],Out) :- Out=[].
+final([A|As],Out) :-
+    Out = [R|Out1],
+    rearrange(A,R),
+    final(As,Out1).
+
+rearrange(A,B) :- rearrange1(A,C),rearrange2(C,B).
+
+rearrange1([],R) :- R=[].
+rearrange1([card(N,T,_,_,_)|Cs],R) :- R=[N-T|Rs], rearrange1(Cs,Rs).
+
+rearrange2([M5,M2,M6,M3,M4,M1,M8,M7,M9],R) :- 
+         R=[M1,M2,M3,M4,M5,M6,M7,M8,M9].
+
+fromLStoL(LS,L) :- fromLStoS(LS,[],L,[]).
+
+fromLStoS(begin,Stack,L0,L1) :- L0=[Stack|L1].
+fromLStoS([],_,L0,L1) :- L0=L1.
+fromLStoS([[A|LS1]|Rest],Stack,L0,L2) :-
+    fromLStoS(LS1,[A|Stack],   L0,L1),
+    fromLStoS(Rest,Stack,      L1,L2).
+
+count(L,N) :- count(L,0,N).
+
+count([],M,N) :- M = N.
+count([_|Xs],M,N) :- M1 := M+1, count(Xs,M1,N).

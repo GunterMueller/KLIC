@@ -1,0 +1,322 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+:- module klicio.
+
+klicio(S) :- klicio(S,[]).
+
+klicio([],U) :- close_unix(U).
+klicio([stdin(R)|S],U) :-
+    send_unix(stdin(RU),U,UT), termin(RU,R), klicio(S,UT).
+klicio([stdout(R)|S],U) :-
+    send_unix(stdout(RU),U,UT), termout(RU,R), klicio(S,UT).
+klicio([stderr(R)|S],U) :-
+    send_unix(stderr(RU),U,UT), termout(RU,R), klicio(S,UT).
+klicio([string_output(R,Str)|S],U) :-
+    string_output(RS,Str,Chars,Chars), termout(normal(RS),R), klicio(S,U).
+klicio([string_input(R,Str)|S],U) :- string(Str,L,_) |
+    string_input(RS,Str,0,L,0), termin(normal(RS),R), klicio(S,U).
+klicio([read_open(Path,R)|S],U) :-
+    send_unix(read_open(Path,RU),U,UT), termin(RU,R), klicio(S,UT).
+klicio([write_open(Path,R)|S],U) :-
+    send_unix(write_open(Path,RU),U,UT), termout(RU,R), klicio(S,UT).
+klicio([append_open(Path,R)|S],U) :-
+    send_unix(append_open(Path,RU),U,UT), termout(RU,R), klicio(S,UT).
+klicio([update_open(Path,R)|S],U) :-
+    send_unix(update_open(Path,RU),U,UT), termupdt(RU,R), klicio(S,UT).
+klicio([connect(What,R)|S],U) :-
+    send_unix(connect(What,RU),U,UT), termupdt(RU,R), klicio(S,UT).
+klicio([connect2(What,R)|S],U) :-
+    send_unix(connect2(What,RU),U,UT), termupdt(RU,R), klicio(S,UT).
+klicio([fork_with_pipes(R)|S],U) :-
+    send_unix(fork_with_pipes(RU),U,UT),fork_io(RU,R), klicio(S,UT).
+klicio([bind(What,R)|S],U) :-
+    send_unix(bind(What,RU),U,UT), bind(RU,R), klicio(S,UT).
+
+otherwise.
+klicio([Msg|S],U) :-
+    send_unix(Msg,U,UT), klicio(S,UT).
+
+send_unix(Msg,[],UT) :- unix:unix([Msg|US]), UT=unix(US).
+send_unix(Msg,unix(U),UT) :- U=[Msg|US], UT=unix(US).
+
+close_unix([]).
+close_unix(unix(U)) :- U=[].
+
+termin(normal(SU),R) :-
+    R=normal(SI),
+    default_operator_table(Ops),
+    in(SI,SU,s(Ops,0)).
+otherwise.
+termin(R0,R) :- R=R0.
+
+termout(normal(SU),R) :-
+    R=normal(SI),
+    default_operator_table(Ops),
+    out(SI,SU,s(Ops,0)).
+otherwise.
+termout(R0,R) :- R=R0.
+
+termupdt(normal(SU),R) :-
+    R=normal(SI),
+    default_operator_table(Ops),
+    updt(SI,SU,s(Ops,0)).
+termupdt(normal(SU1,SU2),R) :-
+    R=normal(SI1,SI2),
+    default_operator_table(Ops),
+    updt(SI1,SU1,s(Ops,0)),
+    updt(SI2,SU2,s(Ops,0)).
+otherwise.
+termupdt(R0,R) :- R=R0.
+
+bind(normal(SU),R) :-
+    R=normal(SI),
+    bound_sock(SI,SU).
+otherwise.
+bind(R0,R) :- R=R0.
+
+fork_io(parent(PID,InU,OutU),R) :-
+    R=parent(PID,In,Out),
+    termout(normal(OutU),normal(Out)),
+    termin(normal(InU),normal(In)).
+fork_io(child(InU,OutU),R) :-
+    R=child(In,Out),
+    termout(normal(OutU),normal(Out)),
+    termin(normal(InU),normal(In)).
+
+bound_sock([],U) :- U=[].
+bound_sock([accept(R)|S],U) :-
+    U=[accept(RU)|UT], termupdt(RU,R), bound_sock(S,UT).
+bound_sock([accept2(R)|S],U) :-
+    U=[accept2(RU)|UT], termupdt(RU,R), bound_sock(S,UT).
+
+in([],U,_Ops) :- U=[].
+in([gett(Term)|S],U,Stat) :-
+    klic_reader:parse_one_term_reporting_errors(U,Stat,Term,UT),
+    in(S,UT,Stat).
+in([getwt(Result)|S],U,Stat) :-
+    klic_reader:wparse_one_term_reporting_errors(U,Stat,Result,UT),
+    in(S,UT,Stat).
+in([addop(Op,Type,Prec)|S],U,s(Ops,OnErr)) :-
+    addop(Type,Op,Prec,Ops,NewOps),
+    in(S,U,s(NewOps,OnErr)).
+in([rmop(Op,Type)|S],U,s(Ops,OnErr)) :-
+    rmop(Type,Op,Ops,NewOps),
+    in(S,U,s(NewOps,OnErr)).
+in([on_error(Pred)|S],U,s(Ops,_)) :-
+    in(S,U,s(Ops,Pred)).
+otherwise.
+in([Msg|S],U,Stat) :-
+    U=[Msg|UT],
+    in(S,UT,Stat).
+
+out([],U,_Ops) :- U=[].
+out([nl|S],U,Stat) :-
+    U=[putc(10)|UT],
+    out(S,UT,Stat).
+out([putt(Term)|S],U,Stat) :-
+    unparser:unparse(Term,Stat,U,UT),
+    out(S,UT,Stat).
+out([puttq(Term)|S],U,Stat) :-
+    unparser:unparse(Term,Stat,U,UT),
+    out(S,UT,Stat).
+out([putwt(Term)|S],U,Stat) :-
+    unparser:unwparse(Term,Stat,U,UT),
+    out(S,UT,Stat).
+out([putwtq(Term)|S],U,Stat) :-
+    unparser:unwparse(Term,Stat,U,UT),
+    out(S,UT,Stat).
+out([addop(Op,Type,Prec)|S],U,s(Ops,OnErr)) :-
+    addop(Type,Op,Prec,Ops,NewOps),
+    out(S,U,s(NewOps,OnErr)).
+out([rmop(Op,Type)|S],U,s(Ops,OnErr)) :-
+    rmop(Type,Op,Ops,NewOps),
+    out(S,U,s(NewOps,OnErr)).
+out([on_error(Pred)|S],U,s(Ops,_)) :-
+    out(S,U,s(Ops,Pred)).
+otherwise.
+out([Msg|S],U,s(Ops,OnErr)) :-
+    U=[Msg|UT],
+    out(S,UT,s(Ops,OnErr)).
+
+updt([],U,_Stat) :- U=[].
+updt([nl|S],U,Stat) :-
+    U=[putc(10)|UT],
+    updt(S,UT,Stat).
+updt([gett(Term)|S],U,Stat) :-
+    klic_reader:parse_one_term_reporting_errors(U,Stat,Term,UT),
+    updt(S,UT,Stat).
+updt([getwt(Term)|S],U,Stat) :-
+    klic_reader:wparse_one_term_reporting_errors(U,Stat,Term,UT),
+    updt(S,UT,Stat).
+updt([putt(Term)|S],U,Stat) :-
+    unparser:unparse(Term,Stat,U,UT),
+    updt(S,UT,Stat).
+updt([puttq(Term)|S],U,Stat) :-
+    unparser:unparse(Term,Stat,U,UT),
+    updt(S,UT,Stat).
+updt([putwt(Term)|S],U,Stat) :-
+    unparser:unwparse(Term,Stat,U,UT),
+    updt(S,UT,Stat).
+updt([putwtq(Term)|S],U,Stat) :-
+    unparser:unwparse(Term,Stat,U,UT),
+    updt(S,UT,Stat).
+updt([addop(Op,Type,Prec)|S],U,s(Ops,OnErr)) :-
+    addop(Type,Op,Prec,Ops,NewOps),
+    updt(S,U,s(NewOps,OnErr)).
+updt([rmop(Op,Type)|S],U,s(Ops,OnErr)) :-
+    rmop(Type,Op,Ops,NewOps),
+    updt(S,U,s(NewOps,OnErr)).
+updt([on_error(Pred)|S],U,s(Ops,_)) :-
+    updt(S,U,s(Ops,Pred)).
+otherwise.
+updt([Msg|S],U,s(Ops,OnErr)) :-
+    U=[Msg|UT],
+    updt(S,UT,s(Ops,OnErr)).
+
+addop(Kind,Op,Prec,ops(Prefix,Infix,Postfix),NOps) :-
+	( Kind=fx; Kind=fy ) |
+	addop2(Op,Kind,Prec,Prefix,NPrefix),
+	NOps = ops(NPrefix,Infix,Postfix).
+addop(Kind,Op,Prec,ops(Prefix,Infix,Postfix),NOps) :-
+	( Kind=xfx; Kind=xfy; Kind=yfx ) |
+	addop2(Op,Kind,Prec,Infix,NInfix),
+	NOps = ops(Prefix,NInfix,Postfix).
+addop(Kind,Op,Prec,ops(Prefix,Infix,Postfix),NOps) :-
+	( Kind=xf; Kind=yf ) |
+	addop2(Op,Kind,Prec,Postfix,NPostfix),
+	NOps = ops(Prefix,Infix,NPostfix).
+
+addop2(Op,Type,Prec,[op(Op,_Type,_)|Ops],NOps) :- NOps=[op(Op,Type,Prec)|Ops].
+addop2(Op,Type,Prec,[],NOps):- NOps=[op(Op,Type,Prec)].
+otherwise.
+addop2(Op,Type,Prec,[Info|Ops],NOps) :-
+	NOps=[Info|NOpsT],
+	addop2(Op,Type,Prec,Ops,NOpsT).
+
+rmop(Kind,Op,ops(Prefix,Infix,Postfix),NOps) :-
+	( Kind=fx; Kind=fy ) |
+	rmop2(Op,Kind,Prefix,NPrefix),
+	NOps = ops(NPrefix,Infix,Postfix).
+rmop(Kind,Op,ops(Prefix,Infix,Postfix),NOps) :-
+	( Kind=xfx; Kind=xfy; Kind=yfx ) |
+	rmop2(Op,Kind,Infix,NInfix),
+	NOps = ops(Prefix,NInfix,Postfix).
+rmop(Kind,Op,ops(Prefix,Infix,Postfix),NOps) :-
+	( Kind=xf; Kind=yf ) |
+	rmop2(Op,Kind,Postfix,NPostfix),
+	NOps = ops(Prefix,Infix,NPostfix).
+
+rmop2(Op,Type,[op(Op,_Type,_)|Ops],NOps) :- NOps=Ops.
+rmop2(_Op,_Type,[],NOps):- NOps=[].
+otherwise.
+rmop2(Op,Type,[Info|Ops],NOps) :-
+	NOps=[Info|NOpsT],
+	rmop2(Op,Type,Ops,NOpsT).
+
+default_operator_table(Ops) :-
+    Ops=ops([op(#,fx,100), op(&,fx,200), op(+,fx,500), op(-,fx,500),
+	     op((:-),fx,1200), op((?-),fx,1200), op((implicit),fx,1150),
+	     op((local_implicit),fx,1150), op((mode),fx,1150),
+	     op(module,fx,80), op(nospy,fy,900), op((public),fx,1150),
+	     op(spy,fy,900), op((with_macro),fx,1150),
+	     op(~,fy,300), op($~,fy,300),
+	     op(\+,fy,900)],
+	    [op(#,xfx,100), op($$:=,xfx,700),
+	     op($$<,xfx,700), op($$<=,xfx,700), op($$=:=,xfx,700),
+	     op($$=<,xfx,700), op($$=\=,xfx,700), op($$>,xfx,700),
+	     op($$>=,xfx,700), op($:=,xfx,700), op($<,xfx,700),
+	     op($<=,xfx,700), op($=:=,xfx,700), op($=<,xfx,700),
+	     op($=\=,xfx,700), op($>,xfx,700), op($>=,xfx,700),
+	     op(&<,xfx,700), op(&<=,xfx,700),
+	     op(&=<,xfx,700), op(&>,xfx,700), op(&>=,xfx,700),
+	     op($+=,xfx,700), op($-=,xfx,700),
+	     op($*=,xfx,700), op($/=,xfx,700),
+	     op(*,yfx,400), op(**,xfy,300), op(+,yfx,500),
+	     op((','),xfy,1000), op(-,yfx,500),
+	     op((-->),xfx,1200), op((->),xfy,1050),
+	     op(/,yfx,400), op(//,yfx,400), op(/\,yfx,500),
+	     op(:,xfy,800), op((:-),xfx,1200), op(::,xfx,90),
+	     op(:=,xfx,700), op((;),xfy,1100), op(<,xfx,700),
+	     op(<<,yfx,400), op(<<=,xfx,700),
+	     op(<=,xfx,700), op(=>,xfx,700), op(<==,xfx,700),
+	     op(=,xfx,700), op(=..,xfx,700), op(=:=,xfx,700),
+	     op(=<,xfx,700), op(==,xfx,700), op((=>),xfx,1090),
+	     op(=\=,xfx,700), op(>,xfx,700), op(>=,xfx,700),
+	     op(+=,xfx,700), op(-=,xfx,700),
+	     op(*=,xfx,700), op(/=,xfx,700),
+	     op(>>,yfx,400), op(@,xfy,700),
+	     op(@<,xfx,700), op(@=<,xfx,700), op(@>,xfx,700),
+	     op(@>=,xfx,700), op(\/,yfx,500),
+	     op(\=,xfx,700), op(\==,xfx,700), op(^,xfy,200),
+	     op(is,xfx,700), op(mod,xfx,300), op(xor,yfx,500)],
+	    [op(++,xf,150),op(--,xf,150)]).
+
+output_stream(Stream,String) :-
+    klicio:default_operator_table(Ops),
+    klicio:out(Stream,Out,s(Ops,0)),
+    string_output(Out,String,Chars,Chars).
+
+string_output([],String,Chars,CharsT) :-
+    CharsT=[],
+    compute_string_length(Chars,0,L),
+    generic:new(string,String0,L,8),
+    fill_string(Chars,String0,String,0).
+string_output([C|T],String,Chars,CharsT) :- integer(C) |
+    CharsT=[C|CharsNT],
+    string_output(T,String,Chars,CharsNT).
+string_output([putc(C)|T],String,Chars,CharsT) :-
+    CharsT=[C|CharsNT],
+    string_output(T,String,Chars,CharsNT).
+string_output([fwrite(S)|T],String,Chars,CharsT) :- string(S,L,_) |
+    CharsT=[S|CharsNT],
+    string_output(T,String,Chars,CharsNT).
+string_output([fwrite(S,N)|T],String,Chars,CharsT) :- string(S,L,_) |
+    N=L,
+    CharsT=[S|CharsNT],
+    string_output(T,String,Chars,CharsNT).
+
+compute_string_length([],K,L) :- L=K.
+compute_string_length([C|T],K,L) :- integer(C) |
+    compute_string_length(T,~(K+1),L).
+compute_string_length([S|T],K,L) :- string(S,SL,_) |
+    compute_string_length(T,~(K+SL),L).
+
+fill_string([],S0,S,_) :- S=S0.
+fill_string([C|T],S0,S,K) :- integer(C) |
+    set_string_element(S0,K,C,S1),
+    fill_string(T,S1,S,~(K+1)).
+fill_string([E|T],S0,S,K) :- string(E,EL,_) |
+    set_string_elements(S0,K,0,EL,E,S1),
+    fill_string(T,S1,S,~(K+EL)).
+
+set_string_elements(S0,_K,EK,EL,_E,S) :- EK>=EL | S=S0.
+set_string_elements(S0,K,EK,EL,E,S) :- EK<EL, string_element(E,EK,C) |
+    set_string_element(S0,K,C,S1),
+    set_string_elements(S1,~(K+1),~(EK+1),EL,E,S).
+
+string_input([],_,_,_,_).
+string_input([linecount(LC1)|T],String,K,L,LC) :-
+    LC1=LC,
+    string_input(T,String,K,L,LC).
+string_input([getc(C)|T],String,K,L,LC) :- K >= L |
+    C = -1,
+    string_input(T,String,K,L,LC).
+string_input([getc(C)|T],String,K,L,LC) :- K < L,
+    string_element(String,K,C0), K1:=K+1 |
+    C=C0,
+    update_lc(C,LC,LC1),
+    string_input(T,String,K1,L,LC).
+string_input([ungetc(C)|T],String,K,L,LC) :- C=:= -1 |
+    string_input(T,String,K,L,LC).
+string_input([ungetc(C)|T],String,K,L,LC) :- C=\= -1, K > 0, K1:=K-1, C=\=10 |
+    string_input(T,String,K1,L,LC).
+string_input([ungetc(C)|T],String,K,L,LC) :- C=\= -1, K > 0, K1:=K-1, C=:=10 |
+    LC1 := LC-1,
+    string_input(T,String,K1,L,LC1).
+
+update_lc(C,LC,LC1) :- C=:=10 | LC1:=LC+1.
+update_lc(C,LC,LC1) :- C=\=10 | LC1=LC.

@@ -1,0 +1,7870 @@
+0:send_throw_goal
+0: wtc 16777216-4096
+0:send_throw_goal
+0: wtc 16773120-4096
+0:send_throw_goal
+0: wtc 16769024-4096
+0:send_throw_goal
+0: wtc 16764928-4096
+0:send_throw_goal
+0: wtc 16760832-4096
+0:send_throw_goal
+0: wtc 16756736-4096
+0:send_throw_goal
+0: wtc 16752640-4096
+0:send_throw_goal
+0: wtc 16748544-4096
+0:send_throw_goal
+0: wtc 16744448-4096
+1:decode_throw_goal
+1: wtc 0+4096
+1:decode_throw_goal
+1: wtc 4096+4096
+0:send_throw_goal
+0: wtc 16740352-4096
+0:send_throw_goal
+0: wtc 16736256-4096
+0:send_throw_goal
+0: wtc 16732160-4096
+0:send_throw_goal
+0: wtc 16728064-4096
+0:send_throw_goal
+0: wtc 16723968-4096
+0:send_throw_goal
+0: wtc 16719872-4096
+0:send_throw_goal
+0: wtc 16715776-4096
+0:send_throw_goal
+0: wtc 16711680-4096
+0:send_throw_goal
+0: wtc 16707584-4096
+0:send_throw_goal
+0: wtc 16703488-4096
+0:send_throw_goal
+0: wtc 16699392-4096
+0:send_throw_goal
+0: wtc 16695296-4096
+0:send_throw_goal
+1:decode_throw_goal
+1: wtc 8192+4096
+1:decode_throw_goal
+1: wtc 12288+4096
+1:decode_throw_goal
+1: wtc 16384+4096
+0: wtc 16691200-4096
+0:send_throw_goal
+0: wtc 16687104-4096
+0:send_throw_goal
+0: wtc 16683008-4096
+0:send_throw_goal
+0: wtc 16678912-4096
+0:send_throw_goal
+0: wtc 16674816-4096
+0:send_throw_goal
+0: wtc 16670720-4096
+0:send_throw_goal
+0: wtc 16666624-4096
+0:send_throw_goal
+0: wtc 16662528-4096
+0:send_throw_goal
+0: wtc 16658432-4096
+0:send_throw_goal
+0: wtc 16654336-4096
+0:send_throw_goal
+0: wtc 16650240-4096
+0:send_throw_goal
+0: wtc 16646144-4096
+0:send_throw_goal
+0: wtc 16642048-4096
+0:send_throw_goal
+0: wtc 16637952-4096
+0:send_throw_goal
+0: wtc 16633856-4096
+0:send_throw_goal
+0: wtc 16629760-4096
+0:send_throw_goal
+0: wtc 16625664-4096
+0:send_throw_goal
+0: wtc 16621568-4096
+0:send_throw_goal
+0: wtc 16617472-4096
+0:send_throw_goal
+0: wtc 16613376-4096
+0:send_throw_goal
+0: wtc 16609280-4096
+0:send_throw_goal
+0: wtc 16605184-4096
+0:send_throw_goal
+0: wtc 16601088-4096
+0:send_throw_goal
+0: wtc 16596992-4096
+0:send_throw_goal
+0: wtc 16592896-4096
+0:send_throw_goal
+0: wtc 16588800-4096
+0:send_throw_goal
+0: wtc 16584704-4096
+0:send_throw_goal
+0: wtc 16580608-4096
+0:send_throw_goal
+0: wtc 16576512-4096
+0:send_throw_goal
+0: wtc 16572416-4096
+0:send_throw_goal
+0: wtc 16568320-4096
+0:send_throw_goal
+0: wtc 16564224-4096
+0:send_throw_goal
+0: wtc 16560128-4096
+0:send_throw_goal
+0: wtc 16556032-4096
+0:send_throw_goal
+0: wtc 16551936-4096
+0:send_throw_goal
+0: wtc 16547840-4096
+0:send_throw_goal
+0: wtc 16543744-4096
+0:send_throw_goal
+0: wtc 16539648-4096
+0:send_throw_goal
+0: wtc 16535552-4096
+0:send_throw_goal
+0: wtc 16531456-4096
+0:send_throw_goal
+0: wtc 16527360-4096
+0:send_throw_goal
+0: wtc 16523264-4096
+'### InterNode Test [EXREF -> EXREF -> Vector] Begin ###'
+'vector: (a-u) : '1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_cons1:decode_throw_goal
+1: wtc 20480+4096
+1:decode_throw_goal
+1: wtc 24576+4096
+1:decode_throw_goal
+0:send_throw_goal
+0: wtc 16519168-4096
+0:send_throw_goal
+0: wtc 16515072-4096
+0:send_throw_goal
+0: wtc 16510976-4096
+0:send_throw_goal
+0: wtc 16506880-4096
+0:send_throw_goal
+0: wtc 16502784-4096
+0:send_throw_goal
+0: wtc 16498688-4096
+0:send_throw_goal
+0: wtc 16494592-4096
+0:send_throw_goal
+0: wtc 16490496-4096
+0:send_throw_goal
+0: wtc 16486400-4096
+0:send_throw_goal
+0: wtc 16482304-4096
+0:send_throw_goal
+0: wtc 16478208-4096
+0:send_throw_goal
+0: wtc 16474112-4096
+0:send_throw_goal
+0: wtc 16470016-4096
+0:send_throw_goal
+0: wtc 16465920-4096
+0:send_throw_goal
+0: wtc 16461824-4096
+0:send_throw_goal
+0: wtc 16457728-4096
+0:send_throw_goal
+0: wtc 16453632-4096
+0:send_throw_goal
+0: wtc 16449536-4096
+0:send_throw_goal
+0: wtc 16445440-4096
+0:send_throw_goal
+0: wtc 16441344-4096
+0:send_throw_goal
+0: wtc 16437248-4096
+0:send_throw_goal
+0: wtc 16433152-4096
+0:send_throw_goal
+0: wtc 16429056-4096
+0:send_throw_goal
+0: wtc 16424960-4096
+0:send_throw_goal
+0: wtc 16420864-4096
+0:send_throw_goal
+0: wtc 16416768-4096
+0:send_throw_goal
+0: wtc 16412672-4096
+0:send_throw_goal
+0: wtc 16408576-4096
+0:send_throw_goal
+0: wtc 16404480-4096
+1: wtc 28672+4096
+1:decode_throw_goal
+1: wtc 32768+4096
+1:decode_throw_goal
+1: wtc 36864+4096
+1:decode_throw_goal
+1: wtc 40960+4096
+t_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref1:decode_throw_goal
+1: wtc 45056+4096
+1:decode_throw_goal
+1: wtc 49152+4096
+1:decode_throw_goal
+1: wtc 53248+4096
+1:decode_throw_goal
+1: wtc 57344+4096
+1:decode_throw_goal
+1: wtc 61440+4096
+1:decode_throw_goal
+1: wtc 65536+4096
+
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_throw_goal
+1: wtc 69632+4096
+1:decode_throw_goal
+1: wtc 73728+4096
+1:decode_throw_goal
+1: wtc 77824+4096
+1:decode_throw_goal
+1: wtc 81920+4096
+1:decode_throw_goal
+1: wtc 86016+4096
+1:decode_throw_goal
+1: wtc 90112+4096
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+11:decode_throw_goal
+1: wtc 94208+4096
+1:decode_throw_goal
+1: wtc 98304+4096
+1:decode_throw_goal
+1: wtc 102400+4096
+1:decode_throw_goal
+1: wtc 106496+4096
+1:decode_throw_goal
+1: wtc 110592+4096
+1:decode_throw_goal
+1: wtc 114688+4096
+:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_con1:decode_throw_goal
+1: wtc 118784+4096
+1:decode_throw_goal
+1: wtc 122880+4096
+1:decode_throw_goal
+1: wtc 126976+4096
+1:decode_throw_goal
+1: wtc 131072+4096
+1:decode_throw_goal
+1: wtc 135168+4096
+1:decode_throw_goal
+1: wtc 139264+4096
+st_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exre1:decode_throw_goal
+1: wtc 143360+4096
+1:decode_throw_goal
+1: wtc 147456+4096
+1:decode_throw_goal
+1: wtc 151552+4096
+1:decode_throw_goal
+1: wtc 155648+4096
+1:decode_throw_goal
+1: wtc 159744+4096
+f
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list1:decode_throw_goal
+1: wtc 163840+4096
+1:decode_throw_goal
+1: wtc 167936+4096
+1:decode_throw_goal
+1: wtc 172032+4096
+1:decode_throw_goal
+1: wtc 176128+4096
+1:decode_throw_goal
+1: wtc 180224+4096
+1:decode_throw_goal
+1: wtc 184320+4096
+
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list1:decode_throw_goal
+1: wtc 188416+4096
+1:decode_throw_goal
+1: wtc 192512+4096
+1:decode_throw_goal
+1: wtc 196608+4096
+1:decode_throw_goal
+1: wtc 200704+4096
+1:decode_throw_goal
+1: wtc 204800+4096
+1:decode_throw_goal
+1: wtc 208896+4096
+
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic1:decode_throw_goal
+1: wtc 212992+4096
+1:decode_throw_goal
+1: wtc 217088+4096
+1:decode_throw_goal
+1: wtc 221184+4096
+1:decode_throw_goal
+1: wtc 225280+4096
+1:decode_throw_goal
+1: wtc 229376+4096
+1:decode_throw_goal
+1: wtc 233472+4096
+
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_c1:decode_throw_goal
+1: wtc 237568+4096
+1:decode_throw_goal
+1: wtc 241664+4096
+1:decode_throw_goal
+1: wtc 245760+4096
+1:decode_throw_goal
+1: wtc 249856+4096
+1:decode_throw_goal
+1: wtc 253952+4096
+1:decode_throw_goal
+1: wtc 258048+4096
+onst_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_ato1:decode_throw_goal
+1: wtc 262144+4096
+1:decode_throw_goal
+1: wtc 266240+4096
+1:decode_throw_goal
+1: wtc 270336+4096
+1:decode_throw_goal
+1: wtc 274432+4096
+1:decode_throw_goal
+1: wtc 278528+4096
+1:decode_throw_goal
+1: wtc 282624+4096
+mic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decod1:decode_throw_goal
+1: wtc 286720+4096
+1:decode_throw_goal
+1: wtc 290816+4096
+1:decode_throw_goal
+1: wtc 294912+4096
+1:decode_throw_goal
+1: wtc 299008+4096
+1:decode_throw_goal
+1: wtc 303104+4096
+1:decode_throw_goal
+1: wtc 307200+4096
+e_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_1:decode_throw_goal
+1: wtc 311296+4096
+1:decode_throw_goal
+1: wtc 315392+4096
+1:decode_throw_goal
+1: wtc 319488+4096
+1:decode_throw_goal
+1: wtc 323584+4096
+1:decode_throw_goal
+1: wtc 327680+4096
+1:decode_throw_goal
+1: wtc 331776+4096
+atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:de1:decode_throw_goal
+1: wtc 335872+4096
+1:decode_throw_goal
+1: wtc 339968+4096
+1:decode_throw_goal
+1: wtc 344064+4096
+1:decode_throw_goal
+1: wtc 348160+4096
+1:decode_throw_goal
+1: wtc 352256+4096
+1:decode_throw_goal
+1: wtc 356352+4096
+code_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:dec1:decode_throw_goal
+1: wtc 360448+4096
+1:decode_throw_goal
+1: wtc 364544+4096
+1:decode_throw_goal
+1: wtc 368640+4096
+1:decode_throw_goal
+1: wtc 372736+4096
+1:send_throw_goal
+1: wtc 376832-4096
+2:decode_throw_goal
+2: wtc 0+4096
+2:send_throw_goal
+2: wtc 4096-2048
+1:send_throw_goal
+1: wtc 372736-4096
+1:send_throw_goal
+1: wtc 368640-4096
+1:send_throw_goal
+1: wtc 364544-4096
+1:send_throw_goal
+1: wtc 360448-4096
+1:send_throw_goal
+1: wtc 356352-4096
+1:send_throw_goal
+1: wtc 352256-4096
+1:send_throw_goal
+1: wtc 348160-4096
+1:send_throw_goal
+1: wtc 344064-4096
+1:send_throw_goal
+1: wtc 339968-4096
+1:send_throw_goal
+1: wtc 335872-4096
+2:decode_throw_goal
+2: wtc 2048+4096
+ode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_list
+1:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:de2:decode_throw_goal
+2: wtc 6144+4096
+2:decode_throw_goal
+2: wtc 10240+4096
+1:decode_throw_goal
+1: wtc 331776+2048
+1:send_unify
+1: wtc 333824-16
+1:send_read
+1: wtc 333808-10
+1:send_throw_goal
+1: wtc 333798-4096
+1:send_throw_goal
+1: wtc 329702-4096
+1:send_throw_goal
+1: wtc 325606-4096
+1:send_throw_goal
+1: wtc 321510-4096
+1:send_throw_goal
+1: wtc 317414-4096
+2:decode_throw_goal
+2: wtc 14336+4096
+2:decode_throw_goal
+2: wtc 18432+4096
+2:decode_throw_goal
+2: wtc 22528+4096
+1:send_throw_goal
+1: wtc 313318-4096
+1:send_throw_goal
+1: wtc 309222-4096
+1:send_throw_goal
+1: wtc 305126-4096
+1:send_throw_goal
+1: wtc 301030-4096
+1:send_throw_goal
+1: wtc 296934-4096
+1:send_throw_goal
+1: wtc 292838-4096
+1:send_throw_goal
+1: wtc 288742-4096
+1:send_throw_goal
+1: wtc 284646-4096
+1:send_throw_goal
+1: wtc 280550-4096
+1:send_throw_goal
+1: wtc 276454-4096
+2:decode_throw_goal
+2: wtc 26624+4096
+2:decode_throw_goal
+2: wtc 30720+4096
+code_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_at2:decode_throw_goal
+2: wtc 34816+4096
+1:send_throw_goal
+1: wtc 272358-4096
+1:send_throw_goal
+1: wtc 268262-4096
+1:send_throw_goal
+1: wtc 264166-4096
+1:send_throw_goal
+1: wtc 260070-4096
+1:send_throw_goal
+1: wtc 255974-4096
+1:send_throw_goal
+1: wtc 251878-4096
+1:send_throw_goal
+1: wtc 247782-4096
+1:send_throw_goal
+1: wtc 243686-4096
+1:send_throw_goal
+1: wtc 239590-4096
+1:send_throw_goal
+2:decode_throw_goal
+2: wtc 38912+4096
+2:decode_unify
+2: wtc 43008+16
+2:decode_read
+2: wtc 43024+10
+2:decode_throw_goal
+2: wtc 43034+4096
+2:decode_throw_goal
+2: wtc 47130+4096
+1: wtc 235494-4096
+1:send_throw_goal
+1: wtc 231398-4096
+1:send_throw_goal
+1: wtc 227302-4096
+1:send_throw_goal
+1: wtc 223206-4096
+1:send_throw_goal
+1: wtc 219110-4096
+1:send_throw_goal
+1: wtc 215014-4096
+1:send_throw_goal
+1: wtc 210918-4096
+1:send_throw_goal
+1: wtc 206822-4096
+1:send_throw_goal
+1: wtc 202726-4096
+1:send_throw_goal
+1: wtc 198630-4096
+2:decode_throw_goal
+2: wtc 51226+4096
+2:decode_throw_goal
+2: wtc 55322+4096
+2:decode_throw_goal
+2: wtc 59418+4096
+1:send_throw_goal
+1: wtc 194534-4096
+1:send_throw_goal
+1: wtc 190438-4096
+1:send_throw_goal
+1: wtc 186342-4096
+1:send_throw_goal
+1: wtc 182246-4096
+1:send_throw_goal
+1: wtc 178150-4096
+1:send_throw_goal
+1: wtc 174054-4096
+1:send_throw_goal
+1: wtc 169958-4096
+1:send_throw_goal
+1: wtc 165862-4096
+1:send_throw_goal
+1: wtc 161766-4096
+1:send_throw_goal
+1: wtc 157670-4096
+2:decode_throw_goal
+2: wtc 63514+4096
+omic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:2:decode_throw_goal
+2: wtc 67610+4096
+2:decode_throw_goal
+2: wtc 71706+4096
+1:send_throw_goal
+1: wtc 153574-4096
+1:send_throw_goal
+1: wtc 149478-4096
+1:send_throw_goal
+1: wtc 145382-4096
+1:send_throw_goal
+1: wtc 141286-4096
+1:send_throw_goal
+1: wtc 137190-4096
+1:send_throw_goal
+1: wtc 133094-4096
+1:send_throw_goal
+1: wtc 128998-4096
+1:send_throw_goal
+1: wtc 124902-4096
+1:send_throw_goal
+1: wtc 120806-4096
+1:send_throw_goal
+2:decode_throw_goal
+2: wtc 75802+4096
+2:decode_throw_goal
+2: wtc 79898+4096
+2:decode_throw_goal
+2: wtc 83994+4096
+2:decode_throw_goal
+2: wtc 88090+4096
+1: wtc 116710-4096
+1:send_throw_goal
+1: wtc 112614-4096
+1:send_throw_goal
+1: wtc 108518-4096
+1:send_throw_goal
+1: wtc 104422-4096
+1:send_throw_goal
+1: wtc 100326-4096
+1:send_throw_goal
+1: wtc 96230-4096
+1:send_throw_goal
+1: wtc 92134-4096
+1:send_throw_goal
+1: wtc 88038-4096
+1:send_throw_goal
+1: wtc 83942-4096
+1:send_throw_goal
+1: wtc 79846-4096
+2:decode_throw_goal
+2: wtc 92186+4096
+decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode2:decode_throw_goal
+2: wtc 96282+4096
+2:decode_throw_goal
+2: wtc 100378+4096
+1:send_throw_goal
+1: wtc 75750-4096
+1:send_throw_goal
+1: wtc 71654-4096
+1:send_throw_goal
+1: wtc 67558-4096
+1:send_throw_goal
+1: wtc 63462-4096
+1:send_throw_goal
+1: wtc 59366-4096
+1:send_throw_goal
+1: wtc 55270-4096
+1:send_throw_goal
+1: wtc 51174-4096
+1:send_throw_goal
+1: wtc 47078-4096
+1:send_throw_goal
+1: wtc 42982-4096
+1:send_throw_goal
+1: wtc 38886-4096
+2:decode_throw_goal
+2: wtc 104474+4096
+2:decode_throw_goal
+2: wtc 108570+4096
+2:decode_throw_goal
+2: wtc 112666+4096
+1:send_throw_goal
+1: wtc 34790-4096
+1:send_throw_goal
+1: wtc 30694-4096
+1:send_throw_goal
+1: wtc 26598-4096
+1:send_throw_goal
+1: wtc 22502-4096
+1:send_throw_goal
+1: wtc 18406-4096
+1:send_throw_goal
+1: wtc 14310-4096
+1:send_throw_goal
+1: wtc 10214-4096
+1:send_throw_goal
+1: wtc 6118-3059
+2:decode_throw_goal
+2: wtc 116762+4096
+2:decode_throw_goal
+2: wtc 120858+4096
+2:decode_throw_goal
+2: wtc 124954+4096
+_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_c2:decode_throw_goal
+2: wtc 129050+4096
+2:decode_throw_goal
+2: wtc 133146+4096
+2:decode_throw_goal
+2: wtc 137242+4096
+2:decode_throw_goal
+2: wtc 141338+4096
+2:decode_throw_goal
+2: wtc 145434+4096
+2:decode_throw_goal
+2: wtc 149530+4096
+2:decode_throw_goal
+2: wtc 153626+4096
+2:decode_throw_goal
+2: wtc 157722+4096
+onst_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or2:decode_throw_goal
+2: wtc 161818+4096
+2:decode_throw_goal
+2: wtc 165914+4096
+2:decode_throw_goal
+2: wtc 170010+4096
+2:decode_throw_goal
+2: wtc 174106+4096
+2:decode_throw_goal
+2: wtc 178202+4096
+2:decode_throw_goal
+2: wtc 182298+4096
+2:decode_throw_goal
+2: wtc 186394+4096
+_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomi2:decode_throw_goal
+2: wtc 190490+4096
+2:decode_throw_goal
+2: wtc 194586+4096
+2:decode_throw_goal
+2: wtc 198682+4096
+2:decode_throw_goal
+2: wtc 202778+4096
+2:decode_throw_goal
+2: wtc 206874+4096
+2:decode_throw_goal
+2: wtc 210970+4096
+2:decode_throw_goal
+2: wtc 215066+4096
+2:decode_throw_goal
+2: wtc 219162+4096
+c
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_throw_goal
+2: wtc 223258+4096
+2:decode_throw_goal
+2: wtc 227354+4096
+2:decode_throw_goal
+2: wtc 231450+4096
+2:decode_throw_goal
+2: wtc 235546+4096
+2:decode_throw_goal
+2: wtc 239642+4096
+2:decode_throw_goal
+2: wtc 243738+4096
+2:decode_throw_goal
+2: wtc 247834+4096
+2:decode_throw_goal
+2: wtc 251930+4096
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decod2:decode_throw_goal
+2: wtc 256026+4096
+2:decode_throw_goal
+2: wtc 260122+4096
+2:decode_throw_goal
+2: wtc 264218+4096
+2:decode_throw_goal
+2: wtc 268314+4096
+2:decode_throw_goal
+2: wtc 272410+4096
+2:decode_throw_goal
+2: wtc 276506+4096
+2:decode_throw_goal
+2: wtc 280602+4096
+e_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_cons2:decode_throw_goal
+2: wtc 284698+4096
+2:decode_throw_goal
+2: wtc 288794+4096
+2:decode_throw_goal
+2: wtc 292890+4096
+2:decode_throw_goal
+2: wtc 296986+4096
+2:decode_throw_goal
+2: wtc 301082+4096
+2:decode_throw_goal
+2: wtc 305178+4096
+2:decode_throw_goal
+2: wtc 309274+4096
+2:decode_throw_goal
+2: wtc 313370+4096
+t_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:dec2:decode_throw_goal
+2: wtc 317466+4096
+2:decode_throw_goal
+2: wtc 321562+4096
+2:decode_throw_goal
+2: wtc 325658+4096
+2:decode_throw_goal
+2: wtc 329754+4096
+2:decode_throw_goal
+2: wtc 333850+4096
+2:decode_throw_goal
+2: wtc 337946+4096
+2:decode_throw_goal
+2: wtc 342042+4096
+2:decode_throw_goal
+2: wtc 346138+4096
+ode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exr2:decode_throw_goal
+2: wtc 350234+4096
+2:decode_throw_goal
+2: wtc 354330+4096
+2:decode_throw_goal
+2: wtc 358426+4096
+2:decode_throw_goal
+2: wtc 362522+4096
+2:decode_throw_goal
+2: wtc 366618+4096
+2:decode_throw_goal
+2: wtc 370714+3059
+2:send_throw_goal
+2: wtc 373773-4096
+2:send_throw_goal
+2: wtc 369677-4096
+2:send_throw_goal
+2: wtc 365581-4096
+2:send_throw_goal
+2: wtc 361485-4096
+2:send_throw_goal
+2: wtc 357389-4096
+2:send_throw_goal
+2: wtc 353293-4096
+1:decode_throw_goal
+1: wtc 3059+4096
+1:decode_throw_goal
+1: wtc 7155+4096
+ef
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_list
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:1:decode_throw_goal
+1: wtc 11251+4096
+1:decode_throw_goal
+1: wtc 15347+4096
+2:send_throw_goal
+2: wtc 349197-4096
+2:send_throw_goal
+2: wtc 345101-4096
+2:send_throw_goal
+2: wtc 341005-4096
+2:send_throw_goal
+2: wtc 336909-4096
+2:send_throw_goal
+2: wtc 332813-4096
+2:send_throw_goal
+2: wtc 328717-4096
+2:send_throw_goal
+2: wtc 324621-4096
+2:send_throw_goal
+2: wtc 320525-4096
+2:send_throw_goal
+2: wtc 316429-4096
+2:send_throw_goal
+1:decode_throw_goal
+1: wtc 19443+4096
+1:send_unify
+1: wtc 23539-16
+1:send_read
+1: wtc 23523-10
+1:send_unify
+1: wtc 23513-16
+1:send_read
+1: wtc 23497-10
+1:send_unify
+1: wtc 23487-16
+1:send_read
+1: wtc 23471-10
+1:send_unify
+1: wtc 23461-16
+1:send_read
+1: wtc 23445-10
+2: wtc 312333-4096
+2:send_throw_goal
+2: wtc 308237-4096
+2:send_throw_goal
+2: wtc 304141-4096
+2:send_throw_goal
+2: wtc 300045-4096
+2:send_throw_goal
+2: wtc 295949-4096
+2:send_throw_goal
+2: wtc 291853-4096
+2:send_throw_goal
+2: wtc 287757-4096
+2:send_throw_goal
+2: wtc 283661-4096
+2:send_throw_goal
+2: wtc 279565-4096
+2:send_throw_goal
+2: wtc 275469-4096
+1:decode_throw_goal
+1: wtc 23435+4096
+1:decode_throw_goal
+1: wtc 27531+4096
+1:decode_throw_goal
+1: wtc 31627+4096
+1:decode_throw_goal
+1: wtc 35723+4096
+2:send_throw_goal
+2: wtc 271373-4096
+2:decode_unify
+2: wtc 267277+16
+2:decode_read
+2: wtc 267293+10
+2:decode_unify
+2: wtc 267303+16
+2:decode_read
+2: wtc 267319+10
+2:decode_unify
+2: wtc 267329+16
+2:decode_read
+2: wtc 267345+10
+2:decode_unify
+2: wtc 267355+16
+2:send_unify
+2: wtc 267371-16
+2:send_read
+2: wtc 267355-10
+2:send_unify
+2: wtc 267345-16
+1:decode_throw_goal
+1: wtc 39819+4096
+1:decode_throw_goal
+1: wtc 43915+4096
+1:decode_throw_goal
+1: wtc 48011+4096
+decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+11:decode_throw_goal
+1: wtc 52107+4096
+2:decode_read
+2:send_read
+2: wtc 267329-10
+2:send_unify
+2: wtc 267319-16
+2:send_read
+2: wtc 267303-10
+2:send_unify
+2: wtc 267293-16
+2:send_throw_goal
+2: wtc 267277-4096
+2:send_throw_goal
+2: wtc 263181-4096
+2:send_throw_goal
+2: wtc 259085-4096
+2:send_throw_goal
+2: wtc 254989-4096
+1:decode_throw_goal
+1: wtc 56203+4096
+1:decode_throw_goal
+1: wtc 60299+4096
+1:decode_throw_goal
+1: wtc 64395+4096
+1:decode_throw_goal
+1: wtc 68491+4096
+2:send_throw_goal
+2: wtc 250893-4096
+2:send_throw_goal
+2: wtc 246797-4096
+2:send_throw_goal
+2: wtc 242701-4096
+2:send_throw_goal
+2: wtc 238605-4096
+2:send_throw_goal
+2: wtc 234509-4096
+2:send_throw_goal
+2: wtc 230413-4096
+2:send_throw_goal
+2: wtc 226317-4096
+2:send_throw_goal
+2: wtc 222221-4096
+1:decode_throw_goal
+2:send_throw_goal
+1: wtc 72587+4096
+2: wtc 218125-4096
+2:send_throw_goal
+2: wtc 214029-4096
+1:decode_throw_goal
+1: wtc 76683+4096
+1:decode_throw_goal
+1: wtc 80779+4096
+1:decode_throw_goal
+1: wtc 84875+4096
+2:send_throw_goal
+2: wtc 209933-4096
+2:send_throw_goal
+2: wtc 205837-4096
+2:send_throw_goal
+2: wtc 201741-4096
+1:decode_throw_goal
+2:send_throw_goal
+1: wtc 88971+4096
+2: wtc 197645-4096
+:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const2:send_throw_goal
+2: wtc 193549-4096
+2:send_throw_goal
+1:decode_throw_goal
+2: wtc 189453-4096
+1: wtc 93067+4096
+2:send_throw_goal
+2: wtc 185357-4096
+2:send_throw_goal
+2: wtc 181261-4096
+1:decode_throw_goal
+1: wtc 97163+4096
+2:send_throw_goal
+2: wtc 177165-4096
+2:send_throw_goal
+1:decode_throw_goal
+1: wtc 101259+4096
+2: wtc 173069-4096
+1:decode_throw_goal
+2:send_throw_goal
+1: wtc 105355+4096
+2: wtc 168973-4096
+1:decode_unify
+2:send_throw_goal
+1: wtc 109451+16
+2: wtc 164877-4096
+1:decode_read
+1: wtc 109467+10
+2:send_throw_goal
+2: wtc 160781-4096
+1:decode_unify
+1: wtc 109477+16
+2:send_throw_goal
+1:decode_read
+2: wtc 156685-4096
+1: wtc 109493+10
+1:decode_read
+2:send_throw_goal
+1: wtc 109503+10
+2: wtc 152589-4096
+1:decode_unify
+2:send_throw_goal
+1: wtc 109513+16
+2: wtc 148493-4096
+1:decode_read
+1: wtc 109529+10
+2:send_throw_goal
+2: wtc 144397-4096
+1:decode_unify
+1: wtc 109539+16
+2:send_throw_goal
+2: wtc 140301-4096
+2:send_throw_goal
+2: wtc 136205-4096
+1:decode_throw_goal
+2:send_throw_goal
+1: wtc 109555+4096
+2: wtc 132109-4096
+2:send_throw_goal
+2: wtc 128013-4096
+2:send_throw_goal
+1:decode_throw_goal
+2: wtc 123917-4096
+1: wtc 113651+4096
+2:send_throw_goal
+2: wtc 119821-4096
+2:send_throw_goal
+2: wtc 115725-4096
+1:decode_throw_goal
+1: wtc 117747+4096
+2:send_throw_goal
+2: wtc 111629-4096
+2:send_throw_goal
+2: wtc 107533-4096
+1:decode_throw_goal
+2:send_throw_goal
+1: wtc 121843+4096
+2: wtc 103437-4096
+2:send_throw_goal
+2: wtc 99341-4096
+2:send_throw_goal
+1:decode_throw_goal
+2: wtc 95245-4096
+1: wtc 125939+4096
+1:decode_throw_goal
+1: wtc 130035+4096
+_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:d2:send_throw_goal
+2: wtc 91149-4096
+2:send_throw_goal
+1:decode_throw_goal
+2: wtc 87053-4096
+1: wtc 134131+4096
+2:send_throw_goal
+2: wtc 82957-4096
+2:send_throw_goal
+2: wtc 78861-4096
+1:decode_throw_goal
+1: wtc 138227+4096
+2:send_throw_goal
+2: wtc 74765-4096
+2:send_throw_goal
+2: wtc 70669-4096
+1:decode_throw_goal
+2:send_throw_goal
+1: wtc 142323+4096
+2: wtc 66573-4096
+2:send_throw_goal
+2: wtc 62477-4096
+2:send_throw_goal
+2: wtc 58381-4096
+2:send_throw_goal
+1:decode_throw_goal
+1: wtc 146419+4096
+2: wtc 54285-4096
+2:send_throw_goal
+2: wtc 50189-4096
+1:decode_throw_goal
+1: wtc 150515+4096
+2:send_throw_goal
+2: wtc 46093-4096
+2:send_read
+2: wtc 41997-10
+1:decode_throw_goal
+2:send_unify
+1: wtc 154611+4096
+2: wtc 41987-16
+2:send_throw_goal
+2: wtc 41971-4096
+2:send_throw_goal
+1:decode_throw_goal
+2: wtc 37875-4096
+1: wtc 158707+4096
+2:send_throw_goal
+2: wtc 33779-4096
+2:send_throw_goal
+2: wtc 29683-4096
+2:send_throw_goal
+2: wtc 25587-4096
+1:decode_throw_goal
+1: wtc 162803+4096
+1:decode_throw_goal
+1: wtc 166899+4096
+1:decode_throw_goal
+1: wtc 170995+4096
+2:send_throw_goal
+2: wtc 21491-4096
+ecode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decod1:decode_throw_goal
+2:send_throw_goal
+1: wtc 175091+4096
+2: wtc 17395-4096
+2:send_throw_goal
+2: wtc 13299-4096
+2:send_throw_goal
+2: wtc 9203-4096
+2:send_throw_goal
+2: wtc 5107-2553
+1:decode_throw_goal
+1: wtc 179187+4096
+1:decode_throw_goal
+1: wtc 183283+4096
+1:decode_throw_goal
+1: wtc 187379+4096
+1:decode_throw_goal
+1: wtc 191475+4096
+1:decode_throw_goal
+1: wtc 195571+4096
+1:decode_throw_goal
+1: wtc 199667+4096
+1:decode_throw_goal
+1: wtc 203763+4096
+1:decode_throw_goal
+1: wtc 207859+4096
+1:decode_throw_goal
+1: wtc 211955+4096
+1:decode_throw_goal
+1: wtc 216051+4096
+e_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+11:decode_throw_goal
+1: wtc 220147+4096
+1:decode_throw_goal
+1: wtc 224243+4096
+1:decode_throw_goal
+1: wtc 228339+4096
+1:decode_throw_goal
+1: wtc 232435+4096
+1:decode_throw_goal
+1: wtc 236531+4096
+1:decode_throw_goal
+1: wtc 240627+4096
+1:decode_throw_goal
+1: wtc 244723+4096
+1:decode_throw_goal
+1: wtc 248819+4096
+1:decode_throw_goal
+1: wtc 252915+4096
+1:decode_throw_goal
+1: wtc 257011+4096
+1:decode_throw_goal
+1: wtc 261107+4096
+:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_at1:decode_throw_goal
+1: wtc 265203+4096
+1:decode_throw_goal
+1: wtc 269299+4096
+1:decode_throw_goal
+1: wtc 273395+4096
+1:decode_throw_goal
+1: wtc 277491+4096
+1:decode_throw_goal
+1: wtc 281587+4096
+1:decode_throw_goal
+1: wtc 285683+4096
+1:decode_throw_goal
+1: wtc 289779+4096
+1:decode_throw_goal
+1: wtc 293875+4096
+1:decode_throw_goal
+1: wtc 297971+4096
+1:decode_throw_goal
+1: wtc 302067+4096
+1:decode_throw_goal
+1: wtc 306163+4096
+omic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref1:decode_throw_goal
+1: wtc 310259+4096
+1:decode_throw_goal
+1: wtc 314355+4096
+1:decode_throw_goal
+1: wtc 318451+4096
+1:decode_throw_goal
+1: wtc 322547+4096
+1:decode_throw_goal
+1: wtc 326643+4096
+1:decode_throw_goal
+1: wtc 330739+4096
+1:decode_read
+1: wtc 334835+10
+1:decode_unify
+1: wtc 334845+16
+1:decode_throw_goal
+1: wtc 334861+4096
+1:decode_throw_goal
+1: wtc 338957+4096
+1:decode_throw_goal
+1: wtc 343053+4096
+1:decode_throw_goal
+1: wtc 347149+4096
+
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode1:decode_throw_goal
+1: wtc 351245+4096
+1:decode_throw_goal
+1: wtc 355341+4096
+1:decode_throw_goal
+1: wtc 359437+4096
+1:decode_throw_goal
+1: wtc 363533+4096
+1:decode_throw_goal
+1: wtc 367629+4096
+1:decode_throw_goal
+1: wtc 371725+2553
+1:send_unify
+1: wtc 374278-16
+1:send_read
+1: wtc 374262-10
+1:send_unify
+1: wtc 374252-16
+1:send_read
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:send_unify
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+1: wtc 374236-10
+1:send_unify
+1: wtc 374226-16
+1:send_read
+1: wtc 374210-10
+1:send_unify
+1: wtc 374200-16
+1:send_read
+1: wtc 374184-10
+1:send_unify
+1: wtc 374174-16
+1:send_read
+1: wtc 374158-10
+1:send_unify
+1: wtc 374148-16
+2:decode_read
+1:send_read
+1: wtc 374132-10
+1:send_unify
+2:decode_unify
+1: wtc 374122-16
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:decode_read
+2: wtc 2596+10
+2:decode_unify
+2: wtc 2606+16
+2:decode_read
+2: wtc 2622+10
+2:send_read
+2: wtc 2632-10
+2:send_unify
+2: wtc 2622-16
+2:send_read
+2: wtc 2606-10
+2:send_unify
+1:send_read
+1: wtc 374106-10
+1:decode_unify
+1: wtc 374096+16
+1:decode_read
+1: wtc 374112+10
+1:decode_unify
+1: wtc 374122+16
+1:send_read
+1: wtc 374138-10
+1:send_unify
+1: wtc 374128-16
+1:send_unify
+1: wtc 374112-16
+1:send_unify
+1: wtc 374096-16
+0:decode_read
+1:send_read
+0: wtc 16400384+10
+1: wtc 374080-10
+0:decode_unify
+1:send_unify
+0: wtc 16400394+16
+1: wtc 374070-16
+0:decode_unify
+0: wtc 16400410+16
+0:send_answer_value
+0: wtc 16400426-10
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:send_unify
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+2:decode_read
+1:send_read
+1: wtc 374054-10
+1:decode_read
+1:decode_read
+1: wtc 374044+10
+1:decode_unify
+1: wtc 374054+16
+1:decode_read
+1: wtc 374070+10
+1:send_read
+1: wtc 374080-10
+1:send_unify
+1: wtc 374070-16
+1:send_unify
+1: wtc 374054-16
+1:send_read
+1: wtc 374038-10
+1:send_read
+1: wtc 374028-10
+0:decode_read
+0:send_reply_answer_value current_wtc=16400416, retwtc = 10
+0:decode_read
+0: wtc 16400416+10
+0:decode_unify
+0: wtc 16400426+16
+0:decode_read
+0: wtc 16400442+10
+0:send_answer_value
+0: wtc 16400452-10
+_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:send_unify
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+2:decode_read
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:send_read
+2: wtc 2580-10
+1:send_unify
+1: wtc 374018-16
+1:decode_answer_value
+1: wtc 374002+10
+1:send_answer_value
+1: wtc 374012-10
+1:send_release
+1:decode_unify
+1: wtc 374002+16
+1:decode_read
+1: wtc 374018+10
+1:decode_unify
+1: wtc 374028+16
+1:decode_unify
+1: wtc 374044+16
+1:decode_read
+1: wtc 374060+10
+1:decode_unify
+1: wtc 374070+16
+1:decode_read
+1: wtc 374086+10
+0:decode_unify
+0: wtc 16400442+16
+0:decode_release
+0:send_answer_value
+0: wtc 16400458-10
+1:send_read
+1: wtc 374096-10
+1:decode_answer_value
+1: wtc 374086+10
+1:send_release
+1:decode_answer_value
+1: wtc 374096+10
+1:send_answer_value
+0:decode_read
+1: wtc 374106-10
+0: wtc 16400448+10
+1:send_release
+1:decode_unify
+1: wtc 374096+16
+1:decode_read
+1: wtc 374112+10
+1:decode_unify
+2:send_unify
+1: wtc 374122+16
+2: wtc 2570-16
+1:decode_read
+1: wtc 374138+10
+1:decode_read
+2:decode_answer_value
+1: wtc 374148+10
+2: wtc 2554+10
+1:send_read
+0:decode_release
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+2:decode_release
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+1: wtc 374158-10
+1:decode_answer_value
+1: wtc 374148+10
+1:send_answer_value
+1: wtc 374158-10
+1:send_release
+1:send_unify
+1: wtc 374148-16
+1:send_read
+1: wtc 374132-10
+1:send_unify
+1: wtc 374122-16
+1:send_unify
+1: wtc 374106-16
+1:send_unify
+1: wtc 374090-16
+1:send_read
+1: wtc 374074-10
+1:send_unify
+0:decode_read
+2:decode_answer_value
+0: wtc 16400458+10
+2: wtc 2554+10
+0:decode_release
+2:send_answer_value
+2: wtc 2564-10
+0:decode_unify
+0: wtc 16400468+16
+2:send_release
+0:decode_read
+0: wtc 16400484+10
+0:decode_unify
+0: wtc 16400494+16
+0:decode_unify
+0: wtc 16400510+16
+0:decode_unify
+0: wtc 16400526+16
+0:decode_read
+0: wtc 16400542+10
+0:send_answer_value
+0: wtc 16400552-10
+0:send_answer_value
+0: wtc 16400542-10
+0:send_answer_value
+0: wtc 16400532-10
+1: wtc 374064-16
+1:decode_unify
+1: wtc 374048+16
+1:decode_answer_value
+1: wtc 374064+10
+1:send_release
+1:decode_release
+1:decode_answer_value
+1: wtc 374074+10
+1:send_release
+1:decode_release
+1:send_unify
+1: wtc 374084-16
+1:send_unify
+1: wtc 374068-16
+1:send_read
+1: wtc 374052-10
+1:send_unify
+1: wtc 374042-16
+2:decode_release
+2:decode_release
+0:decode_unify
+0: wtc 16400522+16
+0:decode_unify
+0: wtc 16400538+16
+0:decode_unify
+0: wtc 16400554+16
+0:decode_read
+0: wtc 16400570+10
+0:decode_unify
+0: wtc 16400580+16
+0:send_answer_value
+0: wtc 16400596-10
+0:send_answer_value
+0: wtc 16400586-10
+1:send_read
+1: wtc 374026-10
+1:decode_answer_value
+1: wtc 374016+10
+1:send_release
+1:decode_release
+0:decode_read
+1:decode_answer_value
+0: wtc 16400576+10
+1: wtc 374026+10
+1:send_answer_value
+1: wtc 374036-10
+1:send_release
+1:decode_answer_value
+1: wtc 374026+10
+1:send_answer_value
+1: wtc 374036-10
+1:send_release
+2:decode_release
+2:decode_answer_value
+1:decode_answer_value
+0:decode_release
+2: wtc 2554+10
+1: wtc 374026+10
+2:send_answer_value
+1:send_answer_value
+2: wtc 2564-10
+2:send_release
+0:decode_release
+1: wtc 374036-10
+1:send_release
+1:decode_answer_value
+1: wtc 374026+10
+1:send_answer_value
+1: wtc 374036-10
+1:send_release
+2:decode_answer_value
+2: wtc 2554+10
+1:decode_answer_value
+2:send_answer_value
+1: wtc 374026+10
+2: wtc 2564-10
+1:send_answer_value
+0:decode_release
+1: wtc 374036-10
+0:decode_release
+2:send_release
+1:send_release
+1:send_unify
+1: wtc 374026-16
+2:decode_answer_value
+2: wtc 2554+10
+1:send_unify
+2:send_answer_value
+1: wtc 374010-16
+2: wtc 2564-10
+1:send_read
+0:decode_release
+2:send_release
+1: wtc 373994-10
+0:decode_unify
+0: wtc 16400586+16
+const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atom0:decode_unify
+0: wtc 16400602+16
+0:decode_read
+0: wtc 16400618+10
+0:send_answer_value
+0: wtc 16400628-10
+1:send_unify
+1: wtc 373984-16
+1:decode_answer_value
+1: wtc 373968+10
+1:send_release
+1:decode_answer_value
+1: wtc 373978+10
+1:send_release
+0:decode_unify
+0: wtc 16400618+16
+1:decode_release
+0:send_answer_value
+1:send_unify
+0: wtc 16400634-10
+2:decode_release
+1: wtc 373988-16
+2:decode_release
+1:send_unify
+1: wtc 373972-16
+1:send_unify
+1: wtc 373956-16
+1:send_read
+1: wtc 373940-10
+1:send_unify
+1: wtc 373930-16
+0:decode_unify
+0: wtc 16400624+16
+0:decode_unify
+0: wtc 16400640+16
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:send_unify
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+1:send_read
+1: wtc 373914-10
+1:decode_answer_value
+1: wtc 373904+10
+1:send_release
+1:decode_answer_value
+2:decode_read
+1: wtc 373914+10
+1:send_release
+1:decode_release
+2:decode_release
+1:decode_answer_value
+1: wtc 373924+10
+1:send_release
+1:decode_release
+1:decode_answer_value
+1: wtc 373934+10
+1:send_answer_value
+1: wtc 373944-10
+1:send_release
+2:decode_release
+1:send_unify
+2:decode_release
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+0:decode_release
+2:send_release
+1: wtc 373934-16
+1:decode_answer_value
+1: wtc 373918+10
+1:send_answer_value
+1: wtc 373928-10
+1:send_release
+0:decode_unify
+0: wtc 16400656+16
+1:decode_unify
+1: wtc 373918+16
+1:decode_read
+1: wtc 373934+10
+1:decode_unify
+2:decode_answer_value
+1: wtc 373944+16
+2: wtc 2554+10
+1:send_read
+2:send_answer_value
+1: wtc 373960-10
+2: wtc 2564-10
+1:send_unify
+0:decode_release
+2:send_release
+1: wtc 373950-16
+1:send_unify
+1: wtc 373934-16
+1:send_unify
+1: wtc 373918-16
+0:decode_read
+0: wtc 16400672+10
+0:decode_unify
+0: wtc 16400682+16
+0:decode_unify
+0: wtc 16400698+16
+0:send_answer_value
+0: wtc 16400714-10
+1:decode_read
+1:decode_answer_value
+1: wtc 373902+10
+1:send_release
+1:decode_release
+1:send_unify
+1: wtc 373912-16
+1:send_unify
+1: wtc 373896-16
+1:send_unify
+1: wtc 373880-16
+1:send_read
+1: wtc 373864-10
+1:send_unify
+0:decode_unify
+1: wtc 373854-16
+0: wtc 16400704+16
+2:decode_release
+0:decode_read
+1:send_read
+0:send_reply_answer_value current_wtc=16400720, retwtc = 10
+2:decode_unify
+1: wtc 373838-10
+2: wtc 2554+16
+2:decode_read
+0:decode_unify
+2: wtc 2570+10
+0: wtc 16400720+16
+2:send_read
+2: wtc 2580-10
+0:decode_unify
+0: wtc 16400736+16
+2:send_unify
+2: wtc 2570-16
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+1:send_unify
+1: wtc 373828-16
+1:decode_answer_value
+1: wtc 373812+10
+1:send_release
+1:decode_release
+1:decode_answer_value
+1: wtc 373822+10
+1:send_answer_value
+1: wtc 373832-10
+1:send_release
+1:send_unify
+1: wtc 373822-16
+1:send_read
+1: wtc 373806-10
+2:decode_unify
+1:send_unify
+2: wtc 2554+16
+1: wtc 373796-16
+0:decode_release
+2:decode_release
+1:send_read
+0:decode_unify
+2:decode_answer_value
+1: wtc 373780-10
+0: wtc 16400752+16
+2: wtc 2570+10
+2:send_answer_value
+2: wtc 2580-10
+2:send_release
+2:send_unify
+2: wtc 2570-16
+2:decode_read
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+2:decode_read
+1:send_unify
+1: wtc 373770-16
+ic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+1:1:decode_answer_value
+1: wtc 373754+10
+1:send_release
+2:decode_unify
+2: wtc 2554+16
+1:decode_read
+2:send_unify
+1: wtc 373764+10
+2: wtc 2570-16
+1:decode_unify
+1: wtc 373774+16
+1:decode_read
+1: wtc 373790+10
+1:decode_unify
+1: wtc 373800+16
+1:send_read
+1: wtc 373816-10
+1:send_unify
+1: wtc 373806-16
+2:decode_release
+1:send_read
+1: wtc 373790-10
+1:send_unify
+1: wtc 373780-16
+0:decode_read
+0: wtc 16400768+10
+0:decode_unify
+0: wtc 16400778+16
+0:decode_read
+0: wtc 16400794+10
+0:send_answer_value
+0: wtc 16400804-10
+1:decode_answer_value
+1: wtc 373764+10
+1:send_release
+1:decode_release
+1:decode_unify
+1: wtc 373774+16
+1:decode_read
+1: wtc 373790+10
+2:decode_release
+1:decode_unify
+1: wtc 373800+16
+0:decode_unify
+1:decode_read
+0: wtc 16400794+16
+1: wtc 373816+10
+0:send_answer_value
+1:send_read
+0: wtc 16400810-10
+1: wtc 373826-10
+1:send_unify
+1: wtc 373816-16
+1:send_read
+1: wtc 373800-10
+1:send_unify
+1: wtc 373790-16
+0:decode_read
+0: wtc 16400800+10
+0:decode_unify
+0: wtc 16400810+16
+0:decode_read
+0: wtc 16400826+10
+0:decode_unify
+0: wtc 16400836+16
+0:send_answer_value
+0: wtc 16400852-10
+0:send_answer_value
+0: wtc 16400842-10
+1:send_unify
+1: wtc 373774-16
+1:decode_unify
+1: wtc 373758+16
+1:decode_answer_value
+1: wtc 373774+10
+1:send_answer_value
+1: wtc 373784-10
+1:send_release
+1:send_unify
+1: wtc 373774-16
+1:send_unify
+1: wtc 373758-16
+1:send_read
+1: wtc 373742-10
+1:send_unify
+1: wtc 373732-16
+2:decode_answer_value
+0:decode_unify
+2: wtc 2554+10
+1:send_read
+0: wtc 16400832+16
+2:send_answer_value
+1: wtc 373716-10
+0:decode_release
+2: wtc 2564-10
+0:decode_unify
+2:send_release
+0: wtc 16400848+16
+2:decode_read
+0:decode_unify
+0: wtc 16400864+16
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+1:send_unify
+1: wtc 373706-16
+1:decode_answer_value
+1: wtc 373690+10
+1:send_answer_value
+1: wtc 373700-10
+1:send_release
+1:decode_answer_value
+1: wtc 373690+10
+1:send_answer_value
+1: wtc 373700-10
+1:send_release
+2:decode_unify
+2: wtc 2554+16
+0:decode_release
+2:decode_answer_value
+0:decode_release
+2: wtc 2570+10
+2:send_answer_value
+2: wtc 2580-10
+1:decode_answer_value
+1: wtc 373690+10
+2:send_release
+2:send_unify
+2: wtc 2570-16
+1:send_answer_value
+1: wtc 373700-10
+1:send_release
+1:decode_answer_value
+1: wtc 373690+10
+1:send_release
+1:decode_release
+1:decode_read
+1:decode_read
+1: wtc 373700+10
+1:decode_unify
+1: wtc 373710+16
+1:send_read
+1: wtc 373726-10
+0:decode_release
+0:decode_read
+1:send_unify
+0:send_reply_answer_value current_wtc=16400880, retwtc = 10
+1: wtc 373716-16
+1:send_unify
+1: wtc 373700-16
+2:decode_release
+0:decode_read
+0: wtc 16400880+10
+0:decode_unify
+0: wtc 16400890+16
+0:decode_unify
+0: wtc 16400906+16
+0:send_answer_value
+0: wtc 16400922-10
+1:send_read
+1: wtc 373684-10
+1:decode_answer_value
+1: wtc 373674+10
+1:send_release
+1:decode_answer_value
+1: wtc 373684+10
+1:send_release
+1:decode_release
+1:decode_unify
+1: wtc 373694+16
+1:send_unify
+1: wtc 373710-16
+1:send_unify
+1: wtc 373694-16
+2:decode_read
+1:send_unify
+1: wtc 373678-16
+decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_exref
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+Node:2 exref read transfer
+No1:send_unify
+2:decode_release
+1: wtc 373662-16
+2:decode_release
+0:decode_unify
+0: wtc 16400912+16
+0:decode_unify
+0: wtc 16400928+16
+2:decode_unify
+2: wtc 2554+16
+0:decode_unify
+2:send_unify
+0: wtc 16400944+16
+2: wtc 2570-16
+1:send_read
+1: wtc 373646-10
+2:decode_read
+1:decode_answer_value
+1: wtc 373636+10
+1:send_release
+1:decode_answer_value
+1: wtc 373646+10
+1:send_release
+2:decode_release
+2:decode_release
+1:decode_answer_value
+1: wtc 373656+10
+1:send_answer_value
+1: wtc 373666-10
+1:send_release
+1:decode_read
+1:decode_unify
+1: wtc 373656+16
+1:send_unify
+1: wtc 373672-16
+1:send_unify
+1: wtc 373656-16
+1:send_unify
+1: wtc 373640-16
+0:decode_release
+1:send_unify
+0:decode_read
+1: wtc 373624-16
+0:send_reply_answer_value current_wtc=16400960, retwtc = 10
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+0:decode_unify
+2: wtc 2564-10
+0: wtc 16400960+16
+2:send_release
+0:decode_unify
+0: wtc 16400976+16
+0:decode_unify
+0: wtc 16400992+16
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+1:send_read
+1: wtc 373608-10
+1:decode_read
+1:send_unify
+0:decode_read
+1: wtc 373598-16
+0:send_reply_answer_value current_wtc=16401008, retwtc = 10
+1:send_read
+1: wtc 373582-10
+1:send_unify
+1: wtc 373572-16
+2:decode_read
+1:send_read
+1: wtc 373556-10
+1:send_unify
+1: wtc 373546-16
+2:decode_unify
+2: wtc 2554+16
+1:send_read
+2:decode_read
+1: wtc 373530-10
+2: wtc 2570+10
+2:send_read
+1:send_unify
+2: wtc 2580-10
+1: wtc 373520-16
+2:send_unify
+1:send_read
+2: wtc 2570-16
+de 2, read transfered to node 1
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+Node:2 exref read transfer
+1:decode_const_or_atomic
+1:decode_exref
+Node 2, read transfered to node 1
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_exref
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+2:d2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:decode_read
+2: wtc 2596+10
+2:send_read
+2: wtc 2606-10
+2:send_unify
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+1: wtc 373504-10
+1:decode_answer_value
+2:decode_read
+1: wtc 373494+10
+1:send_release
+1:decode_answer_value
+1: wtc 373504+10
+1:send_release
+1:decode_release
+1:decode_unify
+1: wtc 373514+16
+1:send_unify
+1: wtc 373530-16
+1:send_unify
+2:decode_release
+2:decode_release
+0:decode_unify
+0: wtc 16401008+16
+1: wtc 373514-16
+1:decode_answer_value
+1: wtc 373498+10
+0:decode_unify
+1:send_release
+0: wtc 16401024+16
+1:decode_read
+1:decode_read
+2:decode_release
+1: wtc 373508+10
+1:decode_unify
+1: wtc 373518+16
+1:decode_read
+1: wtc 373534+10
+1:decode_unify
+1: wtc 373544+16
+1:decode_read
+1: wtc 373560+10
+0:decode_read
+1:decode_unify
+0:send_reply_answer_value current_wtc=16401040, retwtc = 10
+1: wtc 373570+16
+1:decode_unify
+1: wtc 373586+16
+1:decode_read
+1: wtc 373602+10
+1:send_read
+1: wtc 373612-10
+1:send_unify
+1: wtc 373602-16
+1:send_read
+0:decode_read
+1: wtc 373586-10
+0: wtc 16401040+10
+1:send_unify
+1: wtc 373576-16
+1:send_read
+1: wtc 373560-10
+1:send_unify
+1: wtc 373550-16
+1:send_read
+1: wtc 373534-10
+1:send_unify
+1: wtc 373524-16
+0:decode_unify
+0: wtc 16401050+16
+0:decode_read
+0: wtc 16401066+10
+0:decode_unify
+0: wtc 16401076+16
+0:decode_read
+0: wtc 16401092+10
+0:decode_unify
+0: wtc 16401102+16
+0:decode_read
+0: wtc 16401118+10
+0:decode_unify
+0: wtc 16401128+16
+0:send_answer_value
+0: wtc 16401144-10
+0:send_answer_value
+0: wtc 16401134-10
+0:send_answer_value
+0: wtc 16401124-10
+0:send_answer_value
+0: wtc 16401114-10
+1:send_unify
+1: wtc 373508-16
+1:decode_answer_value
+1: wtc 373492+10
+1:send_release
+1:send_unify
+1: wtc 373502-16
+1:send_unify
+1: wtc 373486-16
+1:send_unify
+1: wtc 373470-16
+1:send_read
+1: wtc 373454-10
+1:send_unify
+1: wtc 373444-16
+1:send_read
+1: wtc 373428-10
+1:send_unify
+2:decode_release
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:decode_read
+2: wtc 2596+10
+2:send_read
+2: wtc 2606-10
+2:send_unify
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+1: wtc 373418-16
+1:decode_answer_value
+1: wtc 373402+10
+1:send_answer_value
+1: wtc 373412-10
+1:send_release
+1:decode_answer_value
+1: wtc 373402+10
+1:send_answer_value
+2:decode_unify
+1: wtc 373412-10
+ecode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+0:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+2:decode_const_or_atomic
+0:dec2: wtc 2554+16
+0:decode_unify
+1:send_release
+0: wtc 16401104+16
+2:decode_answer_value
+0:decode_unify
+2: wtc 2570+10
+0: wtc 16401120+16
+2:send_answer_value
+2: wtc 2580-10
+0:decode_unify
+0: wtc 16401136+16
+2:send_release
+0:decode_release
+0:decode_release
+2:send_unify
+2: wtc 2570-16
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+1:decode_answer_value
+1: wtc 373402+10
+1:send_answer_value
+1: wtc 373412-10
+1:send_release
+1:decode_read
+1: wtc 373402+10
+1:decode_unify
+1: wtc 373412+16
+1:decode_read
+1: wtc 373428+10
+1:decode_unify
+1: wtc 373438+16
+1:send_read
+1: wtc 373454-10
+1:send_unify
+1: wtc 373444-16
+1:send_read
+1: wtc 373428-10
+0:decode_release
+0:decode_read
+0: wtc 16401152+10
+0:decode_unify
+0: wtc 16401162+16
+0:send_answer_value
+0: wtc 16401178-10
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+1:decode_answer_value
+1: wtc 373418+10
+1:send_answer_value
+1: wtc 373428-10
+1:send_release
+1:decode_answer_value
+1: wtc 373418+10
+1:send_release
+1:decode_release
+1:decode_unify
+1: wtc 373428+16
+0:decode_read
+0: wtc 16401168+10
+0:decode_release
+2:decode_release
+1:decode_answer_value
+1: wtc 373444+10
+1:send_release
+1:decode_release
+1:decode_answer_value
+1: wtc 373454+10
+1:send_answer_value
+1: wtc 373464-10
+1:send_release
+2:decode_release
+ode_const_or_atomic
+2:decode_exref
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_exref
+0:decode_const_or_atomic
+1:decode_exref
+2:decode_exref
+2:decode_exref
+2:decode_exref
+2:decode_exref
+2:decode_exref
+2:decode_exref
+2:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_exref
+2:decode_exref
+0:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_exref
+2:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+2:decode_exref
+1:decode_exref
+2:decode_exref
+1:decode_exref
+2:decode_exref
+1:decode_exref
+2:decode_exref
+1:decode_exref
+2:decode_exref
+1:decode_0:decode_release
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+1:decode_answer_value
+2: wtc 2564-10
+1: wtc 373454+10
+2:send_release
+1:send_release
+1:decode_release
+1:decode_answer_value
+1: wtc 373464+10
+2:decode_release
+1:send_release
+1:send_unify
+1: wtc 373474-16
+1:send_unify
+1: wtc 373458-16
+1:send_unify
+1: wtc 373442-16
+1:send_unify
+0:decode_unify
+1: wtc 373426-16
+0: wtc 16401178+16
+1:send_unify
+0:decode_unify
+1: wtc 373410-16
+0: wtc 16401194+16
+1:send_unify
+2:decode_release
+0:decode_unify
+0: wtc 16401210+16
+0:decode_unify
+0: wtc 16401226+16
+0:decode_unify
+0: wtc 16401242+16
+1: wtc 373394-16
+1:decode_answer_value
+1: wtc 373378+10
+1:send_release
+1:decode_release
+1:send_unify
+0:decode_unify
+1: wtc 373388-16
+0: wtc 16401258+16
+0:send_answer_value
+1:send_read
+0: wtc 16401274-10
+1: wtc 373372-10
+2:decode_release
+1:send_unify
+1: wtc 373362-16
+1:send_read
+1: wtc 373346-10
+1:send_unify
+1: wtc 373336-16
+1:send_read
+1: wtc 373320-10
+0:decode_unify
+0: wtc 16401264+16
+2:decode_read
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:send_unify
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+1:send_unify
+1: wtc 373310-16
+1:send_read
+1: wtc 373294-10
+1:send_unify
+1: wtc 373284-16
+1:send_read
+1: wtc 373268-10
+1:send_unify
+1: wtc 373258-16
+1:send_read
+1: wtc 373242-10
+1:send_unify
+1: wtc 373232-16
+1:send_read
+1: wtc 373216-10
+1:send_unify
+1: wtc 373206-16
+1:send_read
+2:decode_read
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:decode_read
+2: wtc 2596+10
+2:decode_unify
+2: wtc 2606+16
+2:decode_read
+2: wtc 2622+10
+2:decode_unify
+2: wtc 2632+16
+2:decode_read
+2: wtc 2648+10
+2:decode_unify
+2: wtc 2658+16
+2:send_unify
+2: wtc 2674-16
+1: wtc 373190-10
+1:decode_answer_value
+1: wtc 373180+10
+1:send_answer_value
+1: wtc 373190-10
+1:send_release
+1:decode_read
+1:decode_unify
+1: wtc 373180+16
+1:decode_read
+1: wtc 373196+10
+1:decode_unify
+1: wtc 373206+16
+1:send_read
+1: wtc 373222-10
+1:send_unify
+0:decode_release
+0:decode_read
+0:send_reply_answer_value current_wtc=16401280, retwtc = 10
+0:decode_read
+0: wtc 16401280+10
+1: wtc 373212-16
+1:decode_read
+1: wtc 373196+10
+1:send_read
+1: wtc 373206-10
+1:send_unify
+1: wtc 373196-16
+2:send_read
+0:decode_unify
+2: wtc 2658-10
+1:send_unify
+0: wtc 16401290+16
+1: wtc 373180-16
+0:decode_read
+2:send_unify
+0: wtc 16401306+10
+2: wtc 2648-16
+1:send_read
+0:send_answer_value
+1: wtc 373164-10
+0: wtc 16401316-10
+2:send_read
+2: wtc 2632-10
+1:send_unify
+1: wtc 373154-16
+0:decode_unify
+2:send_unify
+0: wtc 16401306+16
+2: wtc 2622-16
+1:send_read
+0:send_answer_value
+1: wtc 373138-10
+0: wtc 16401322-10
+2:send_read
+2: wtc 2606-10
+1:send_unify
+1: wtc 373128-16
+2:send_unify
+2: wtc 2596-16
+1:send_read
+1: wtc 373112-10
+2:send_read
+2: wtc 2580-10
+1:send_unify
+2:send_unify
+2: wtc 2570-16
+2:decode_read
+1: wtc 373102-16
+1:decode_answer_value
+1: wtc 373086+10
+1:send_release
+1:send_unify
+1: wtc 373096-16
+1:send_read
+1: wtc 373080-10
+1:send_unify
+1: wtc 373070-16
+1:send_read
+1: wtc 373054-10
+1:send_unify
+1: wtc 373044-16
+exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+1:decode_exref
+1:decode_exref
+1:decode_exref
+2:decode_exref
+0:decode_0:decode_unify
+1:send_read
+0: wtc 16401312+16
+1: wtc 373028-10
+2:decode_answer_value
+2: wtc 2554+10
+1:send_unify
+2:send_answer_value
+1: wtc 373018-16
+2: wtc 2564-10
+2:send_release
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+1:decode_unify
+1: wtc 373002+16
+1:decode_read
+1: wtc 373018+10
+1:decode_unify
+1: wtc 373028+16
+1:decode_answer_value
+1: wtc 373044+10
+1:send_answer_value
+1: wtc 373054-10
+1:send_release
+1:decode_read
+1: wtc 373044+10
+2: wtc 2580+16
+0:decode_release
+2:decode_read
+1:decode_unify
+2: wtc 2596+10
+1: wtc 373054+16
+2:decode_unify
+1:decode_answer_value
+2: wtc 2606+16
+1: wtc 373070+10
+2:decode_release
+1:send_answer_value
+2:decode_read
+1: wtc 373080-10
+2: wtc 2622+10
+2:decode_unify
+2: wtc 2632+16
+2:decode_read
+2: wtc 2648+10
+2:send_read
+2: wtc 2658-10
+2:send_unify
+2: wtc 2648-16
+2:send_read
+2: wtc 2632-10
+2:send_unify
+2: wtc 2622-16
+2:send_read
+2: wtc 2606-10
+1:send_release
+1:decode_read
+1: wtc 373070+10
+1:decode_unify
+1: wtc 373080+16
+1:decode_read
+0:decode_release
+1: wtc 373096+10
+1:decode_unify
+1: wtc 373106+16
+1:decode_read
+1: wtc 373122+10
+2:send_unify
+1:decode_answer_value
+2: wtc 2596-16
+1: wtc 373132+10
+1:send_release
+2:decode_unify
+1:decode_release
+2: wtc 2580+16
+1:decode_read
+2:decode_read
+1: wtc 373142+10
+2: wtc 2596+10
+1:decode_unify
+2:decode_unify
+1: wtc 373152+16
+2: wtc 2606+16
+1:send_read
+2:decode_answer_value
+2: wtc 2622+10
+2:send_answer_value
+2: wtc 2632-10
+2:send_release
+2:send_unify
+2: wtc 2622-16
+2:send_read
+2: wtc 2606-10
+2:send_unify
+2: wtc 2596-16
+1: wtc 373168-10
+1:decode_answer_value
+1: wtc 373158+10
+1:send_release
+1:decode_read
+1: wtc 373168+10
+1:decode_unify
+1: wtc 373178+16
+1:decode_read
+1: wtc 373194+10
+1:decode_unify
+1: wtc 373204+16
+1:decode_read
+1: wtc 373220+10
+1:send_read
+1: wtc 373230-10
+0:decode_read
+0: wtc 16401328+10
+1:send_unify
+1: wtc 373220-16
+1:send_read
+1: wtc 373204-10
+1:send_unify
+0:decode_read
+0: wtc 16401338+10
+0:decode_unify
+0: wtc 16401348+16
+0:decode_read
+0: wtc 16401364+10
+0:send_answer_value
+0: wtc 16401374-10
+1: wtc 373194-16
+1:decode_unify
+1: wtc 373178+16
+2:send_read
+1:decode_answer_value
+2: wtc 2580-10
+1: wtc 373194+10
+0:decode_unify
+1:send_release
+0: wtc 16401364+16
+2:send_unify
+0:send_answer_value
+2: wtc 2570-16
+1:decode_release
+0: wtc 16401380-10
+2:decode_release
+1:decode_unify
+2:decode_release
+1: wtc 373204+16
+1:decode_read
+1: wtc 373220+10
+1:decode_unify
+1: wtc 373230+16
+1:send_read
+1: wtc 373246-10
+1:send_unify
+1: wtc 373236-16
+1:send_unify
+1: wtc 373220-16
+2:decode_release
+0:decode_read
+0: wtc 16401370+10
+0:decode_unify
+0: wtc 16401380+16
+0:decode_unify
+0: wtc 16401396+16
+0:send_answer_value
+0: wtc 16401412-10
+1:send_unify
+1: wtc 373204-16
+1:decode_answer_value
+1: wtc 373188+10
+1:send_answer_value
+1: wtc 373198-10
+1:send_release
+1:send_read
+1: wtc 373188-10
+1:send_unify
+1: wtc 373178-16
+1:send_unify
+1: wtc 373162-16
+1:send_unify
+1: wtc 373146-16
+1:send_unify
+1: wtc 373130-16
+0:decode_unify
+0: wtc 16401402+16
+2:decode_answer_value
+1:send_read
+0:decode_release
+2: wtc 2554+10
+1: wtc 373114-10
+0:decode_read
+2:send_answer_value
+0: wtc 16401418+10
+2: wtc 2564-10
+0:decode_unify
+2:send_release
+0: wtc 16401428+16
+0:decode_unify
+0: wtc 16401444+16
+0:send_answer_value
+0: wtc 16401460-10
+0:decode_unify
+0: wtc 16401450+16
+0:decode_unify
+0: wtc 16401466+16
+0:send_answer_value
+0: wtc 16401482-10
+0:decode_read
+0: wtc 16401472+10
+1:send_unify
+1: wtc 373104-16
+1:decode_read
+1: wtc 373088+10
+1:decode_unify
+1: wtc 373098+16
+const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_exref
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode0:decode_unify
+1:decode_answer_value
+0: wtc 16401482+16
+1: wtc 373114+10
+0:send_answer_value
+1:send_answer_value
+0: wtc 16401498-10
+1: wtc 373124-10
+1:send_release
+1:decode_answer_value
+1: wtc 373114+10
+1:send_answer_value
+1: wtc 373124-10
+1:send_release
+1:send_read
+1: wtc 373114-10
+0:decode_release
+1:send_unify
+0:decode_release
+1: wtc 373104-16
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+0:decode_read
+0: wtc 16401488+10
+2:send_release
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+1:decode_answer_value
+1: wtc 373088+10
+1:send_release
+1:decode_release
+2:decode_release
+1:decode_answer_value
+1: wtc 373098+10
+1:send_answer_value
+1: wtc 373108-10
+1:send_release
+1:decode_answer_value
+1: wtc 373098+10
+1:send_answer_value
+1: wtc 373108-10
+1:send_release
+0:decode_unify
+0: wtc 16401498+16
+1:send_unify
+0:decode_release
+1: wtc 373098-16
+0:send_answer_value
+0: wtc 16401514-10
+2:decode_answer_value
+1:send_read
+2: wtc 2554+10
+1: wtc 373082-10
+0:decode_release
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+0:decode_unify
+0: wtc 16401504+16
+0:decode_read
+0: wtc 16401520+10
+1:send_unify
+1: wtc 373072-16
+1:decode_answer_value
+1: wtc 373056+10
+1:send_answer_value
+1: wtc 373066-10
+0:decode_unify
+1:send_release
+0: wtc 16401530+16
+0:send_answer_value
+0: wtc 16401546-10
+1:decode_answer_value
+1: wtc 373056+10
+2:decode_answer_value
+1:send_release
+2: wtc 2554+10
+2:send_answer_value
+1:decode_release
+2: wtc 2564-10
+1:decode_answer_value
+0:decode_release
+2:send_release
+1: wtc 373066+10
+1:send_release
+1:decode_release
+1:send_unify
+1: wtc 373076-16
+2:decode_release
+2:decode_release
+1:send_unify
+1: wtc 373060-16
+0:decode_unify
+0: wtc 16401536+16
+0:decode_unify
+0: wtc 16401552+16
+1:send_read
+1: wtc 373044-10
+1:decode_answer_value
+1: wtc 373034+10
+1:send_answer_value
+1: wtc 373044-10
+1:send_release
+1:decode_answer_value
+1: wtc 373034+10
+1:send_release
+1:decode_release
+1:decode_answer_value
+1: wtc 373044+10
+1:send_release
+1:decode_release
+0:decode_read
+1:send_unify
+0: wtc 16401568+10
+1: wtc 373054-16
+0:decode_release
+1:send_unify
+1: wtc 373038-16
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+2:decode_release
+2:decode_release
+0:decode_unify
+0: wtc 16401578+16
+0:decode_unify
+0: wtc 16401594+16
+1:send_unify
+1: wtc 373022-16
+1:decode_answer_value
+1: wtc 373006+10
+1:send_answer_value
+1: wtc 373016-10
+0:decode_unify
+1:send_release
+0: wtc 16401610+16
+0:send_answer_value
+0: wtc 16401626-10
+1:decode_answer_value
+1: wtc 373006+10
+2:decode_answer_value
+1:send_release
+2: wtc 2554+10
+2:send_answer_value
+1:decode_release
+2: wtc 2564-10
+1:send_unify
+1: wtc 373016-16
+0:decode_release
+2:send_release
+1:send_read
+1: wtc 373000-10
+1:send_unify
+1: wtc 372990-16
+2:decode_release
+1:send_read
+1: wtc 372974-10
+0:decode_unify
+0: wtc 16401616+16
+0:decode_read
+0: wtc 16401632+10
+0:decode_unify
+0: wtc 16401642+16
+0:decode_read
+0: wtc 16401658+10
+0:send_answer_value
+0: wtc 16401668-10
+1:send_unify
+1: wtc 372964-16
+1:decode_answer_value
+1: wtc 372948+10
+1:send_release
+1:decode_release
+1:send_unify
+1: wtc 372958-16
+1:send_read
+1: wtc 372942-10
+1:send_unify
+1: wtc 372932-16
+1:send_read
+1: wtc 372916-10
+1:send_unify
+1: wtc 372906-16
+0:decode_unify
+1:send_read
+0: wtc 16401658+16
+1: wtc 372890-10
+0:decode_unify
+2:decode_release
+1:send_unify
+0: wtc 16401674+16
+2:decode_read
+1: wtc 372880-16
+0:send_answer_value
+0: wtc 16401690-10
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:send_unify
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+2:decode_read
+1:decode_answer_value
+1: wtc 372864+10
+1:send_answer_value
+1: wtc 372874-10
+1:send_release
+_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+1:decode_const_or_atomic
+1:decode_c1:decode_answer_value
+1: wtc 372864+10
+1:send_release
+1:decode_release
+1:decode_answer_value
+1: wtc 372874+10
+1:send_answer_value
+1: wtc 372884-10
+1:send_release
+2:decode_unify
+2: wtc 2554+16
+1:send_unify
+1: wtc 372874-16
+0:decode_release
+2:decode_answer_value
+2: wtc 2570+10
+1:send_read
+2:send_answer_value
+1: wtc 372858-10
+2: wtc 2580-10
+2:send_release
+2:decode_release
+2:send_unify
+2: wtc 2570-16
+0:decode_release
+2:decode_answer_value
+2: wtc 2554+10
+0:decode_unify
+2:send_answer_value
+0: wtc 16401680+16
+2: wtc 2564-10
+2:send_release
+2:decode_read
+1:send_unify
+1: wtc 372848-16
+1:decode_read
+2:decode_unify
+1:decode_answer_value
+2: wtc 2554+16
+1: wtc 372832+10
+2:send_unify
+1:send_answer_value
+2: wtc 2570-16
+1: wtc 372842-10
+1:send_release
+0:decode_read
+0:send_reply_answer_value current_wtc=16401696, retwtc = 10
+1:decode_unify
+1: wtc 372832+16
+1:decode_read
+1: wtc 372848+10
+1:decode_unify
+1: wtc 372858+16
+1:decode_read
+1: wtc 372874+10
+1:send_read
+1: wtc 372884-10
+1:send_unify
+0:decode_release
+0:decode_read
+0: wtc 16401696+10
+1: wtc 372874-16
+1:decode_answer_value
+1: wtc 372858+10
+1:send_release
+1:decode_release
+0:decode_unify
+1:decode_unify
+0: wtc 16401706+16
+1: wtc 372868+16
+0:send_answer_value
+0: wtc 16401722-10
+1:decode_answer_value
+2:decode_release
+1: wtc 372884+10
+1:send_release
+1:decode_release
+1:decode_read
+1: wtc 372894+10
+1:send_unify
+1: wtc 372904-16
+1:send_read
+1: wtc 372888-10
+1:send_unify
+0:decode_unify
+1: wtc 372878-16
+0: wtc 16401712+16
+1:send_unify
+2:decode_release
+0:decode_read
+0: wtc 16401728+10
+0:decode_unify
+0: wtc 16401738+16
+0:send_answer_value
+0: wtc 16401754-10
+1: wtc 372862-16
+1:decode_unify
+1: wtc 372846+16
+1:decode_answer_value
+1: wtc 372862+10
+1:send_release
+1:decode_answer_value
+1: wtc 372872+10
+1:send_release
+1:send_unify
+1: wtc 372882-16
+1:send_unify
+1: wtc 372866-16
+1:send_unify
+1: wtc 372850-16
+0:decode_unify
+1:send_read
+0: wtc 16401744+16
+1: wtc 372834-10
+0:decode_unify
+2:decode_release
+1:send_unify
+0: wtc 16401760+16
+2:decode_release
+1: wtc 372824-16
+0:decode_unify
+0: wtc 16401776+16
+0:decode_unify
+0: wtc 16401792+16
+0:decode_read
+0: wtc 16401808+10
+1:decode_answer_value
+1: wtc 372808+10
+1:send_answer_value
+1: wtc 372818-10
+1:send_release
+0:decode_unify
+0: wtc 16401818+16
+1:decode_answer_value
+0:send_answer_value
+1: wtc 372808+10
+0: wtc 16401834-10
+1:send_answer_value
+1: wtc 372818-10
+2:decode_answer_value
+2: wtc 2554+10
+1:send_release
+2:send_answer_value
+2: wtc 2564-10
+1:send_read
+0:decode_release
+1: wtc 372808-10
+2:send_release
+1:send_unify
+1: wtc 372798-16
+1:send_read
+1: wtc 372782-10
+2:decode_read
+1:send_unify
+1: wtc 372772-16
+2:decode_unify
+0:decode_release
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+2:decode_read
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+1:send_read
+1: wtc 372756-10
+1:send_unify
+1: wtc 372746-16
+1:send_read
+1: wtc 372730-10
+1:send_unify
+1: wtc 372720-16
+1:send_read
+1: wtc 372704-10
+1:send_unify
+1: wtc 372694-16
+1:send_read
+1: wtc 372678-10
+1:send_unify
+1: wtc 372668-16
+2:decode_read
+1:send_read
+1: wtc 372652-10
+1:send_unify
+onst_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:de1: wtc 372642-16
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:decode_read
+2: wtc 2596+10
+2:decode_unify
+2: wtc 2606+16
+2:decode_read
+2: wtc 2622+10
+2:send_read
+2: wtc 2632-10
+2:send_unify
+2: wtc 2622-16
+2:send_read
+2: wtc 2606-10
+2:send_unify
+1:decode_answer_value
+1: wtc 372626+10
+1:send_answer_value
+1: wtc 372636-10
+1:send_release
+1:decode_answer_value
+1: wtc 372626+10
+1:send_release
+1:decode_answer_value
+1: wtc 372636+10
+1:send_release
+0:decode_release
+1:decode_release
+1:decode_read
+1:decode_unify
+1: wtc 372646+16
+1:decode_read
+1: wtc 372662+10
+0:decode_read
+0:send_reply_answer_value current_wtc=16401824, retwtc = 10
+1:decode_unify
+1: wtc 372672+16
+1:decode_read
+1: wtc 372688+10
+1:decode_read
+1: wtc 372698+10
+2: wtc 2596-16
+1:decode_unify
+2:send_read
+1: wtc 372708+16
+2: wtc 2580-10
+1:decode_read
+1: wtc 372724+10
+2:send_unify
+1:send_read
+2: wtc 2570-16
+1: wtc 372734-10
+1:send_unify
+2:decode_unify
+1: wtc 372724-16
+2: wtc 2554+16
+2:send_unify
+1:send_read
+2: wtc 2570-16
+1: wtc 372708-10
+2:decode_read
+1:send_unify
+1: wtc 372698-16
+0:decode_read
+0: wtc 16401824+10
+1:send_read
+1: wtc 372682-10
+0:decode_unify
+2:decode_unify
+0: wtc 16401834+16
+2: wtc 2554+16
+1:send_unify
+0:send_answer_value
+2:send_unify
+1: wtc 372672-16
+0: wtc 16401850-10
+2: wtc 2570-16
+0:decode_read
+2:decode_release
+0: wtc 16401840+10
+2:decode_release
+0:decode_unify
+0: wtc 16401850+16
+0:decode_read
+0: wtc 16401866+10
+0:send_answer_value
+0: wtc 16401876-10
+1:decode_answer_value
+1: wtc 372656+10
+1:send_release
+1:decode_answer_value
+1: wtc 372666+10
+2:decode_release
+1:send_release
+0:decode_unify
+1:send_unify
+0: wtc 16401866+16
+1: wtc 372676-16
+0:send_answer_value
+0: wtc 16401882-10
+1:send_unify
+1: wtc 372660-16
+1:send_unify
+1: wtc 372644-16
+1:send_unify
+1: wtc 372628-16
+1:send_read
+1: wtc 372612-10
+2:decode_release
+1:send_unify
+1: wtc 372602-16
+0:decode_unify
+0: wtc 16401872+16
+0:decode_unify
+0: wtc 16401888+16
+0:decode_unify
+0: wtc 16401904+16
+0:decode_unify
+0: wtc 16401920+16
+2:decode_read
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+1:send_read
+1: wtc 372586-10
+1:decode_unify
+1: wtc 372576+16
+1:decode_read
+1: wtc 372592+10
+1:decode_unify
+1: wtc 372602+16
+1:decode_unify
+1: wtc 372618+16
+1:decode_read
+1: wtc 372634+10
+1:decode_answer_value
+1: wtc 372644+10
+1:send_answer_value
+2:decode_read
+1: wtc 372654-10
+1:send_release
+1:decode_unify
+1: wtc 372644+16
+1:decode_answer_value
+0:decode_release
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+1: wtc 372660+10
+1:send_answer_value
+1: wtc 372670-10
+1:send_release
+1:decode_answer_value
+1: wtc 372660+10
+0:decode_release
+1:send_answer_value
+1: wtc 372670-10
+1:send_release
+1:decode_read
+1: wtc 372660+10
+1:decode_unify
+1: wtc 372670+16
+1:send_unify
+1: wtc 372686-16
+1:send_read
+1: wtc 372670-10
+1:send_unify
+1: wtc 372660-16
+1:send_read
+0:decode_release
+0:decode_unify
+0: wtc 16401936+16
+0:decode_read
+0: wtc 16401952+10
+code_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_0:decode_unify
+0: wtc 16401962+16
+0:send_answer_value
+0: wtc 16401978-10
+1: wtc 372644-10
+1:decode_read
+1:decode_answer_value
+1: wtc 372634+10
+1:send_release
+1:decode_release
+1:send_unify
+1: wtc 372644-16
+1:send_unify
+1: wtc 372628-16
+1:send_read
+1: wtc 372612-10
+1:send_unify
+1: wtc 372602-16
+2:decode_release
+0:decode_read
+1:send_read
+0: wtc 16401968+10
+1: wtc 372586-10
+0:decode_read
+0:send_reply_answer_value current_wtc=16401978, retwtc = 10
+1:send_unify
+1: wtc 372576-16
+0:decode_unify
+0: wtc 16401978+16
+0:decode_unify
+0: wtc 16401994+16
+0:decode_read
+0: wtc 16402010+10
+0:send_answer_value
+0: wtc 16402020-10
+0:decode_unify
+0: wtc 16402010+16
+0:decode_read
+0: wtc 16402026+10
+0:send_answer_value
+0: wtc 16402036-10
+1:decode_answer_value
+1: wtc 372560+10
+1:send_release
+1:decode_answer_value
+1: wtc 372570+10
+1:send_release
+1:decode_answer_value
+1: wtc 372580+10
+1:send_answer_value
+1: wtc 372590-10
+1:send_release
+1:send_unify
+2:decode_release
+1: wtc 372580-16
+2:decode_release
+0:decode_unify
+1:send_unify
+0: wtc 16402026+16
+1: wtc 372564-16
+0:send_answer_value
+0: wtc 16402042-10
+1:send_unify
+1: wtc 372548-16
+1:send_read
+0:decode_release
+2:decode_unify
+2: wtc 2554+16
+0:decode_unify
+2:send_unify
+0: wtc 16402032+16
+2: wtc 2570-16
+0:decode_unify
+0: wtc 16402048+16
+1: wtc 372532-10
+1:decode_answer_value
+1: wtc 372522+10
+1:send_release
+1:decode_answer_value
+1: wtc 372532+10
+1:send_answer_value
+1: wtc 372542-10
+1:send_release
+1:decode_answer_value
+1: wtc 372532+10
+1:send_answer_value
+1: wtc 372542-10
+2:decode_read
+1:send_release
+0:decode_release
+1:send_unify
+1: wtc 372532-16
+2:decode_release
+1:send_unify
+1: wtc 372516-16
+0:decode_release
+2:decode_answer_value
+2: wtc 2554+10
+0:decode_unify
+2:send_answer_value
+0: wtc 16402064+16
+2: wtc 2564-10
+2:send_release
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+1:send_read
+1: wtc 372500-10
+1:decode_answer_value
+1: wtc 372490+10
+1:send_release
+2:decode_read
+1:decode_answer_value
+1: wtc 372500+10
+1:send_answer_value
+1: wtc 372510-10
+1:send_release
+1:decode_unify
+1: wtc 372500+16
+1:send_unify
+1: wtc 372516-16
+1:send_unify
+1: wtc 372500-16
+1:send_unify
+1: wtc 372484-16
+1:send_read
+2:decode_release
+0:decode_release
+2:decode_answer_value
+0:decode_unify
+2: wtc 2554+10
+0: wtc 16402080+16
+2:send_answer_value
+2: wtc 2564-10
+0:decode_unify
+0: wtc 16402096+16
+2:send_release
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+1: wtc 372468-10
+1:decode_answer_value
+1: wtc 372458+10
+1:send_release
+2:decode_read
+1:decode_read
+1:decode_answer_value
+1: wtc 372468+10
+1:send_release
+1:decode_release
+1:decode_unify
+1: wtc 372478+16
+1:send_unify
+0:decode_read
+1: wtc 372494-16
+0:send_reply_answer_value current_wtc=16402112, retwtc = 10
+1:send_unify
+1: wtc 372478-16
+2:decode_release
+1:send_unify
+2:decode_release
+1: wtc 372462-16
+0:decode_unify
+0: wtc 16402112+16
+const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+Node:2 exref read transfer
+1:decode_const_or_atomic
+Node 2, read transfered to node 1
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+Node:2 exref read transfer
+Node:1 exref read transfer
+Node 2, read transfered to node 1
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:d0:decode_unify
+0: wtc 16402128+16
+0:decode_unify
+0: wtc 16402144+16
+1:send_unify
+1: wtc 372446-16
+1:decode_read
+1:decode_answer_value
+1: wtc 372430+10
+1:send_release
+1:decode_release
+0:decode_read
+0:send_reply_answer_value current_wtc=16402160, retwtc = 10
+1:decode_unify
+1: wtc 372440+16
+1:send_unify
+1: wtc 372456-16
+1:send_unify
+1: wtc 372440-16
+2:decode_unify
+2: wtc 2554+16
+1:send_read
+2:decode_release
+1: wtc 372424-10
+2:send_unify
+2: wtc 2570-16
+1:send_unify
+1: wtc 372414-16
+0:decode_unify
+0: wtc 16402160+16
+1:send_read
+2:decode_read
+0:decode_unify
+0: wtc 16402176+16
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+1: wtc 372398-10
+1:decode_read
+1:decode_answer_value
+2:decode_read
+1: wtc 372388+10
+1:send_release
+1:send_unify
+1: wtc 372398-16
+1:send_unify
+1: wtc 372382-16
+0:decode_read
+1:send_read
+0:send_reply_answer_value current_wtc=16402192, retwtc = 10
+1: wtc 372366-10
+1:send_unify
+0:decode_unify
+1: wtc 372356-16
+0: wtc 16402192+16
+2:decode_release
+1:send_read
+2:decode_unify
+1: wtc 372340-10
+2: wtc 2554+16
+2:decode_read
+1:send_unify
+2: wtc 2570+10
+1: wtc 372330-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:send_unify
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+1:send_read
+1: wtc 372314-10
+1:decode_answer_value
+1: wtc 372304+10
+1:send_release
+1:decode_unify
+1: wtc 372314+16
+1:decode_read
+1: wtc 372330+10
+1:decode_unify
+1: wtc 372340+16
+1:send_unify
+1: wtc 372356-16
+1:send_read
+1: wtc 372340-10
+2:decode_read
+1:send_unify
+1: wtc 372330-16
+2:decode_release
+1:send_unify
+1: wtc 372314-16
+1:send_unify
+0:decode_unify
+0: wtc 16402208+16
+0:decode_read
+0: wtc 16402224+10
+0:decode_unify
+0: wtc 16402234+16
+0:send_answer_value
+0: wtc 16402250-10
+0:decode_unify
+0: wtc 16402240+16
+1: wtc 372298-16
+1:decode_read
+1:decode_answer_value
+1: wtc 372282+10
+2:decode_unify
+1:send_release
+2: wtc 2554+16
+2:send_unify
+1:decode_read
+2: wtc 2570-16
+1: wtc 372292+10
+1:decode_unify
+0:decode_read
+1: wtc 372302+16
+0:send_reply_answer_value current_wtc=16402256, retwtc = 10
+1:decode_unify
+1: wtc 372318+16
+1:decode_read
+1: wtc 372334+10
+2:decode_release
+1:decode_unify
+1: wtc 372344+16
+1:send_read
+1: wtc 372360-10
+1:send_unify
+1: wtc 372350-16
+0:decode_read
+0: wtc 16402256+10
+1:decode_read
+1: wtc 372334+10
+1:decode_answer_value
+1: wtc 372344+10
+1:send_answer_value
+1: wtc 372354-10
+0:decode_unify
+1:send_release
+0: wtc 16402266+16
+0:send_answer_value
+1:send_read
+0: wtc 16402282-10
+1: wtc 372344-10
+1:send_unify
+1: wtc 372334-16
+1:send_read
+1: wtc 372318-10
+1:send_unify
+1: wtc 372308-16
+1:send_unify
+1: wtc 372292-16
+1:send_read
+0:decode_release
+1: wtc 372276-10
+0:decode_read
+0: wtc 16402272+10
+ecode_const_or_atomic
+0:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_co0:decode_unify
+0: wtc 16402282+16
+0:decode_read
+0: wtc 16402298+10
+0:decode_unify
+0: wtc 16402308+16
+0:send_answer_value
+0: wtc 16402324-10
+0:send_answer_value
+0: wtc 16402314-10
+0:decode_unify
+0: wtc 16402304+16
+2:decode_read
+1:send_unify
+1: wtc 372266-16
+1:decode_unify
+1: wtc 372250+16
+1:decode_answer_value
+1: wtc 372266+10
+1:send_release
+2:decode_unify
+2: wtc 2554+16
+1:send_unify
+2:send_unify
+1: wtc 372276-16
+2: wtc 2570-16
+1:send_unify
+1: wtc 372260-16
+1:send_read
+1: wtc 372244-10
+1:send_unify
+1: wtc 372234-16
+1:send_read
+1: wtc 372218-10
+1:send_read
+1: wtc 372208-10
+2:decode_release
+2:decode_read
+0:decode_unify
+0: wtc 16402320+16
+2:decode_unify
+2: wtc 2554+16
+0:decode_unify
+2:decode_read
+0: wtc 16402336+16
+2: wtc 2570+10
+0:decode_read
+2:send_read
+0: wtc 16402352+10
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+1:send_unify
+1: wtc 372198-16
+1:decode_answer_value
+1: wtc 372182+10
+1:send_release
+0:decode_unify
+0: wtc 16402362+16
+1:decode_answer_value
+0:send_answer_value
+1: wtc 372192+10
+0: wtc 16402378-10
+1:send_answer_value
+2:decode_release
+1: wtc 372202-10
+1:send_release
+1:decode_answer_value
+1: wtc 372192+10
+1:send_answer_value
+1: wtc 372202-10
+1:send_release
+0:decode_release
+1:decode_answer_value
+1: wtc 372192+10
+1:send_answer_value
+1: wtc 372202-10
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+0:decode_release
+2:send_release
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+1:send_release
+1:decode_read
+1:decode_unify
+1: wtc 372192+16
+1:decode_read
+1: wtc 372208+10
+1:decode_read
+1: wtc 372218+10
+1:decode_unify
+1: wtc 372228+16
+1:send_read
+1: wtc 372244-10
+1:send_unify
+1: wtc 372234-16
+0:decode_release
+1:send_read
+0:decode_read
+1: wtc 372218-10
+0:send_reply_answer_value current_wtc=16402368, retwtc = 10
+1:send_unify
+0:decode_read
+1: wtc 372208-16
+0: wtc 16402368+10
+0:decode_unify
+0: wtc 16402378+16
+0:decode_read
+0: wtc 16402394+10
+0:decode_unify
+0: wtc 16402404+16
+0:send_answer_value
+0: wtc 16402420-10
+0:send_answer_value
+0: wtc 16402410-10
+1:send_unify
+1: wtc 372192-16
+1:decode_answer_value
+1: wtc 372176+10
+1:send_answer_value
+1: wtc 372186-10
+0:decode_unify
+1:send_release
+0: wtc 16402400+16
+1:decode_answer_value
+1: wtc 372176+10
+1:send_release
+1:decode_release
+2:decode_answer_value
+2: wtc 2554+10
+1:decode_answer_value
+2:send_answer_value
+1: wtc 372186+10
+2: wtc 2564-10
+1:send_release
+0:decode_release
+2:send_release
+1:decode_release
+1:send_unify
+1: wtc 372196-16
+1:send_unify
+1: wtc 372180-16
+2:decode_release
+2:decode_release
+0:decode_unify
+0: wtc 16402416+16
+0:decode_unify
+0: wtc 16402432+16
+1:send_read
+1: wtc 372164-10
+1:decode_answer_value
+1: wtc 372154+10
+1:send_release
+1:decode_answer_value
+1: wtc 372164+10
+1:send_release
+1:decode_answer_value
+1: wtc 372174+10
+1:send_answer_value
+1: wtc 372184-10
+1:send_release
+1:decode_answer_value
+0:decode_read
+1: wtc 372174+10
+0: wtc 16402448+10
+1:send_answer_value
+0:decode_release
+1: wtc 372184-10
+1:send_release
+2:decode_release
+2:decode_release
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+0:decode_release
+1:send_unify
+1: wtc 372174-16
+1:decode_answer_value
+1: wtc 372158+10
+1:send_release
+1:decode_release
+0:decode_unify
+1:send_unify
+0: wtc 16402458+16
+1: wtc 372168-16
+1:send_unify
+1: wtc 372152-16
+1:send_unify
+1: wtc 372136-16
+2:decode_release
+1:send_read
+1: wtc 372120-10
+1:send_unify
+1: wtc 372110-16
+1:send_read
+1: wtc 372094-10
+1:send_unify
+1: wtc 372084-16
+nst_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+0:decode_const_or_atomic
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:0:decode_unify
+0: wtc 16402474+16
+0:decode_unify
+0: wtc 16402490+16
+0:decode_unify
+0: wtc 16402506+16
+0:decode_read
+0: wtc 16402522+10
+0:decode_unify
+0: wtc 16402532+16
+0:decode_read
+0: wtc 16402548+10
+0:send_answer_value
+0: wtc 16402558-10
+0:send_answer_value
+0: wtc 16402548-10
+1:decode_answer_value
+1: wtc 372068+10
+1:send_release
+1:decode_answer_value
+2:decode_release
+1: wtc 372078+10
+1:send_release
+1:decode_release
+1:send_unify
+1: wtc 372088-16
+1:send_unify
+1: wtc 372072-16
+1:send_unify
+1: wtc 372056-16
+1:send_read
+1: wtc 372040-10
+0:decode_unify
+0: wtc 16402538+16
+2:decode_release
+1:send_unify
+1: wtc 372030-16
+0:decode_unify
+2:decode_unify
+0: wtc 16402554+16
+2: wtc 2554+16
+1:send_read
+2:send_unify
+1: wtc 372014-10
+0:decode_unify
+2: wtc 2570-16
+0: wtc 16402570+16
+0:send_answer_value
+0: wtc 16402586-10
+2:decode_read
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+1:decode_answer_value
+1: wtc 372004+10
+1:send_answer_value
+1: wtc 372014-10
+1:send_release
+1:decode_answer_value
+1: wtc 372004+10
+1:send_answer_value
+1: wtc 372014-10
+1:send_release
+1:send_unify
+1: wtc 372004-16
+1:send_read
+1: wtc 371988-10
+2:decode_read
+0:decode_release
+1:send_unify
+0:decode_release
+1: wtc 371978-16
+1:send_read
+2:decode_answer_value
+1: wtc 371962-10
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+2:decode_read
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+1:send_unify
+1: wtc 371952-16
+1:decode_unify
+1: wtc 371936+16
+1:decode_answer_value
+1: wtc 371952+10
+1:send_answer_value
+1: wtc 371962-10
+1:send_release
+1:decode_read
+1: wtc 371952+10
+1:decode_unify
+1: wtc 371962+16
+1:send_unify
+1: wtc 371978-16
+0:decode_release
+2:decode_unify
+1:send_read
+2: wtc 2554+16
+1: wtc 371962-10
+2:send_unify
+2: wtc 2570-16
+1:send_unify
+1: wtc 371952-16
+1:send_read
+0:decode_unify
+0: wtc 16402576+16
+0:decode_read
+0: wtc 16402592+10
+0:decode_unify
+0: wtc 16402602+16
+0:send_answer_value
+0: wtc 16402618-10
+1: wtc 371936-10
+1:decode_read
+1:decode_answer_value
+2:decode_read
+1: wtc 371926+10
+0:decode_read
+1:send_release
+0:send_reply_answer_value current_wtc=16402608, retwtc = 10
+1:decode_release
+1:decode_answer_value
+1: wtc 371936+10
+1:send_release
+1:decode_release
+1:decode_unify
+1: wtc 371946+16
+1:decode_read
+1: wtc 371962+10
+1:decode_read
+1: wtc 371972+10
+2:decode_release
+2:decode_release
+1:decode_unify
+1: wtc 371982+16
+1:send_read
+1: wtc 371998-10
+1:decode_answer_value
+1: wtc 371988+10
+1:send_release
+decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_ato1:decode_unify
+1: wtc 371998+16
+1:decode_answer_value
+1: wtc 372014+10
+1:send_answer_value
+1: wtc 372024-10
+1:send_release
+1:send_unify
+1: wtc 372014-16
+1:send_unify
+2:decode_release
+1: wtc 371998-16
+0:decode_read
+0: wtc 16402608+10
+1:send_read
+0:decode_release
+1: wtc 371982-10
+0:decode_unify
+1:send_unify
+0: wtc 16402618+16
+1: wtc 371972-16
+0:decode_unify
+0: wtc 16402634+16
+0:decode_read
+0: wtc 16402650+10
+0:send_answer_value
+0: wtc 16402660-10
+1:decode_read
+1:decode_answer_value
+1: wtc 371956+10
+1:send_release
+1:send_unify
+1: wtc 371966-16
+2:decode_release
+1:send_unify
+0:decode_unify
+1: wtc 371950-16
+0: wtc 16402650+16
+0:decode_read
+1:send_unify
+0:send_reply_answer_value current_wtc=16402666, retwtc = 10
+1: wtc 371934-16
+0:send_answer_value
+1:send_unify
+0: wtc 16402666-10
+1: wtc 371918-16
+1:send_read
+1: wtc 371902-10
+0:decode_unify
+0: wtc 16402656+16
+1:send_unify
+1: wtc 371892-16
+0:decode_unify
+0: wtc 16402672+16
+1:send_read
+0:decode_unify
+0: wtc 16402688+16
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:send_unify
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+1: wtc 371876-10
+1:decode_answer_value
+1: wtc 371866+10
+1:send_release
+1:decode_answer_value
+1: wtc 371876+10
+1:send_answer_value
+1: wtc 371886-10
+1:send_release
+1:send_unify
+1: wtc 371876-16
+1:send_unify
+1: wtc 371860-16
+1:send_read
+1: wtc 371844-10
+2:decode_read
+0:decode_release
+1:send_unify
+1: wtc 371834-16
+0:decode_unify
+0: wtc 16402704+16
+2:decode_release
+1:send_read
+1: wtc 371818-10
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+2:decode_read
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+1:decode_answer_value
+1: wtc 371808+10
+1:send_release
+1:decode_answer_value
+2:decode_read
+1: wtc 371818+10
+1:send_answer_value
+1: wtc 371828-10
+2:decode_release
+1:send_release
+1:decode_unify
+1: wtc 371818+16
+1:decode_read
+1: wtc 371834+10
+1:decode_unify
+1: wtc 371844+16
+1:send_read
+1: wtc 371860-10
+1:send_unify
+1: wtc 371850-16
+1:send_unify
+0:decode_release
+0:decode_read
+0: wtc 16402720+10
+0:decode_unify
+0: wtc 16402730+16
+0:send_answer_value
+0: wtc 16402746-10
+1: wtc 371834-16
+1:decode_read
+1:decode_answer_value
+1: wtc 371818+10
+1:send_release
+0:decode_unify
+0: wtc 16402736+16
+1:decode_release
+0:decode_read
+0: wtc 16402752+10
+2:decode_release
+1:decode_unify
+0:send_answer_value
+1: wtc 371828+16
+0: wtc 16402762-10
+1:decode_read
+1: wtc 371844+10
+1:decode_unify
+1: wtc 371854+16
+1:send_unify
+1: wtc 371870-16
+1:send_read
+1: wtc 371854-10
+1:send_unify
+1: wtc 371844-16
+0:decode_unify
+0: wtc 16402752+16
+0:decode_read
+0: wtc 16402768+10
+0:decode_unify
+0: wtc 16402778+16
+0:send_answer_value
+0: wtc 16402794-10
+1:send_unify
+1: wtc 371828-16
+1:decode_read
+mic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+Node:2 exref read transfer
+0:decode_const_or_atomic
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read 1:decode_answer_value
+1: wtc 371812+10
+1:send_release
+1:decode_answer_value
+1: wtc 371822+10
+1:send_answer_value
+1: wtc 371832-10
+1:send_release
+0:decode_unify
+0: wtc 16402784+16
+1:send_unify
+0:decode_read
+1: wtc 371822-16
+0:send_reply_answer_value current_wtc=16402800, retwtc = 10
+2:decode_release
+1:send_unify
+1: wtc 371806-16
+0:decode_release
+0:decode_unify
+2:decode_answer_value
+0: wtc 16402800+16
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+1:decode_answer_value
+0:decode_unify
+1: wtc 371790+10
+0: wtc 16402816+16
+1:send_release
+1:decode_answer_value
+2:decode_release
+1: wtc 371800+10
+1:send_answer_value
+1: wtc 371810-10
+1:send_release
+1:send_unify
+1: wtc 371800-16
+1:send_unify
+1: wtc 371784-16
+1:send_read
+0:decode_release
+1: wtc 371768-10
+0:decode_unify
+1:send_unify
+0: wtc 16402832+16
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+1: wtc 371758-16
+1:decode_answer_value
+1: wtc 371742+10
+1:send_release
+1:send_release
+1:send_release
+2:decode_unify
+1:send_release
+2: wtc 2554+16
+2:decode_release
+1:send_release
+2:send_unify
+2: wtc 2570-16
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+0:decode_release
+1:send_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+1:send_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+0:decode_release
+1:send_release
+1:send_release
+1:send_release
+1:decode_answer_value
+1: wtc 371752+10
+1:send_release
+0:decode_release
+0:decode_release
+1:decode_release
+0:decode_release
+1:decode_answer_value
+1: wtc 371762+10
+2:decode_release
+1:send_release
+1:decode_read
+1: wtc 371772+10
+1:decode_unify
+1: wtc 371782+16
+1:decode_unify
+1: wtc 371798+16
+1:send_unify
+1: wtc 371814-16
+2:decode_release
+1:send_read
+1: wtc 371798-10
+1:send_unify
+1: wtc 371788-16
+1:send_unify
+1: wtc 371772-16
+1:send_unify
+1: wtc 371756-16
+1:send_unify
+1: wtc 371740-16
+1:send_read
+1: wtc 371724-10
+1:send_unify
+1: wtc 371714-16
+1:send_read
+1: wtc 371698-10
+2:decode_read
+1:send_unify
+0:decode_unify
+1: wtc 371688-16
+0: wtc 16402848+16
+0:decode_read
+1:send_read
+0: wtc 16402864+10
+2:decode_unify
+2: wtc 2554+16
+0:decode_unify
+2:send_unify
+0: wtc 16402874+16
+2: wtc 2570-16
+0:decode_unify
+2:decode_read
+0: wtc 16402890+16
+0:decode_unify
+0: wtc 16402906+16
+transfered to node 0
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+0:decode_const_or_atomic
+2:decode_exref
+2:decode_exref
+2:decode_exref
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+0:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+2:decode_const_or_atomic
+1:pending message processed
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_exref
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+Node:2 exref read transfer
+0:decode_const_or_atomic
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+0:d2:decode_unify
+0:decode_unify
+2: wtc 2554+16
+0: wtc 16402922+16
+2:send_unify
+0:send_answer_value
+2: wtc 2570-16
+0: wtc 16402938-10
+1: wtc 371672-10
+1:send_unify
+1: wtc 371662-16
+1:send_read
+1: wtc 371646-10
+2:decode_read
+1:send_unify
+1: wtc 371636-16
+1:send_read
+1: wtc 371620-10
+2:decode_unify
+2: wtc 2554+16
+1:send_unify
+2:send_unify
+1: wtc 371610-16
+2: wtc 2570-16
+1:send_read
+1: wtc 371594-10
+2:decode_read
+1:send_unify
+1: wtc 371584-16
+1:send_read
+1: wtc 371568-10
+2:decode_unify
+2: wtc 2554+16
+1:send_unify
+2:decode_read
+1: wtc 371558-16
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:send_unify
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+2:decode_read
+2:decode_unify
+2: wtc 2554+16
+2:decode_read
+2: wtc 2570+10
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+2:decode_unify
+2: wtc 2554+16
+2:send_unify
+2: wtc 2570-16
+1:send_read
+1: wtc 371542-10
+1:decode_read
+1:decode_unify
+1: wtc 371532+16
+0:decode_read
+1:decode_read
+0:send_reply_answer_value current_wtc=16402928, retwtc = 10
+1: wtc 371548+10
+1:decode_unify
+1: wtc 371558+16
+1:decode_answer_value
+1: wtc 371574+10
+2:decode_read
+1:send_answer_value
+1: wtc 371584-10
+1:send_release
+1:send_unify
+1: wtc 371574-16
+0:decode_release
+1:send_read
+1: wtc 371558-10
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+0:decode_unify
+0: wtc 16402928+16
+0:decode_read
+0: wtc 16402944+10
+1:send_unify
+1: wtc 371548-16
+1:decode_read
+1:decode_unify
+1: wtc 371532+16
+1:decode_read
+1: wtc 371548+10
+1:decode_unify
+1: wtc 371558+16
+1:decode_read
+1: wtc 371574+10
+1:decode_unify
+1: wtc 371584+16
+1:decode_read
+1: wtc 371600+10
+0:decode_unify
+1:decode_read
+0: wtc 16402954+16
+1: wtc 371610+10
+0:decode_read
+0:send_reply_answer_value current_wtc=16402970, retwtc = 10
+1:decode_unify
+1: wtc 371620+16
+0:send_answer_value
+0: wtc 16402970-10
+1:decode_unify
+1: wtc 371636+16
+1:decode_answer_value
+1: wtc 371652+10
+1:send_release
+1:decode_read
+1: wtc 371662+10
+1:decode_answer_value
+1: wtc 371672+10
+1:send_release
+1:decode_release
+1:send_unify
+1: wtc 371682-16
+1:send_unify
+1: wtc 371666-16
+1:send_read
+1: wtc 371650-10
+1:send_unify
+2:decode_release
+1: wtc 371640-16
+2:decode_release
+1:send_read
+1: wtc 371624-10
+0:decode_unify
+0: wtc 16402960+16
+0:decode_unify
+0: wtc 16402976+16
+0:decode_read
+0: wtc 16402992+10
+0:decode_unify
+0: wtc 16403002+16
+0:decode_read
+0: wtc 16403018+10
+0:send_answer_value
+0: wtc 16403028-10
+1:send_unify
+1: wtc 371614-16
+1:decode_answer_value
+1: wtc 371598+10
+1:send_release
+1:decode_answer_value
+1: wtc 371608+10
+1:send_answer_value
+1: wtc 371618-10
+1:send_release
+1:send_unify
+1: wtc 371608-16
+1:send_read
+1: wtc 371592-10
+1:send_unify
+1: wtc 371582-16
+0:decode_unify
+0: wtc 16403018+16
+1:send_read
+0:decode_release
+2:decode_release
+1: wtc 371566-10
+0:decode_unify
+1:send_unify
+0: wtc 16403034+16
+0:send_answer_value
+0: wtc 16403050-10
+0:decode_read
+0: wtc 16403040+10
+0:decode_unify
+0: wtc 16403050+16
+0:decode_read
+0: wtc 16403066+10
+0:send_answer_value
+0: wtc 16403076-10
+1: wtc 371556-16
+ecode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_exref
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+2:decode_exref
+0:decode_const_or_atomic
+Node:1 exref read transfer
+Node 1, read transfered to node 0
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_exref
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_o1:decode_answer_value
+1: wtc 371540+10
+1:send_answer_value
+1: wtc 371550-10
+1:send_release
+0:decode_unify
+0: wtc 16403066+16
+1:send_read
+0:send_answer_value
+1: wtc 371540-10
+0: wtc 16403082-10
+1:send_unify
+1: wtc 371530-16
+1:send_unify
+1: wtc 371514-16
+1:send_read
+1: wtc 371498-10
+1:send_unify
+1: wtc 371488-16
+1:send_read
+1: wtc 371472-10
+0:decode_release
+1:send_unify
+0:decode_read
+0: wtc 16403072+10
+0:decode_unify
+0: wtc 16403082+16
+2:decode_unify
+0:send_answer_value
+2: wtc 2554+16
+0: wtc 16403098-10
+2:decode_read
+2: wtc 2570+10
+2:decode_unify
+2: wtc 2580+16
+2:decode_read
+2: wtc 2596+10
+2:send_read
+2: wtc 2606-10
+2:send_unify
+2: wtc 2596-16
+2:send_read
+2: wtc 2580-10
+2:send_unify
+2: wtc 2570-16
+1: wtc 371462-16
+1:decode_answer_value
+1: wtc 371446+10
+1:send_release
+1:decode_answer_value
+1: wtc 371456+10
+2:decode_unify
+1:send_answer_value
+2: wtc 2554+16
+1: wtc 371466-10
+2:decode_release
+2:send_unify
+1:send_release
+2: wtc 2570-16
+1:decode_answer_value
+1: wtc 371456+10
+1:send_answer_value
+1: wtc 371466-10
+1:send_release
+1:send_unify
+1: wtc 371456-16
+1:send_read
+2:decode_answer_value
+1: wtc 371440-10
+2: wtc 2554+10
+0:decode_release
+2:send_answer_value
+0:decode_release
+2: wtc 2564-10
+0:decode_unify
+2:send_release
+0: wtc 16403088+16
+2:decode_answer_value
+2: wtc 2554+10
+2:send_answer_value
+2: wtc 2564-10
+2:send_release
+2:decode_read
+1:send_unify
+1: wtc 371430-16
+1:decode_answer_value
+1: wtc 371414+10
+1:send_release
+0:decode_unify
+0: wtc 16403104+16
+1:decode_answer_value
+1: wtc 371424+10
+1:send_answer_value
+1: wtc 371434-10
+2:decode_release
+1:send_release
+1:decode_answer_value
+1: wtc 371424+10
+1:send_answer_value
+1: wtc 371434-10
+1:send_release
+1:decode_read
+1: wtc 371424+10
+0:decode_release
+1:decode_unify
+0:decode_release
+1: wtc 371434+16
+1:decode_read
+1: wtc 371450+10
+1:decode_unify
+1: wtc 371460+16
+1:decode_unify
+1: wtc 371476+16
+1:decode_answer_value
+1: wtc 371492+10
+1:send_release
+1:decode_release
+1:decode_answer_value
+1: wtc 371502+10
+1:send_release
+1:decode_release
+1:decode_read
+1: wtc 371512+10
+1:send_unify
+1: wtc 371522-16
+1:send_unify
+1: wtc 371506-16
+1:send_read
+2:decode_release
+2:decode_release
+0:decode_unify
+0: wtc 16403120+16
+0:decode_unify
+0: wtc 16403136+16
+1: wtc 371490-10
+1:decode_answer_value
+1: wtc 371480+10
+1:send_release
+1:decode_answer_value
+1: wtc 371490+10
+1:send_release
+0:decode_read
+1:send_unify
+0: wtc 16403152+10
+2:decode_release
+1: wtc 371500-16
+2:decode_release
+1:send_unify
+1: wtc 371484-16
+1:send_unify
+1: wtc 371468-16
+1:send_read
+1: wtc 371452-10
+0:decode_unify
+0: wtc 16403162+16
+1:send_unify
+1: wtc 371442-16
+0:decode_unify
+0: wtc 16403178+16
+1:send_read
+1: wtc 371426-10
+0:decode_unify
+0: wtc 16403194+16
+0:decode_read
+0: wtc 16403210+10
+0:decode_unify
+0: wtc 16403220+16
+0:send_answer_value
+0: wtc 16403236-10
+0:send_answer_value
+0: wtc 16403226-10
+1:send_unify
+1: wtc 371416-16
+1:send_unify
+1: wtc 371400-16
+1:send_unify
+1: wtc 371384-16
+1:send_read
+1: wtc 371368-10
+1:decode_answer_value
+1: wtc 371358+10
+1:send_answer_value
+1: wtc 371368-10
+1:send_release
+1:decode_answer_value
+0:decode_read
+1: wtc 371358+10
+0: wtc 16403216+10
+1:send_answer_value
+1: wtc 371368-10
+0:decode_unify
+0: wtc 16403226+16
+2:decode_unify
+1:send_release
+2: wtc 2554+16
+0:decode_unify
+2:decode_read
+0: wtc 16403242+16
+2: wtc 2570+10
+0:send_answer_value
+0: wtc 16403258-10
+2:decode_answer_value
+2: wtc 2580+10
+0:decode_release
+2:send_answer_value
+2: wtc 2590-10
+2:send_release
+2:send_read
+2: wtc 2580-10
+0:decode_release
+2:send_unify
+1:decode_answer_value
+2: wtc 2570-16
+1: wtc 371358+10
+1:send_release
+1:decode_answer_value
+1: wtc 371368+10
+1:send_answer_value
+1: wtc 371378-10
+1:send_release
+1:decode_answer_value
+1: wtc 371368+10
+1:send_release
+1:decode_release
+r_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+Node:2 exref read transfer
+Node 2, read transfered to node 1
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+2:send_return_wtc(2554)
+1:decode_const_or_atomic
+1:decode_const_or_atomic
+3:dec2:decode_release
+1:send_unify
+0:decode_release
+1: wtc 371378-16
+2:decode_answer_value
+2: wtc 0+10
+1:send_unify
+2:send_answer_value
+1: wtc 371362-16
+2: wtc 10-5
+1:decode_read
+2:send_release
+1: wtc 371346+10
+2:decode_release
+1:decode_unify
+1: wtc 371356+16
+1:send_read
+1: wtc 371372-10
+0:decode_unify
+1:send_unify
+0: wtc 16403248+16
+1: wtc 371362-16
+0:decode_unify
+0: wtc 16403264+16
+1:decode_answer_value
+1: wtc 371346+5
+1:send_release
+0:decode_read
+1:decode_release
+0: wtc 16403280+10
+1:send_unify
+1: wtc 371351-16
+0:decode_unify
+0: wtc 16403290+16
+2:decode_release
+0:send_answer_value
+0: wtc 16403306-10
+1:decode_answer_value
+0:decode_unify
+1: wtc 371335+10
+0: wtc 16403296+16
+1:send_answer_value
+1: wtc 371345-10
+1:send_release
+0:decode_release
+2:decode_answer_value
+2: wtc 0+10
+2:send_answer_value
+2: wtc 10-5
+2:send_release
+1:decode_answer_value
+1: wtc 371335+5
+1:send_release
+1:send_unify
+2:decode_release
+1: wtc 371340-16
+1:decode_release
+0:decode_unify
+0: wtc 16403312+16
+Response time is 43014 msec
+3:send_terminate
+3:send_terminate
+3:send_terminate
+ode_return_wtc(2554)
+2:decode_const_or_atomic
+1:decode_const_or_atomic
+2:send_return_wtc(5)
+0:decode_const_or_atomic
+3:decode_return_wtc(5)
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+1:decode_const_or_atomic
+0:decode_const_or_atomic
+2:decode_const_or_atomic
+2:send_return_wtc(5)
+1:decode_const_or_atomic
+3:decode_return_wtc(5)
+1:send_return_wtc(371324)
+3:decode_return_wtc(371324)
+0:decode_const_or_atomic
+abcdefghijklmnopqrstu'...done'
+'(guard) vector_element : (a-p) : 'abcdefghijklmnop'...done'
+'(body) vector_element : (a-p) : 'abcdefghijklmnop'...done'
+'set_vector_element/4 : (a-w) : 'abcdefghijklmnopqrstuvw'...done'
+'set_vector_element/5 : (a-p) : 'abcdefghijklmnop'...done'
+'### InterNode Test [EXREF -> EXREF -> Vector] End ###'
+0:send_return_wtc(16403328)
+3:decode_return_wtc(16403328)

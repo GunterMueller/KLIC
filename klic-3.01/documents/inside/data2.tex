@@ -1,0 +1,1059 @@
+% (C) 1998 Japan Information Processing Development Center
+% 詳細な配布条件については、COPYRIGHT-JIPDEC.jを参照してください。
+% Klicで利用されるデータ構造のサマリ．
+
+\chapter{データ構造}\label{data-structure}
+
+KLICで用いられるデータ構造の実装について述べる。
+
+KLICで用いられるデータ構造は以下の2つに大別される。
+
+\begin{itemize}
+\item KL1レベルに現れるデータ構造。KL1のいわゆる「項」であり、
+シンボル、整数、リスト、構造体、ベクタ、文字列などがある。
+
+\item 実装レベルで用いられ、KL1レベルでは出現しないデータ構造。
+ゴール、ゴールスタック、など。
+\end{itemize}
+
+またこれらの中間として、KL1レベルでの構造を実装するための
+枠組として「ジェネリック・オブジェクト」という機構がKLICでは導入されている
+\REFER{generic-object}。
+この機構を用いると、ユーザはカーネルに手を入れずに
+新しいデータ型を導入することができる(但し、KL1のパーザに手を入れることは
+できず、KLIC附属の標準のパーザではこのジェネリック・オブジェクトで新規に
+定義したデータ構造を文字列表現からメモリ表現に変換することはできない)。
+実際、KL1レベルで現れるデータ構造のうち、ベクタ、文字列などは
+このジェネリック・オブジェクトの機構を用いて実装されている。
+
+本章ではこれらのデータ構造について説明を行う。
+KL1のデータ構造の殆どは、\incfilename{struct.h} 内で定義されている。
+
+\section{KL1レベルのデータ構造}
+
+KL1という言語はいわゆる「動的型付」の言語であり、動的に
+データの型をプログラム中で判定することができる。
+このようなデータを実現するためには、個々のデータに
+「データ型」を表現する印を付けておく、ということが一般的に行われる。
+この「印」のことを「タグ」と呼ぶ。\index{たぐ@タグ} \index{tag}
+
+KL1のデータ構造は1ワードが単位であり、この1ワード毎にすべてタグが
+付加されている。図\ref{sample-structure}に、\verb|foo(bar, [0,1])| の
+メモリ中での表現を図示する。図中``:''で区切られている文字列は
+そのワードの``タグ:値''であることを表わす。``:''で区切られていないものは
+ポインタであり、タグだけが書かれている。
+
+\begin{figure}
+\begin{center}
+%\epsfile{file=sample-struct.eps,width=.6\textwidth}
+\includegraphics[width=.5\textwidth]{sample-struct.eps}
+% \vspace{1cm}
+\end{center}
+\caption{KL1の項の例}
+\label{sample-structure}
+\end{figure}
+
+\subsection{ワード}
+\index{わーど@ワード} \index{word}
+KL1の1ワードは基本的に32bitであり、全てのヒープに置かれるデータは
+みなこの整数倍で表現される。
+64bit計算機では1ワードは64bit確保され、データを格納するためには60bitが利用
+されている(ポインタの表現のためには当然64bit全てを利用している)。
+
+この1ワードは\incfilename{struct.h}内で、\kliclabel{q}という名称の型として
+定義されており、これは架空の構造\kliclabel{gazonk}を指すポインタとして
+定義されている(この架空の構造を指すポインタ型としている理由は、
+ポインタを手繰りすぎた場合、コンパイラが知らない型を検出してエラーとする
+% Klicで利用されるデータ構造のサマリ．
+ことを利用した、バグ除けである)。このq型のデータを今後``セル''と呼ぶことにする
+
+おのおののセルはワード境界に置かれるようにしているため、
+これらのセルへのポインタは下位2bitは必ず0になっている。
+この下位2bitをタグとして用いている。タグとデータ型との関係を
+表\ref{tags}に記す。
+
+\begin{table}
+\begin{center}
+\caption{タグとデータ型}
+\label{tags}
+\medskip
+\begin{tabular}{c|l}
+\hline
+タグ(2進) & 型 \\
+\hline
+00 & CONS, ファンクタ以外への参照(REF)\\
+01 & CONSへの参照\\
+10 & アトミックデータ\\
+11 & ファンクタへの参照\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+さらに、アトミックなデータ、すなわち、
+記号アトム(以下アトム)、整数についてはもう2bit(つまり下位4bit)を
+タグとして用いている(表\ref{atomic-tag}参照)
+
+\begin{table}
+\begin{center}
+\caption{アトム型のタグ}
+\label{atomic-tag}
+\medskip
+\begin{tabular}{c|l}
+\hline
+タグ(下位4bit2進) & 型\\
+\hline
+0010 & 整数\\
+0110 & アトム\\
+1010 & 予約\\
+1110 & 予約\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+よって、KLICでの整数値は32bit計算機では28ビットしかなく、
+通常の32bit整数値を格納すると溢れる。64bit計算機では60bitまで用いることが
+できる。
+
+なお、これまでの解説で明かなように、アトムは、実装レベルでは、
+28ビット(タグ付き32bit)のデータにエンコードされて実装されており、
+そのコードと実際の印字表現との関係は、別途表
+(\incfilename{atomstuffs.h}中の配列atomname)にて管理される。
+
+\subsection{CONSとファンクタ}
+\index{CONS} \index{ふぁんくた@ファンクタ} \index{functor}
+
+整数、アトムの場合にはそのタグ付きの値が1つのセルにおさまるため、
+そのまま格納する。CONS, ファンクタでは、複数セルが必要になるため、
+実体は別に領域を確保し、その実体へのポインタを各々CONS、FUNCタグ付きの
+ポインタをセル内に格納する。
+%これらの判定のためには、一般的にはポインタタグ(ポインタに「この先のデータ型は
+%CONSだ」等と書いてある)とオブジェクトタグ(データ自身に「このデータはCONSだ」
+%等と書いてある)の2通りがあるが、KLICではポインタタグを用いている。
+つまり、ポインタに「この先の連続領域はCONS/ファンクタである」と記述してある
+(図\ref{cons-func}参照)。
+
+\begin{figure}
+\begin{center}
+%\epsfile{file=cons.eps,width=.3\textwidth}
+\includegraphics[width=.35\textwidth]{cons.eps}
+%\epsfile{file=func.eps,width=.3\textwidth}
+\includegraphics[width=.35\textwidth]{func.eps}
+\end{center}
+\caption{CONSとファンクタ}
+\label{cons-func}
+\end{figure}
+
+CONSは連続した2ワードの領域であり、CDRが下位ワードCARが上位ワードにある
+\footnote{これは、一般的にCARよりCDRに
+純粋未定義変数\REFER{pure-variable}が割り付けられる可能性が高いこと、
+KLICでは純粋未定義変数は自己参照の形式で表現される
+ため、CDRを未定義参照にする処理に対してoffsetが加わらない方が高速な
+実現が期待できることに依る。}。
+Cのレベルでは以下のように表現されている。
+
+\begin{verbatim}
+struct cons {
+  q cdr, car;
+};
+\end{verbatim}
+
+ファンクタは(引数個数+1)ワードの領域を確保する。
+
+\begin{verbatim}
+struct functor {
+  q functor;                    /* principal functor as atomic q object */
+  q args[1];                    /* arguments */
+};
+\end{verbatim}
+
+ポインタが指す最初のセル
+には、「ファンクタID」と呼ばれるデータが記述されている。
+このファンクタIDにより、
+当該ファンクタの主ファンクタと引数個数がわかるようになっている
+(これらの2つデータを1ワードにエンコードしてある、と見なすことができる)。
+より具体的には、このファンクタIDは、線型配列である「ファンクタID表」
+(\incfilename{functorstuffs.h}内の変数\kliclabel{functors}により表現される)
+への配列インデックスであると見なすことができる。
+正確にはファンクタIDにはアトムの4bitタグが付加されており、上位
+28bitが上記の表のインデックスである。
+このファンクタIDの4bitタグは重要である。というのは、
+ここがREFタグになてっている場合にはジェネリック・オブジェクト
+(の一種のデータオブジェクト\REFER{data-object})であることを表わしている
+からである。
+
+\subsection{参照セルと純粋未定義変数セル}\label{variable}\label{pure-variable}
+\index{ref} \index{さんしょう@参照} \index{みていぎへんすう@未定義変数}
+\index{じゅんすいみていぎへんすう@純粋未定義変数}
+論理型言語で特徴的な実装レベルのデータとして、
+「参照セル」(以下REFセル)がある。これは、言語仕様上は
+全く現われない、「不可視の」データである。例えば、図\ref{ref-desc}に
+示されるデータ構造は全て共にATOM: fooとして扱われる。
+このデータにはREFなるタグが付加される。図にも現われる連続するREFのつながり
+(言語仕様上は全く意味のないデータ群)をREF鎖と呼ぶ。
+
+\begin{figure}
+\begin{center}
+%\epsfile{file=ref-desc.eps,width=.8\textwidth}
+\includegraphics[width=.8\textwidth]{ref-desc.eps}
+\caption{参照セルの例}
+\label{ref-desc}
+\end{center}
+\end{figure}
+
+このようなデータが必要な理由は、論理型言語特有な操作である
+「単一化」、および「論理変数」と「具体化」を実装するためである。
+\index{ぐたいか@具体化}
+\index{ろんりへんすう@論理変数}
+まず、論理変数を実装するためには、まだいかなる項にも具体化していない
+項、「未定義変数」を実装する必要がある。この未定義変数の実装のために
+独立したタグを用いたりする流儀もあるが、タグ節約も兼ね、
+KLICではREFタグで、「自分自身」を参照した構造を用いる(図\ref{undef}(1)参照)。
+この構造を「純粋未定義変数」と以下で呼ぶ。
+
+今、\verb!X = [a|_]!
+で、\verb|Y|は純粋未定義変数であることが保証されている時に、
+\verb|X=Y|
+なる操作を行ったとする。すると、純粋未定義変数Yは\verb![a|_]!に具体化
+されるが、実装レベルでは、これは純粋未定義変数Yの
+ポインタ部分がXを実現するデータ
+を指すように書きかえられる、ということが行われる(図\ref{undef}(2)参照)。
+ここで挙げたような具体化操作がなんども行われると、先に示したREFの連鎖が
+できることもある。
+
+\begin{figure}
+\begin{center}
+%\epsfile{file=undef.eps,width=.8\textwidth}
+\includegraphics[width=.9\textwidth]{undef.eps}
+\caption{純粋未定義変数の実装と単一化}
+\label{undef}
+\end{center}
+\end{figure}
+
+\subsection{中断ゴールを現わす構造}
+\index{ちゅうだんごーる@中断ゴール}
+
+KL1では、具体化されていない変数の値をコミット時に読み出しをした
+ゴールは中断をすることになっている。中断したゴールに対しては、
+読み出しを試みた
+未定義が具体化した時には実行を再開される必要がある。
+中断要因の変数に対して、再開されるべきゴール群
+(1つの変数が複数のゴールにより読み出され、結果的に複数のゴールを
+中断させることはありえる)がすぐに判明することが望ましい。
+
+以上の要件を実現するため、KLICでは、中断要因変数から
+中断しているゴールレコードを容易に手繰ることができるようになっており、
+言語上は判別できない純粋未定義変数と、すでに
+あるゴールの中断の原因になっている未定義変数とは実装上は区別される。
+
+中断ゴールを現わす具体的な構造については、\REF{suspended-goal}を
+参照のこと。このように、中断対象となった変数に中断するゴールレコードを
+関連付けることを「ゴールをフックする」と称する。
+
+\section{タグ関連のマクロ}
+
+KLICのごく低レベルの処理で、これまでに説明してきた、タグ自身、
+また、タグを扱う操作に関しては、マクロ化されており、
+記述性、可読性の向上、操作の統一を計っている。
+
+Inline文、ジェネリック・オブジェクトの記述など、CレベルでKL1のデータ構造を
+アクセスする際には、表\ref{struct-macros},\ref{functor-atom-macros}
+に挙げるマクロを利用して記述することが推奨される。
+
+\incfilename{struct.h} で記述されている主な関連マクロを
+表\ref{struct-macros}に纏める。
+
+\begin{table}
+\caption{タグ関連のマクロ一覧}
+\label{struct-macros}
+\begin{center}
+\begin{tabular}{r|l}
+\hline
+マクロ & 意味 \\
+\hline\hline
+PTAGBITS & ポインタデータに付加されているタグのbit長\\
+PTAGMASK & ポインタデータに付加されているタグ部のマスク\\
+VARREF  & REFのタグ値\\
+CONS    & CONSへの参照のタグ値\\
+ATOMIC  & アトミックデータのタグ値\\
+FUNCTOR & ファンクタへの参照のタグ値\\
+\hline
+ptagof(x) & xのポインタタグ部分を得る\\
+isatomic(x) & xがアトミックデータであることの判定\\
+iscons(x) & xがCONSへの参照であることの判定\\
+isfunctor(x) & xがファンクタへの参照であることの判定\\
+isref(x) & xが参照であることの判定\\
+isstruct(x) & xがCONSまたはファンクタへの参照であることの判定\\
+functnotcons(x) & xが構造であるときにCONSでないことの判定\\
+atomicnotref(x) & xが構造でないときにアトミックデータであることの判定\\
+\hline                
+ATAGBITS & アトムデータに付加されているタグのbit長\\
+ATAGMASK & アトムデータに付加されているタグのマスク\\
+INT & 整数タグ\\
+SYM & アトムタグ\\
+\hline
+atagof(x) & xのアトミックタグを得る\\
+isint(x) & xが整数データかどうか検査する\\
+issym(x) & xのアトムデータかどうか検査する\\
+\hline
+makeint(n) & 整数nをKL1整数データにする\\
+makesym(x) & xのアトム番号によりKL1アトムデータを生成する\\
+makeatomic(x) & xにアトミックタグ(つまり2bitのみ)を付加する\\
+makeref(x) & x のポインタによりKL1 REFデータを生成する\\
+makecons(x) & xのポインタによりKL1 CONSデータを生成する\\
+makefunctor(x) & xのポインタによりKL1 functorデータを生成する\\
+\hline
+intval(x) & KL1整数データxから整数値を得る\\
+symval(x) & KL1アトムデータxからアトム番号を得る\\
+derefone(x) & KL1 REFデータxの先を一段手繰る\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+また、CONS、ファンクタの要素をアクセスするためのマクロを
+表\ref{functor-atom-macros}に纏める。
+
+\begin{table}
+\caption{CONS,ファンクタの要素をアクセスするためのマクロ}
+\label{functor-atom-macros}
+\begin{center}
+\begin{tabular}{r|l}
+\hline
+マクロ & 意味\\
+\hline\hline
+functor\_of(s) & sの指すファンクタの主ファンクタ\\
+arg(s, k) &  sの指すファンクタの第k引数\\
+\hline
+car\_of(x) & xの指すCONSのCAR\\
+cdr\_of(x) & xの指すCONSのCAR\\
+\hline
+pcar\_of(x) & xの指すCONSのCARを指すREFセルの内容\\
+pcdr\_of(x) & xの指すCONSのCDRを指すREFセルの内容\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\section{ジェネリック・オブジェクト} \label{generic-object}
+\index{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト}
+\index{generic object}
+
+KLIC では組み込みデータ型である基本データ型を、
+ポインタの下位数ビットを使って表現する方式にしため、
+その組み込みデータ型の種類に限りがあり、
+一般的なユーザが必要とするデータ型を全てそれらで
+サポートしているわけではない。
+また、ユーザが必要とするデータ型を自分で定義してシステムに
+組み込んだり、他言語とのインターフェイスを確保したいという要求に
+答える機能は、KLIC の目指す汎用的な言語システムにとって必要であろう。
+これらの問題を解決し、言語システムの容易な拡張を実現するものとして、
+ジェネリック・ オブジェクトなる機構を導入した。
+
+% 以下報告書より
+
+ジェネリック・オブジェクトとして実現されたデータは、
+単一化や GC など
+様々な局面での自分自身の処理の仕方を記述したメソッドを集めた
+メソッド表、及びデータ領域から成る。
+データの領域のサイズや構成は、オブジェクトクラスにより定義され、
+KLICシステムの実行時カーネルは感知しない。
+このメソッド表がオブジェクトのクラス定義に当たるものである。
+なお、メソッドは実際にはCの関数により実装されている。
+
+\index{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!めそっどひょう@メソッド表}
+
+ユーザはメソッド表に含めるべきメソッド、オブジェクト生成のための
+ルーチン、データ領域の構成などを、ジェネリック・オブジェクト定義用
+に作成したマクロや関数
+%(以後、これをオブジェクト定義用マクロセットと呼ぶ )
+を使用しつつ、C言語で記述することで、
+ジェネリック・オブジェクトを定義する。
+ジェネリック・オブジェクトのデータ領域は KL1 の組み込みデータ型
+や C で定義可能なデータ型から構成することが可能であり、
+様々なデータをジェネリック・オブジェクトに持たせることが出来る。
+%また、ジェネリック・オブジェクトは入れ子構造にすることが可能である、
+%つまり、あるジェネリック・オブジェクトのデータ領域を、
+%別のジェネリック・オブジェクトを使って定義したり、
+%ジェネリック・オブジェクトに関する様々な処理の局面で、
+%別のジェネリック・オブジェクトを使用したりすることが可能である。
+
+ジェネリック・オブジェクトの定義に当たっては、
+KLIC システムの実行時カーネルに一切手を入れる必要はない。
+KLIC の組み込みデータ型のデータが
+ KLIC システムの実行時カーネルによって処理されるのに対し、
+ジェネリック・オブジェクト型のデータでは、
+実行時カーネル及び KL1 プログラムからの要求に応じ、オブジェクトが
+自分で処理を行う。
+実行時カーネルは、ジェネリック・オブジェクトのメソッドの中身やデータ領域の
+構成については何も知らず、従って扱い方も知らない
+
+% 以上報告書より
+
+現在、KLICに組み込みとして備えられているデータ型のうち、以下のようなものは
+このジェネリック・オブジェクトの機構により実装されている。
+
+\begin{itemize}
+\item 浮動小数点数
+
+\item コード、モジュール
+
+\item ベクタ
+
+\item 文字列
+\end{itemize}
+
+また、以下の、プロセスのインターフェースを持つオブジェクトも、ジェネリック・
+オブジェクトにより実装されている。
+
+\begin{itemize}
+\item マージャ オブジェクト
+\item ファイルI/O オブジェクト
+\item 乱数発生器
+\end{itemize}
+
+さらに、並列化のために導入されている、KL1レベルのユーザには全く見えない
+ようなデータ構造などについてもジェネリック・オブジェクトにより実装されている。
+
+さらに、この枠組を利用することにより、ユーザは新しい機能をKLICに
+導入することも可能である。
+
+\subsection{ジェネリック・オブジェクトの種類}%2-1
+ジェネリック・オブジェクトは
+実行時カーネルから見た場合、(少なくとも top level について)、
+以下のように分類できる。
+
+\begin{itemize}
+\item 具体化されているデータ
+
+\item 値が決定すれば、行われる計算が決められている変数(ゴールを
+フックしている変数に類似)
+
+\item 値が必要なら、値を求める方法が定められている変数
+\end{itemize}
+
+分類の各々に応じて、以下の呼ばれるオブジェクトの種別が用意されている。
+
+\begin{description}
+\item [Data object] 具体化されているデータと同様の扱い
+を行うべき オブジェクト である。
+\index{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!data}
+
+\item [Consumer object] 値が決められればそれに応じて計算が行われる
+オブジェクト である。
+\index{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!consumer}
+
+\begin{itemize}
+\item 書き込みを行うことにより、なにか処理が行われる。
+
+\item 読み出すことによってはなにも処理は行われない。つまり、純粋未定義変数と
+同じ動作をする。
+\end{itemize}
+
+\item [Generator object] 今までのKL1処理系には (少なくとも
+言語表面には ) なかったデータ型。
+\index{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!generator}
+
+\begin{itemize}
+\item 書き込みを行うことにより、なにか処理が行われる
+(Consumer objectと共通)。
+
+\item 読み出すことによって、何か値を決めるための処理が行われる。
+\end{itemize}
+
+つまり、generator は  cosumer を包含した機能を持つものである。
+
+\end{description}
+
+メソッド表の構成、他の(つまり、通常のKL1の)データ構造との関係は、
+これら3種類で各々異る。 
+
+なお、consumer, generatorは、言語表層上では、あくまで「未定義変数」であり、
+具体値ではない。
+よって、「未定義変数」には、純粋未定義変数以外に、これらのオブジェクト
+も含まれる。
+さらに、
+次章で述べる「中断要因となっている未定義変数」も未定義変数である。
+言語上は「未定義変数」となるデータ構造についての実装の一覧を
+図\ref{variables}に挙げる。
+
+\begin{figure}
+\begin{center}
+\[
+未定義変数 \left\{
+   \begin{array}{l}
+   読み書きどちらに対しても具体化/中断のみで
+               計算は起こらない \ldots 純粋未定義変数\\
+   書き込むと計算 \left\{ \begin{array}{l}
+                           中断ゴール\\
+                           Consumer
+                          \end{array} \right.\\
+   読み込むと計算 \ldots Generator
+   \end{array} \right.
+\]
+\end{center}
+\caption{未定義変数の分類}
+\label{variables}
+\end{figure}
+\index{みていぎへんすう@未定義変数!ぶんるい@分類}
+
+\subsection{ジェネリック・オブジェクトのデータ構造}
+
+\subsubsection{Data object}\label{data-object}
+Data objectを表現するデータ構造を、図 \ref{m_nakamu_doi}に示す。
+
+\index{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!こうぞう@構造}
+\index{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!こうぞう@構造!data}
+ファンクタタグのポインタの先にオブジェクトの本体がある。
+第1ワードはメソッド表へのポインタで、第2ワードから
+オブジェクトのボディ ( データ領域 ) が始まる。
+同じファンクタタグで指される
+ファンクタ型では、第1ワードはアトミックタグになっている。
+%ファンクタ名と引数個数をコード化したものが入っており、
+%そのタグはアトミックデータになっている。
+一方、data objectでは、REFタグになっており、両者の区別を行うことができる。
+
+このdata objectのメソッド表の構造は、\incfilename{g\_methtab.h}内で、
+\kliclabel{data\_object\_method\_table}なる名称で定義されている。
+
+\begin{figure}[b]
+\begin{center}
+%\epsfile{file=m_nakamu_doi.eps,width=.8\textwidth}
+\includegraphics[width=.8\textwidth]{m_nakamu_doi.eps}
+\caption{data object の実装}
+\label{m_nakamu_doi}
+\end{center}
+\end{figure}
+
+\subsubsection{Consumer}
+Consumer objectを表現するデータ構造を、図\ref{m_nakamu_coi}に示す。
+\index{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!こうぞう@構造!consumer}
+
+consumer object の本体は、中断構造\REFER{hook-chain}の中に、その変数に suspend 
+しているゴールに混ざって並んでいる。つまり、 consumer object は
+フックされた変数の顔をしている。この変数に対する active unification
+が起き、中断構造\REFER{hook-chain}
+中のゴールがエンキューされていく中で、 consumer object
+に対して active unify メソッドが発行される。
+この局面、及びGC局面以外の局面では、 consumer object は hook したゴールと
+類似の扱いを実行時カーネルから受ける。
+
+この構造については\REF{suspended-goal}でさらに詳細に説明するが、ここであげた
+中断構造\REFER{hook-chain}は、中断原因である
+未定義変数より特殊な構造(susprec)を経由して
+指されている。この「中断原因の変数セル」とsusprecとは互いに参照しあう
+「二重ループ構造」になっている。
+
+Consumer objectのメソッド表の構造は、\incfilename{g\_methtab.h} にて
+\kliclabel{consumer\_object\_method\_table} として定義されている。
+
+\begin{figure}
+\begin{center}
+%\epsfile{file=m_nakamu_coi.eps,width=.8\textwidth}
+\includegraphics[width=.6\textwidth]{m_nakamu_coi.eps}
+\caption{consumer object の実装}
+\label{m_nakamu_coi}
+\end{center}
+\end{figure}
+
+\subsubsection{Generator}
+\index{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!こうぞう@構造!generator}
+
+Generatorのデータ構造を図\ref{generator-struct}に記す。
+Generatorは未定義変数より、特別な構造を介して参照されている。
+
+\begin{figure}
+\begin{center}
+%\epsfile{file=generator-struct.eps,width=.8\textwidth}
+\includegraphics[width=.8\textwidth]{generator-struct.eps}
+\caption{generator object の実装}
+\label{generator-struct}
+\end{center}
+\end{figure}
+
+Generatorも、consumerや中断ゴールと同様、「二重REFループ」により
+まず検出される。Consumer,
+中断ゴールとの最大の相違は、「1つの変数について
+複数のgenerator,
+consumer、中断ゴールなどがぶらさがることはない」ということで
+ある。つまり、generatorは他のものと単一化が行われる場合、%論理的には一度
+一度「具体化を試み」てから、その結果を単一化する
+(試みた結果、具体化されない、つまり、「未定義変数」のままである、
+ということはありえる)。
+よって、Generatorがそのままの形で他のものと変数を共有することはない。
+
+Generatorのメソッド表の構造は、\incfilename{g\_methtab.h}にて
+\kliclabel{generator\_object\_method\_table}として定義されている。
+
+\section{実装レベルのデータ}
+
+% ここは主に成果報告書から。
+
+これまで述べたものは、KL1のレベルでも「データ」として現れるものを
+表現する構造が主であった。
+以下では、KL1のレベルでは陽にデータとしては出現しないようなものに
+ついて解説する。
+
+すなわち、以下のような構造である。
+
+\begin{itemize}
+\item 大域データ構造体
+
+\item ヒープ
+
+\item モジュール
+
+\item 述語
+
+\item ゴールレコード
+
+\item 優先度ゴールスタック
+\end{itemize}
+
+
+\subsection{大域データ構造体}
+\index{たいいきでーたこうぞうたい@大域データ構造体}
+
+\incfilename{struct.h} 中で、\kliclabel{global\_variabls} として
+定義されている構造体である。この構造体の実体は、各プロセスに1つ
+(よって、逐次版であれば、システム内に1つ)だけ存在する。
+
+KLICでは、大域的に用いられるデータの殆どはこの構造体に格納されている。
+一般的に大域な変数をアクセスするためには、そのアドレス、すなわち、
+32bit計算機では32bit長即値を扱う必要があり、この処理は
+通常効率があまり良くない(例えば、SPARCなどのRISCプロセッサ、つまり、
+命令がすべて32bit長である場合には、即値のレジスタへの
+ロードだけで2命令になってしまう)。
+そこで、大域データを構造体にいれておき、その構造体へのポインタをレジスタ上に
+持ち、個々の構造体要素データに関しては、
+offsetで(つまり、32bitよりも短いデータで)
+アドレス表現できるようにすることにより、大域データへのアクセスコストを
+減らすことを念頭に置いている。
+
+以下でこの構造体の説明を行う(各々の詳細は、個別におこなう)。
+
+{\addtolength{\baselineskip}{-3pt}
+\begin{verbatim}
+struct global_variables {
+  q *heapp0;                    /* ヒープ割付点 */
+  q * Volatile heaplimit0;      /* heaplimit変数(詳細後述) */
+  struct goalrec *current_queue0; /* 実行中優先度のゴールスタック */
+  struct goalrec *resumed_goals0; /* リダクション中に生じた再開ゴール群 */
+  unsigned long current_prio0;  /* 現在の優先度 */
+  unsigned long top_prio0;      /* 実行可能ゴールでの最高優先度 (未使用) */
+  struct prioqrec prioq0;       /* 「優先度ゴールスタック」のリストの先頭 */
+  q *heaptop0;                  /* 現在のヒープの先頭 */
+  q *heapbottom0;               /* 現在のヒープ面中のシステムヒープの割付点 */
+  q *real_heaplimit0;           /* heaplimitのマスター(詳細後述) */
+  unsigned long heapsize0, maxheapsize0, incrementsize0;
+  /* 現在の片面ヒープサイズ、最大ヒープサイズ、ヒープマージンサイズ (in word) */
+  unsigned long real_heapbytesize0; /* ヒープサイズ(byte) */
+  double maxactiveratio0; /* ヒープ中の最大アクティブセル比 */
+  unsigned long this_more_space0; /* 最小の空領域 */
+  q *new_space_top0, *old_space_top0; /* ヒープ新領域、旧領域の先頭 */
+  unsigned long new_space_size0, old_space_size0;
+  /* ヒープ新領域、旧領域のサイズ */
+  q **gcstack0; /* GCで用いるスタックの底 */
+  q **gcsp0; /* GCで用いるスタックの先頭 */
+  q **gcmax0; /* GCで用いるスタックの上限 */
+  unsigned long gcstack_size0; /* GCで用いるスタックのサイズ */
+  Volatile long interrupt_off0; /* 割り込みフラグ */
+  struct goalrec *interrupt_qp0; /* 未仕様 */
+
+  struct { /* 並列実装用の構造 */
+   /* parallel comm Imp. */
+    long my_num0;
+    long num_pes0;
+    union {
+      /* shared-memory Imp. */
+      struct {
+        long queued0;
+        struct ex_goalrec* ex_qp0;
+        long currid0;
+        long oldid0;
+        long shm_htop0;
+        long shm_hbyte0;
+        long dummy[10];
+      } shm;
+      /* dist-memory Imp. */
+
+    } aux;
+  } par;
+
+  char *program_name0; /* コマンド名称 */
+  int command_argc0;   /* コマンド引数個数 */
+  char **command_argv0; /* コマンド引数 */
+  q* (**gc_hook_table0)(); /* GC時のフックの表 */
+  int gc_hooktab_size0;
+  int num_gc_hooks0;
+  q* (**after_gc_hook_table0)(); /* GC後のフックの表 */
+  int after_gc_hooktab_size0;
+  int num_after_gc_hooks0;
+  unsigned long /* 計測用のカウンタ */
+    suspensions0, resumes0, copied_susp0, cum_susps0, cum_resumps0;
+  struct suspended_goal_rec *suspended_goal_list0; /* デッドロック検出用の
+                                                      中断ゴールリスト */
+  Const struct predicate *postmortem_pred0; /* post mortem 用の述語 */
+  q postmortem_args0;
+  long generic_argc0; /* ジェネリック・オブジェクトのインターフェース用の引数個数 */
+  q generic_arg0[MAXGENERICARGS]; /* ジェネリック・オブジェクトのインターフェース用の引数領域 */
+  q reasons0[MAXSUSPENSION];    /* サスペンションスタック領域 */
+}
+\end{verbatim}
+}
+
+この構造体は各プロセッサ内では、\kliclabel{globals}なる名称の変数として
+保持されている。
+構造体のこれらの要素は、以下のとりきめにより、\incfilename{struct.h}中で
+マクロ化されている。\label{data:glbl}
+
+\begin{itemize}
+\item 上記の\kliclabel{globals}なる変数へのポインタを\kliclabel{glbl}なる
+名称の局所変数として確保する。
+
+これを行うマクロが\kliclabel{declare\_globals}である。
+つまり、大域データにアクセスする関数に置いては、\kliclabel{declare\_globals}
+をまず記述することが推奨される。
+
+\item 「実際の要素名の末尾の0をとったもの」で参照する。
+例えば、\verb|globals.heapp0| は、
+\kliclabel{heapp} というマクロを利用することにより、\verb|glbl->heapp0| として参照することができる。
+\end{itemize}
+
+\subsection{ヒープ}
+
+\index{heap} \index{ひーぷ@ヒープ}
+
+KL1は自動メモリ管理を前提とした言語であり、KLICでは、
+``stop and copy''方式のGCを採用している。
+つまり通常のKL1のデータはヒープに置かれ、
+適当な時にKL1プログラムの実行を中断し一括的に回収される。
+特筆すべきことは、通常のKL1データだけではなく、ゴールレコード、
+ゴールの中断に必要な付加的なデータなど、動的に増減するものの殆どは
+ヒープ中に置かれており、通常のGCの一環で管理されていることである。
+これは処理系製作が楽になること、将来世代GCなどより効率的な
+メモリ管理方式をKLICが採用するときに整合性が良いことが期待できること、といった
+ことを念頭に置いての設計である。
+
+Copying GCであることからわかるように、ヒープは同じサイズのものが2面
+存在する。片方が一杯になったらもう一方にコピーをして利用面を切りかえる。
+
+各面のヒープの利用状況を図\ref{heap}に記述する。
+
+「通常のヒープ」はアドレス下位側から連続的に割付を行う。
+heap\_limit に達するとヒープは一杯になったこととする。
+
+\begin{figure}
+\begin{center}
+%\epsfile{file=heap.eps,width=.6\textwidth}
+\includegraphics[width=.5\textwidth]{heap.eps}
+\end{center}
+\caption{ヒープの利用}
+\label{heap}
+\end{figure}
+
+「ヒープ溢れ」の検査を割付の度に毎回行うことは、
+頻繁にヒープ割付が行われるKL1の実装としては速度、命令サイズの上で不利である。
+そこで、この検査はKL1のリダクションの際に行うことにしている。
+このため、heap\_limit の先に常に一定語数の「余裕」がヒープにあるように
+管理し、検査と検査の間にこの語数以下の割付しか行われないことを原則とすることに
+より、チェックの手間の軽減を計っている。
+
+一方、通常のヒープに割付を行うためには、ヒープ割付点の値を知り、
+変更できる必要がある。このヒープ先頭のアクセスを高速にするために、
+この変数はレジスタに載せられることを期待して局所変数として持つこととし、
+できるだけ大域変数にアクセスすることを避けたい。
+よって、naiveにはこの局所変数にのっているヒープ割付点の値を
+ヒープ割付を行う可能性のある全関数に引数として渡し、
+戻り値として返させる必要がある。しかしながら、C言語の仕様として
+戻り値として返すことができる値は1つであること、
+ヒープ割付をする「可能性」はあっても、実際に割付を行う頻度は低い関数が多いこと
+より、例外的に割付を行うような関数にはこのヒープ割付点を渡さず、
+アドレス上位にある「システムヒープ」からメモリ割付を行うようにしている。
+\label{system-heap}
+このシステムヒープはアドレス上位より順に割り付けられる。
+システムヒープの割付を行ったら、それと同等の分だけheap limitを
+アドレス低位側に変更し、システムヒープとしては「常に余裕」があるように
+して利用する。
+
+GCを行うと、すべてのアクティブセル(その時点で
+有効であるデータセル)はシステムヒープにあったものも含め
+新面の通常のヒープ側にコピーされ、
+GC終了時には新面のシステムヒープは空の状況になっている。
+
+また、KLICではヒープのサイズは動的に変更されるようになっている。
+すなわち、GCをしても、ある一定の比率以上アクティブセルが
+存在するような場合には、ヒープを確保しなおし、ヒープを拡大する、
+という機構を備えている(この機構が動作することを禁止することも、
+実行時ファイルの起動時に指定できる)。
+
+各々のheap面についての値は、前述のglobal\_variables に設定されている。
+すなわち、以下の通りである。
+
+\begin{description}
+\item[heapp:\ ] ヒープへの新規割り付け点(以下では「ヒープ割付点」と記述)
+\index{ひーぷわりつけてん@ヒープ割付点}
+\item[heaptop:\ ] 面の最低位アドレス
+\item[heaplimit:\ ] 通常ヒープの上限
+\item[heapbottom:\ ] ヒープ全体の最上位アドレス
+\item[real\_heaplimit:\ ] heaplimitのコピー
+\item[heapsize:\ ] 片面通常ヒープのサイズ(ワード数)
+\item[maxheapsize:\ ] 最大片面通常ヒープサイズ(ワード数)。
+これで示されるサイズを越えてヒープ自動拡張は行わない。
+\item[incrementsize:\ ] 片面システムヒープのサイズ(ワード数)
+\item[new\_space\_top, old\_space\_top:\ ] GC時の新/旧面の先頭
+(通常実行時には、new\_space\_top == heaptop になっている)。
+\item[new\_space\_size, old\_space\_size:\ ] GC時の新/旧面全体
+(通常 + システムヒープ)のサイズ(バイト数)
+\end{description}
+
+\subsection{モジュール}
+
+\index{もじゅーる@モジュール}
+
+KL1のモジュールは、KLIC中ではC関数
+として実装されている。よって、Cレベルでは、その関数へのポインタが「モジュール」
+を表現するものとして使われている。
+
+この関数は関数型\kliclabel{module} として定義されている。この
+\kliclabel{module} 型は、「\kliclabel{module} 型関数へのポインタを返す
+関数」として\incfilename{struct.h}中で定義されている。よって、本来は、
+{\tt typedef module *(module)()} のように定義することが
+望まれるが、このような自己再帰的な関数記述はC言語では許されず、
+{\tt typedef char *(module)()} と定義されている。
+なお、KL1言語レベルで利用されるモジュール型データは
+これをさらにジェネリック・オブジェクトで隠蔽したものである。
+
+実際のモジュールを表現する関数は通常KLICのコンパイラが生成し、
+リンクする。
+また、関数のアドレスは、long intと同じalignmentとなることが期待されている。
+つまり、下位2bitは共にゼロであることが期待されている。
+
+\subsection{述語}
+
+\index{じゅつご@述語}
+
+KL1の述語は、KLIC中では\incfilename{struct.h}内で定義されている、
+\kliclabel{predicate} 型として表現されており、これを「述語記述子」と呼ぶ。
+KL1言語レベルで用いられる述語型データ型データは、これをさらにgeneric
+objectで隠蔽したものである。
+
+基本的には、「どのモジュールの、どの
+述語か」ということが記述されている構造である。
+
+\begin{verbatim}
+struct predicate {
+  module (*func)();             module関数
+  unsigned short int pred;      述語ID
+  unsigned short int arity;     引数個数
+};
+\end{verbatim}
+
+なお、述語IDとは、述語に対してモジュール内でユニークに付けられる番号である。
+よって、引数個数がなくともfunc, predなるペアで述語の特定は可能であるが、
+内部処理(たとえばGC)によってはゴールレコードのサイズを知るため
+引数個数が必要になることがあり、ここに記録されている。
+
+この構造体は静的、つまり、KLICのコンパイラにより生成される。
+
+\subsection{ゴールレコード}
+
+\index{goal}
+\index{goal record}
+\index{ごーる@ゴール}
+\index{ごーるれこーど@ゴールレコード}
+
+述語に対し、適用される環境(引数列)を持っているのがゴールレコードである。
+KLICではゴールレコードは、(通常のKL1データを置くのと同じ)ヒープ領域に
+置かれており、GCの対象になる(回収はGCによってのみ行われる)。
+
+この構造は\incfilename{struct.h} 内の、\kliclabel{goalrec} 構造により
+%定義されている。\footnote{引数領域で\verb|[6]|とあるのは、
+定義されている。\footnote{引数領域で\texttt{[6]}とあるのは、
+処理系デバッグの際に、GDBなどのCレベルのデバッガ、中身を見るときに
+このgoalrec構造体を印字することにより6引数程度は印字される、ということ
+のためである。よって、プログラム実行上は意味がない。}
+
+\begin{verbatim}
+struct goalrec {
+  struct goalrec *next;         次のゴールを指すためのリンク領域
+  Const struct predicate *pred; 述語記述子へのポインタ
+  q args[6];                    引数領域。
+};
+\end{verbatim}
+
+\index{goal}
+\index{goal stack}
+\index{ごーる@ゴール}
+\index{ごーるすたっく@ゴールスタック}
+
+ゴールスタックは上記構造の線型リストにより表現される。
+線型リストにせずにスタック状にゴールレコードを隣接して
+置くことは可能ではあるが、優先度別に複数のゴールスタックを管理する必要があり、
+各々を個別にメモリ管理することは繁雑であるということ、
+KL1では中断処理があるため、
+必ずしもゴール生成順と消滅順とは逆順(LIFOの関係)にならないことに起因している。
+
+上記の定義からは明らかではないが、ゴールレコードは、不定長の構造であり、
+引数の数に応じて末尾が伸縮する。つまり、args の領域は、predで示される
+述語記述子内にある引数個数分だけ確保される。
+
+このような実現をとらずに
+ゴールレコードを原則固定長メモリ塊の組合せにより表現し、
+その固定長メモリ塊をヒープとは別にフリーリスト管理する、という実装も可能である
+(実際、初期のKLICではそのような実現をしていた)。
+しかしながら、この方法は、ゴールを組合せる処理が繁雑になること、
+純粋未定義変数をゴールレコード中に置くことが難しくなり、
+純粋未定義変数をゴールレコードに置かないよう工夫をすることが繁雑になること
+などの理由により、現在の方式に改められた。
+
+結果的に、ゴールレコードをヒープに置くことにより、
+不定長の構造の管理が大きく簡略化され、また、
+純粋未定義変数は直接ゴールレコード内に置いても何の配慮もいらなくなった。
+
+このゴールレコードは以下の2つの状態を持つ。
+
+\begin{itemize}
+\item 実行可能状態
+
+\item 中断状態
+\end{itemize}
+
+これらの状態にあるゴールについて以下に記述する。
+
+\subsubsection{実行可能状態}
+
+\index{ごーる@ゴール!じっこうかのう@実行可能}
+
+\kliclabel{next} フィールドで、同じ優先度を持つゴール同士で線型リストを
+作る。よって、実行中には、一般的に複数のゴールのリストが作成される。
+そのうち一本は、大域情報のcurrent\_queueに置かれ、「実行対象」になる。
+実行時には、このリストはLIFO的に扱われる。つまり、先頭より順に実行対象となり、
+エンキューも先頭になされる。
+
+\subsubsection{中断状態}\label{suspended-goal}
+
+\index{ごーる@ゴール!ちゅうだん@中断}
+
+中断状態にあるときのゴールは、\REF{fig:klic-rt-final-struct}に
+示すような構造になっている。この図に表われる構造、およびそれらに
+アクセスするためのマクロ群はsusp.hに記述されている。
+
+\begin{figure}
+\begin{center}
+%\epsfile{file=klic-rt-finalsuspstruct.eps,width=.8\textwidth}
+%\epsfile{file=suspstruct.eps,width=.8\textwidth}
+\includegraphics[width=.7\textwidth]{suspstruct.eps}
+\end{center}
+\caption{中断を表現するデータ構造}
+\label{fig:klic-rt-final-struct}
+\end{figure}
+
+まず、中断要因になっている純粋未定義変数を、\kliclabel{susprec}なる
+構造を指すようにセットする。この\kliclabel{susprec} の先頭は、この未定義変数を
+指させるようにする。つまり、中断要因変数と、\kliclabel{susprec} 先頭とは
+二重ループになっている。このsusprecの2ワード目以降は、\kliclabel{hook}なる
+構造になっている。このhook構造に中断中のgoalrec構造体がぶらさがる。
+この構造を以下では中断構造\label{hook-chain}と呼ぶ。
+
+
+また、中断時のゴールレコード(goalrec)の先頭(next フィールド)には、
+そのゴールの優先度がINTタグ付きで格納されている。ゴールが再開可能になった時
+には、このfieldで示される優先度のゴールキューに格納される。
+
+\begin{verbatim}
+struct hook {
+  struct hook *next;
+  union goal_or_consumer {
+    long l;
+    struct goalrec *g;
+    struct consumer_object *o;
+  } u;
+};
+
+struct susprec {
+  q backpt;
+  union {
+    struct hook first_hook;
+    long l;
+  } u;
+};
+\end{verbatim}
+
+ひとつの未定義変数について、複数個のゴールが中断する場合には、このhookのnext
+フィールドにhook構造体が線型リストになる。susprec構造体に含まれるhook構造体も
+含めたhook構造体のリストは、中断原因を同じくするhook構造体同士で環状の
+リストになる。つまり、末尾のhook構造体のnextは、susprecに含まれているhook
+構造体のhook部分を指す。典型的には、1つのゴールしか
+含まれない場合には図\ref{single-susp}で示すような形状になる。
+
+\begin{figure}
+\begin{center}
+%\epsfile{file=single-susp.eps,width=.4\textwidth}
+\includegraphics[width=.4\textwidth]{single-susp.eps}
+\caption{単一ゴールの際の中断構造}
+\label{single-susp}
+\end{center}
+\end{figure}
+
+これまでの図で「ゴール」がぶら下っている部分には、cunsumer objectが
+来ることがある。このconsumer objectの構造は、data objectの構造と類似であり、
+「通常のKL1のデータ」部分に出現するか、「中断ゴール群」のなかに出現するか、
+だけが違っている。
+
+ぶらさがっているのがゴールなのか、consumer なのかは、実行時に、
+hook構造体のgoal/consumerへのポインタを含む2ワード目
+(つまり、hook.u.l)のタグ部で判定される。
+
+また、1つのゴールが複数の中断要因をOR待ちする、
+いわゆる「多重待ち」の場合も基本的に構造は同じである。
+すなわち、ゴールは一般的に複数のhook構造体より指されることがある。
+図\ref{fig:klic-rt-final-struct}中の「多重待ちゴール」に多重待ちをしている
+ゴールの例を挙げる。
+
+\index{ごーる@ゴール!たじゅうまち@多重待ち}
+
+ただし、多重待ちしているゴールがそのうちのつの要因が具体化されたため、
+再開可能になることはあり、その場合には他の要因をしめす変数からは
+hook構造体を経由して指されたままになっている。
+このような状況の時に、再度、他の要因の具体化のため、1つのゴールに対して、
+複数回「再開」処理がなされることを防ぐためにはgoalrecのnextフィールドの
+タグ部分を参照すれば良い。すなわち、中断中はこのタグはINTタグが付けられている
+が、再開後には、通常の(goalrecを指す)ポインタとされ、INTタグは解除される。
+
+これらの構造をアクセスするために\incfilename{susp.h} 内で定義されているマクロ
+について以下で概説する。
+
+\begin{description}
+\item[is\_consumer\_hook(hook):\ ] hookがconsumerであれば真、
+goalならば偽。
+
+\item[tag\_consumer\_hook(hook):\ ] hook にconsumerタグを付ける。
+
+\item[untag\_consumer\_hook(hook):\ ] hookのconsumerタグを取りさる。
+
+\item[suspp(x):\ ] x を(struct susprec *)にcastする。
+
+\item[allocnewsusp(var, srec):\ ]
+1ワードセル1つ、およびsusprecを割りつけ、中断構造を作り、
+varに指させる。新しいsusprecはsrecより指すようにする。
+
+\item[makenewsusp(var,srec,allocp):\ ]
+1ワードセル1つ、およびsusprecを割りつけ、中断構造を作り、
+varに指させる。新しいsusprecはsrecより指すようにする。allocpは
+ヒープトップである。
+
+\item[allochook(oldhook,newhook):\ ] newhookとして新しいhook構造体
+を割りつけ、oldhookの直後に指しこむ。
+
+\item[addhook(olddhook,newhook,allocp:\ ] newhookとして新しいhook構造体
+を割りつけ、oldhookの直後に指しこむ。
+
+\end{description}
+
+% Local Variables:
+% mode: japanese-latex
+% TeX-master: "master.tex"
+% Ends:
+

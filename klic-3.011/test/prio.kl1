@@ -1,0 +1,12 @@
+:- module main.
+
+main :- makelist(0,10,L), p(L), filllist(L,0).
+
+p([]).
+p([N|T]) :- builtin:print(N)@priority(N), p(T).
+
+makelist(K,N,L) :- K =:= N | L = [].
+makelist(K,N,L) :- K < N | L = [_|T], K1 := K+1, makelist(K1,N,T).
+
+filllist([],_).
+filllist([H|T],K) :- H=K, K1 := K+1, filllist(T,K1).

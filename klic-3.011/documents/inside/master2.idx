@@ -1,0 +1,138 @@
+\indexentry{たぐ@タグ}{6}
+\indexentry{tag}{6}
+\indexentry{わーど@ワード}{7}
+\indexentry{word}{7}
+\indexentry{CONS}{8}
+\indexentry{ふぁんくた@ファンクタ}{8}
+\indexentry{functor}{8}
+\indexentry{ref}{9}
+\indexentry{さんしょう@参照}{9}
+\indexentry{みていぎへんすう@未定義変数}{9}
+\indexentry{じゅんすいみていぎへんすう@純粋未定義変数}{9}
+\indexentry{ぐたいか@具体化}{9}
+\indexentry{ろんりへんすう@論理変数}{9}
+\indexentry{ちゅうだんごーる@中断ゴール}{10}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト}{12}
+\indexentry{generic object}{12}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!めそっどひょう@メソッド表}{12}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!data}{13}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!consumer}{13}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!generator}{13}
+\indexentry{みていぎへんすう@未定義変数!ぶんるい@分類}{14}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!こうぞう@構造}{14}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!こうぞう@構造!data}{14}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!こうぞう@構造!consumer}{14}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!こうぞう@構造!generator}{15}
+\indexentry{たいいきでーたこうぞうたい@大域データ構造体}{16}
+\indexentry{heap}{18}
+\indexentry{ひーぷ@ヒープ}{18}
+\indexentry{ひーぷわりつけてん@ヒープ割付点}{20}
+\indexentry{もじゅーる@モジュール}{20}
+\indexentry{じゅつご@述語}{21}
+\indexentry{goal}{21}
+\indexentry{goal record}{21}
+\indexentry{ごーる@ゴール}{21}
+\indexentry{ごーるれこーど@ゴールレコード}{21}
+\indexentry{goal}{21}
+\indexentry{goal stack}{21}
+\indexentry{ごーる@ゴール}{21}
+\indexentry{ごーるすたっく@ゴールスタック}{21}
+\indexentry{ごーる@ゴール!じっこうかのう@実行可能}{22}
+\indexentry{ごーる@ゴール!ちゅうだん@中断}{22}
+\indexentry{ごーる@ゴール!たじゅうまち@多重待ち}{24}
+\indexentry{どうさもでる@動作モデル}{26}
+\indexentry{とっぷれべるるーぷ@トップレベルループ}{27}
+\indexentry{ごーるすたっく@ゴールスタック}{27}
+\indexentry{module}{28}
+\indexentry{もじゅーる@モジュール}{28}
+\indexentry{ていすうこうぞうたい@定数構造体}{28}
+\indexentry{じゅつごよびだし@述語呼び出し}{29}
+\indexentry{execute}{29}
+\indexentry{ごーる@ゴール!えんきゅー@エンキュー}{29}
+\indexentry{ごーる@ゴール!デキュー@デキュー}{29}
+\indexentry{ごーる@ゴール!つうじょうよびだし@通常呼び出し}{29}
+\indexentry{ごーる@ゴール!ちょくせつよびだし@直接呼び出し}{29}
+\indexentry{じゅつご@述語!しゅつりょくけいしき@出力形式}{30}
+\indexentry{れいがいしょり@例外処理}{32}
+\indexentry{ひーぷ@ヒープ}{34}
+\indexentry{encoding}{35}
+\indexentry{えんこーでぃんぐきそく@エンコーディング規則}{35}
+\indexentry{ていすうこうぞうたい@定数構造体}{36}
+\indexentry{naive reverse}{37}
+\indexentry{れいがいしょり@例外処理}{53}
+\indexentry{わりこみ@割り込み}{53}
+\indexentry{ちゅうだん@中断}{53}
+\indexentry{しっぱい@失敗}{53}
+\indexentry{わりこみ@割り込み}{53}
+\indexentry{ちゅうだん@中断}{56}
+\indexentry{しっぱい@失敗}{56}
+\indexentry{たんいつか@単一化}{61}
+\indexentry{ぐたいか@具体化}{61}
+\indexentry{passive unification}{61}
+\indexentry{active unification}{61}
+\indexentry{たんいつか@単一化!passive unification}{61}
+\indexentry{たんいつか@単一化!active unification}{61}
+\indexentry{passive unification}{61}
+\indexentry{たんいつか@単一化!passive unification}{61}
+\indexentry{active unification}{62}
+\indexentry{たんいつか@単一化!active unification}{62}
+\indexentry{ちゅうだんこうぞう@中断構造}{64}
+\indexentry{さいかいしょり@再開処理}{64}
+\indexentry{さいかいしょり@再開処理}{65}
+\indexentry{generatorのきどう@Generatorの起動}{67}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!generatorのきどう@Generatorの起動}{67}
+\indexentry{たんいつかごーる@単一化ゴール}{68}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト}{70}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!data}{71}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!consumer}{71}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!generator}{71}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!data}{71}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!consumer}{74}
+\indexentry{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!generator}{75}
+\indexentry{GC}{77}
+\indexentry{GC stack}{77}
+\indexentry{GCすたっく@GCスタック}{77}
+\indexentry{GC!たいしょうりょういき@対象領域}{78}
+\indexentry{GC!はんてい@判定}{78}
+\indexentry{GC!きっかけ}{79}
+\indexentry{GC!あるごりずむ@アルゴリズム}{79}
+\indexentry{tracer}{84}
+\indexentry{とれーさ@トレーサ}{84}
+\indexentry{とれーさ@トレーサ!きのういちらん@機能一覧}{84}
+\indexentry{とれーさ@トレーサ!CALLぽーと@CALLポート}{85}
+\indexentry{とれーさ@トレーサ!REDUぽーと@REDUポート}{85}
+\indexentry{とれーさ@トレーサ!SUSPぽーと@SUSPポート}{85}
+\indexentry{とれーさ@トレーサ!FAILぽーと@FAILポート}{85}
+\indexentry{とれーさ@トレーサ!なまえかんり@名前管理}{86}
+\indexentry{とれーさ@トレーサ!ぎじごーる@擬似ゴール}{88}
+\indexentry{とれーさ@トレーサ!CALLぽーと@CALLポート}{89}
+\indexentry{とれーさ@トレーサ!REDUぽーと@REDUポート}{90}
+\indexentry{とれーさ@トレーサ!SUSPぽーと@SUSPポート}{90}
+\indexentry{めっせーじつうしんはん@メッセージ通信版}{98}
+\indexentry{PVMはん@PVM版}{98}
+\indexentry{PVM-TCPはん@PVM-TCP版}{98}
+\indexentry{きょうゆうめもりはん@共有メモリ版}{98}
+\indexentry{しょうえん@荘園}{100}
+\indexentry{WTC}{100}
+\indexentry{しょうえん@荘園!しゅうりょう@終了}{100}
+\indexentry{しょうえん@荘園!ちゅうだん@中断}{100}
+\indexentry{がいぶさんしょうぽいんた@外部参照ポインタ}{103}
+\indexentry{ゆしゅつひょう@輸出表}{103}
+\indexentry{ゆしゅつおぶじぇくと@輸出オブジェクト}{104}
+\indexentry{ゆしゅつひょう@輸出表}{104}
+\indexentry{がいぶさんしょうぽいんた@外部参照ポインタ!せいせい@生成}{105}
+\indexentry{がいぶさんしょうぽいんた@外部参照ポインタ!かいほう@解放}{105}
+\indexentry{WRC}{105}
+\indexentry{WEC}{105}
+\indexentry{ぶんさんゆにふぃけーしょん@分散ユニフィケーション}{106}
+\indexentry{ぶんさんぷろせすたちあげほうしき@分散プロセス立ち上げ方式}{114}
+\indexentry{めっせーじのそうしん/じゅしん@メッセージの送信/受信}{115}
+\indexentry{ゆしゅつひょう@輸出表}{117}
+\indexentry{ゆしゅつおぶじぇくと@輸出オブジェクト}{117}
+\indexentry{ゆしゅつおぶじぇくと@輸出オブジェクト}{117}
+\indexentry{ゆしゅつおぶじぇくと@輸出オブジェクト}{118}
+\indexentry{きょうゆうめもりはん@共有メモリ版}{120}
+\indexentry{きょうゆうへんすうおぶじぇくと@共有変数オブジェクト}{120}
+\indexentry{きょうゆうめもりはん@共有メモリ版!きょくしょりょういき@局所領域}{121}
+\indexentry{きょうゆうめもりはん@共有メモリ版!きょうゆうりょういき@共有領域}{121}
+\indexentry{GC!きょうゆうひーぷ@共有ヒープ}{124}

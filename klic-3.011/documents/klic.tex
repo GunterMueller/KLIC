@@ -1,0 +1,5029 @@
+\input texinfo  @c -*-texinfo-*-
+@comment %**start of header
+@setfilename KLIC.info
+@settitle KLIC: A Portable Implementation of KL1
+@iftex
+@setchapternewpage on
+@end iftex
+@comment %**end of header
+
+@ifinfo
+This file documents KLIC, a portable implementation of KL1.
+The contents of this manual correspond to KLIC version 3.002.
+
+Copyright 1994, 1995 Institute for New Generation Computer Technology\\
+(Read COPYRIGHT for detailed information.)\\
+(C)1996, 1997, 1998, 1999 Japan Information Processing Development Center\\
+(Read COPYRIGHT-JIPDEC for detailed information.)
+@end ifinfo
+
+@titlepage
+@title KLIC User's Manual
+@subtitle March 1995
+@subtitle (Revised at June 1997)
+@subtitle This manual corresponds to KLIC version 3.002
+@author Takashi Chikayama (Tokyo University)
+@author Tetsuro Fujise (Mitsubishi Research Inst., Inc.)
+@author Daigo Sekita (Mitsubisi Research Inst., Inc.)
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1994, 1995 Institute for New Generation Computer Technology
+@end titlepage
+
+@node Top, Copying, (dir), (dir)
+@ifinfo
+@unnumbered KLIC
+
+KLIC is a portable implementation of KL1.  KL1 is a concurrent logic
+programming language based on Guarded Horn Clauses (GHC, in short).
+KL1 has very simple and concise syntax and semantics and yet provides
+very powerful features for concurrent computation.
+@end ifinfo
+
+@menu
+* Copying::                     Copyright notices
+* Introduction::                How to read this manual
+* Language::                    Features of KLIC KL1 language
+* Builtin and Library::         Builtin and library features
+* Using KLIC::                  How to use the KLIC system
+* Type Index::                  Index of data types
+* Predicate Index::             Index of predicates, methods and messages
+* Module Index::                Index of program modules
+* Concepts::                    Index of various concepts
+
+ --- The Detailed Node Listing ---
+
+Introduction
+
+* Description::                 Description of predicates &c
+* Reporting Bugs::              Reporting system problems
+
+Description of Predicates and Methods
+
+* Predicates and Methods::      Two forms of procedures
+* Messages::                    Messages to processes
+* Argument Modes::              Input/output modes of arguments
+
+KL1 Language
+
+* Basics::                      Basic execution mechanism of the language
+* Predicates::                  Predicates correspond to subroutines
+* Modules::                     Module is a set of predicates
+* Goals::                       Goals are units of execution of KL1
+* Initial Goal::                How program execution starts
+* Generic Objects::             Generic objects extends features of KLIC
+* Priority::                    Specifying scheduling preference
+* Alternatively::               Preference among clauses
+* Argument Pair Notation::      
+* Inline C Code::               Inserting C code inline
+
+Generic Objects
+
+* Creating Objects::            How to create generic objects
+* Guard Methods::               Operations on data objects in guards
+* Body Methods::                Operations on data objects in bodies
+
+Shorthand Notation for Argument Pairs
+
+* Paired Arguments::            
+* Macros for Paired Arguments::  
+* Usage of Paired Arguments::   
+
+Inserting C Language Code Inline
+
+* Top Insertion::               Inserting C program text at the top
+* Guard Insertion::             Inserting C program text in guards
+* C-Level Rep::                 C-level representation of KL1 terms
+* Examples of Inline::          Some examples of inline C code
+* Hints of Inline::             Some hints on using inline C code
+
+Builtin and Library Features
+
+* Common Operations::           Operations common to all the data types
+* Atomic Data::                 Atomic data and their operation
+* Structured Data::             Structured data and their operation
+* Executable Code::             Higher order manipulation of executable code
+* Unix::                        Interfacing with the operating system
+* Input and Output::            Input and output from and to files &c
+* System Control::              Controlling system behavior
+* Timer::                       Timing and interval timer
+* Random Numbers::              Random number generator
+
+Common Operations
+
+* Unification::                 Unifying two terms
+* Synchronization::             Waiting for data availability
+* Comparison and Hashing::      Comparing and hashing terms
+* Execution Status::            Knowing about execution status
+* Debugging::                   Debugging support
+
+Atomic Data
+
+* Symbolic Atoms::              Symbolic atoms give names to various concepts
+* Integers::                    Integer data and their operations
+* Floating Points::             Floating point data and their operations
+
+Symbolic Atoms
+
+* Notation of Atoms::           Notation of symbolic atoms
+* Symbolic Atom Operation::     Operations on symbolic atoms
+
+Integer Atoms
+
+* Notation of Integers::        Notation of integers
+* Integer Arith::               Integer arithmetics
+* Integer Comp::                Integer comparison
+
+Floating Point Numbers
+
+* Notation of Floats::          Notation of floating point numbers
+* Creating Floats::             
+* Floating Arith::              Floating point arithmetics
+* Floating Comp::               Floating comparison
+
+Structured Data
+
+* Functors::                    Named data structures
+* Lists::                       Linear list of elements
+* Vectors::                     One-dimensional arrays of any data
+* Strings::                     Array of small integers such as character codes
+
+Functor Structures
+
+* Notation of Functors::        Notation of functors
+* Functor Operation::           Operation on fucntor structures
+
+Lists
+
+* Notation of Lists::           Notation of Lists
+* Merging::                     Merging messages from multiple streams
+
+Vectors
+
+* Notation of Vectors::         Constant notation of vectors
+* Creating Vectors::            Creating new vectors
+* Predicates on Vectors::       Vector manipulation predicates
+
+Strings
+
+* Notation of Strings::         Constant notation of strings
+* Creating Strings::            Creating new strings
+* Predicates on Strings::       String manipulation predicates
+
+Handling Program Code as Data
+
+* Module Type::                 Program modules as data
+* Predicate Type::              Predicates as data
+
+Unix Interface
+
+* Unix Stream::                 Obtaining Unix interface stream
+* I/O Opening::                 Opening input/output streams
+* Sockets::                     Internet- and Unix-domain protocol sockets
+* Files & Dirs::                Manipulation of files and directories
+* Signals::                     Signal interrupt handling
+* Misc Unix Messages::          Miscellaneous messages to the Unix stream
+* Predicate Interface::         Predicate interface for command line args &c
+
+Input and Output
+
+* C-like I/O::                  I/O with C language-like interface
+* Prolog I/O::                  I/O with Prolog language-like interface
+
+Input and Output with C-like Interface
+
+* Common Msgs (C style)::       Messages common to both input and output
+* Input Msgs (C style)::        Messages for C-like input streams
+* Output Msgs (C style)::       Messages for C-like output streams
+
+Input and Output with Prolog-like Interface
+
+* Opening Prolog I/O::          Opening Prolog-like I/O streams
+* Common Msgs (Prolog style)::  Message common to input and output streams
+* Input Msgs (Prolog style)::   Input messages with Prolog-like interface
+* Output Msgs (Prolog style)::  Output messages with Prolog-like interface
+* Wrapped Terms::               Manipulation of wrapped terms
+
+Using KLIC
+
+* Compiling::                   How to compile KL1 programs
+* Running::                     How to run programs compiled with KLIC
+* Tracing::                     Tracing execution for debugging
+* Install::                     Installation of KLIC
+* Distributed KLIC::            Distributed memory parallel implementation
+* Shared-Memory KLIC::          Shared-memory parallel implementation
+
+Compiling Programs with KLIC
+
+* Command for Compilation::     Program compilation command
+* Compiler Options::            Compiler options
+* Mechanism of Compilation::    How programs are compiled
+
+Running Programs Compiled with KLIC
+
+* Runtime Switches::            Runtime command line switches
+
+Tracing Program Execution
+
+* Preparing for Trace::         Compiling your program to be traced
+* Trace Ports::                 Places you stop at stepping execution
+* Output of Tracer::            How your program execution process is displayed
+* Controlling Trace::           Controlling which are traced and which are not
+* Spying::                      Setting spypoints = break points
+* Port Control::                Enabling and disabling tracing of each port
+* Display Control::             Controlling the verbosity of trace display
+* Dumping Goals::               Displaying all ready or suspended goals
+* Misc Trace Commands::         Miscellaneous commands
+* Perpetual Suspension::        Detecting goals that can never proceed
+
+Trace Controlling Commands
+
+* Goal Control::                Controlling trace of the traced goal
+* Subgoal Control::             Controlling trace of newly created subgoals
+* Predicate Control::           Changing default trace of predicates
+
+Installation
+
+* Configuration::               Configuration script
+* Make All::                    Compiling the system
+* Make Tests::                  Testing the compilation
+* Make Install::                Actually installing the system
+* Make Distclean::              Cleaning up after installation
+* Troubles::                    What to do when you have some trouble
+
+Distributed Memory Parallel Implementation of KLIC
+
+* Installation of Distributed KLIC::  
+* Compiling Programs for Distributed KLIC::  
+* Running Programs of Distributed KLIC::  
+
+Running Programs of Distributed KLIC
+
+* Setting Up PVM::              
+* Runtime Options for Distributed KLIC::  
+* Known Bugs of Distributed KLIC::  
+
+Shared-Memory Implementation of KLIC 
+
+* Installation of Shared-Memory KLIC::  
+* Compiling Programs for Shared-Memory KLIC::  
+* Running Programs of Shared-Memory KLIC::  
+
+Running Programs of Shared-Memory KLIC
+
+* Runtime Options for Shared-Memory KLIC::  
+* Known Bugs of Shared-Memory KLIC::  
+@end menu
+
+@node Copying, Introduction, Top, Top
+@unnumbered Terms and Conditions for Use of ICOT Free Software
+@cindex copyright
+@cindex distribution
+@cindex ICOT Free Software
+
+@noindent
+@strong{1. Purposes and Background of ICOT Free Software.}
+
+The Institute for New Generation Computer Technology (@dfn{ICOT}) had
+been promoting the Fifth Generation Computer Systems project under the
+commitment of the Ministry of International Trade and Industry of Japan
+(the @dfn{MITI}).  Since April 1993, ICOT has been promoting the
+Follow-on project to the FGCS project. This follow-on project aims to
+disseminate and further develop FGCS technology.  The FGCS project and
+the Follow-on project (collectively, the @dfn{Project}) have been aimed
+at creating basic technology for novel computers that realizes parallel
+inference processing as their core mechanism, and contributing toward
+the progress of computer science by sharing innovative knowledge and
+technology with the research community worldwide.
+
+    Innovative hardware and software parallel inference technology has
+been under development through the Project, which involves varieties of
+advanced software for experiments and evaluation.  This software, being
+at a basic stage of research and development, should be disseminated
+widely to the research community.
+
+    According to the aims of the Project, ICOT has made this software,
+the copyright of which does not belong to the government but to ICOT
+itself, available to the public in order to contribute to the world,
+and, moreover, has removed all restrictions on its usage that may have
+impeded further research and development in order that large number of
+researchers can use it freely to begin a new era of computer science.
+
+    This program together with any attached documentation (collectively,
+the @dfn{Program}) is being distributed by ICOT free of charge as
+@dfn{ICOT Free Software}.
+
+@noindent
+@strong{2. Free Use, Modification, Copying and Distribution}
+
+    Persons wanting to use the Program (@dfn{Users}) may freely do so
+and may also freely modify and copy the Program.  The term "modify," as
+used here, includes, but is not limited to, any act to improve or expand
+the Program for the purposes of enhancing and/or improving its function,
+performance and/or quality as well as to add one or more programs or
+documents developed by Users of the Program.
+
+    Each User may also freely distribute the Program, whether in its
+original form or modified, to any third party or parties,
+@strong{PROVIDED} that the provisions of Section 3 (@strong{NO
+WARRANTY}) will @strong{ALWAYS} appear on, or be attached to, the
+Program, which is distributed substantially in the same form as set out
+herein and that such intended distribution, if actually made, will
+neither violate or otherwise contravene any of the laws and regulations
+of the countries having jurisdiction over the User or the intended
+distribution itself.
+
+@noindent
+@strong{3. NO WARRANTY}
+
+    The program was produced on an experimental basis in the course of
+the research and development conducted during the project and is
+provided to users as so produced on an experimental basis.  Accordingly,
+the program is provided without any warranty whatsoever, whether
+express, implied, statutory or otherwise.  The term ``warranty'' used
+herein includes, but is not limited to, any warranty of the quality,
+performance, merchantability and fitness for a particular purpose of the
+program and the nonexistence of any infringement or violation of any
+right of any third party.
+
+    Each user of the program will agree and understand, and be deemed to
+have agreed and understood, that there is no warranty whatsoever for the
+program and, accordingly, the entire risk arising from or otherwise
+connected with the program is assumed by the user.
+
+    Therefore, neither ICOT, the copyright holder, or any other
+organization that participated in or was otherwise related to the
+development of the program and their respective officials, directors,
+officers and other employees shall be held liable for any and all
+damages, including, without limitation, general, special, incidental and
+consequential damages, arising out of or otherwise in connection with
+the use or inability to use the program or any product, material or
+result produced or otherwise obtained by using the program, regardless
+of whether they have been advised of, or otherwise had knowledge of, the
+possibility of such damages at any time during the project or
+thereafter.  Each user will be deemed to have agreed to the foregoing by
+his or her commencement of use of the program.  The term "use" as used
+herein includes, but is not limited to, the use, modification, copying
+and distribution of the program and the production of secondary products
+from the program.
+
+    In the case where the program, whether in its original form or
+modified, was distributed or delivered to or received by a user from any
+person, organization or entity other than ICOT, unless it makes or
+grants independently of ICOT any specific warranty to the user in
+writing, such person, organization or entity, will also be exempted from
+and not be held liable to the user for any such damages as noted above
+as far as the program is concerned.
+
+@node Introduction, Language, Copying, Top
+@chapter Introduction
+
+This manual describes a portable implementation of KL1 called KLIC,
+developed at Institute for New Generation Computer Technology as a part
+of the Fifth Generation Computer national project of Japan and its
+follow-on project.
+
+KL1 is a concurrent logic programming language based on Guarded Horn
+Clauses (GHC, in short).  KL1 has very simple and concise syntax and
+semantics and yet provides very powerful features for concurrent
+computation.
+
+KLIC compiles KL1 programs to C programs.  A C compiler of the host
+system then compiles the C programs to relocatable objects, which will
+then be linked together with the runtime library of KLIC
+(@pxref{Mechanism of Compilation, , How KLIC Compiler Works}).  Thus,
+the system is independent from the hardware architecture of the host
+system.  Also, the system is written so that only minimal features of
+Unix are used to assure portability.
+
+@menu
+* Description::                 Description of predicates &c
+* Reporting Bugs::              Reporting system problems
+@end menu
+
+@node Description, Reporting Bugs, Introduction, Introduction
+@section Description of Predicates and Methods
+
+@menu
+* Predicates and Methods::      Two forms of procedures
+* Messages::                    Messages to processes
+* Argument Modes::              Input/output modes of arguments
+@end menu
+
+@node Predicates and Methods, Messages, Description, Description
+@subsection Predicates and Methods
+@cindex predicate
+@cindex method
+Unlike other logic programming language systems, KLIC provides two kinds
+of procedures, predicates and generic methods.  Predicates define
+relations on their arguments and their semantics is fixed.  Generic
+methods, (or methods, simply) are defined by @emph{objects} they are
+applied to.  Thus, their semantics depends on the object applied.
+
+Sometimes the same operation is provided by both predicates and methods.
+For example, obtaining an element of a string can be done by either of
+the following two.
+
+@defop {Body Predicate} {builtin} string_element +String +Index @t{-}Element
+@defopx {Body Method} string element +String +Index @t{-}Element
+@end defop
+
+@noindent
+The former is a builtin predicate of the system.  Predicate invocations
+are written as follows.
+
+@example
+@var{ModuleName}:@var{PredicateName}(@var{Arguments}, @dots{})
+@end example
+
+@noindent
+In case of the predicate @code{string_element} mentioned above, it is
+defined as a builtin predicate and thus no module name is needed in its
+invocation.  Thus, an invocation is written as follows.
+
+@example
+string_element(@var{String}, @var{Index}, @var{Element})
+@end example
+
+@noindent
+In general, a module name may come first with a colon before the
+predicate name.  Some predicates do not have any arguments.  In such
+cases, parentheses enclosing arguments are also omitted.
+
+@cindex class
+@cindex generic method
+The latter is a generic method defined on the objects of class
+@code{string}.  Method invocation is written as follows.
+
+@example
+generic:@var{MethodName}(@var{Object}, @var{OtherArguments, @dots{}})
+@end example
+
+@noindent
+In case of the method @code{element} mentioned above, its invocation is
+written as follows.
+
+@example
+generic:element(@var{String}, @var{Index}, @var{Element})
+@end example
+
+The same operation may be effected using either a predicate or a method.
+For example, obtaining the third element (element number 2) of a string
+@var{S} into @var{E} can be done by either of the following
+invocations.
+
+@example
+string_element(S, 2, E)
+generic:element(S, 2, E)
+@end example
+
+@noindent
+Note that, while the predicate @code{string_element} is only for
+obtaining an element of a string, a generic method invocation can also
+be used to obtain an element of @emph{similar} object.  For example, an
+element of a vector (one-dimensional array) can also be obtained by the
+same invocation.
+
+@node Messages, Argument Modes, Predicates and Methods, Description
+@subsection Messages
+@cindex message
+@cindex interprocess communication
+
+KL1 programs often consist of many @emph{processes}.  Processes often
+communicate one another using @emph{streams}.  Streams are actually
+lists of @emph{messages}.  Lists are made of cells called @emph{cons}
+cells with two fields @emph{car} and @emph{cdr}, just as in Lisp or
+similar languages.  Thus, when used as message streams, the car part of
+a cons cell contains the message and the cdr contains the rest of the
+stream.
+
+Some standard features of the KLIC system are also provided as processes
+with message stream interface.  An example of such message described in
+this manual follows.
+
+@defop {Message} {C-like I/O} putc +C
+@end defop
+
+@noindent
+This means that a message named @code{putc} is accepted as a message to
+a C-like I/O process interface stream.  The message has one argument
+called @var{C} in this case.
+
+To send a message to a message stream, the variable referring to the
+message stream should be instantiated with a cons cell whose car
+contains the message and cdr contains the rest of the stream.  Thus,
+when @code{S} is a stream to C-like I/O and character with code 10 is to
+be output, the following unification should be made.
+
+@example
+S = [putc(10)|T]
+@end example
+
+@noindent
+Here, the variable @code{T} is given the rest of the stream and thus any
+following messages to the stream should be sent to this variable.
+
+@node Argument Modes,  , Messages, Description
+@subsection Argument Modes
+@cindex argument mode
+@cindex input argument
+@cindex output argument
+Arguments of predicates, methods or messages may have specific
+input/output mode.  Input arguments are read by invocation of predicates
+or methods; the invocation will be suspended if any of the input
+arguments are left undefined.  Output arguments are given a value by the
+invocation.
+
+In the description of predicates and methods, input arguments are marked
+with a @code{+} and output arguments are marked with a @code{-}.  Some
+arguments are not either read or given value.  Such arguments are marked
+with a @code{?}.
+
+@node Reporting Bugs,  , Description, Introduction
+@section Reporting Bugs and Sending Comments
+@cindex bug report
+@cindex mailing list
+@cindex new release
+
+Please report bugs and comments on the KLIC system and this document to
+the following mail address.
+
+@example
+@code{klic-bugs@@icot.or.jp}.
+@end example
+
+There is a mailing list for users of KLIC.  This mailing list is used
+for announcement from the developers on known bugs, fixes or
+availability of new releases.  The same mailing list can also be used
+for communication among users.  To subscribe to the mailing list, please
+send your request to the following address.
+
+@example
+@code{klic-requests@@icot.or.jp}
+@end example
+
+@node Language, Builtin and Library, Introduction, Top
+@chapter KL1 Language
+@cindex KL1
+@cindex GHC
+@cindex concurrent logic programming language
+
+KL1 is a programming language for describing concurrent computation
+based on Guarded Horn Clauses (GHC, in short).  GHC belongs to a family
+of languages called concurrent logic programming languages or
+committed-choice logic programming languages.  Languages that belong to
+the family are, for example, Concurrent Prolog, Parlog, Fleng, Strand
+and Janus.  These languages have simple and concise syntax and semantics
+and yet provide very powerful features for concurrent computation.
+
+Here, a very rough and informal description of the KL1 language is
+given.  More detailed and accurate specification are planned to be
+supplied in future (hopefully).
+
+@menu
+* Basics::                      Basic execution mechanism of the language
+* Predicates::                  Predicates correspond to subroutines
+* Modules::                     Module is a set of predicates
+* Goals::                       Goals are units of execution of KL1
+* Initial Goal::                How program execution starts
+* Generic Objects::             Generic objects extends features of KLIC
+* Priority::                    Specifying scheduling preference
+* Alternatively::               Preference among clauses
+* Argument Pair Notation::      
+* Inline C Code::               Inserting C code inline
+@end menu
+
+@node Basics, Predicates, Language, Language
+@section Basic Execution Mechanism
+@cindex execution
+@cindex guard
+@cindex body
+@cindex clause
+
+The following is an example of a small KL1 program that defines a part
+of quicksort program.
+
+Example 1: Quicksort
+
+@example
+:- module quicksort.
+
+sort(X, Y) :- sort(X, Y, []).
+
+sort([], Y, Z) :- Y = Z.
+sort([P|X], Y, Z) :-
+    partition(P, X, X1, X2),
+    sort(X1, Y, [P|Y1]),
+    sort(X2, Y1, Z).
+
+partition(_, [], S, L) :-
+    S = [],
+    L = [].
+partition(P, [W|X], S, L) :- W =< P |
+    S = [W|S1],
+    partition(P, X, S1, L).
+partition(P, [W|X], S, L) :- W >= P |
+    L = [W|L1],
+    partition(P, X, S, L1).
+@end example
+
+The first line, @code{:- module quicksort} declares that this program module
+will be called @code{quicksort} (@pxref{Modules}).
+
+Execution of a KL1 program is a (possibly parallel) repetitive reduction
+of given @dfn{goals} using program @dfn{clauses}.  Each clause has the
+following form.
+
+@example
+@var{PredicateName}(@var{Argument pattern} @dots{}) :- @var{Guard} | @var{Body}.
+@end example
+
+When a goal is to be reduced, clauses for the predicate of the goal will
+be inspected.  For clauses with matching argument pattern, their guard
+parts are tested.  All the clauses with matching argument pattern and
+satisfied guard conditions are candidates to be used in the reduction.
+Only one of them, @emph{arbitrarily chosen,} will be used and the
+original goal will be replaced by the goals in the body of the clause
+chosen.
+
+If no guard condition tests are required, the guard part along with
+the vertical bar can be omitted.
+
+@node Predicates, Modules, Basics, Language
+@section Predicates
+@cindex predicate
+@cindex clause
+
+@dfn{Predicates} of KL1 corresponds to subroutines of Fortran or
+functions of C.  Predicates are defined by a collection of clauses with
+the same predicate name and the same number of arguments in their heads.
+Unlike in some other languages, predicates are identified not only by
+their names but also by their @dfn{arities} (numbers of arguments).  To
+identify predicates with the same name but different arities, the
+notation @code{@var{Predicate}/@var{Arity}} is used in this manual.
+
+In the example of the quicksort program, two predicates with the same
+name @code{sort}, with 2 and 3 arguments respectively, are defined
+(@pxref{Basics, , Basic Execution Mechanism}).  Such predicates are
+referred to as @code{sort/2} and @code{sort/3} respectively.
+
+The order of clauses defining a predicate does not affect the meaning.
+For example, a predicate for computing maximum of two integer values can
+be defined as follows.
+@example
+max(X, Y, M) :- X >= Y | M = X.
+max(X, Y, M) :- X =< Y | M = Y.
+@end example
+@noindent
+
+Exactly the same predicate can be defined by reversing the order of the
+clauses as follows.
+@example
+max(X, Y, M) :- X =< Y | M = Y.
+max(X, Y, M) :- X >= Y | M = X.
+@end example
+
+@cindex otherwise
+@cindex negation
+When a set of clauses are to be used @emph{only when} another set of
+clauses are known not to be applicable, the keyword @code{otherwise}
+should be put in between the two sets of clauses.  For example, the
+above @samp{max} predicate may be defined as follows.
+@example
+max(X, Y, M) :- X >= Y | M = X.
+otherwise.
+max(X, Y, M) :- M = Y.
+@end example
+
+@noindent
+The meaning of the predicate is almost the same except that this version
+succeeds after unifying @samp{M} with @samp{Y} even when @samp{X} or
+@samp{Y} does not have an integer value, while the two previous versions
+will fail.
+
+The @code{otherwise} directive specifies that clauses after the
+directive should not be applied unless all the clauses preceding the
+directive are known not to be applicable, even with any information
+(variable bindings) may become available afterwards.  This feature
+should @emph{not} be confounded with the @code{alternatively} directive,
+which specifies that clauses preceding the directive should be given
+priority to the clauses following (@pxref{Alternatively, , Clause
+Preference}).
+
+@node Modules, Goals, Predicates, Language
+@section Modules
+@cindex module
+
+KL1 provides @dfn{module} structure for dividing large programs into
+many modules.  A module consists of one or more predicates.  Definition
+of a module starts with a module declaration of the form @code{:- module
+@var{Module}.} Clauses defining predicates in the module will follow.
+The end of the file or another module declaration ends the definition of
+the module.
+
+In the quicksort example, the first line:
+
+@example
+:- module quicksort
+@end example
+
+@noindent
+declares that this program module is called @code{quicksort}
+(@pxref{Basics, , Basic Execution Mechanism}).
+
+Predicates defined with the same name and arity but in different modules
+are considered to be different predicates.  Thus, when necessary, the
+notation @code{@var{Module}:@var{Predicate}/@var{Arity}} is used to
+explicitly specify the module name.
+
+@node Goals, Initial Goal, Modules, Language
+@section Goals
+@cindex goal
+
+A Goal is a unit of execution of KL1.  Goals are associated with a
+predicate.  A goal is reduced to zero or more simpler goals by applying
+one of the clauses defining the predicate.
+
+Goals are written as:
+
+@example
+@var{Predicate}(@var{Arguments}, @dots{})
+@end example
+
+@noindent
+or simply as the following.
+
+@example
+@var{Predicate}
+@end example
+
+@noindent
+when the predicate has no arguments.
+
+When the predicate is not in the same module, the syntax is either:
+
+@example
+@var{Module}:@var{Predicate}(@var{Arguments}, @dots{})
+@end example
+
+@noindent
+or as the following.
+
+@example
+@var{Module}:@var{Predicate}
+@end example
+
+For example, a module named @code{main} that uses the quicksort module
+might be defined as follows (@pxref{Basics, , Basic Execution
+Mechanism}).
+
+Example 2: Module using @code{quicksort}
+
+@example
+:- module main.
+
+main :-
+    X = [9,2,8,3,6,7,4,1,5],
+    builtin:print(X),
+    quicksort:sort(X, Y),
+    builtin:print(Y).
+@end example
+
+@noindent
+Here, the body goal @code{quicksort:sort(X, Y)} is associated with the
+predicate @code{sort/2} of the module @code{quicksort}.
+
+@node Initial Goal, Generic Objects, Goals, Language
+@section Initial Goal
+@cindex main
+@cindex initial goal
+
+All KLIC programs start from the initial goal @code{main:main}, i.e.,
+the predicate @code{main} with no arguments defined in the module
+@code{main}.  The example of the module @code{main} (@pxref{Goals}) is
+an example of a main program.
+
+Command line arguments are not passed to the initial goal.  Predicates
+to access command line arguments are provided separately
+(@pxref{Predicate Interface}).
+
+@node Generic Objects, Priority, Initial Goal, Language
+@section Generic Objects
+@cindex generic object
+@cindex generic method
+@cindex method
+@pindex @code{generic} (pseudo module)
+
+@dfn{Generic objects} provide a framework to extend the KL1 language
+with new data types and their operations.  There are three kinds of
+generic objects, namely, @dfn{data objects}, @dfn{consumer objects} and
+@dfn{generator objects}.
+
+Generic objects are created by pseudo-predicates @code{generic:new}.
+Generic data objects are similar to usual KL1 data.  Operations on data
+objects are defined by their @dfn{generic methods}.  Methods are invoked
+by pseudo-predicates @code{generic:@var{Method}}.  Consumer and
+generator objects look like variables to normal KL1 programs and
+operations on them are implicit by unification.
+
+Many of the standard types of KLIC, vectors and strings, for example,
+are actually implemented as generic data objects.  For them, builtin
+predicates can also be used as aliases for generic methods.  For
+example, @code{set_vector_element(@var{Original}, @var{Index},
+@var{NewElement}, @var{New})} means the same as
+@code{generic:set_element(@var{Original}, @var{Index}, @var{NewElement},
+@var{New})}.
+
+@menu
+* Creating Objects::            How to create generic objects
+* Guard Methods::               Operations on data objects in guards
+* Body Methods::                Operations on data objects in bodies
+@end menu
+
+@node Creating Objects, Guard Methods, Generic Objects, Generic Objects
+@subsection Creating Generic Objects
+@cindex creating generic objects
+@cindex object creation
+
+Generic objects are created by the following pseudo-predicate.
+
+@example
+generic:new(@var{ClassName}, @var{Object}, @var{Args}, @dots{})
+@end example
+
+@noindent
+@var{ClassName} should be a symbolic atom which names the object class.
+By this invocation, a new generic object is created and associated with
+@var{Object}.  Parameters for creation can be specified by @var{Args}.
+The meaning of @var{Args} depends on each object class.
+
+@node Guard Methods, Body Methods, Creating Objects, Generic Objects
+@subsection Guard Methods of Generic Data Objects
+@cindex guard method
+
+Clause selection depending on generic data objects can be done by
+calling guard methods.  Guard methods have the following format.
+
+@example
+generic:@var{Method}(@var{Object}, @var{Input}, @dots{}):@var{Output}:@dots{}
+@end example
+
+@code{@var{Input}, @dots{}} specify input arguments.  If any of the
+input arguments are left undefined, this invocation will be suspended.
+@code{@var{Output}:@dots{}} specify output arguments, which are returned
+from the method.  If some concrete value is specified as an
+@var{Output}, guard unification of the specified and returned values
+will be made.  Some guard methods have no output arguments, in which
+case colon and following @var{Output} are omitted.
+
+@node Body Methods,  , Guard Methods, Generic Objects
+@subsection Body Methods of Generic Data Objects
+@cindex body method
+
+Operations on generic data objects can be done by calling body methods.
+Body methods have the following format.
+
+@example
+generic:@var{Method}(@var{Object}, @var{Args}, @dots{})
+@end example
+
+@noindent
+Unlike guard methods, input and output arguments are not syntactically
+distinguished.  The method to be called can be determined in runtime.
+To do that, an alternative format is provided.
+
+@example
+generic:generic(@var{Object}, @var{Functor})
+@end example
+
+@noindent
+With this format, @var{Functor} should be (or become in runtime) a
+functor structure of the format @code{@var{Method}(@var{Args}, @dots{})}.
+Invocation will be suspended until @var{Functor} will become
+instantiated.
+
+@node Priority, Alternatively, Generic Objects, Language
+@section Priority Specification
+@cindex priority
+
+Goals have execution priority associated with them.  Execution priority
+is specified by a positive integer value.  Goals with larger priority
+values are (usually) executed earlier than goals with smaller priority
+values.  However, priority specifications are no more than suggestions
+and actual implementations may or may not strictly obey them.
+
+Body goals can have execution priority specification in one of the
+following formats.
+
+@quotation
+        @code{@var{Goal}@@priority(@var{AbsPrio})}@*
+        @code{@var{Goal}@@lower_priority(@var{RelPrio})}@*
+        @code{@var{Goal}@@lower_priority}@*
+@end quotation
+
+@noindent
+Here, @var{AbsPrio} and @var{RelPrio} should be a non-negative integer
+constant, or a variable which should be instantiated to a non-negative
+integer later.  In the current implementation, negative priority values
+are interpreted as zero.
+
+With the absolute priority specification, the goal with the
+specification will have the priority value specified by @var{AbsPrio}.
+With the relative priority specification, the goal will have priority
+less than the priority of the parent goal by the amount specified by
+@var{RelPrio}.  The specification @code{@var{Goal}@@lower_priority} has
+the same effect as @code{@var{Goal}@@lower_priority(1)}.  Goals without
+any priority specifications will have the same priority as their
+parents.
+
+The highest possible priority is the largest possible integer value,
+which depends on host systems (@pxref{Integers, Integer Atoms}).  The
+initial goal @code{main:main} has the maximum priority possible for the
+host system (@pxref{Initial Goal}).
+
+@node Alternatively, Argument Pair Notation, Priority, Language
+@section Clause Preference
+@cindex alternatively
+@cindex preference of clauses
+@cindex clause preference
+
+Predicates of KL1 may have nondeterminacy; more than one clause may be
+applicable.  In such cases, preference among clauses may be specified
+using the @code{alternatively} directive.
+
+When the keyword @code{alternatively} is put in between two sets of
+clauses, clauses preceding it are @emph{preferred} to those following
+it.  However, when clauses preceding the @code{alternatively} directive
+cannot be applied directly due to lack of information (insufficient
+instantiation of variable values), the clauses following it may be
+used.  This feature is often useful in controlling speculative
+computation depending on progress of computation.
+
+The feature is not be confounded with the @code{otherwise} feature
+(@pxref{Predicates}).  For example, consider the following two
+predicates.
+
+@example
+p(1, Y, R) :- R = a.
+alternatively.
+p(X, 2, R) :- R = b.
+
+q(1, Y, R) :- R = a.
+otherwise.
+q(X, 2, R) :- R = b.
+@end example
+
+@noindent
+When the first argument is still undefined and the second is @code{2},
+the predicate @code{p} may return @code{b} to the third argument using
+its second clause.  The predicate @code{q} will wait until the value of
+the first argument becomes available.  Thus, if the first argument
+eventually becomes @code{1}, the predicate @code{q} is guaranteed to
+return @code{a}, but the predicate @code{p} may return either @code{a}
+or @code{b}.
+
+@node Argument Pair Notation, Inline C Code, Alternatively, Language
+@section Shorthand Notation for Argument Pairs
+@cindex argument pair
+@cindex paired argument
+
+KL1 programs often require passing two arguments as a pair to a
+predicate: one as input and the other as output.  KLIC provides a
+shorthand notation for such cases.
+
+@menu
+* Paired Arguments::            
+* Macros for Paired Arguments::  
+* Usage of Paired Arguments::   
+@end menu
+
+@node Paired Arguments, Macros for Paired Arguments, Argument Pair Notation, Argument Pair Notation
+@subsection Paired Arguments and their Expansion
+@cindex paired argument
+@cindex argument pair name
+@cindex expanded pair
+
+The head and goals in both guard and body parts of a clause can have
+argument pairs specified by a single variable name attached to the head
+or goals by a hyphen character.  We call such pseudo variable an
+@dfn{argument pair name}.  An example is shown here.
+
+@example
+p(X,Y)-Pair :- q(X)-Pair, s(Z)-Pair, r(Pair,Y), t(Z)-Pair.
+@end example
+
+@noindent
+The pseudo-variable @code{Pair} is an argument pair name.  Such a clause
+is interpreted the same as the following clause.
+
+@example
+p(X,Y,P0,P) :- q(X,P0,P1), s(Z,P1,P2), r(P2,Y), t(Z,P2,P).
+@end example
+
+@noindent
+Occurrences of argument pair names attached to the head or goals by a
+hyphen character are interpreted as a pair of two different variables
+added at the end of the argument lists.  In what follows, we call the
+two variables generated from an paired argument an @dfn{expanded pair}.
+
+The second of an expanded pair of a goal is the same as the first of the
+expanded pair of the next goal with the same argument pair name.  In the
+example above, @code{P1} appearing as the third argument of the goal of
+@code{q/3} also appears as the second argument of @code{s/3}, as
+originally they both have the same argument pair name @code{Pair}.
+
+The first of an expanded pair in the head will be the same as the first
+of the expanded pair in the first goal in the clause with the same
+argument pair name.  The second of an expanded pair in the head will be
+the same as the second of the expanded pair in the last goal with the
+same argument pair name.
+
+In the above example, the first of the expanded pair @code{P0} in the
+head appears again as the second argument of the first goal calling
+@code{q/3}, and @code{P}, the second of the expanded pair in the head,
+appears again as the third argument of the last goal of @code{t/3}.
+
+If the argument pair name appears only in the head, two variables of the
+expanded pair are unified in the body.  For example, a clause:
+
+@example
+p(X)-Y :- q(X).
+@end example
+
+@noindent
+is expanded into the following.
+
+@example
+p(X,Y0,Y) :- Y0=Y, q(X).
+@end example
+
+An argument pair name may appear at a usual argument position rather
+than being attached to the head or goals, as does the first argument of
+the goal for @code{r/2} in the above example.  In such a case, it is
+expanded to a single variable.  This variable is the same as the second
+of the last expanded pair and is also the same as the first of the next
+expanded pair.  Thus, in the above example, @code{Pair} appearing as the
+first argument of @code{r/2} is expanded into @code{P2}, which is the
+same as the third argument of @code{s/3} and the second argument of
+@code{t/3}.
+
+Arbitrarily many argument pair names can be specified for a head or a
+goal.  For example, a clause such as:
+
+@example
+p-X-Y :- q-X, r-Y, s-Y-X.
+@end example
+
+@noindent
+is interpreted as follows.
+
+@example
+p(X0,X,Y0,Y) :- q(X0,X1), r(Y0,Y1), s(Y1,Y,X1,X).
+@end example
+
+Sometimes, specifying normal arguments after some argument pair names is
+desirable.  This can be done by connecting them with a plus (@code{+})
+character.  For example:
+
+@example
+p-X+Y :- q-X+35, r(Y), s+Y-X.
+@end example
+
+@noindent
+is interpreted as follows.
+
+@example
+p(X0,X,Y) :- q(X0,X1,35), r(Y), s(Y,X1,X).
+@end example
+
+Note that the expansion rules for paired arguments described above are
+position sensitive for goals.  However, this does @emph{not} at all mean
+that the execution order of body goals are constrained anyhow.
+
+Also note that the argument pair notation is no more than macro
+expansion of clauses.  One predicate may have clauses some of which
+written in the argument pair notation and others in the usual notation.
+
+@node Macros for Paired Arguments, Usage of Paired Arguments, Paired Arguments, Argument Pair Notation
+@subsection Macros for Paired Arguments
+@cindex update
+@cindex increment
+@cindex decrement
+@cindex message sending
+
+To fascilitate the usage of paired arguments, KLIC provides the
+following macros to be used in place of a goal.
+
+@table @t
+@item @var{S} <= @var{M}
+Expanded to @code{@var{S0} = [@var{M}|@var{S1}]} where @var{S0} and
+@var{S1} are expanded pair for the argument pair name @var{S}.
+
+@item @var{M} => @var{S}
+Expanded to @code{[@var{M}|@var{S0}] = @var{S1}} where @var{S0} and
+@var{S1} are the expanded pair for the argument pair name @var{S}.
+
+@item @var{S} += @var{E}
+@item @var{S} -= @var{E}
+@item @var{S} *= @var{E}
+@item @var{S} /= @var{E}
+Expanded to @code{@var{S1} := @var{S0} + @var{E0}} etc, where @var{S0}
+and @var{S1} are the expanded pair for the argument pair name @var{S}.
+
+@item @var{S} <== @var{X}
+Expanded to @code{@var{S1} = @var{X}}, where @var{S0} and @var{S1} are
+the expanded pair for the argument pair name @var{S}.  @var{S0} does not
+appear in the expansion; the original value of the paired argument for
+@var{S} will be lost, and the next occurrence of @var{S} will mean
+@var{X} instead.  This feature is normally used with a non-paired
+occurrence of the argument pair name.  For example:
+
+@example
+@dots{}, p-S, q(S), S <== X, r-S, @dots{}
+@end example
+
+@noindent
+means the following.
+
+@example
+@dots{}, p(S0,S1), q(S1), S2 = X, r(S2,S3), @dots{}
+@end example
+@end table
+
+@node Usage of Paired Arguments,  , Macros for Paired Arguments, Argument Pair Notation
+@subsection Usage of Paired Arguments
+
+Some examples of typical usage of paired arguments are given here.
+
+@cindex accumulator
+The following program is for summing up elements of a list of integers.
+
+@example
+sum(List,Sum) :- sum(List)+0+Sum.
+
+sum([])-Acc.
+sum([H|T])-Acc :- Acc += H, sum(T)-Acc.
+@end example
+
+@noindent
+Here, the paired argument @code{Acc} plays the role of an accumulator.
+
+@cindex difference list
+The following program inverts the sign of the elements of a list of
+integers.
+
+@example
+inv(List,Inv) :- inv(List)+Inv-[].
+
+inv([])-Inv.
+inv([H|T])-Inv :- MH := -H, Inv <= MH, inv(T)-Inv.
+@end example
+
+@node Inline C Code,  , Argument Pair Notation, Language
+@section Inserting C Language Code Inline
+@cindex C
+@cindex inline
+
+The inline C code feature allows specifying C programs to be inserted in
+the object code within KL1 programs.  This feature is somewhat similar
+to the @code{asm} statements of C.
+
+Appropriateness of inserted C code totally depends on internal
+implementation schemes of the KLIC system, which may be altered in
+future.  Thus, @strong{general users are not recommended to use this
+feature.}
+
+@menu
+* Top Insertion::               Inserting C program text at the top
+* Guard Insertion::             Inserting C program text in guards
+* C-Level Rep::                 C-level representation of KL1 terms
+* Examples of Inline::          Some examples of inline C code
+* Hints of Inline::             Some hints on using inline C code
+@end menu
+
+@node Top Insertion, Guard Insertion, Inline C Code, Inline C Code
+@subsection Inline Insertion at the Top of Files
+@cindex header file
+
+At the top of a source file, strings to be inserted in the object C
+program can be specified in the following way.
+
+@example
+:- inline:"@var{C Program Text to be Inserted}".
+@end example
+
+The specified text is inserted in the object C program after standard
+declarations and before any user-defined modules.
+
+There can be any number of such inline specification.  A typical
+example is as follows.
+
+@example
+:- inline:"#include <stdio.h>"
+@end example
+
+As inserted C programs are written as string constants of KLIC,
+doubleqoute characters have to be escaped with a backslash character.  A
+typical example is as follows.
+
+@example
+:- inline:"#include \"myheader.h\""
+@end example
+
+It might also be a good idea to define macros and functions here, that
+are invoked from the inline code in clause guards.
+
+@node Guard Insertion, C-Level Rep, Top Insertion, Inline C Code
+@subsection Inline Insertion in the Guard
+
+Inline insertion specification can also appear as a guard goal with
+one of the following forms.
+
+@example
+inline:"@var{C Program Text}"
+inline:"@var{C Program Text}":[@var{ArgSpec}, @dots{}]
+@end example
+
+With either format, the C program text is literally inserted in the
+object code corresponding to the guard part, except that percent signs
+(@code{%}) in the program text string specify special formatting.  The
+following table lists special format characters after percent signs and
+what they mean.
+
+@table @t
+@item @key{digit}
+The name of the C variable corresponding to the @key{digit}-th
+@var{ArgSpec} (zero origin).  Note that only up to 10 such arguments are
+allowed.
+
+@item f
+The name of the C label to @code{goto} when this clause should fail or
+suspend.
+
+@item %
+The percent character itself, i.e., percent characters should be
+doubled.  Be careful when you specify format strings for @code{printf}.
+@end table
+
+@noindent
+@var{ArgSpec } has one of the following formats.
+
+@table @t
+@item @var{Variable}+@var{Type}
+Specifies that the value of the variable is used within the inserted
+program text.  Object code for synchronization with availability of the
+variable value and checking of the value type is generated by the
+compiler.
+
+@item @var{Variable}-@var{Type}
+Specifies that variable is given a value within the inserted program
+text.  This has to be the first occurence of the variable.  The compiler
+assumes that, after executing the inserted code, the variable will have
+value of @var{Type}.
+@end table
+
+@noindent
+The Type field should be one of the following.
+
+@table @t
+@item any
+Anything, including uninstantiated variables
+@item bound
+Any bound value
+@item atomic
+An atomic value (a symbolic atom or an integer)
+@item int
+An integer
+@item atom
+An symbolic atom
+@item list
+A list structure
+@item functor
+A functor structure (including generic object)
+@item object
+A generic data object
+@item object(@var{Class})
+A generic data object of @var{Class}
+@end table
+
+Values are referenced without any indirections for all types except for
+@code{any}.  For an input (@code{+}) mode argument, the generated code
+makes sure that, before executing the inserted program text, the
+argument will have the value of the specified type directly, without
+indirect references.  For an output (@code{-}) mode argument, the
+compiler assumes that, after executing the inserted program text, the
+variable will have the value of the specified type directly, without any
+indirect references, and uses that information for optimization.  If you
+cannot be sure of this for output mode arguments, specify @code{any},
+which may be less efficient but safe.
+
+@node C-Level Rep, Examples of Inline, Guard Insertion, Inline C Code
+@subsection C-Level Representation of KL1 Terms
+
+Note that C language types of the C variables and KL1 language types of
+corresponding KL1 values are not the same.  All the C variables
+corresponding to a KL1 value have the type @code{q} which means almost
+nothing except that it occupies a single word.  KL1 values are somehow
+encoded (with attached tag etc).  For example, an integer 3 of KL1 is
+@emph{not} represented by the bit pattern corresponding to integer 3 in
+of the language C.
+
+This document is not intended to describe all the details of the data
+representation scheme of KLIC.  Such description and programs depending
+on it will be obsoleted anyway by future revisions of the KLIC system.
+However, manipulation of integer values may be the easiest and useful in
+most C programs written inline.  Thus, we'll describe macros for data
+conversion for integers.  They are unlikely to be changed in future
+versions.
+
+To obtain the integer value of a variable corresponding to an integer
+value of KL1, use the macro @code{intval(@var{X})}.  To obtain KL1
+representation of integer in C, use the macro @code{makeint(@var{N})}.
+
+@node Examples of Inline, Hints of Inline, C-Level Rep, Inline C Code
+@subsection Examples
+
+@noindent
+@strong{Example 1: Adding Two Integers}
+
+Two integers can be added by the following clause.
+
+@example
+    p(X,Y,Z) :- W := X+Y | Z = W.
+@end example
+
+The same function can be realized using the inline insertion feature
+as follows.
+
+@example
+p(X,Y,Z) :-
+  inline:"%2 = makeint(intval(%0)+intval(%1));":
+    [X+int, Y+int, W-int] | Z=W.
+@end example
+
+The inserted text will be as follows.
+
+@example
+x0 = makeint(intval(a0)+intval(a1));
+@end example
+
+Where variables @code{a0} and @code{a1} correspond to @code{X} and
+@code{Y}, and @code{x0} to @code{W} in the KL1 program.  Note that the
+@code{Z} and @code{W} are unified in the body.
+
+@noindent
+@strong{Example 2: Comparing Two Integers}
+
+Two integers can be compared by the following clause.
+
+@example
+p(X,Y) :- X > Y | @dots{}
+@end example
+
+The same function can be realized using the inline insertion feature
+as follows.
+
+@example
+p(X,Y) :-
+  inline:"if (intval(%0) <= intval(%1)) goto %f;":
+    [X+int, Y+int] | @dots{}
+@end example
+
+The inserted text will be as follows.
+
+@example
+if (intval(a0) <= intval(a1)) goto p_2_interrupt;
+@end example
+
+Where variables @code{a0} and @code{a1} correspond to @code{X} and
+@code{Y} in the KL1 program, and @code{p_2_interrupt} is a label
+automatically generated by the compiler.
+
+@node Hints of Inline,  , Examples of Inline, Inline C Code
+@subsection Some Hints on Using the Inline C Code Feature
+
+@itemize @bullet
+@item
+Whenever possible, avoid using the inline feature.  Revisions of the
+KLIC system may obsolete your code.
+
+@item
+If multiple lines are to be inserted consecutively, specify all of them
+in one single inline specification.  Otherwise, they might be
+interleaved by other code for the guard.  Newlines are allowed within
+the inserted program text.
+
+@item
+Do not forget to prefix doublequotes and backslahes with a backslash.
+Do not forget also to write two percent signs to insert one.
+If you would like to say hello to the world, you should write such a
+program as follows.
+
+@example
+hello :-
+    inline:"printf(\"Hello, world\\n\");" |
+    @dots{}
+@end example
+
+Note the backslashes before doublequotes within the inlined code and
+doubled backslash before @code{n}.  If you put only one backslash before
+@code{n}, it will become a newline code after inline expansion; it will
+appear within a string constant in the expanded C program.  It
+fortunately works the same in this case, except that some C compilers
+may generate a warning message.
+
+@item
+If your program with inline code does not work as you expect it to, the
+best way to find the problem may be to look into the C code generated.
+@end itemize
+
+@node Builtin and Library, Using KLIC, Language, Top
+@chapter Builtin and Library Features
+
+This chapter describes builtin and library features of KLIC.
+
+@menu
+* Common Operations::           Operations common to all the data types
+* Atomic Data::                 Atomic data and their operation
+* Structured Data::             Structured data and their operation
+* Executable Code::             Higher order manipulation of executable code
+* Unix::                        Interfacing with the operating system
+* Input and Output::            Input and output from and to files &c
+* System Control::              Controlling system behavior
+* Timer::                       Timing and interval timer
+* Random Numbers::              Random number generator
+@end menu
+
+@node Common Operations, Atomic Data, Builtin and Library, Builtin and Library
+@section Common Operations
+
+Some predicates are used commonly for all the data types or are
+independent from any data types.
+
+@menu
+* Unification::                 Unifying two terms
+* Synchronization::             Waiting for data availability
+* Comparison and Hashing::      Comparing and hashing terms
+* Execution Status::            Knowing about execution status
+* Debugging::                   Debugging support
+@end menu
+
+@node Unification, Synchronization, Common Operations, Common Operations
+@subsection Unification
+@cindex unification
+@defop {Guard Predicate} {builtin} = ?X ?Y
+Checks whether @var{X} and @var{Y} are unifiable without giving values
+to variables outside the clause.
+@end defop
+
+@defop {Body Predicate} {builtin} = ?X ?Y
+Unifies @var{X} and @var{Y}.  If @var{X} has no value yet and @var{Y}
+already has some defined value, the value of @var{Y} is given to
+@var{X}.  If @var{Y} has no value and @var{X} has some, the reverse
+takes place.  If both do not have values yet, two variables are made to
+mean the same variable.  If both have values, they are matched.  If both
+are the data structures of the same kind, this unification operation is
+made recursively to corresponding elements of two structures.
+@end defop
+
+@node Synchronization, Comparison and Hashing, Unification, Common Operations
+@subsection Synchronization
+@defop {Guard Predicate} {builtin} wait +X
+Waits until instantiation of @var{X}.
+@end defop
+
+@node Comparison and Hashing, Execution Status, Synchronization, Common Operations
+@subsection Comparison and Hashing
+@cindex standard order
+@cindex comparison
+@cindex hashing
+@defop {Guard Predicate} {builtin} compare +X +Y @t{-}R
+Compares @var{X} and @var{Y}, and returns the result in @var{R}.  The
+result is an integer value less than, equal to, or greater than 0,
+when @var{X} is less than, equal to, or greater than @var{Y},
+respectively.
+
+The comparison is made by the standard order.  This predicate can
+compare data of any types.  If both @var{X} and @var{Y} are of the same
+numeric type, normal numerical comparison is made.  Note that integer
+and floating point numbers are @emph{not} of the same type; their
+comparison may not be meaningful.  Two strings are compared in
+(so-called) dictionary order.
+
+The order of any two data of different types is somehow defined by the
+system.  However, the ordering is guaranteed to be kept only within a
+single executable program.  If some data sequence is saved into a
+permanent file using the ordering provided by this predicate, the same
+program recompiled or linked with some other programs may or may not
+recognize the sequence as ordered.  Different programs, of course, may
+use different ordering.
+
+Both @var{X} and @var{Y} have to be instantiated enough for making the
+comparison.  For example @samp{f(V) @@< f(W)} will suspend if not both
+@samp{V} and @samp{W} are instantiated.  On the other hand, @samp{f(1,V)
+@@< f(2,W)} will succeed immediately, as the order can be determined
+without looking into values of @samp{V} or @samp{W}.
+
+The absolute value of the result @var{R} may have some meaning for
+certain data types.  When comparing two strings, the absolute value of
+the result is one more than the index of the first differng element (a
+la @code{strcmp} of C).
+
+Some generic objects may not implement their comparison methods, and, in
+such cases, their comparison will result in a fatal error.
+@end defop
+
+@defop {Guard Predicate} {builtin} @@< +X +Y
+@defopx {Guard Predicate} {builtin} @@=< +X +Y
+@defopx {Guard Predicate} {builtin} @@>= +X +Y
+@defopx {Guard Predicate} {builtin} @@> +X +Y
+Compares @var{X} and @var{Y} with the standard order.  If the condition
+is not satisfied, the invocation of the predicate fails.
+@end defop
+
+@defop {Guard Predicate} {builtin} \= +X +Y
+@cindex principal functor
+Compares @var{X} and @var{Y} and succeeds if and only if their principal
+functors are different.  For atomic values, it means that they are
+different; for functor structures, it means that either they have
+different functor names or different arity.  For generic objects, the
+predicate succeeds when two objects are of different classes.
+
+Note that @samp{f(a) \= f(b)} fails, as the two terms have the same
+principal functor.  Note also that, floating point numbers are generic
+objects and thus @samp{X \= Y} fails for any two floating point numbers,
+as they are objects of the same class.
+@end defop
+
+@defop {Guard Predicate} {builtin} hash +X @t{-}H
+Computes the hash value of @var{X} and returns it in @var{H}.  The hash
+value is a non-negative integer value.
+
+Hashing function may look into elements of structured data recursively.
+@var{X} has to be instantiated enough to compute hash value.  Some
+generic objects may not implement hash methods, and, in such cases,
+their hash value becomes a constant.
+@end defop
+
+@node Execution Status, Debugging, Comparison and Hashing, Common Operations
+@subsection Execution Status
+@cindex priority
+
+@defop {Guard Predicate} {builtin} current_priority @t{-}P
+Returns the priority value of the reduced goal to @var{P}.
+@xref{Priority, , Priority Specification}, for further details on the
+priority mechanism.
+@end defop
+
+@defop {Body Predicate} {builtin} current_node @t{-}Node @t{-}NumNodes
+On a parallel implementation, the predicate returns the processor number
+executing the predicate in @var{Node} and the total number of (pseudo-)
+processors available in @var{NumNodes}.  Processor numbers have zero
+origin.  Thus, the maximum value returned to @var{Node} is one less than
+the value returned to @var{NumNodes}.  On a sequential implementation, 0
+is returned to @var{Node} and 1 to @var{NumNodes}.
+@end defop
+
+@node Debugging,  , Execution Status, Common Operations
+@subsection Debugging
+@cindex unbound
+
+@defop {Body Predicate} {builtin} unbound ?X @t{-}Result
+Checks whether @var{X} is already bound to some concrete value or not
+and returns the @var{Result}.
+
+If the toplevel of @var{X} is already defined, @var{Result} is unified
+with a single-element vector of the form @{@var{X}@}.  When @var{X} is
+bound to a structured value, its elements may or may not be bound
+yet.
+
+If @var{X} is not bound yet, @var{Result} is unified with a three
+element vector of the form @{@var{Addr1}, @var{Addr2}, @var{X}@}, where
+@var{Addr1} and @var{Addr2} are integers indicating the current address
+of the variable @var{X} somehow.  Note that variable addresses may
+change in time by garbage collection, automatic data migration in
+parallel implementations or any such low level implementational reasons;
+they are no more than debugging hints.
+
+@strong{Do not use this predicate in normal application programs.}
+Unlike the @code{var/1} feature of sequential Prolog, variables once
+judged as unbound can be bound in the next instance on parallel
+implementations.  Thus, usage of this predicate should be restricted to
+programs that have to go into low level details of the system
+implementation, such as debugging tools.
+@end defop
+
+@node Atomic Data, Structured Data, Common Operations, Builtin and Library
+@section Atomic Data
+@cindex atomic data
+
+KLIC provides two kinds of atomic data types, numerical and symbolic.
+
+For numerical data, KLIC provides integer and floating point number data
+types and operations to manipulate them.  Floating point numbers are
+implemented as generic objects and thus actually are not an atom.
+
+Note that implicit type conversions between integer and floating point
+data are never made.  Integer numbers and floating point numbers are
+treated completely separately.
+
+Whether given data is atomic or not can be tested by the following guard
+predicates.
+
+@defop {Guard Predicate} {builtin} atomic +X
+Tests whether @var{X} is atomic or not.  Floating point numbers are
+@emph{not} judged as atomic by this predicate.
+@end defop
+
+@menu
+* Symbolic Atoms::              Symbolic atoms give names to various concepts
+* Integers::                    Integer data and their operations
+* Floating Points::             Floating point data and their operations
+@end menu
+
+@node Symbolic Atoms, Integers, Atomic Data, Atomic Data
+@subsection Symbolic Atoms
+@tindex atom
+@cindex symbol
+@cindex symbolic atom
+@cindex atom
+
+@dfn{Symbolic atoms} are atomic data objects that give names to notions.
+Symbolic atoms with the same name are the same and with different names
+are different.
+
+@menu
+* Notation of Atoms::           Notation of symbolic atoms
+* Symbolic Atom Operation::     Operations on symbolic atoms
+@end menu
+
+@node Notation of Atoms, Symbolic Atom Operation, Symbolic Atoms, Symbolic Atoms
+@subsubsection Notation of Symbolic Atoms
+
+The notation of symbolic atoms is similar to Edinburgh Prolog, which is
+one of the following.
+
+@itemize @bullet
+@item
+A lower case letter followed by a sequence of any number (including
+zero) of letters, digits or underlines.
+
+Examples:
+@example
+icot   kl1   a_symbolic_atom_with_a_long_name
+@end example
+
+@item
+A sequence of special characters (some of @code{~}, @code{+},
+@code{-}, @code{*}, @code{/}, @code{\}, @code{^},
+@code{<}, @code{>}, @code{=}, @code{`} (backquote),
+@code{:}, @code{.}, @code{?}, @code{@@}, @code{#},
+@code{$}, @code{&}).
+
+Examples:
+@example
++   >=   :-   =:=
+@end example
+
+@item
+A sequence of any characters quoted by single quotes.  If single quote
+characters are to be included, they should be doubled or escaped by a
+backslash.
+
+Examples:
+@example
+'Hello world'    'an atom with \'singlequotes\' in it'
+@end example
+
+@item
+Special one-character atoms.  There are three of them, which are
+@code{!}, @code{|} and @code{;}.  Also, @code{|} has a special meaning
+in list notation (@xref{Notation of Lists}).
+
+@item
+A special atom @code{[]}, which usually is used to represent ends of
+lists (@pxref{Lists}).  Spaces can be in between @code{[} and @code{]}.
+@end itemize
+
+Important differences with Edinburgh Prolog syntax are the following.
+
+@itemize @bullet
+@item
+A vertical bar (@code{|}) means a one-character atom.  Even when it is
+used as an operator, it is @emph{not} treated the same as a semicolon
+(@code{;}) but as a different atom.
+
+@item
+A pair of curly braces (@code{@{@}}) does not stand for a symbolic atom.
+It means a vector with no elements (@pxref{Notation of Vectors}).
+@end itemize
+
+@node Symbolic Atom Operation,  , Notation of Atoms, Symbolic Atoms
+@subsubsection Operations on Symbolic Atoms
+
+Whether a given data object is a symbolic atom or not can be tested by
+the following guard predicate.
+
+@defop {Guard Predicate} {builtin} atom +X
+Tests whether @var{X} is a symbolic atom or not.
+@end defop
+
+To maintain the uniqueness of atoms, the system gives a unique number
+to each atom and maintains the association between atom name strings and
+atom numbers.  Association of symbolic atoms and their names can be
+known by the following predicates defined in the module
+@code{atom_table}.
+@pindex @code{atom_table}
+
+@defop {Predicate} {atom_table} make_atom +String @t{-}Atom
+When given a @var{String}, returns @var{Atom} with that name.  If such
+an atom does not exist, a new atom is registered.
+@end defop
+
+@defop {Predicate} {atom_table} atom_number +Atom @t{-}Number
+Internal serial number for @var{Atom} is returned to @var{Number} as an
+integer value.
+@end defop
+
+@defop {Predicate} {atom_table} get_atom_string +Atom @t{-}String
+The name string of @var{Atom} is returned to @var{String}.
+@end defop
+
+@defop {Predicate} {atom_table} intern +String @t{-}Result
+The same as atom_table:make_atom, except that the returned value is a
+functor structure of the form @code{normal(@var{Atom})}.
+@end defop
+
+@defop {Predicate} {atom_table} get_atom_name +Atom @t{-}Result
+The same as atom_table:get_atom_string, except that the returned value
+is a functor structure of the form @code{normal(@var{String})}.
+@end defop
+
+Although symbolic atoms are associated with their name strings, do
+@emph{not} use them for string manipulation.  String data objects
+provide much more functionality and better performance
+(@pxref{Strings}).
+
+@node Integers, Floating Points, Symbolic Atoms, Atomic Data
+@subsection Integer Atoms
+@cindex integer
+@tindex integer
+
+KLIC provides integer data with usually 28 or 60 bits as its basic
+standard feature.  The width depends on the C compiler you use.  It is 4
+bits shorter than the width of type @code{long int}.
+
+@defop {Guard Predicate} {builtin} integer +X
+Tests whether @var{X} is an integer atom.
+@end defop
+
+@menu
+* Notation of Integers::        Notation of integers
+* Integer Arith::               Integer arithmetics
+* Integer Comp::                Integer comparison
+@end menu
+
+@node Notation of Integers, Integer Arith, Integers, Integers
+@subsubsection Notation of Integers
+
+KLIC provides several ways to denote integer constants.
+@itemize @bullet
+@item
+Usual decimal notation: optional minus sign followed by a sequence of
+decimal digits.  Examples: @samp{123}, @samp{-35}.
+@item
+Based notation: optional minus sign followed by a sequence of decimal
+digits specifying the base (1 to 36), an apostrophe, and then a sequence
+of digits of the base, that are digits and alphabets (case insensitive).
+Examples: @samp{2'1010}, @samp{16'0D0a}.  Value of an integer with base
+1 is the number of ones in the digit sequence; for example
+@samp{1'10110} means 3.
+@item
+@cindex character code
+Character code notation: optional minus sign followed by a digit 0, an
+apostrophe and a character.  Examples: @samp{0'a} means the character
+code of lowercase letter @kbd{a}.
+@end itemize
+The above listed constant notations can be used in both KL1 programs and
+KL1 data read in by Prolog-like I/O interface (@pxref{Prolog I/O, ,
+Input and Output with Prolog-like Interface}).
+
+The following are also allowed in KL1 programs for compatility with
+PIMOS system on PIM machines.
+@itemize @bullet
+@item
+Based notation: optional minus sign followed by a sequence of decimal
+digits specifying the base (1 to 36), a sharp sign, and then a charcter
+string of digits of the base, that are digits and alphabets (case
+insensitive), surrounded by doublequotes.  Examples: @samp{2#"1010"},
+@samp{16#"0D0a"}.
+@item
+@cindex character code
+Character code notation: optional minus sign followed by a sharp sign
+and a character enclosed within doubleqoutes.  Examples: @samp{#"a"}
+means the character code of lowercase letter @kbd{a}.
+@end itemize
+
+@node Integer Arith, Integer Comp, Notation of Integers, Integers
+@subsubsection Integer Arithmetics
+@cindex arithmetics on integers
+@cindex integer arithmetics
+
+@defop {Guard Predicate} {builtin} := @t{-}Var +Expr
+@defopx {Body Predicate} {builtin} := @t{-}Var +Expr
+Computes the value of the integer expression @var{Expr}, and unifies it
+with @var{Var}.  The following operators are available in the
+expression.
+
+@table @t
+@item @var{X} + @var{Y}
+Addition.
+@item + @var{X}
+No operation.  @var{X} is the result.
+@item @var{X} - @var{Y}
+Subtraction.
+@item - @var{X}
+Sign inversion.
+@item @var{X} * @var{Y}
+Multiplication.
+@item @var{X} / @var{Y}
+Integer division.
+@item @var{X} mod @var{Y}
+Modulo.
+@item \(@var{X})
+Bit-wise complement.
+@item @var{X} /\ @var{Y}
+Bit-wise logical AND.
+@item @var{X} \/ @var{Y}
+Bit-wise logical OR.
+@item @var{X} xor @var{Y}
+Bit-wise exclusive OR.
+@item @var{X} << @var{Y}
+Left shift.
+@item @var{X} >> @var{Y}
+Logical right shift.
+@item int(@var{X})
+Conversion from floating point to integer.  @var{X} is a floating point
+expression (@pxref{Floating Arith, , Floating Point Arithmetics}) and
+its result is rounded to an integer value.
+@end table
+
+Arithmetical overflows are ignored, that is, all the arithmetics are
+done modulo
+@iftex
+2^{28} or 2^{60}
+@end iftex
+@ifinfo
+2**28 or 2**60
+@end ifinfo
+depending on the C compiler used.  C compilers with 32-bit @code{long
+int} give 28-bit KLIC integers and those with 64-bit @code{long int}
+give 60-bit KLIC integers.
+
+This predicate is available in both guards and bodies of clauses.
+
+If any of the operands in the expression are uninstantiated, the
+computation will be suspended until they all get instantiated.
+
+Any operands in the expression can be an expression recursively.
+However, operands written as a variable in the program should @emph{not}
+be instantiated to a compound term such as @samp{3 + 5}.  They should be
+instantiated only to an integer.  Otherwise, a type mismatch error will
+be generated.
+@end defop
+
+@node Integer Comp,  , Integer Arith, Integers
+@subsubsection Integer Comparison
+@cindex comparison on integers
+@cindex integer comparison
+
+Comparison of integer data can be made using the predicates described
+here.  More general comparison predicate is also provided
+(@pxref{Comparison and Hashing}), but predicates and methods described
+here are more efficient when the operands are known to be
+integers.
+
+@defop {Guard Predicate} {builtin} > +X +Y
+@defopx {Guard Predicate} {builtin} >= +X +Y
+@defopx {Guard Predicate} {builtin} =:= +X +Y
+@defopx {Guard Predicate} {builtin} =\= +X +Y
+@defopx {Guard Predicate} {builtin} =< +X +Y
+@defopx {Guard Predicate} {builtin} < +X +Y
+Perform arithmetical comparison of two integer arguments.  Use
+@code{=:=} and @code{=\=} for equality and non-equality checks.  Each
+side of the comparison can be an arithmetical expression.  The same set
+of operators as in @code{:=} can be used.
+@end defop
+
+@node Floating Points,  , Integers, Atomic Data
+@subsection Floating Point Numbers
+@cindex floating point number
+@cindex real number
+@tindex floating point number
+
+Floating point numbers with precision of 64 bits are provided as generic
+objects.  The following method and predicate tell whether given data is
+a floating point number or not.
+
+@defop {Guard Method} float float +X
+@defopx {Guard Predicate} {builtin} float +X
+Tests whether @var{X} is a floating point number.
+@end defop
+
+@menu
+* Notation of Floats::          Notation of floating point numbers
+* Creating Floats::             
+* Floating Arith::              Floating point arithmetics
+* Floating Comp::               Floating comparison
+@end menu
+
+@node Notation of Floats, Creating Floats, Floating Points, Floating Points
+@subsubsection Notation of Floating Point Numbers
+@cindex floating point notation
+
+Floating point numbers have the following constant notation
+syntax.
+
+@display
+@var{sign} @var{integral} @code{.} @var{fraction} @code{e} @var{sign} @var{exponent}
+@end display
+
+@noindent
+where @var{integral}, @var{fraction} and @var{exponent} are sequence of
+decimal digits.  @var{sign} is either @code{+}, @code{-} or empty
+(meaning @code{+}).  The exponent part, that is, character @code{e},
+@var{sign} and @var{exponent}, may be omitted altogether.
+
+The following are examples of floating point number constants.
+
+@example
+3.14159  -6.02e23  1234.5678e-25
+@end example
+
+@node Creating Floats, Floating Arith, Notation of Floats, Floating Points
+@subsubsection Creating New Floating Point Numbers
+@cindex creation of floating point numbers
+@cindex converting integer to floating point
+@cindex integer to floating point conversion
+@cindex floating point conversion from an integer
+
+New floating point numbers can be created by the following.  Predicates
+for floating point arithmetics described in @ref{Floating Arith} also
+create floating point numbers as the result of arithmetical operations.
+
+@defop {Object Creation} float new @t{-}Float +Init
+A new floating point number is created and unified with @var{Float}.
+The argument @var{Init} should be an integer specifying the value of the
+floating point number.  For example, @samp{generic:new(float, F, 3)}
+unifies @code{F} with @code{3.0}.
+@end defop
+
+@node Floating Arith, Floating Comp, Creating Floats, Floating Points
+@subsubsection Floating Point Arithmetics
+@cindex arithmetics on floating points
+@cindex floating point arithmetics
+
+@defop {Body Predicate} {builtin} $:= @t{-}Var +Expr
+Computes the value of the floating point expression @var{Expr}, and
+unifies it with @var{Var}.  The following operators are available in the
+expression.
+
+@table @t
+@item @var{X} + @var{Y}
+Addition.
+@item @var{X} - @var{Y}
+Subtraction.
+@item @var{X} * @var{Y}
+Multiplication.
+@item @var{X} / @var{Y}
+Division.
+@item pow(@var{X}, @var{Y})
+@var{Y} to the power of @var{X}.
+@item sin(@var{X}), cos(@var{X}), tan(@var{X})
+@cindex trigonometric function
+@cindex sine
+@cindex cosine
+@cindex tangent
+Trigonometric functions on @var{X}.
+@item asin(@var{X}), acos(@var{X}), atan(@var{X})
+Inverse trigonometric functions on @var{X}.
+@item sinh(@var{X}), cosh(@var{X}), tanh(@var{X})
+@cindex hyperbolic function
+Hyperbolic functions on @var{X}.
+@item exp(@var{X})
+@cindex exponential
+Exponential function.
+@item log(@var{X})
+@cindex logarithm
+Natural logarithm.
+@item sqrt(@var{X})
+@cindex square root
+Square root.
+@item ceil(@var{X})
+@cindex rounding
+@cindex ceiling
+Ceiling function (rounding toward positive infinity).
+@item floor(@var{X})
+@cindex flooring
+Flooring function (rounding toward negative infinity).
+@item float(@var{X})
+Conversion from an integer to a floating point number.  @var{X} is an
+integer expression (@pxref{Integer Arith, , Integer Arithmetics}) and
+its result is converted to a floating point number.
+@end table
+
+This predicate is available in both guards and bodies of clauses.
+
+If any of the operands in the expression are uninstantiated, the
+computation will suspend until they all get instantiated.
+
+Any operands in the expression can be an expression recursively.
+However, operands written as a variable in the program should @emph{not}
+be instantiated to a compound term such as @samp{3.0 + 5.0}.  They
+should be instantiated only to a floating point number.  Otherwise, a
+type mismatch error will be generated.
+@end defop
+
+Operations listed above are also provided as generic methods on floating
+point number.
+
+@defop {Body Method} float add +X +Y @t{-}R
+@defopx {Body Method} float subtract +X +Y @t{-}R
+@defopx {Body Method} float multiply +X +Y @t{-}R
+@defopx {Body Method} float divide +X +Y @t{-}R
+@defopx {Body Method} float pow +X +Y @t{-}R
+@defopx {Body Method} float sin +X @t{-}R
+@defopx {Body Method} float cos +X @t{-}R
+@defopx {Body Method} float tan +X @t{-}R
+@defopx {Body Method} float asin +X @t{-}R
+@defopx {Body Method} float acos +X @t{-}R
+@defopx {Body Method} float atan +X @t{-}R
+@defopx {Body Method} float sinh +X @t{-}R
+@defopx {Body Method} float cosn +X @t{-}R
+@defopx {Body Method} float tanh +X @t{-}R
+@defopx {Body Method} float exp +X @t{-}R
+@defopx {Body Method} float log +X @t{-}R
+@defopx {Body Method} float sqrt +X @t{-}R
+@defopx {Body Method} float ceil +X @t{-}R
+@defopx {Body Method} float floor +X @t{-}R
+These methods perform arithmetic operations, specified by the method
+name, on given operand(s), and return the result in @var{R}.
+@end defop
+
+@node Floating Comp,  , Floating Arith, Floating Points
+@subsubsection Floating Point Comparison
+@cindex comparison on floating points
+@cindex floating point comparison
+
+Comparison of floating point data can be made by the predicates
+described here.  More general comparison predicate is also provided
+(@pxref{Comparison and Hashing}), but predicates and methods described
+here are more efficient when the operands are known to be floating point
+numbers.
+
+@defop {Guard Predicate} {builtin} $> +X +Y
+@defopx {Guard Predicate} {builtin} $>= +X +Y
+@defopx {Guard Predicate} {builtin} $=:= +X +Y
+@defopx {Guard Predicate} {builtin} $=\= +X +Y
+@defopx {Guard Predicate} {builtin} $=< +X +Y
+@defopx {Guard Predicate} {builtin} $< +X +Y
+These predicates perform arithmetical comparison of two floating point
+arguments.  Use @code{=:=} and @code{=\=} for equality and non-equality
+checks (although they may not be much meaningful for floating point
+numbers).  Each side of the comparison can be a floating point
+arithmetical expression.  The same set of operators as in @code{$:=} can
+be used.
+
+@strong{Bug Caution} The current version (1.510) has problems with
+expressions with operators in these predicates.  Only simple variables
+and constants can be used.
+@end defop
+
+Comparison of floating point numbers can also be made by the methods
+described below.
+
+@defop {Guard Method} float less_than +X +Y
+@defopx {Guard Method} float not_greater_than +X +Y
+@defopx {Guard Method} float not_less_than +X +Y
+@defopx {Guard Method} float greater_than +X +Y
+@defopx {Guard Method} float equal +X +Y
+@defopx {Guard Method} float not_equal +X +Y
+These methods test whether @var{X} is less than @var{Y} or not, etc.
+@end defop
+
+@node Structured Data, Executable Code, Atomic Data, Builtin and Library
+@section Structured Data
+@cindex structure
+
+Structured data objects consist of zero or more elements.
+
+@menu
+* Functors::                    Named data structures
+* Lists::                       Linear list of elements
+* Vectors::                     One-dimensional arrays of any data
+* Strings::                     Array of small integers such as character codes
+@end menu
+
+@node Functors, Lists, Structured Data, Structured Data
+@subsection Functor Structures
+@tindex functor
+@cindex functor
+@cindex principal functor
+@cindex record structure
+
+Functor structures are structures with given name and one or more
+elements, which can be of any type.  Functors are conveniently used for
+representing data structures whose sizes are known beforehand.  Functors
+correspond to record structures of C-like languages.
+
+@menu
+* Notation of Functors::        Notation of functors
+* Functor Operation::           Operation on fucntor structures
+@end menu
+
+@node Notation of Functors, Functor Operation, Functors, Functors
+@subsubsection Notation of Functors
+@cindex functor notation
+
+Functor constants can be written by the name of the principal functor, a
+left parenthesis, elements separated by commas, and finally a right
+parenthesis.  Functor names have the same syntax as symbolic atoms.  The
+principal functor name and the following left parenthesis should
+@emph{not} be separated by space characters or any other punctuation
+symbols.  Elements can be of any type, including variables or functors
+themselves.
+
+Examples:
+@example
+f(a, 3)   'a recursive functor structure'(X, 'child functor'(Y))
+@end example
+
+@node Functor Operation,  , Notation of Functors, Functors
+@subsubsection Operations on Functors
+@cindex operations on functors
+
+Predicates for manipulation of functor structures are provided as
+builtin predicates and in the module @code{functor_table}, as listed in
+this section.
+@pindex @code{functor_table}
+
+In the current implementation, all the body builtin predicates listed
+here are actually implemented as macros expanded to predicates of the
+module @code{functor_table}.  This implementation scheme may be changed
+in future releases.
+
+@defop {Guard Predicate} {builtin} functor +X @t{-}Functor @t{-}Arity
+@defopx {Body Predicate} {builtin} functor +X @t{-}Functor @t{-}Arity
+@var{X} is a functor with the principal functor whose name being
+@var{Functor} and arity @var{Arity}.  These predicates can be used for
+obtaining the the name and/or the arity of principal functors.  The
+guard predicate version can also be used for testing that @var{X} has
+the name @var{Functor} and/or the arity @var{Arity}.  Any instantiated
+data that are not functor structures, i.e., atomic data, strings,
+vectors and so on, have zero as their arities and themselves as their
+principal functor names.  Note that list structures consist of functors
+@code{./2}.
+
+This predicate cannot be used to create a new functor.
+@end defop
+
+@defop {Guard Predicate} {builtin} arg +Pos +Term @t{-}Arg
+@defopx {Body Predicate} {builtin} arg +Pos +Term @t{-}Arg
+The @var{Pos}-th argument of @var{Term} is @var{Arg}.  Arguments are
+numbered from 1.  The guard version simply fails if @var{Pos} is out of
+range.  As all the data structures except for functor structures have no
+arguments, this predicate always fails for them.
+@end defop
+
+@defop {Body Predicate} {builtin} new_functor @t{-}Functor +Atom +Arity
+A functor structure with its principal functor with name @var{Atom} and
+arity @var{Arity} is returned to @var{Functor}.  Arguments of the
+created functor are initiated with integer @code{0}.
+@end defop
+
+@defop {Body Predicate} {builtin}  setarg +Pos +Fnct ?NewE @t{-}NewFnct
+@defopx {Body Predicate} {builtin}  setarg +Pos +Fnct ?OldE ?NewE @t{-}NewFnct
+A new functor structure that is different from @var{Fnct} with only one
+argument at @var{Pos} is created and returned to @var{NewFnct}.  The
+element with index @var{Pos} of @var{NewFnct} will be @var{NewE}.  For
+five argument versions, the original argument at @var{Pos} will be
+returned to @var{OldE}.
+@end defop
+
+@defop {Predicate} {functor_table} =.. @t{-}NewFnct +List
+A new functor structure is created and returned to @var{NewFnct}.  The
+name of the principal functor is specified by the first element of 
+@var{List}, which should be a symbolic atom, and the arguments are
+specified by the rest of @var{List}.  If @var{List} has only one
+element, that element is returned to @var{NewFnct}.
+
+This predicate can @emph{not} be used for decomposing a functor
+structure to a list.
+@end defop
+
+@node Lists, Vectors, Functors, Structured Data
+@subsection Lists
+@tindex list
+@cindex list
+@cindex cons cell
+@cindex car
+@cindex cdr
+@cindex nil
+
+Lists are arbitrarily long sequences of any data objects.  In KL1, List
+structures are made up of functor structures @code{./2}, that is,
+functor structures with their name @code{.} and arity two.  List
+structures are composed of possibly many of these functor structures
+(sometimes called @dfn{cons cells}).
+
+The first element of the cons cell, sometimes called the @dfn{car} of
+the cell, represents the first element of the list.  The second element,
+the @dfn{cdr} of the cell, represents the rest of the list.  Termination
+of the list is indicated by a symbolic atom @code{[]} being the cdr.
+
+Whether a given argument is a list or not can be tested by the following
+guard predicate.
+
+@defop {Guard Predicate} {builtin} list +X
+Tests whether @var{X} is a cons cell.  Note that, despite its name, this
+predicate fails for a null list @code{[]} for a historical reason.
+@end defop
+
+Incrementally instantiated list structures are conveniently used as
+message streams.
+
+@menu
+* Notation of Lists::           Notation of Lists
+* Merging::                     Merging messages from multiple streams
+@end menu
+
+@node Notation of Lists, Merging, Lists, Lists
+@subsubsection Notation of Lists
+@cindex notation of lists
+
+As in Lisp, lists of KL1 are constructed using @emph{cons} data
+structures, which is actually a functor structure @code{./2}.
+
+The basic notation for lists is @code{[@var{Car} | @var{Cdr}]}, which
+consists of the first element @var{Car} and the tail of the list
+@var{Cdr}.  This means exactly the same as @code{.(@var{Car},
+@var{Cdr})}.  An empty list is represented by an atom @code{[]}.
+
+If @var{Cdr} happens to be empty, that is, when the list consists only
+of one element @var{Car}, such a list can be written as
+@code{.(@var{Car}, [])} or @code{[@var{Car} | []]}, or, alternatively,
+as @code{[@var{Car}]}.  That is, the sequence @code{| []} at the tail of
+a list can be ommitted.
+
+Lists with its car being @var{Car} and its cdr being a list
+@code{[@var{Cadr}, @dots{}]} is @code{[@var{Car} | [@var{Cadr},
+@dots{}]]}, which can be abbreviated as @code{[@var{Car}, @var{Cadr},
+@dots{}]}.  For example, a list consisting of four elements, @code{first},
+@code{second}, @code{third} and @code{fourth} can be written as @code{[first,
+second, third, fourth]}.
+
+A list consisting of four or more elements, but with the first four
+elements being @code{first}, @code{second}, @code{third} and
+@code{fourth}, can be written as @code{[first, second, third, fourth |
+Rest]}.  Here, the variable @code{Rest} corresponds to the list
+beginning with the fifth element, or an empty list if the whole list
+had only four elements.
+
+Note that, unlike in Ediburgh Prolog, the character sequence @code{,..}
+can @emph{not} be used in place of @code{|}.
+
+@node Merging,  , Notation of Lists, Lists
+@subsubsection Manipulation of Message Streams
+@cindex stream
+@cindex message stream
+@cindex merging
+
+A stream merger is a process that takes multiple message streams
+represented as lists of messages as input, and passes all the messages
+from all the input streams to a single output stream also represented as
+a list.
+
+The output consists of all the messages in the inputs with duplicates
+preserved.  When two messages are ordered in one of the input streams,
+their order is also preserved in the output.  When messages are from
+different input streams, their order in the output is unpredictable.
+The order may differ in one execution of the same program from
+another.  The behavior of mergers is thus nondeterministic.
+
+For example, when there are two input streams @code{[1, 2, 3]} and
+@code{[a, b, c]}, the output can be something like @code{[1, 2, a, b, 3,
+c]} or @code{[1, a, 2, b, c, 3]}, but will never be @code{[1, a, 3, b,
+c, 2]}.
+
+A binary (two-input) stream merger can be defined in KL1 as follows.
+
+@example
+merge([M|In1], In2, Out) :- Out=[M|OutT],  merge(In1, In2, OutT).
+merge(In1, [M|In2], Out) :- Out=[M|OutT],  merge(In1, In2, OutT).
+merge([], In2, Out) :- Out=In2.
+merge(In1, [], Out) :- Out=In1.
+@end example
+
+@itemize @bullet
+@item
+The first clause forwards one message coming from the first input stream
+to the output stream.  The first input stream is the first argument and
+the output stream is the third argument of the predicate.  It then calls
+the predicate @code{merge/3} recursively for repetitive execution.
+
+@item
+The second clause does the same for the second input stream.
+
+@item
+The third clause is used when the first input stream has no more messages
+in it.  In this case, the second input stream is directly connected to
+the output.  As there are no more messages to merge from the first input
+stream, the result of the merging should be the same as the second input
+stream.
+
+@item
+The fourth clause provides the corresponding feature when the second
+input stream has no more messages in it.
+@end itemize
+
+When messages come from both the first and the second at the same time,
+either the first or the second clause is arbitrarily chosen.  This is the
+source of the nondeterminacy of the merger.
+
+Although binary mergers are easy to define in KL1, defining a merger
+with arbitrarily many input streams is not so easy.  It is also
+desirable to add new input streams dynamically, which makes it still
+harder.  Also, mergers are used quite frequently in KL1 programs and
+thus should be quite efficient.  Thus, the KLIC system provides a merger
+as one of its standard feature.
+
+A new merger can be created by the following pseudo-predicate.
+
+@defop {Object Creation} merge new ?Input ?Output
+@tindex merger
+A new merger with single input stream is created.  Its input stream is
+@var{Input} and its output is @var{Output}.
+@end defop
+
+The merger process created by the above pseudo-predicate does not
+actually start any merging immediately after its creation.  It only
+forwards the messages from @var{Input} to @var{Output}, without changing
+the order.
+
+To add a new input stream to a merger, unify the input with a vector
+whose elements are input streams.  For example, if you need a binary
+merger, do the following.
+
+@example
+generic:new(merge, @var{Input}, @var{Output}),
+@var{Input} = @{@var{In1}, @var{In2}@}
+@end example
+
+This means the same as the following.
+
+@example
+generic:new(merge, @{@var{In1}, @var{In2}@}, @var{Output})
+@end example
+
+After doing the above, the merger will merge messages from two input
+streams, @var{In1} and @var{In2}, to the output stream @var{Output}.
+
+Input streams to a merger can be added not only immediately after its
+creation but at any time on demand.  Two more input streams are added,
+for example, by the following.
+
+@example
+@var{In2} = @{@var{In2A}, @var{In2B}, @var{In2C}@}
+@end example
+
+After this, the merger will have four input streams, @var{In1},
+@var{In2A}, @var{In2B} and @var{In2C}.
+
+When one of the input streams is no longer needed, that input stream
+can be simply closed, by unifying it with an atom @code{[]}.
+
+The size of the vector unified with an input stream can be arbitrarily
+large or small.  When it has only one element, the number of input
+streams will not be changed.  When the vector has no elements,
+unifying with it has the same effect as closing the stream.
+
+The output stream will be closed, i.e., the tail of the output list is
+unified with @code{[]}, when all the input streams have been closed.
+
+Here are some clues in using the merger.
+
+@itemize @bullet
+@item
+Messages merged can be a data structure containing unbound variables.
+Such messages are sometimes called @dfn{incomplete messages}.
+Incomplete messages are convenient for constructing a server-client
+process structure.  Giving values to variables in messages can be used
+for communicating backwards from the server to the client.
+
+@item
+Merging may look deterministic on sequential implementations.  Do never
+rely on it.  It will become really nondeterministic on parallel
+implementations.
+@end itemize
+
+@node Vectors, Strings, Lists, Structured Data
+@subsection Vectors
+@cindex vector
+@cindex array
+@tindex vector
+
+Vectors are fixed-length one-dimensional array of KL1 data.  The length
+of a vector is determined on its creation.  Elements can be any KL1 data
+and can even be left undefined when the data structure is created.
+
+Elements are indexed by an integer beginning from 0.  For example, a
+vector with 3 elements has elements numbered 0, 1 and 2.
+
+@menu
+* Notation of Vectors::         Constant notation of vectors
+* Creating Vectors::            Creating new vectors
+* Predicates on Vectors::       Vector manipulation predicates
+@end menu
+
+@node Notation of Vectors, Creating Vectors, Vectors, Vectors
+@subsubsection Notation of Vectors
+
+Vectors can be denoted by a comma-separated list of elements in a pair
+of curly braces.
+
+@example
+@{ 1, a, f(b), X @}
+@end example
+
+@noindent
+A null vector (vectors with no elements at all) is denoted only by a
+pair of curly braces.
+
+@example
+@{@}
+@end example
+
+Note that curly braces are used in a way completely different from
+Edinburgh Prolog, where @code{@{@}} means an atom and @code{@{@dots{}@}}
+means a functor structure @code{@{@}((@dots{}))}.
+
+@node Creating Vectors, Predicates on Vectors, Notation of Vectors, Vectors
+@subsubsection Creating New Vectors
+@cindex creation of vectors
+
+In addition to the notation described above, vectors can be dynamically
+created during program execution.  The following predicate can be used
+to create a new vector.
+
+@defop {Object Creation} vector new @t{-}Vector +Init
+@defopx {Body Predicate} {builtin} new_vector @t{-}Vector +Init
+A new vector is created and returned to @var{Vector}.
+
+If the argument @var{Init} is an integer, it sepcifies the number of
+elements.  The elements are initialized with integer @code{0} in this
+case.  For example, @samp{generic:new(vector, V, 2)} creates a vector
+@samp{@{0, 0@}} and returned it to @code{V}.
+
+If @var{Init} is a list, the newly created vector is initiated by the
+elements of the list.  Naturally, the number of elements of the vector
+becomes the same as the length of the list.  For example,
+@samp{generic:new(vector, V, [a, b, c])} creates a vector @code{@{a, b,
+c@}} and unifies it with @code{V}.
+@end defop
+
+@node Predicates on Vectors,  , Creating Vectors, Vectors
+@subsubsection Predicates on Vectors
+
+@defop {Guard Method} vector vector +Vector @t{-}Length
+@defopx {Body Method} vector size +Vector @t{-}Length
+@defopx {Guard Predicate} {builtin} vector +Vector @t{-}Length
+Tests whether @var{Vector} is a vector object (if called in guard) and
+returns the number of elements in @var{Length}.
+@end defop
+
+@defop {Guard Method} vector element +Vector +Index @t{-}Element
+@defopx {Body Method} vector element +Vector +Index @t{-}Element
+@defopx {Guard Predicate} {builtin} vector_element +Vector +Index @t{-}Element
+@defopx {Body Predicate} {builtin} vector_element +Vector +Index @t{-}Element
+An element with index @var{Index} of the vector @var{Vector} is unified
+with @var{Element}.  The index is zero origin.
+@end defop
+
+@defop {Body Method} vector set_element +Original +Index ?NewElement @t{-}New
+@defopx {Body Predicate} {builtin} set_vector_element +Original +Index ?NewElement @t{-}New
+A new vector is unified with @var{New}.  The new vector has the same
+elements as the @var{Original}, except that the @var{Index}'th element is
+updated to @var{NewElement}.  The original vector is left untouched.
+The index is zero origin.
+@end defop
+
+@defop {Body Method} vector set_element +Original +Index ?Element ?NewElement @t{-}New
+@defopx {Body Predicate} {builtin} set_vector_element +Original +Index ?Element ?NewElement @t{-}New
+A new vector is unified with @var{New}.  The new vector has the same
+elements as the @var{Original}, except that the @var{Index}'th element
+is updated to @var{NewElement}.  The original vector is left untouched.
+The index is zero origin.  The original @var{Index}'th element is
+returned to @var{Element}.
+@end defop
+
+@defop {Body Method} vector split +Original +At @t{-}Lower @t{-}Upper
+The vector @var{Original} is split at the index position @var{At} and
+the resultant two vectors are unified with @var{Lower} and @var{Upper}.
+@var{At} has to be a non-negative integer less than or equal to the size
+of the original vector.  @var{Lower} will have elements with indices
+between 0 and @code{@var{At}-1}, inclusive.  Elements with indices
+between @var{At} and up will be included in @var{Upper}.
+@end defop
+
+@defop {Body Method} vector join +Lower +Upper @t{-}Joined
+Two vectors @var{Lower} and @var{Upper} are concatenated together to
+make a new vector @var{Joined}.
+@end defop
+
+In KLIC, creating a new vector differing with an existing one by only a
+single element is implemented with constant time and space overhead,
+regardless of the size of the vector, by using multiversion array
+representation.
+
+@node Strings,  , Vectors, Structured Data
+@subsection Strings
+@tindex string
+@cindex string
+@cindex character string
+
+Strings are one dimensional arrays of integers in restricted range.  The
+current version provides only strings of 8-bit elements which has
+elements of the range 0 through 255.  They are convenient for
+representing character strings.  Strings with elements of different
+sizes are planned in future.
+
+Unlike in Edinburgh Prolog, strings are @emph{not} notational convention
+for lists of character codes.  They are of its own data type.
+
+@menu
+* Notation of Strings::         Constant notation of strings
+* Creating Strings::            Creating new strings
+* Predicates on Strings::       String manipulation predicates
+@end menu
+
+@node Notation of Strings, Creating Strings, Strings, Strings
+@subsubsection Notation of Strings
+
+In KLIC, character string constants should be denoted by sequence of
+characters surrounded by a pair of doublequotes, as follows.
+
+@example
+"A string of the characters written here"
+@end example
+
+The following escape sequences (a la ANSI C) are used to specify
+doublequotes, backslashes and control codes as string elements.
+
+@table @code
+@item \a
+Bell.
+@item \b
+Backspace.
+@item \t
+Tab.
+@item \n
+Newline.
+@item \v
+Vertical tab.
+@item \f
+Formfeed.
+@item \r
+Carriage return.
+@item \'
+Singlequote.
+@item \"
+Doublequote.
+@item \?
+Question mark.
+@item \\
+Backslash.  Two consecutive backslach characters specifies a single
+backslash in the string.
+@item \@i{ooo}
+Code specified by the octal number @i{ooo}.  Up to three octal digits
+are recognized.
+@item \x@i{hh}
+Code specified by the hexadecimal number @i{hh}.  Arbitrarily many
+hexadecimal digits may be used.
+@item \@key{newline}
+The backslash character along with the newline code immediately
+following it are ignored.  This sequence results in no characters at all
+in the string.
+@end table
+
+@noindent
+Example:
+
+@example
+"The character \'\"\' (doublequote)"
+@end example
+
+@noindent
+The above example is understood as a string containing the following
+characters.
+
+@example
+The character '"' (doublequote)
+@end example
+
+Strings should not contain newlines nor doublequotes directly.  A
+standard way for including newlines within a string is to end the line
+with @samp{\n\}.  By this, a new line code is inserted by the sequence
+@samp{\n} and the actual newline in the source code following the second
+@samp{\} is ignored.
+
+Unlike in Edinburgh Prolog, character strings are @emph{not} lists of
+character codes.
+
+@node Creating Strings, Predicates on Strings, Notation of Strings, Strings
+@subsubsection Creating New Strings
+
+In addition to the constant strings described above, strings can be
+dynamically created during execution.  The following predicate can be
+used to create a new string.
+
+@defop {Object Creation} string new @t{-}String +Init +ElemSize
+@defopx {Body Predicate} {builtin} new_string @t{-}String +Init +ElemSize
+A new string is created and unified with @var{String}.  The last
+argument @var{ElemSize} specifies the bit width of the elements.  As
+only 8-bit strings are available in the current version, this should be
+8.
+
+When the argument @var{Init} is an integer, it sepcifies the number of
+elements.  In this case, the elements are initialized with integer
+@code{0} (null code).  For example, @samp{generic:new(string, S, 3, 8)}
+creates @samp{"\0\0\0"}.
+
+If @var{Init} is a list of integers, the newly created string is
+initiated by the elements of the list.  Naturally, the number of
+elements of the string becomes the same as the length of the list.  In
+this case, list elements should have values that fits in the given bit
+width; between 0 and 255 in case of 8-bit strings.  For example,
+@samp{generic:new(string, S, [0'a, 0'b, 0'c], 8)} creates @samp{"abc"}.
+@end defop
+
+@node Predicates on Strings,  , Creating Strings, Strings
+@subsubsection Predicates on Strings
+@cindex comparison of strings
+@cindex dictionary order
+
+@defop {Guard Method} string string +String @t{-}Length @t{-}ElemSize
+@defopx {Body Method} string string +String @t{-}Length @t{-}ElemSize
+@defopx {Guard Predicate} {builtin} string +String @t{-}Length @t{-}ElemSize
+Tests whether @var{String} is a string object (if called in guard).  The
+number of elements of @var{String} is returned in @var{Length} and the
+element size (which is always 8 in the current version) is returned in
+@var{ElemSize}.
+@end defop
+
+@defop {Body Method} string size +String @t{-}Length
+Returns the number of elements of @var{String} in @var{Length}.
+@end defop
+
+@defop {Body Method} string element_size +String @t{-}ElemSize
+Returns the the element size of @var{String} in @var{ElemSize}.
+@end defop
+
+@defop {Guard Method} string element +String +Index @t{-}Element
+@defopx {Body Method} string element +String +Index @t{-}Element
+@defopx {Guard Predicate} {builtin} string_element +String +Index @t{-}Element
+@defopx {Body Predicate} {builtin} string_element +String +Index @t{-}Element
+An element with index @var{Index} of the string @var{String} is unified
+with @var{Element}.  The index is zero origin.
+@end defop
+
+@defop {Guard Method} string less_than +String1 +String2
+@defopx {Guard Predicate} {builtin} string_less_than +String1 +String2
+Succeeds only when @var{String1} is less than @var{String2} in
+lexicographical order.
+@end defop
+
+@defop {Guard Method} string not_less_than +String1 +String2
+@defopx {Guard Predicate} {builtin} string_not_less_than +String1 +String2
+Succeeds only when @var{String1} is not less than @var{String2} in
+lexicographical order.
+@end defop
+
+@defop {Body Method} string set_element +Original +Index +Element @t{-}New
+@defopx {Body Predicate} {builtin} set_string_element +Original +Index +Element @t{-}New
+A new string is unified with @var{New}.  The new string has the same
+elements as the @var{Original}, except that the @var{Index}'th element
+is updated to @var{Element}.  The original string is left untouched.
+The index is zero origin.
+@end defop
+
+@defop {Body Method} string split +Original +At @t{-}Lower @t{-}Upper
+The string @var{Original} is split at the index position @var{At} and
+the resultant two strings are unified with @var{Lower} and @var{Upper}.
+@var{At} has to be a non-negative integer less than or equal to the size
+of the original string.  @var{Lower} will have elements with indices
+between 0 and @code{@var{At}-1}, inclusive.  Elements with indices
+between @var{At} and up will be included in @var{Upper}.
+@end defop
+
+@defop {Body Method} string join +Lower +Upper @t{-}Joined
+Two strings @var{Lower} and @var{Upper} are concatenated together to
+make a new string @var{Joined}.
+@end defop
+
+@defop {Body Method} string search_character +String +Start +End +Char @t{-}Where
+@defopx {Body Predicate} {builtin} search_character +String +Start +End +Char @t{-}Where
+The character @var{Char} is searched for in @var{String}, beginning from
+the position @var{Start} and ending before @var{End}.  If such a
+character is found, its index is unified with @var{Where}.  If not,
+Where is unified with @code{-1}.  The indices are zero origin.
+@end defop
+
+In KLIC, creating a new string differing with only one element from the
+original is implemented with constant time and space overhead,
+regardless of the size of the string, by using multiversion array
+representation.
+
+@node Executable Code, Unix, Structured Data, Builtin and Library
+@section Handling Program Code as Data
+@cindex program
+@cindex higher order
+
+KLIC allows higher order manipulation of executable code as data
+objects.  Program modules are treated as @dfn{module} data objects and
+individual predicates are treated as @dfn{predicate} data
+objects.
+
+@menu
+* Module Type::                 Program modules as data
+* Predicate Type::              Predicates as data
+@end menu
+
+@node Module Type, Predicate Type, Executable Code, Executable Code
+@subsection Modules
+@tindex module
+
+Program modules are treated as data through generic data objects of type
+@code{module}.
+
+@defop {Object Creation} module new @t{-}Module +ModuleName
+Creates a new object @var{Module} corresponding to the program module
+specified by @var{ModuleName} as a symbolic atom.  If the specified
+module is not defined, the symbolic atom itself is returned to @var{Module}.
+@xref{Creating Objects}, for the format of object creation goals.
+@end defop
+
+@defop {Guard Method} module module +Module
+Tests whether @var{Module} is a module object or not.
+@end defop
+
+@defop {Body Method} module name +Module @t{-}ModuleName
+The module name of @var{Module} is returned to @var{ModuleName} as a
+symbolic atom.
+@end defop
+
+@node Predicate Type,  , Module Type, Executable Code
+@subsection Predicates
+@tindex predicate
+
+Predicates in programs are treated as data through generic data objects
+of type @code{predicate}.
+
+Predicate type data can be either denoted as a constant or created
+dynamically in runtime.  Due to limitations of the features of host
+systems, dynamic creation may not be supported on some host systems.
+
+The syntax of a predicate constant is as follows.
+
+@display
+@code{predicate}@code{#}@code{(}@var{module}@code{:}@var{predicate}@code{/}@var{arity}@code{)}
+@end display
+
+@noindent
+Where @var{module} and @var{predicate} should be module and predicate
+name atoms and @var{arity} should be an integer (the number of arguments
+of the predicate).  For example:
+
+@example
+predicate#(main:main/0)  predicate#(quicksort:partition/4)
+@end example
+
+@noindent
+are valid predicate constants in programs.
+
+Note that predicate constants are recognized by the KLIC compiler and
+not by the KLIC parser (@pxref{Prolog I/O, , Input and Output with
+Prolog-like Interface}).  Thus, the notation described above means a
+usual data structure when simply read in using the Prolog-like I/O
+streams.
+
+@defop {Object Creation} predicate new @t{-}Predicate +Module +PredName +Arity
+Creates a new object @var{Predicate} corresponding to the predicate
+specified by @var{Module} (a module object), @var{PredName} (a symbolic
+atom) and @var{Arity} (an integer).  @xref{Creating Objects}, for the
+format of object creation goals.
+@end defop
+
+@defop {Guard Method} predicate predicate +Predicate
+Tests whether @var{Predicate} is a predicate object or not.
+@end defop
+
+@defop {Guard Method} predicate arity +Predicate @t{-}Arity
+@defopx {Body Method} predicate arity +Predicate @t{-}Arity
+The arity of the predicate @var{Predicate} is returned to
+@var{Arity}.
+@end defop
+
+@defop {Body Method} predicate apply +Predicate +ArgVec
+Calls the predicate specified by a predicate object @var{Predicate} with
+arguments specified by @var{ArgVec}.  @var{ArgVec} should be a vector of
+arguments to be passed to @var{Predicate}.  Thus, the size of the vector
+should match with the arity of the predicate.
+@end defop
+
+@defop {Body Method} predicate call +Predicate +Args@dots{}
+Calls the predicate specified by a predicate object @var{Predicate} with
+arguments specified by @code{@var{Args}@dots{}}.  The number of the
+arguments should match with the arity of the predicate.
+@end defop
+
+@defop {Body Method} predicate module +Predicate @t{-}Module
+The program module that @var{Predicate} belongs to is returned to
+@var{Module} as a module data object.
+@end defop
+
+@defop {Body Method} predicate name +Predicate @t{-}Name
+The name of the predicate @var{Predicate} is returned to @var{Name} as a
+symbolic atom.
+@end defop
+
+@node Unix, Input and Output, Executable Code, Builtin and Library
+@section Unix Interface
+@cindex Unix interface
+@cindex operating system
+@pindex @code{unix}
+
+The module named @code{unix} makes features of the host operating system
+(Unix, typically) available to KL1 programs.
+
+Almost all of the features are available as messages to a stream obtained
+by a predicate @code{unix/1} provided by the module @code{unix}.  Some
+features are provided directly by predicates of the module.
+
+@menu
+* Unix Stream::                 Obtaining Unix interface stream
+* I/O Opening::                 Opening input/output streams
+* Sockets::                     Internet- and Unix-domain protocol sockets
+* Files & Dirs::                Manipulation of files and directories
+* Signals::                     Signal interrupt handling
+* Misc Unix Messages::          Miscellaneous messages to the Unix stream
+* Predicate Interface::         Predicate interface for command line args &c
+@end menu
+
+@node Unix Stream, I/O Opening, Unix, Unix
+@subsection Obtaining Unix Interface Stream
+
+The module "unix" interfaces other programs through message streams.
+The stream can be obtained by calling the following predicate.
+
+@defop {Predicate} {unix} unix ?Stream
+A message stream corresponding to the Unix interface is returned to
+@var{Stream}.
+@end defop
+
+Most of the features of the Unix interface are @emph{not} provided as
+predicates, because no ordering is guaranteed between predicate calls.
+
+If the Unix interface @emph{were} provided as predicates, for example:
+
+@example
+unix:cd("a", 0),
+unix:cd("b", 0),
+unix:system("mkdir ls", 0)
+@end example
+
+@noindent
+may list the directory @code{a} but may possibly list @code{b} or even
+some other directory before doing any @code{cd}, depending on the
+execution order.  On the other hand:
+
+@example
+unix:unix([cd("a", 0),
+           cd("b", 0),
+           system("ls", 0)])
+@end example
+
+@noindent
+will surely try two @code{cd} and @code{ls} in this order, as what
+decides the order is not the order of execution but the order of the
+elements in a list structure.
+
+On parallel implementations, KLIC consists of multiple processes.  The
+process in which the unix stream is obtained will be the process
+where all the messages are handled.  For example, @code{cd(Path)}
+message will change working directory of that single process and none of
+others.
+
+If you obtain two or more message streams, there will be no automatic
+synchronization between messages sent to different streams.
+
+@node I/O Opening, Sockets, Unix Stream, Unix
+@subsection Opening Streams for Input and Output Operations
+
+The following messages to the Unix stream open a Unix I/O stream.
+Messages to be sent to the resulting Unix I/O streams (@emph{not} the
+Unix stream stream itself) for actually performing I/O are described in
+separate places: @xref{C-like I/O, , Input and Output with C-like
+Interface}, and @ref{Prolog I/O, , Input and Output with Prolog-like
+Interface}.
+
+The following is a KLIC program for saying hello to the world.
+
+@example
+main :- unix:unix([stdout(R)]), check_and_write(R).
+
+check_and_write(normal(R)) :- R = [fwrite("hello world\n")].
+@end example
+
+@defop {Message} {unix stream} stdin @t{-}Result
+@defopx {Message} {unix stream} stdout @t{-}Result
+@defopx {Message} {unix stream} stderr @t{-}Result
+@cindex standard input
+@cindex standard output
+@cindex standard input
+@cindex stdio
+These messages open a stream associated with process's standard input,
+standard output and standard error file respectively, and return
+@code{normal(@var{Stream})} to @var{Result}.
+@end defop
+
+@defop {Message} {unix stream} read_open +Path @t{-}Result
+@defopx {Message} {unix stream} write_open +Path @t{-}Result
+@defopx {Message} {unix stream} append_open +Path @t{-}Result
+@defopx {Message} {unix stream} update_open +Path @t{-}Result
+@cindex open
+These messages open the file named by the string @var{Path}, and return
+@code{normal(@var{Stream})} to @var{Result}.  The opening mode is input,
+output, append or input/output, respectively.  If opening of the file
+fails, @code{abnormal} is returned instead.
+@end defop
+
+@node Sockets, Files & Dirs, I/O Opening, Unix
+@subsection Using Sockets
+
+Unix- and Internet-protocol sockets can be obtained using the following
+messages to the Unix stream.  Only sockets of SOCK_STREAM type are
+provided.
+
+@defop {Message} {unix stream} connect +Spec @t{-}Result
+Creates a socket and connects it to socket specified by @var{Spec} and
+returns @code{normal(@var{Stream})} to @var{Result}.  @var{Spec} should
+have either of the following formats.
+
+@table @t
+@item unix(@var{Path})
+A unix domain socket with the pathname @var{Path}is opened.
+@item inet(@var{HostName}, @var{Port})
+An internet domain socket of the host specified by a string
+@var{HostName} and port number @var{Port} is opened.
+@item inet(@{@var{B1}, @var{B2}, @var{B3}, @var{B4}@}, @var{Port})
+An internet domain socket is opened.  The host is specified by the
+internet address @var{B1} through @var{B4} is opened.
+@end table
+The obtained stream handles both input and output messages.
+@end defop
+
+@defop {Message} {unix stream} bind +Spec @t{-}Result
+Creates a socket and binds it to a name specified by @var{Spec}.  The
+format of @var{Spec} is the same for the message @code{connect}
+@emph{except} that @var{HostName} should be omitted for internet domain
+sockets.  What is returned to @var{Result} is
+@code{normal(@var{Stream})} but this @var{Stream} is a bound socket
+stream and does not directly handle I/O messages.  Rather, it expects
+@code{accept} messages to obtain I/O message streams.
+When the bound socket stream obtained is closed and the socket type is
+@code{unix}, the named socket specified by @var{Path} in @var{Spec} will
+be unlinked.
+@end defop
+
+@defop {Message} {bound socket} accept @t{-}Result
+Accepts a connection to the socket and returns
+@code{normal(@var{Stream})} to @var{Result}, where @var{Stream} is an
+I/O message stream for both input and output messages.
+@end defop
+
+@cindex asynchronous I/O
+Sockets provide asynchronous I/O, that is, waiting for a connection or
+acceptance of a connection will not block other processes in the KLIC
+system.  Trying to read or write to sockets with buffers empty or full
+respectively will not block the whole computation.  Such I/O operations
+will be postponed until immediate operations become possible.
+
+@strong{Limitations:} When an operation on a socket is postponed, all
+the remaining operations to be done on the socket are also postponed
+until the completion of the postponed operation.  This is problematic
+when both input and output has to be polled.  The problem is planned to
+be solved in a future release.
+
+@cindex Linux
+@strong{Limitations on Linux:}Asynchronous I/O operations do not work on
+Linux (at least with Slackware 1.2.0) with the current version.
+
+@node Files & Dirs, Signals, Sockets, Unix
+@subsection Files and Directories
+@cindex file
+@cindex directory
+
+The following message to the unix stream handles files and directories.
+
+@defop {Message} {unix stream} cd +Path @t{-}Result
+@cindex chdir
+Changes the working directory to @var{Path}.  If successful, @code{0} is
+returned to @var{Result}; otherwise, @code{-1} is returned.  Corresponds
+to @code{chdir} system call.
+@end defop
+
+@defop {Message} {unix stream} unlink +Path @t{-}Result
+@cindex unlink
+Removes the directory entry specified by @var{Path}.  If successful,
+@code{0} is retuned to @var{Result}; otherwise, @code{-1} is returned.
+Corresponds to @code{unlink} system call.
+@end defop
+
+@defop {Message} {unix stream} mktemp +Template @t{-}Filename
+Makes a unique file name from the given @var{Template} and returns it to
+@var{Filename}.  Corresponds to the C library routine @code{mktemp}.
+Unlike the library routine, the template does @emph{not} have to have
+six trailing @code{X} characters.  If a unique file name cannot be
+created somehow, a null string is returned to @var{Filename}.
+@end defop
+
+@defop {Message} {unix stream} access +Path +Mode @t{-}Result
+Checks accessibility of the file with pathname @var{Path} with the mode
+@var{Mode} is validate, and returns the result to @var{Result}.
+Corresponds to the C library routine @code{access}.  If the file is
+accessible, @code{0} is returned; otherwise, @code{-1} is returned.
+@var{Mode} is an integer, with the bits of the following meaning.
+
+@table @t
+@item 4
+read permission
+@item 2
+write permission
+@item 1
+execute permission
+@item 0
+test existence
+@end table
+@end defop
+
+@defop {Message} {unix stream} chmod +Path +Mode @t{-}Result
+Changes the permission mode of the file with pathname @var{Path} to
+@var{Mode}.  Corresponds to the system call @code{chmod}.  If changing
+the mode is successful, @code{0} is returned to @var{Result}; otherwise,
+@code{-1} is returned.  @var{Mode} is an integer with standard Unix
+permission bits.
+@end defop
+
+@defop {Message} {unix stream} umask @t{-}OldMask
+@defopx {Message} {unix stream} umask @t{-}OldMask +NewMask
+Returns the current file creation mask to @var{OldMask}.  With two
+arguments, sets the file creation mask to @var{NewMask}.  Corresponds to
+the @code{umask} system call.
+@end defop
+
+@node Signals, Misc Unix Messages, Files & Dirs, Unix
+@subsection Handling Signal Interrupts
+@cindex signal
+@cindex interrupt
+
+Unix signals can be converted to a list of integers using the following
+message to the unix stream.
+
+@defop {Message} {unix stream} signal_stream +Signal @t{-}Result
+Unix signals specified by @var{Signal} (an integer value) will become
+caught and reported.  The argument @var{Result} will become
+@code{normal(Stream)} and whenever a signal of the specified kind is
+detected, that signal number is sent to Stream.  For example, if signal
+2 (SIGINT in BSD and SVR4, at least) is detected, Stream becomes
+@code{[2|@var{Rest}]}.  Further signals are reported to @var{Rest}.
+@end defop
+
+@noindent
+@strong{Limitations:} Signals may be ignored when they occur more than
+twice before the same kind of signal is detected, due to limitations of
+Unix.
+
+@node Misc Unix Messages, Predicate Interface, Signals, Unix
+@subsection Miscellaneous Messages to the Unix Stream
+@cindex shell command
+@cindex environment varialble
+@cindex signal sending
+@cindex process forking
+@cindex forking processes
+
+Various features of Unix are provided by sending the fllowing messages
+to the unix stream.
+
+@defop {Message} {unix stream} system +Command @t{-}Result
+Executes @var{Command} (a string) in a newly created subshell, and
+returns its exit code to @var{Result}.  Corresponds to the @code{system}
+system call.
+@end defop
+
+@defop {Message} {unix stream} getenv +Name @t{-}Value
+Returns the value of the environment variable with the name @var{Name}
+to @var{Value}.  Corresponds to the library routine @code{getenv}.  If
+such a environment variable does not exist, integer @code{0} is returned to
+@var{Value}.
+@end defop
+
+@defop {Message} {unix stream} putenv +String @t{-}Result
+The first argument @var{String} should be of form @code{@var{Name} =
+@var{Value}}.  Adds or updates the environment variable @var{Name} with
+the value @var{Value}.  Corresponds to the library routine
+@code{putenv}.  If addition or updating is successful, @code{0} is returned to
+@var{Result}.  Otherwise, non-zero integer value is returned.
+@end defop
+
+@defop {Message} {unix stream} kill +Pid +Sig @t{-}Result
+Sends the signal @var{Sig} to a process or a group of processes
+specified by @var{Pid}, and returns @code{0} on success or @code{-1} on
+failure to @var{Result}.
+@end defop
+
+@defop {Message} {unix stream} fork @t{-}Pid
+Forks a new process which is a copy of the current process.  Corresponds
+to the @code{fork} system call.  If a child process is successfully
+created, the process ID of the child process is returned to @var{Pid} in
+the parent process, and @code{0} is returned in the child process.
+@end defop
+
+@defop {Message} {unix stream} fork_with_pipes @t{-}Result
+Creates pipes and fork a new process.  The new process is a copy of the
+current process.  In the parent process, @var{Result} is unified with
+@code{parent(@var{Pid}, @var{In}, @var{Out})}, where @var{Pid} is the
+process ID of the newly created process.  In the newly create child
+process, @var{Result} is unified with @code{child(@var{In}, @var{Out})}.
+@var{In} and @var{Out} are Unix I/O streams to pipes; parent's @var{Out}
+is an output stream connected to child's @var{In}, which is an input
+stream; child's @var{Out} is connected to parent's @var{In}.
+@end defop
+
+@node Predicate Interface,  , Misc Unix Messages, Unix
+@subsection Predicate Interface
+@cindex command line arguments
+@cindex exit code
+@cindex aborting
+
+Some of the Unix interface are provided as predicates defined in the
+module @code{unix}.
+
+@defop {Predicate} {unix} argc @t{-}Argc
+Number of command line arguments not used by the KLIC system is returned
+to @var{Argc}.  Such arguments start from the first argument not
+beginning with @code{-} or after @code{--} in the command line.
+@end defop
+
+@defop {Predicate} {unix} argv @t{-}ArgList
+Command line arguments nod used by the KLIC system is returned to
+@var{ArgList} as a list of strings.
+@end defop
+
+@defop {Predicate} {unix} exit +ExitCode
+Terminates the process immediately with the exit code @var{ExitCode}.
+@end defop
+
+@defop {Predicate} {unix} times @t{-}Utime @t{-}Stime @t{-}CUtime @t{-}CStime
+Returns process times in milliseconds.  @var{Utime} is user time and
+@var{Stime} is system time.  @var{CUtime} and @var{CStime} are those for
+children processes.
+
+Note that when @code{HZ} (clock ticks per second) is not defined in some
+standard places, the system assumes 60.
+@end defop
+
+@node Input and Output, System Control, Unix, Builtin and Library
+@section Input and Output
+@cindex input
+@cindex output
+KLIC provides two different sets of I/O operations.  One is similar to
+those available from C language and the other is similar to those
+available from Prolog language.
+
+C-like features are in a lower level and provide better performance both
+in speed and code size.  However, during prototyping and debugging
+phases, the Prolog-like higher-level interface, allowing I/O of data
+structures directly, might be beneficial.
+
+@menu
+* C-like I/O::                  I/O with C language-like interface
+* Prolog I/O::                  I/O with Prolog language-like interface
+@end menu
+
+@node C-like I/O, Prolog I/O, Input and Output, Input and Output
+@subsection Input and Output with C-like Interface
+@cindex I/O
+@cindex C
+
+Input and output operations with interface similar to those available in
+language C are described in this section.
+
+Such interface are provided as messages to streams to open files,
+sockets, pipes &c, which are obtained by various messages to the Unix
+stream.  @xref{I/O Opening, , Opening Streams for Input and Output
+Operations}.
+
+@menu
+* Common Msgs (C style)::       Messages common to both input and output
+* Input Msgs (C style)::        Messages for C-like input streams
+* Output Msgs (C style)::       Messages for C-like output streams
+@end menu
+
+@node Common Msgs (C style), Input Msgs (C style), C-like I/O, C-like I/O
+@subsubsection Common Messages with C-like Interface
+@cindex end of file
+@cindex seek
+@cindex flushing changes
+@cindex closing a file
+@cindex synchronization
+
+The following messages are available for both input and output streams
+for C-like I/O.
+
+@defop {Message} {C-like I/O} feof @t{-}Result
+Returns @code{1} to @var{Result} if the stream is at the end of the
+file; otherwise @code{0}.  Corresponds to the library routine
+@code{feof}.
+@end defop
+
+@defop {Message} {C-like I/O} fseek +Offset +Ptrname @t{-}Result
+Changes the position of the stream according to the offset and pointer
+name given as @var{Offset} and @var{Ptrname}, respectively.  The offset
+is specified as a signed integer by @var{Offset}.  When @var{Ptrname} is
+0, the offset is from the beginning of the file; when 1, from the
+current position; when 2, from the end of file.  If successful, @code{0}
+is returned @var{Result}; otherwise @code{-1}.
+
+Note that, due to the range restriction of integer values, this message
+may not be able to move to arbitrary positions in a very large file
+(larger than 128MB, on systems with 32-bit long integers).
+@end defop
+
+@defop {Message} {C-like I/O} ftell @t{-}Result
+Returns the offset of the current byte position to @var{Result}.
+
+Note that, due to the range restriction of integer values, the obtained
+position may be incorrect for a very large file (larger than 128MB, on
+systems with 32-bit long integers).
+@end defop
+
+@defop {Message} {C-like I/O} fclose @t{-}Result
+Closes the stream.  Returns @code{0} to @var{Result} if successful;
+@code{-1} otherwise.  No messages except for @code{sync/1} should be
+sent to a stream after closing.
+@end defop
+
+@defop {Message} {C-like I/O} sync @t{-}Result
+Returns @code{0} to @var{Result}.  Useful in making sure that all the
+preceding messages have already been processed.
+@end defop
+
+@node Input Msgs (C style), Output Msgs (C style), Common Msgs (C style), C-like I/O
+@subsubsection Input Messages with C-like Interface
+@cindex reading in
+@cindex input
+@cindex character input
+@cindex string input
+
+The following messages are available for input streams for C-like I/O.
+
+@defop {Message} {C-like I/O} getc @t{-}C
+Reads one byte from the stream and returns it to @var{C}.  At the end of
+file, @code{-1} is returned.
+@end defop
+
+@defop {Message} {C-like I/O} ungetc +C
+Pushes back one byte @var{C} to the stream.
+@end defop
+
+@defop {Message} {C-like I/O} fread +Max @t{-}String
+Reads in at most @var{Max} bytes from the stream and returns the data as a
+byte string to @var{String}.  Only up to 4,096 bytes can be handled in
+the current implementation.  Note that the length of the resultant string
+may be smaller than the given maximum.  This may happen at the end of
+the file for normal files and at any time for pipes or sockets.
+@end defop
+
+@defop {Message} {C-like I/O} linecount @t{-}Count
+Returns to @var{Count} the number of newline characters encountered so
+far.  Within the first line of a file, it returns @code{0}, as no
+newlines have been encountered yet.  Conventional one-origin line
+numbers can be computed by adding one to this.
+
+This line counting can be confused when @code{fseek/2} messages are
+used.
+@end defop
+
+@node Output Msgs (C style),  , Input Msgs (C style), C-like I/O
+@subsubsection Output Messages with C-like Interface
+@cindex writing out
+@cindex character output
+@cindex string output
+
+The following messages are available for output streams for C-like I/O.
+
+@defop {Message} {C-like I/O} putc +C
+Writes one byte @var{C} to the stream.
+@end defop
+
+@defop {Message} {C-like I/O} @var{Number}
+Writes one byte @var{Number} to the stream.  This is synonymous to
+@code{putc(@var{Number})}.
+@end defop
+
+@defop {Message} {C-like I/O} fwrite +String @t{-}Result
+Writes out the contents of the byte string @var{String} to the stream
+and returns number of bytes actually written to @var{Result}.  Note that
+the number of bytes actually written may be smaller than the length of
+@var{String}.
+@end defop
+
+@defop {Message} {C-like I/O} fwrite +String
+Writes out the contents of the byte string @var{String} to the stream.
+Unlike the @code{fwrite} message with @var{Result} argument, it waits
+for all the bytes in @var{String} to be output.  This may be undesirable
+for streams that require unpredictable time period for output, such as
+internet sockets and pipes.
+@end defop
+
+@defop {Message} {C-like I/O} fflush @t{-}Result
+Flushes any output remaining on the stream.  Returns @code{0} to
+@var{Result} if successful; @code{-1} otherwise.
+@end defop
+
+@node Prolog I/O,  , C-like I/O, Input and Output
+@subsection Input and Output with Prolog-like Interface
+@cindex operator precedence grammar
+
+Unix interface streams with features to handle Prolog-like terms based
+on a operator precedence grammar can be obtained by the following
+predicate of module @code{klicio}.
+
+The syntax of terms of KLIC is very close to that of Edinburgh Prolog
+but with subtle differences.  @xref{Notation of Atoms}, @ref{Notation of
+Integers}, @ref{Notation of Floats}, @ref{Notation of Functors},
+@ref{Notation of Lists}, @ref{Notation of Vectors}, and @ref{Notation of
+Strings}, for details.
+
+@menu
+* Opening Prolog I/O::          Opening Prolog-like I/O streams
+* Common Msgs (Prolog style)::  Message common to input and output streams
+* Input Msgs (Prolog style)::   Input messages with Prolog-like interface
+* Output Msgs (Prolog style)::  Output messages with Prolog-like interface
+* Wrapped Terms::               Manipulation of wrapped terms
+@end menu
+
+@node Opening Prolog I/O, Common Msgs (Prolog style), Prolog I/O, Prolog I/O
+@subsubsection Opening Prolog-like I/O Streams
+
+@pindex @code{klicio}
+
+@defop {Predicate} {klicio} klicio ?Stream
+A message stream corresponding to the Prolog-like term interface is
+returned to @var{Stream}.  The obtained stream works the similar to a
+unix interface stream, which is used in turn to obtain message streams
+for actual I/O.  I/O streams obtained through this stream accepts
+messages for Prolog-like term I/O described in this section in addition
+to ordinary C-like I/O messages.
+
+This @code{klicio} stream is provided separately so that programs
+@emph{without} the need of Prolog-like term I/O can be executable
+without modules for parsing and unparsing, as these modules have
+non-negligible sizes.
+@end defop
+
+@defop {Message} {klicio stream} stdin @t{-}Result
+@defopx {Message} {klicio stream} stdout @t{-}Result
+@defopx {Message} {klicio stream} stderr @t{-}Result
+@defopx {Message} {klicio stream} read_open +Path @t{-}Result
+@defopx {Message} {klicio stream} write_open +Path @t{-}Result
+@defopx {Message} {klicio stream} append_open +Path @t{-}Result
+@defopx {Message} {klicio stream} update_open +Path @t{-}Result
+@cindex standard input
+@cindex standard output
+@cindex standard input
+@cindex open
+
+These messages open Prolog-like I/O streams.  Messages to be sent to the
+resulting Prolog-like I/O streams (@emph{not} the @code{klicio} stream
+itself) for actually performing I/O are described below.
+
+These messages work exactly the same as the corresponding messages for
+@code{unix} streams, except that returned I/O streams understand
+messages for Prolog-like term I/O @emph{in addition to} the messages for
+C-like I/O streams.
+
+Prolog-like I/O streams are associated with operator definitions.
+Different operator definitions may be associated with each stream.
+Thus, adding or removing an operator to one stream will @emph{not}
+affect operators used in other streams.  Immediately after creation,
+each stream has a default set of operators.
+@end defop
+
+@node Common Msgs (Prolog style), Input Msgs (Prolog style), Opening Prolog I/O, Prolog I/O
+@subsubsection Common Messages with Prolog-like Interface
+
+The following messages for C-like I/O streams can be used for
+Prolog-like I/O streams.
+
+@defop {Message} {Prolog-like I/O} feof @t{-}Result
+@defopx {Message} {Prolog-like I/O} fseek +Offset +Ptrname @t{-}Result
+@defopx {Message} {Prolog-like I/O} ftell @t{-}Result
+@defopx {Message} {Prolog-like I/O} fclose @t{-}Result
+@defopx {Message} {Prolog-like I/O} sync @t{-}Result
+@xref{Common Msgs (C style), , Common Messages with C-like Interface},
+for details.
+@end defop
+
+@defop {Message} {Prolog-like I/O} addop +Op +Type +Prec
+Adds an operator @var{Op} of type @var{Type} with precedence
+@var{Prec}.
+@end defop
+
+@defop {Message} {Prolog-like I/O} rmop +Op +Type
+Removes an operator @var{Op} of type @var{Type}.
+@end defop
+
+@node Input Msgs (Prolog style), Output Msgs (Prolog style), Common Msgs (Prolog style), Prolog I/O
+@subsubsection Input Messages with Prolog-like Interface
+
+@defop {Message} {Prolog-like I/O} gett @t{-}Term
+Reads in a KLIC syntax term from the associated input stream to
+@var{Term}.  On parsing errors, a message is output to @code{stderr} and
+another term is read in.  At the end of the file, it returns an atom
+@code{end_of_file}.
+@end defop
+
+@defop {Message} {Prolog-like I/O} getwt @t{-}Result
+Reads in a KLIC syntax term from the associated input stream and
+returns the result to @var{Result}.  @var{Result} will have the form
+@code{normal(@var{WrappedTerm})} if parsing completes without errors.
+Here, @var{WrappedTerm} is a ground term representation of the term read
+in, where variables are represented as a ground term with the
+information on their names.  On parsing errors, a message is output to
+@code{stderr} and another term is read in.  At the end of file, it
+returns @code{normal(end_of_file)}.
+
+@xref{Wrapped Terms} for manipulation of wrapped terms.
+@end defop
+
+The following messages for C-like I/O streams can also be used for
+Prolog-like I/O streams.
+
+@defop {Message} {Prolog-like I/O} getc @t{-}C
+@defopx {Message} {Prolog-like I/O} ungetc +C
+@defopx {Message} {Prolog-like I/O} fread +Max @t{-}String
+@defopx {Message} {Prolog-like I/O} linecount @t{-}Count
+@xref{Input Msgs (C style), Input Messages with C-like Interface}, for
+details.
+@end defop
+
+@node Output Msgs (Prolog style), Wrapped Terms, Input Msgs (Prolog style), Prolog I/O
+@subsubsection Output Messages with Prolog-like Interface
+
+@defop {Message} {Prolog-like I/O} putt +Term
+@defopx {Message} {Prolog-like I/O} puttq +Term
+@defopx {Message} {Prolog-like I/O} putwt +WrappedTerm
+@defopx {Message} {Prolog-like I/O} putwtq +WrappedTerm
+A term @var{Term} or a wrapped term @var{WrappedTerm} is written out to
+the associated output stream.
+
+Messages @emph{without} the character @code{q} are supposed to omit two
+quotes around symbolic atoms even when they are required to be correctly
+read in again.  However, currently they work exactly the same as the
+messages with @code{q}.
+
+With the current version, the output format is meant only to be
+machine-readable and not so readable for humans.  That is, no operators
+are used and all atoms are enclosed within parentheses.
+
+@xref{Wrapped Terms} for manpulation of wrapped terms.
+@end defop
+
+The following messages for C-like I/O streams can also be used for
+Prolog-like I/O streams.
+
+@defop {Message} {Prolog-like I/O} putc +C
+@defopx {Message} {Prolog-like I/O} @var{Number}
+@defopx {Message} {Prolog-like I/O} fwrite +String @t{-}Result
+@defopx {Message} {Prolog-like I/O} fwrite +String
+@defopx {Message} {Prolog-like I/O} fflush @t{-}Result
+@xref{Output Msgs (C style), , Output Messages with C-like Interface},
+for details.
+@end defop
+
+Note that a period to end a term is not written out by these messages.
+Thus, writing out a period and a space or a newline character is usually
+required for the output to be read in again.  The following goal
+sequence opens the file named @code{/tmp/foo.bar}, waits full
+instantiation of the variable @var{X}, and then outputs the value in a
+Prolog-like format followed by a period and a newline.
+
+@example
+klicio:klicio([write_open("/tmp/foo.bar", normal(S))]),
+S = [putt(X), putc(0'.), nl].
+@end example
+
+@defop {Message} {Prolog-like I/O} nl
+Outputs a newline code.  This is synonymous to sending a message
+@code{putc(10)} to the same stream.
+@end defop
+
+Note that Prolog-like I/O streams also accept all the messages accepted
+by C-like I/O such as @code{putc/1} or @code{getc/1} (@pxref{C-like
+I/O, , Input and Output with C-like Interface}).
+
+@node Wrapped Terms,  , Output Msgs (Prolog style), Prolog I/O
+@subsubsection Wrapped Terms
+@cindex wrapped term
+
+To allow metalevel manipulation of terms including variables, KLIC
+provides a data representation called @dfn{wrapped term}.  A wrapped
+term is a ground term without any variables in it.  A wrapped term has
+one of the following forms.
+
+@table @t
+@item variable(@var{VarName})
+a variable with its name string @var{VarName}
+@item atom(@var{Atom})
+a symbolic atom @var{Atom}
+@item integer(@var{Int})
+an integer @var{Int}
+@item floating_point(@var{Float})
+a floating point number @var{Float}
+@item list([@var{Car}|@var{Cdr}])
+a cons cell consisting of @var{Car} and @var{Cdr}, which are wrapped
+terms recursively
+@item functor(@var{Functor}(@var{Arg}, @dots{})
+a functor structure; its arguments (@var{Arg}, etc) are wrapped terms
+recursively
+@item vector(@{@var{Elem}, @dots{}@})
+a vector; its elements (@var{Elem}, etc) are wrapped terms recursively
+@item string(@var{Str})
+a string @var{Str}
+@item unknown(@var{Term})
+some unknown data; wrapping may be inprecise in this case
+@end table
+
+For example, the wrapped representation of a term:
+
+@example
+f(a, X, @{3, ["abc"|X]@}, 3.14)
+@end example
+
+@noindent
+is the following.
+
+@example
+functor(f(atom(a),
+        variable("X"),
+        vector(@{integer(3), list([string("abc")|variable("X")])@}),
+        floating_point(3.14))).
+@end example
+
+The following predicate convert wrapped terms to normal terms.
+
+@defop {Predicate} {variable} unwrap -Wrapped ?Term
+Converts a wrapped term @var{Wrapped} to a normal term @var{Term}.
+@end defop
+
+Wrapped terms are normally obtained as a result of input operations
+(@pxref{Input Msgs (Prolog style), , Input Messages with Prolog-like
+Interface}).  Wrapped terms can also be constructed by usual user
+programs, as they are nothing more than a usual KL1 term.  The following
+predicate that converts normal terms to wrapped terms may also be useful
+in certain cases.
+
+@defop {Predicate} {variable} wrap ?Term -Wrapped
+Converts a normal term @var{Term} to a wrapped term @var{Wrapped}.
+
+In the current version, all variables are given the same name @code{_}.
+Thus, by wrapping a term and then unwrapping its result, all the
+variables in the original term will become references to the same
+variable.  This is a bug and is planned to be fixed in a future version.
+
+When @var{Term} contains multiple references of a same variable,
+computation on-going concurrently may instantiate the variable.  In such
+cases, this predicate may yield a wrapped term in which two original
+occurrences of the same variable are converted differently; one as a
+variable and another as a non-variable term.  This is an inherent
+problem of the specification of this predicate and probably will never
+be fixed.  Thus, applying this predicate to non-ground terms should be
+restricted to certain metalevel programs, such as debugging utilities.
+@end defop
+
+@node System Control, Timer, Input and Output, Builtin and Library
+@section Controlling System Behavior
+@cindex garbage collection
+@cindex postmortem processing
+
+The following predicates are provided in the module
+@code{system_control}.
+@pindex @code{system_control}
+
+@defop {Predicate} {system_control} postmortem +Module +Goal @t{-}Result
+Registers postmortem processing after normal or abnormal termination of
+the main program.  @var{Goal} should be a functor structure specifying
+the predicate and arguments of the postmortem processing goal.
+@var{Module} should be a symbolic atom specifying the module of the
+postmortem processing predicate.  Only a single goal can be specified;
+comma-separated sequences of goals are not allowed.
+
+When the registration is done, @var{Result} is unified with @code{[]}.
+Waiting for this will prevent further processing to be executed before
+the completion of the registration.
+
+If this predicate is called many times, the last registration will
+be effective.
+@end defop
+
+@defop {Predicate} {system_control} gc @t{-}Before @t{-}After
+Requests garbage collection and returns the heap size in words before
+and after the garbage collection to @var{Before} and @var{After}
+respectively.  The size of a word is the same as the size of type
+@code{long} of the C language system used in the installation.
+
+In parallel implementations, only garbage collection for local storage
+is requested.  Requesting of global garbage collection is not
+available.
+@end defop
+
+@node Timer, Random Numbers, System Control, Builtin and Library
+@section Timer
+@cindex time
+@cindex timer
+@cindex interval timer
+
+KLIC provides real-time timers.  Although Unix provides only one timer
+per process, KLIC virtualizes the mechanism and provides as many timers
+as needed.
+
+Implementations on host systems where real-time timers are not available
+do not provide the feature.
+
+Time values (both times and time intervals) are represented by a term of
+the form @code{time(@var{Day}, @var{Sec}, @var{Usec})}, where @var{Day},
+@var{Sec} and @var{Usec} are non-negative integers representing days,
+seconds and microseconds.  @var{Sec} should be less than 86,000 (one
+day) and @var{Usec} should be less than 1,000,000 (one second).
+
+The following predicates are provided in the module @code{timer}.
+
+@defop {Predicate} {timer} get_time_of_day @t{-}Time
+The current time expressed in seconds and microseconds since midnight of
+January 1, 1970 GMT is returned to @var{Time}.
+
+The time obtained is that of when a goal of this predicate is actually
+executed.  Note that ordering of goal execution is up to the KLIC
+system.  The time reported is only guaranteed to be the time between two
+observable events: when the parent goal of this goal is reduced, and
+when the value of @var{Time} is inspected.
+
+Note also that the reported time is what is returned by the underlying
+operating system of the worker task.  On a distributed system, clocks of
+constituting systems may not agree completely.
+@end defop
+
+@defop {Predicate} {timer} add Time1 Time2 @t{-}Time
+@defopx {Predicate} {timer} sub Time1 Time2 @t{-}Time
+Computes sum and difference of two time values, respectively.
+@end defop
+
+@defop {Predicate} {timer} compare Time1 Time2 @t{-}Result
+Compares two time values @var{Time1} and @var{Time2} and returns the
+result in @var{Result}.  The result is @code{<} if @var{Time1} is
+smaller than (or before) @var{Time2}, @code{=} if they are the same,
+@code{>} if @var{Time1} is larger than (or after) @var{Time2}.
+@end defop
+
+@defop {Predicate} {timer} instantiate_at Time @t{-}Var
+@defopx {Predicate} {timer} instantiate_after Interval @t{-}Var
+Unifies @var{Var} with a symbolic atom @code{[]} at the time specified.
+The former predicate does this @emph{at} the specified time, while the
+latter does this @emph{after} the specified time interval.  If the
+specified time has already passed, the variable may be instantiated
+immediately.
+
+Note that instantiation may be delayed arbitrarily long.  Reasonable
+implementations should have short delays.
+@end defop
+
+@defop {Predicate} {timer} instantiate_every Interval Stop @t{-}Var
+Incrementally instantiate @var{Var} with a list of symbolic atom
+@code{[]}.  The first element is instantiated after the time interval
+specified, the second after time twice the specified value, etc.
+It will be repeated forever unless the argument @var{Stop} becomes
+instantiated, on that occasion, the list will be terminated.
+
+Note that instantiation may be delayed arbitrarily long.  Reasonable
+implementations should have short delays.
+@end defop
+
+@node Random Numbers,  , Timer, Builtin and Library
+@section Random Number Generator
+@cindex random number
+
+Pseudo-random numbers can be generated using the object class
+@code{random_numbers}.  This random number generator is based on
+@code{nrand48}.  The random number genrator feature is not availble if
+@code{nrand48} is not on the host system.
+
+@defop {Object Creation} random_numbers new @t{-}Randoms Range
+@defopx {Object Creation} random_numbers new @t{-}Randoms Range Seed
+An infinitely long list of pseudo-random integers ranging between 0 and
+@var{Range} @t{-} 1, inclusive, is returned to @var{Randoms}.
+@var{Range} should be a positive integer.  The optional argument
+@var{Seed} specifies the seed for random number generation.  The list
+elements are guaranteed to be the same if the same seed is given.
+
+Note that, although the list is virtually infinite, elements are
+computed lazily on demand as programs incrementally inspect their
+values.
+@end defop
+
+@node Using KLIC, Type Index, Builtin and Library, Top
+@chapter Using KLIC
+
+This chapter describes how to use the KLIC system.
+
+@menu
+* Compiling::                   How to compile KL1 programs
+* Running::                     How to run programs compiled with KLIC
+* Tracing::                     Tracing execution for debugging
+* Install::                     Installation of KLIC
+* Distributed KLIC::            
+* Shared-Memory KLIC::          
+@end menu
+
+@node Compiling, Running, Using KLIC, Using KLIC
+@section Compiling Programs with KLIC
+@cindex compilation
+@cindex linkage
+
+After proper installation, KL1 programs can be compiled into C program
+and then to executables by the command @code{klic}.  @code{klic} is a
+compiler driver that allows various options.
+
+@menu
+* Command for Compilation::     Program compilation command
+* Compiler Options::            Compiler options
+* Mechanism of Compilation::    How programs are compiled
+@end menu
+
+@node Command for Compilation, Compiler Options, Compiling, Compiling
+@subsection Command for Compilation
+
+By simply running @code{klic} command with the name of KL1 program
+source file with the trailing @code{.kl1} as an argument, that program
+will be compiled into C and then to an executable format.
+
+For example, to compile @code{@var{XXX}.kl1}, type in:
+
+@example
+% klic @var{XXX}.kl1
+@end example
+
+The compilation result will be found in @code{a.out}.  If you want the
+compilation result to be named @code{@var{YYY}}, do the following.
+
+@example
+% klic -o @var{YYY} @var{XXX}.kl1
+@end example
+
+If your program is divided into several files, say @code{@var{XXX}.kl1},
+@code{@var{YYY}.kl1} and @code{@var{ZZZ}.kl1}, you can compile and link
+them together by the following.
+
+@example
+% klic @var{XXX}.kl1 @var{YYY}.kl1 @var{ZZZ}.kl1
+@end example
+
+It is also possible to separately compile several KL1 source files and
+link them afterwards.  To avoid linkage errors, you have to stop before
+linkage by giving the @code{-c} flag, as follows.
+
+@example
+% klic -c @var{XXX}.kl1
+% klic -c @var{YYY}.kl1
+% klic -c @var{ZZZ}.kl1
+@end example
+
+Finally, you have to link all of them together by the following.
+
+@example
+% klic @var{XXX}.o @var{YYY}.o @var{ZZZ}.o
+@end example
+
+See @xref{Compiler Options}, for details of compilation flags.
+
+If you want to link program pieces written directly in C, say
+@code{@var{CCC}.c} and @code{@var{DDD}.c}, with pieces written in KL1,
+@code{@var{XXX}.kl1} and @code{@var{YYY}.kl1}, simply do the following.
+
+@example
+% klic @var{CCC}.c @var{DDD}.c @var{XXX}.kl1 @var{YYY}.kl1
+@end example
+
+The order of files specified does not matter.  C functions can be
+invoked from within inline-expanded codes (@pxref{Inline C Code}).
+
+@node Compiler Options, Mechanism of Compilation, Command for Compilation, Compiling
+@subsection Compiler Options
+
+Options available for the compilation command @code{klic} are listed
+below.
+
+@table @t
+@item -c
+Stop after generating relocatable object and don't link the program.
+
+@item -C
+Stop after translation into C.
+
+@item -d
+Don't try any compilation (dry run).  Implies @code{-v}.
+
+@item -D @var{database_manager}
+Use the specified database manager program.
+
+@item -g
+Debug flag passed to the C compiler.
+
+@item -I @var{directory}
+Use the additional include directory specified for C compilation.
+
+@item -K @var{klic_compiler}
+Use the speicfied KL1 to C translator program.
+
+@item -l @var{library}
+Use the additional library specified for linking.
+
+@item -L @var{directory}
+Use the additional directory specified to be searched for @code{-l}.
+
+@item -o @var{file}
+Use the file name for the generated executable file.
+
+@item -O
+@itemx -O@var{level}
+Use the specified optimization level.  When a non-zero optimization
+level is specified, some additional optimization flags may be also
+passed to the C compiler.  Such Additional optimization flags are system
+dependent and determined on KLIC system installation procedure.
+
+For this option, no spaces are allowed between @code{-O} and
+@var{level}.
+
+@item -P @var{parallel}
+Run subtasks (C compilers &c) in parallel.  At most @var{parallel}
+subtasks are forked at a time.
+
+@item -R
+Do recompilation regardless of file dates.
+
+@item -S
+Stop after generating assembly code output.
+
+@item -n
+Link with the non-debugging version of the runtime library.  By default,
+the debugging version is used.
+
+@item -v
+Run in verbose mode.  All the commands executed through the compielr
+driver will be output to standard error.
+
+@item -x@var{directory}
+Use database file @code{klic.db} in the specified directory and also
+place @code{atom.c}, @code{funct.c} and @code{predicates.c} and their
+corresponding objects in the same directory.  This flag is useful when
+programs to be linked together are distributed to multiple
+directories.
+
+@item -X@var{directory}
+Initiate the database file @code{klic.db} from the database initiation
+file @code{klicdb.init} under the specified directory, when the database
+file does not exist yet.  It defaults to the default library directory.
+@end table
+
+The following environment variables can change the default behavior of
+the compiler.  Options given at compilation time supersede the
+environment variable values.
+
+@table @t
+@item KLIC_LIBRARY
+Directory for runtime libraries.  Superseded by the @code{-X} option.
+
+@item KLIC_DBINIT
+Directory for initial database.  Defaults to the directory for runtime
+libraries.
+
+@item KLIC_COMPILER
+KL1 to C translator program.  Superseded by the @code{-K} option.
+
+@item KLIC_DBMAKER
+Database manager program.  Superseded by the @code{-D} option.
+
+@item KLIC_INCLUDE
+Additional include directory for C compilation.  Superseded by the
+@code{-I} option.
+
+@item KLIC_CC
+C compiler to be used.
+
+@item KLIC_CC_OPTIONS
+Additional option flags for the C compiler.
+
+@item KLIC_LD
+Linker to be used.
+
+@item KLIC_LD_OPTIONS
+Additional option flags for the linker.
+@end table
+
+@node Mechanism of Compilation,  , Compiler Options, Compiling
+@subsection How KLIC Compiler Works
+
+Understanding how KL1 programs are compiled and executed may help
+understanding the usage of KLIC in further depth.
+
+The system consists of the following three modules.
+
+@itemize @bullet
+@item
+KLIC compiler
+@item
+KLIC database manager
+@item
+KLIC runtime system
+@end itemize
+
+KL1 programs are compiled using the KLIC compiler into C programs.  It
+also generates files @code{@var{FILE}.ext} containing information on
+atoms and functors used in the program.  The information in @code{.ext}
+files for programs to be linked together is merged together later by the
+database manager, into files @code{atom.h}, @code{funct.h},
+@code{atom.c}, @code{funct.c} and @code{predicates.c}.
+
+The object C program is then compiled by a C compiler, with headers
+provided by the KLIC runtime system, @code{atom.h} and @code{funct.h}.
+The files @code{atom.c}, @code{funct.c} and @code{predicates.c} are also
+compiled, and linked together with the runtime system
+(@code{predicates.c} is linked only with debugging runtime).
+
+Compilation, database management and linkage are governed by a driver
+program named @code{klic}.  This program @code{klic} plays a role
+similar to @code{cc} and @code{make} combined.  @code{cc} controls the C
+preprocessor, the C compiler kernel and the linker; @code{klic} controls
+the KL1-to-C compiler, the C compiler, the KL1 program database manager
+and the linker.  @code{make} selectively executes compilation only when
+needed by examining the file dates; @code{klic} works similarly.
+
+@node Running, Tracing, Compiling, Using KLIC
+@section Running Programs Compiled with KLIC
+@cindex running
+
+You can simply run the compiled excutable.  If you compiled your program
+into the file @code{a.out}, you simply give the file name @code{./a.out}
+to the shell you are using.
+
+The predicate @code{main} with no arguments in the module @code{main}
+will be the initial goal to be executed (@pxref{Initial Goal}).
+
+@menu
+* Runtime Switches::            Runtime command line switches
+@end menu
+
+@node Runtime Switches,  , Running, Running
+@subsection Runtime Switches for Programs Compiled with KLIC
+
+The following options are available on running the compiled
+executable.
+
+@table @t
+@item -h @var{size}
+Specifies initial heap size in  words.  As copying garbage collection is
+used, memory size actually used for heap will  be twice this  size.  The
+size  can be specified  directly  (such  as  @code{2097152}) or  with  a
+postfix @code{k} or  @code{m} (as @code{2048k} or @code{2m})  to specify
+units of 2^10 or 2^20 words.  The default heap size is determined by the
+macro @code{HEAPSIZE},  which is 24k in the original distribution.   The
+length of one word is the same as the length of the type @code{long int}
+in C, that depends on the hardware and the C compiler you use.  The heap
+size will be increased automatically according  to options @code{-H} and
+@code{-a}.
+
+@item -H @var{size}
+Specifies maximum heap size in words.  Automatic heap expansion
+mechanism will never try to expand the heap above the size specified by
+this option.  The default value is infinite.
+
+@item -a @var{ratio}
+Specifies threashold active cell ratio as a floating point number.  If
+the ratio of the space occupied by active (non-garbage) cells in the
+heap space is above this threshold, the heap size will be doubled in the
+next garbage collection, as far as the size doesn't exceed the maximum
+size specified by the @code{-H} option.  The default value is
+0.5.
+
+@item -g
+Specifies that time required for garbage collection is to be measured.
+As garbage collection will not take long for small heap sizes, the
+measurement overhead can be more than that.  Thus, by default, garbage
+collection timing is disabled.
+
+@item -s
+Specifies suspension statistics.  After execution of the program,
+suspended predicates and numbers of their suspensions are reported.
+This option is available when the debugging version of the runtime
+library is linked, which is the default setting (@pxref{Compiler
+Options}).
+
+@item -t
+Specifies to start execution with tracing (@pxref{Tracing, , Tracing
+Program Execution}).  Tracing is only possible when the debugging
+version of the runtime library is linked, which is the default setting.
+The non-debugging version of the runtime library can be specified by
+compilation time options (@pxref{Compiler Options}).
+@end table
+
+When all the ready goals have been executed, the program will stop.  If
+there remain any goals awaiting for input data and if the program is
+linked with the debugging runtime library, it will try to detect which
+goal is problematic and report such a goal.  Otherwise, if the linked
+library is a non-debugging version, only the number of such remaining
+goals is reported.
+
+@node Tracing, Install, Running, Using KLIC
+@section Tracing Program Execution
+@cindex tracing
+@cindex debugging
+
+KLIC provides a debugging tracer with @dfn{spying} (break point)
+feature.
+
+@menu
+* Preparing for Trace::         Compiling your program to be traced
+* Trace Ports::                 Places you stop at stepping execution
+* Output of Tracer::            How your program execution process is displayed
+* Controlling Trace::           Controlling which are traced and which are not
+* Spying::                      Setting spypoints = break points
+* Port Control::                Enabling and disabling tracing of each port
+* Display Control::             Controlling the verbosity of trace display
+* Dumping Goals::               Displaying all ready or suspended goals
+* Misc Trace Commands::         Miscellaneous commands
+* Perpetual Suspension::        Detecting goals that can never proceed
+@end menu
+
+@node Preparing for Trace, Trace Ports, Tracing, Tracing
+@subsection Preparation for Traced Execution
+
+To use the tracing feature, you have to link your program with the
+debugging version of the runtime library.  The debugging version is used
+by default, but when you give the @code{-n} option to the compilation
+command @code{klic}, tracing will not be available.
+
+If you already have compiled and linked the program with the @code{-n}
+option, you don't have to recompile the program from scratch; running
+the command @code{klic} again without the @code{-n} option will only
+link the object with the debugging version of the runtime library, which
+takes much shorter time.
+
+To trace execution of a program, simply run your program with @code{-t}
+option (@pxref{Runtime Switches, , Runtime Switches for Programs
+Compiled with KLIC}).
+
+@node Trace Ports, Output of Tracer, Preparing for Trace, Tracing
+@subsection Trace Ports
+@cindex port
+
+Execution of KL1 programs proceeds as follows.
+
+@enumerate
+@item
+The initial goal @code{main:main} is put into a pool of goals to be
+executed.
+
+@item
+One goal is taken from the goal pool (@code{CALL}).
+
+@item
+The goal is matched against the program clauses.
+
+@item
+If any of the clauses matches the goal, the goal is reduced into
+subgoals and they are put back to the goal pool (@code{REDUCE}).
+
+@item
+If no clause matches the goal, then the whole computation will be
+aborted (@code{FAIL}).
+
+@item
+If values of goal arguments or their substructures are not defined and
+thus it is not possible yet to decide whether some clauses will match
+the goal or not, the goal is put into another goal pool awaiting for
+required values (@code{SUSPEND}).
+
+@item
+If there still remain some goals in the goal pool, loop back to the
+step 2.
+@end enumerate
+
+Execution of a goal can be traced on four of the above listed points,
+numbered 2, 4, 5 and 6.  Such points of interest are called @dfn{trace
+ports} and referenced as @code{CALL}, @code{REDUCE}, @code{FAIL} and
+@code{SUSPEND} ports, respectively.
+
+Those who are accustomed to the four-port trace model of Prolog may
+wonder why two other ports of Prolog, @code{EXIT} and @code{REDO} are
+missing.  The @code{REDO} port does not exist because KL1 programs do
+not backtrack.  The @code{EXIT} port is not traced for two reasons.
+First, keeping track of all the goal-subgoal hierarchy is much more
+costly for a concurrent language such as KL1 than for sequential
+languages such as Prolog.  Many different subtrees of the hierarchy may
+run interleaving each other, because of the data-flow synchronization
+feature.  The other reason is that, KL1 programs are often written as a
+set of communicating processes each defined as a goal calling the same
+predicate in a tail-recursive fashion.  Such processes (sometimes called
+@dfn{perpetual processes}) will almost never finish and detecting their
+termination is not as meaningful as in Prolog.
+
+@node Output of Tracer, Controlling Trace, Trace Ports, Tracing
+@subsection Format of Trace Display
+
+Below is our sample program for explanation here.
+
+@example
+:- module main.
+
+main :- nrev([1,2],X), builtin:print(X).
+
+nrev([], R) :- R = [].
+nrev([W|X], R) :- nrev(X, XR), append(XR, [W], R).
+
+append([], Y, Z) :- Z = Y.
+append([W|X], Y, WZ) :- WZ = [W|Z], append(X, Y, Z).
+@end example
+
+@noindent
+Listed below is output of a full trace of execution of the sample
+program.
+
+@example
+   1 CALL:main:main? 
+   1 REDU:main:main :-
+   2   0:+nrev([1,2],_4)
+   3   1:+builtin:print(_4)? 
+   2 CALL:main:nrev([1,2],_4)? 
+   2 REDU:main:nrev([1,2],_4) :-
+   4   0:+nrev([2],_D)
+   5   1:+append(_D,[1],_4)? 
+   4 CALL:main:nrev([2],_D)? 
+   4 REDU:main:nrev([2],_D) :-
+   6   0:+nrev([],_18)
+   7   1:+append(_18,[2],_D)? 
+   6 CALL:main:nrev([],_18)? 
+   6 REDU:main:nrev([],[])? 
+   7 CALL:main:append([],[2],_D)? 
+   7 REDU:main:append([],[2],[2])? 
+   5 CALL:main:append([2],[1],_4)? 
+   5 REDU:main:append([2],[1],[2|_1F]) :-
+   8   0:+append([],[1],_1F)? 
+   8 CALL:main:append([],[1],_1F)? 
+   8 REDU:main:append([],[1],[1])? 
+   3 CALL:builtin:print([2,1])? 
+[2,1]
+   3 REDU:builtin:print([2,1])? 
+@end example
+
+As this program does not make any suspensions nor failures, all the
+trace outputs here are either at the call or the reduce port (marked
+as @code{REDU}).
+
+The first line of the above is the trace of the call port of the
+initial goal @code{main:main}.
+
+@example
+   1 CALL:main:main? 
+@end example
+
+@noindent
+All the traced goals are given a unique identifier (an integer value) to
+distinguish them among themselves.  The number @code{1} in the first
+column here is the identifier of the initial goal.
+
+The initial goal matches the first clause defined in the program and
+thus reduced into subgoals as defined in the program clause.  This
+reduction is traced as follows.
+
+@example
+   1 REDU:main:main :-
+   2   0:+nrev([1,2],_4)
+   3   1:+builtin:print(_4)? 
+@end example
+
+@noindent
+This shows that the original goal @code{main:main} with ID 1 has been
+reduced into two new goals, @code{main:nrev([1, 2], _4)} and
+@code{builtin:print(_4)}, with IDs 2 and 3 respectively.
+
+The numbers 0 and 1 following the IDs 2 and 3 of the two new goals are
+sequential numbers for the subgoals generated by the reduction.  They
+are used by some tracer commands to identify which subgoal to apply the
+command to.  Unlike unique goal IDs that have global meaning, these
+subgoal numbers are meaningful only at this specific port.
+
+Next comes @code{:}, which means the subgoal is an ordinary subgoal of
+the parent goal.  There are other possibilities here.  The character
+@code{*} means that the goal following it is also a subgoal, but is
+given a priority different from the parent.  The priority is displayed
+in a pseudo-pragma format.  The character @code{!} means that the goal
+following it is not actually a subgoal reduced from the parent goal, but
+is a goal awaiting for some variable value which has just waken up as
+this reduction gave some concrete value to the variable.  The character
+@code{#} similarly indicates a goal waken up, but with a priority
+different from the parent.
+
+Then comes either @code{+} or @code{-}.  @code{+} means that the subgoal
+will be traced if you simply continue the execution, and @code{-} means
+it will not.  This can be changed by giving some tracer commands
+described below.  In the example above, all of the subgoals have
+@code{+} as all goals are traced.
+
+Then the module name, a colon character, and the predicate name of the
+subgoal are displayed.  The module name for predicates defined in the
+same module as the predicate of the parent goal is omitted with the
+colon for brevity.  In the above example, the subgoal calling
+@code{nrev} (that is @code{main}) does not have its module name
+displayed, as it is the same as the parent goal @code{main:main}.
+
+Finally comes the argument list in parentheses separated by commas.  The
+second argument of nrev and the only argument of print is @code{_4},
+which corresponds to a variable corresponding to @code{X} in the source
+program.  As variables are newly allocated for all incarnation of
+predicate clauses, and as two or more variables can be unified together,
+displaying their original names in the source program is not meaningful.
+They are given unique names such as @code{_4}.
+
+Actually, this number 4 is related to the physical memory address of the
+variable.  It will thus change completely by garbage collections.
+However, as garbage collections are not so frequent, the address
+information is still quite useful for debugging.
+
+The trace output stops after displaying all the subgoals and a question
+mark.  Here, you can input one of the trace commands described below.
+
+@node Controlling Trace, Spying, Output of Tracer, Tracing
+@subsection Trace Controlling Commands
+
+Tracing can be controlled at each @emph{leashed} port (@pxref{Port
+Control, , Controlling Trace Ports}).  Tracing can be controlled for the
+traced goal as a whole or, at the reduce port, for each of the newly
+created subgoal.  The default of whether or not to trace goals of each
+predicate can also be set.
+
+@menu
+* Goal Control::                Controlling trace of the traced goal
+* Subgoal Control::             Controlling trace of newly created subgoals
+* Predicate Control::           Changing default trace of predicates
+@end menu
+
+@node Goal Control, Subgoal Control, Controlling Trace, Controlling Trace
+@subsubsection Controlling Tracing of the Traced Goal
+
+The following commands are available for controlling program execution.
+
+@table @asis
+@item Continue: @code{c} or simply @kbd{@key{RET}}
+Continues stepping execution.  Subgoal marked as @code{-} are not
+traced even in stepping mode.
+
+@item Leap: @code{l}
+Continues execution without tracing until a spy point is encountered.
+@xref{Spying}, for details.
+
+@item Skip: @code{s}
+Continues execution of the traced goal and all subgoals thereof without
+tracing them at all.  Even spy points are neglected.
+
+@item Abort: @code{a}
+Aborts whole execution of the program.
+@end table
+
+These commands do not take any arguments.
+
+@node Subgoal Control, Predicate Control, Goal Control, Controlling Trace
+@subsubsection Controlling Tracing of Newly Created Subgoals
+
+Tracing of each subgoal (displayed as @code{+} or @code{-}) can be
+changed by the following commands.
+
+@table @asis
+@item Trace: @code{+} @var{subgoal_number} @dots{}
+Switches on the trace of the specified subgoal(s).  Multiple subgoal
+numbers separated by spaces can be specified.  If no subgoal numbers are
+given, all the subgoals become traced.
+
+@item No Trace: @code{-} @var{subgoal_number} @dots{}
+Switches off the trace of the specified subgoal(s).  Multiple subgoal
+numbers separated by spaces can be specified.  If no subgoal numbers are
+given, all the subgoals become untraced.
+
+@item Toggle Trace: @var{subgoal_number} @dots{}
+Toggles the trace switch of the specified subgoal(s).  Multiple subgoal
+numbers separated by spaces can be specified.
+@end table
+
+@node Predicate Control,  , Subgoal Control, Controlling Trace
+@subsubsection Changing Default Trace of Predicates
+
+By default, all the subgoals of a goal will have trace switch on
+(@code{+}) initially at the reduce port.  This default setting can be
+changed predicate by predicate using commands described in this section,
+so that predicates you are not interested in will not be traced by
+default.
+
+In what follows, command arguments <predicate> has one of the
+following format.
+
+@table @t
+@item @var{Module}:@var{Predicate}/@var{Arity}
+Specifies explicitly and exactly one predicate.  For example,
+@code{main:nrev/2}.
+
+@item @var{Module}:@var{Predicate}
+Specifies all the predicates within a module with different arities.
+
+@item @var{Module}:
+Specifies all the predicates defined in a module.  Note that a colon is
+required after the module name to distinguish it from a predicate
+name.
+
+@item @var{Predicate}/@var{Arity}
+Specifies the predicate defined in the same module as the predicate of
+the currently traced goal with the given name and arity.
+
+@item @var{Predicate}
+Specifies all the predicates defined in the same module as the predicate
+of the currently traced goal with the given name.
+@end table
+
+Listed below are commands to change the default for given predicates.
+
+@table @asis
+@item No Trace Default: @code{n} @var{Predicate} @dots{}
+Sets the default trace for the predicate(s) to be off.  If no predicates
+are given as argument, the predicate of the traced goal is considered to
+be specified.
+
+@item Trace Default: @code{t} @var{Predicate} @dots{}
+Sets the default trace for the predicate(s) to be on.  If no predicates
+are given as argument, the predicate of the traced goal is considered to
+be specified.
+@end table
+
+@node Spying, Port Control, Controlling Trace, Tracing
+@subsection Spying
+@cindex spy
+@cindex break point
+
+It is often the case that only some specific predicates are of interest
+for debugging.  In such cases, ports for such predicates can be
+specified as the @dfn{spy points}.  You can let program run without
+tracing until some spy point is encountered, using the leap (@code{l})
+command.  @xref{Goal Control, , Controlling Tracing of the Traced Goal},
+for details.
+
+Commands described in this section set or reset such spy points.
+
+@table @asis
+@item Spy: @code{S} @var{Predicate} @dots{}
+Makes the predicate(s) spied.  If no predicates are given as argument,
+the predicate of the traced goal is spied.
+
+@item No Spy: @code{N} @var{Predicate} @dots{}
+Resets the spy point on the predicate(s).  If no predicates are given as
+argument, the spy point on the predicate of the traced goal is reset.
+@end table
+
+@node Port Control, Display Control, Spying, Tracing
+@subsection Controlling Trace Ports
+@cindex port
+
+The four trace ports can be selectively enabled and disabled.  Disabled
+ports will not be traced at all.
+
+In addition, for each port, you can specify whether to stop and wait for
+command input.  Ports where execution stops and waits for commands are
+said to be @dfn{leashed}.  On ports enabled but not leashed, the trace
+output will be displayed but execution continues as if the continue
+command (carriage return) was input immediately.  For spied predicates,
+even unleashed ports will be leashed.
+
+Commands described in this section is for controlling such attributes
+of ports.  They take port names as their arguments, specified as one
+of the following ways.
+
+@table @asis
+@item Call:
+@code{c}, @code{call}
+@item Reduce:
+@code{r}, @code{redu}, @code{reduce}
+@item Suspend:
+@code{s}, @code{susp}, @code{suspend}
+@item Fail:
+@code{f}, @code{fail}
+@item All ports:
+@code{a}, @code{all}
+@end table
+
+Listed below are the commands for controlling ports.
+
+@table @asis
+@item Enable Port: @code{E} @var{port} @dots{}
+Enables the specified port(s).
+
+@item Disable Port: @code{D} @var{port} @dots{}
+Disables the specified port(s).
+
+@item Leash Port: @code{L} @var{port} @dots{}
+Leashes the specified port(s).
+
+@item Unleash Port: @code{U} @var{port} @dots{}
+Unleashes the specified port(s).
+@end table
+
+@node Display Control, Dumping Goals, Port Control, Tracing
+@subsection Display Control Commands
+@cindex trace display
+
+Sometimes, full information of the traced goals is not desirable, as too
+much information is only harmful for understanding the program behavior.
+Thus, commands in this section are provided for controlling the amount
+of information displayed on trace ports.
+
+The amount of display is controlled by a combination of the following
+options.
+
+@itemize @bullet
+@item By limiting display depth:
+Arguments of structures below depth limit are displayed in the following
+abbreviated way.
+
+@example
+f(a,b,c,d,e)    @expansion{}    f(..)
+[a,b,c,d,e]     @expansion{}    [..]
+@end example
+
+@item By limiting display length:
+Argument lists of structures or character strings longer than the length
+limit are displayed in the following abbreviated way.
+
+@example
+f(a,b,c,d,e)    @expansion{}    f(a,b,c,..)
+[a,b,c,d,e]     @expansion{}    [a,b,c,..]
+"abcde"         @expansion{}    "abc.."
+@end example
+
+@item By specifying a subterm to be displayed:
+Only a part of the traced goal can be specified for display.
+@end itemize
+
+The following commands can be used to control the options.
+
+@table @asis
+@item Set Print Depth: @code{pd} @var{depth}
+@cindex depth limit of trace display
+Sets depth limit of displaying data structures to @var{depth}.  With no
+argument, prints the current depth limit value.
+
+@item Set Print Length: @code{pl} @var{length}
+@cindex length limit of trace display
+Sets length limit of displaying data structures to @var{length}.  With
+no argument, prints the current length limit value.
+
+@item Toggle Verbose Print: @code{pv}
+@cindex verbose print
+Toggles verbose printing mode switch.  In verbose printing mode,
+variables with goals awaiting for its value are displayed with the
+information of the goal.
+
+@item Set Subterm: @code{^} @var{N}
+@item Reset Subterm:@code{^}
+@cindex subterm
+Sets the @var{N}-th subterm of the traced goal to be inspected.  With 0
+specified as @var{N}, the subterm goes up one level.  With @var{N}
+omitted, subterm inspection is reset.  For list structures, 1 means car
+and 2 means cdr.
+
+With subterm specification, only the subterm of the traced goal is
+displayed after the information of which subterm is inspected.  An
+example follows.
+
+@example
+  10 CALL: foo:bar(f(a,g(..),[..]))? ^1
+  10 CALL: ^1 f(a,g(b,c),[d,e])? ^2
+  10 CALL: ^1^2 g(b,c)? ^0
+  10 CALL: ^1 f(a,g(b,c),[d,e])? ^3
+  10 CALL: ^1^3 [d,e]? ^2
+  10 CALL: ^1^3^2 [e]? ^
+  10 CALL: foo:bar(f(a,g(..),[..]))?
+@end example
+
+At reduce ports, subgoals created by the reduction are not displayed
+when subterm display is specified; only the specified subterm of the
+parent goal is displayed.  With the current version, vector elements
+cannot be specified as subterms.
+@end table
+
+The initial setting of depth and length limits are 3 and 7,
+respectively.  Verbose print mode is initially switched off.
+
+@node Dumping Goals, Misc Trace Commands, Display Control, Tracing
+@subsection Dumping Goals
+@cindex dump
+@cindex ready queue
+@cindex goal pool
+@cindex suspended goal
+
+It is desirable sometimes to dump all the goals in the system as a last
+resort.  The following commands do it.
+
+@table @asis
+@item Dump Ready Queue: @code{Q}
+Displays all the goals in the ready queue (goal pool) with their priorities.
+
+@item Dump Suspended (Waiting) Goals: @code{W}
+Displays all the suspended goals in the system with their priorities.   
+@end table
+
+@node Misc Trace Commands, Perpetual Suspension, Dumping Goals, Tracing
+@subsection Miscellaneous Commands
+
+@table @asis
+@item  Status Query: @code{=}
+Displays tracer status information, such as follows.
+
+@example
+   port: Call Susp Redu Fail
+enabled:  +    +    +    +
+leashed:  +    +    +    +
+print terse; depth = 3; length = 7
+@end example
+
+@item List Modules: @code{lm}
+Lists all the modules of the currently executed program.
+
+@item List Predicates: @code{lp}
+Lists all the predicates and their default trace status of the currently
+executed program.
+
+@item  Queue: @code{Q}
+Lists the contents of the ready queue (goal pool).
+
+@item Help: @code{?} or @code{h}
+Lists all the commands and their terse description available at the
+current port.
+@end table
+
+@node Perpetual Suspension,  , Misc Trace Commands, Tracing
+@subsection Detecting Perpetual Suspensions
+
+When some goals are awaiting for instantiation of a variable that will
+never be instantiated by any other goals, such goals will never proceed.
+This situation is called @dfn{perpetual suspension}.  Perpetual
+suspension is detected by the garbage collector of KLIC.  Thus, during
+program execution, garbage collections may find perpetual suspensions.
+
+The system keeps track of the number of suspended goals.  When there
+exist no goals ready for running and there are suspended goals
+remaining, the system will try garbage collection to detect perpetual
+suspensions.
+
+Perpetual suspensions are reported as follows.
+
+@example
+!!! Perpetual Suspention Detected !!!
+   3 PSUS: @var{Module}:@var{Predicate}(@var{Args}@dots{})? 
+@end example
+
+@noindent
+The same command set as at a fail port is available here.
+
+@node Install, Distributed KLIC, Tracing, Using KLIC
+@section Installation
+@cindex installation
+
+Installation of KLIC should be fairly easy.
+
+Host-dependent and preference-based customizations are made by running a
+configuration script provided with the distribution.  Then @code{make
+all} should compile the whole system.  You can make sure that the system
+has been compiled without problems by running @code{make tests}.  Then
+you can install the system by @code{make install}.
+
+@menu
+* Configuration::               Configuration script
+* Make All::                    Compiling the system
+* Make Tests::                  Testing the compilation
+* Make Install::                Actually installing the system
+* Make Distclean::              Cleaning up after installation
+* Troubles::                    What to do when you have some trouble
+@end menu
+
+@node Configuration, Make All, Install, Install
+@subsection Configuration
+@cindex configuration
+@cindex PVM
+
+First thing to do in installation of KLIC is to configure the KLIC
+system depending on the host computer system and your preference.
+
+Go to the root directory of the distribution (referred to as @var{ROOT}
+in what follows).  Then, run the configuration script there by a command
+@file{./Configure}.  The script will search for available software tools
+in your system and ask your preferences.
+
+The default shell programs on some Unix systems based on BSD 4.2 do not
+understand some of the constructs used in this configuration script.  In
+such a case, obtain a modern shell (such as GNU @code{bash}) and let it
+execute the script, as follows.
+
+@example
+% bash Configure
+@end example
+
+If you have built the system before and rebuilding it in the same
+directory, it will ask whether the same values you specified the last
+time should be used as default values.
+
+The next question it asks (or the first, if it is the first time to
+build the system) is whether to configure also for parallel
+implementations.  If you want to install only the sequential system,
+please answer @code{no} to the question.  See relevant sections
+(@pxref{Distributed KLIC} and @pxref{Shared-Memory KLIC}), for further
+details of configuraion of parallel versions of the system.
+
+The configuration script will make three files.
+
+@example
+@file{@var{ROOT}/Makefile}
+@file{@var{ROOT}/include/klic/config.h}
+@file{@var{ROOT}/config.sh}
+@end example
+
+The last one records the specified options for reconfiguration.
+
+The configuration script asks about the parallelism used in the
+installation procedure.  You can specify non-zero parallelism here to
+speed up the procedure if you are installing your system on a lightly
+loaded multiprocessor system.  Do @emph{not} use parallel execution
+features of the @code{make} program.
+
+@node Make All, Make Tests, Configuration, Install
+@subsection Compiling the KLIC system
+
+After configuring the system, typing in @code{make all} should compile
+the whole KLIC system, including the KL1 to C compiler and the runtime
+libraries.
+
+@node Make Tests, Make Install, Make All, Install
+@subsection Testing the Compilation
+
+After system compilation is finished, you are recommended to test
+whether the compilation went without problems.  To do that, type in
+@code{make tests} in the root directory of the distribution (not in its
+subdirectory @code{test}).  This will compile and run several KL1 test
+programs and compares the output with the expected output.
+
+@node Make Install, Make Distclean, Make Tests, Install
+@subsection Installing the Objects
+
+After compilation, typing in @code{make install} will install the
+compiler, header files and runtime libraries to directories specified on
+configuration (@pxref{Configuration}).
+
+@node Make Distclean, Troubles, Make Install, Install
+@subsection Cleaning Up the Installation Directory
+
+After installation has been done, typing in @code{make distclean} will
+delete all the files @emph{not} included in the distribution.
+
+Normal users should @strong{not} try @code{make realclean}, which will
+delete C program source files generated from KL1.  A working KL1 to C
+compiler will be needed to regenerate the C program source files.
+
+@node Troubles,  , Make Distclean, Install
+@subsection When Something Goes Wrong
+
+When the installation procedure went wrong because of misconfiguration,
+you had better start all over again from the configuration step
+(@pxref{Configuration}).  The configuraion script will ask you whether
+to clean up the system for reconfiguration.  Please answer affirmative
+then.
+
+Dependency rules written in Makefiles are inappropriate for using
+parallel make features provided by some versions of @code{make}.  The
+compilation procedure of KLIC relies on the fact that contents of atom
+and functor databases are monotonically increasing.  Dependencies on
+them are intentionally omitted to avoid redundant recompilation.  Use
+the parallel compilation feature of the compiler driver @code{klic} that
+understands the mechanism instead.  Parallelism used during installation
+procedure is specified at the configuration step
+(@pxref{Configuration}).
+
+If you think the problem is due to the distributed code, please report
+your problem to the following address.
+
+@example
+@code{klic-bugs@@icot.or.jp}
+@end example
+
+Including information on your host system (hardware and operating
+system), your configuration (contents of the file @file{config.sh}), and
+log of your installation would be of great help in analysing your
+problems.
+
+@node Distributed KLIC, Shared-Memory KLIC, Install, Using KLIC
+@section Distributed Memory Parallel Implementation of KLIC
+@cindex distributed KLIC
+@cindex parallel processing
+@cindex PVM
+
+A version of the distributed parallel implementation of KLIC is included
+in this KLIC distribution.  The distributed implementation is based on
+PVM 3.3.  Implementations on other portable parallel processing
+libraries, such as MPI, and those on system-specific interprocess
+communication libraries have also been done, but not yet integrated into
+this distribution.
+
+Although it is based on PVM, the current version does not support
+heterogeneous configuration: It does not work with systems consisting of
+processors with multiple architectures or running different operating
+systems.  Currently, we don't have any plans to support heterogenous
+systems.
+
+@menu
+* Installation of Distributed KLIC::  
+* Compiling Programs for Distributed KLIC::  
+* Running Programs of Distributed KLIC::  
+@end menu
+
+@node Installation of Distributed KLIC, Compiling Programs for Distributed KLIC, Distributed KLIC, Distributed KLIC
+@subsection Installation of Distributed KLIC
+@cindex configuration
+
+To install the PVM version of the distributed KLIC, you have to first
+answer affirmatively to the question from the configuration script
+asking whether to configure for parallel implementations and then
+affirmatively again to to the question asking whether to configure for
+the distributed KLIC.  Then it will ask for several questions on which
+directories the PVM system is installed and which PVM library is to be
+used, if several of them are available.
+
+The following will be asked.
+@itemize @bullet
+@item
+Root directory of the pvm system
+@item
+The keyword for architecture of the system (@code{SUN4MP}, for example)
+@item
+The name of the PVM library (@code{pvm3}, for example)
+@end itemize
+
+The current version has problems with PVM implementations which does not
+use daemon processes.  For example, on shared-memory multiprocessor
+Sparc systems running Solaris 2, the library @code{pvm3} does not work.
+Use @code{pvm3s} that use sockets instead of shared-memory for
+interprocess communication.
+
+The rest of the installation procedure is the same as the procedure
+without the distributed KLIC system.
+
+The distributed KLIC system runs exactly the same as its sequential
+version when the option for distributed processing (@code{-dp}) is not
+specified on compilation.
+
+@node Compiling Programs for Distributed KLIC, Running Programs of Distributed KLIC, Installation of Distributed KLIC, Distributed KLIC
+@subsection Compiling Programs for Distributed KLIC
+
+Compilation procedure is almost the same for the sequential version
+except that the following option is available.
+
+@table @t
+@item -dp
+Specifies compilation for the distributed KLIC system.  Without this
+option, the compiled object code will run only sequentially.
+@end table
+
+@node Running Programs of Distributed KLIC,  , Compiling Programs for Distributed KLIC, Distributed KLIC
+@subsection Running Programs of Distributed KLIC
+
+@menu
+* Setting Up PVM::              
+* Runtime Options for Distributed KLIC::  
+* Known Bugs of Distributed KLIC::  
+@end menu
+
+@node Setting Up PVM, Runtime Options for Distributed KLIC, Running Programs of Distributed KLIC, Running Programs of Distributed KLIC
+@subsubsection Setting Up PVM
+
+Before executing programs compiled for distributed execution, the PVM
+system has to be running on your system.  The following set up will be
+required.
+
+@itemize @bullet
+@item
+The following environment variables should be set properly.
+
+@table @t
+@item PVM_ROOT
+The root directory of the PVM system installed on your system.
+
+@item PVM_ARCH
+The keyword specifying the architecture of the system.
+@end table
+
+They should be the same as what you specified on installation of the
+KLIC system.
+
+@item
+The PVM demon should be running.  The demon can be started by invoking
+the PVM console, which is in @code{$PVM_ROOT/lib/$PVM_ARCH/pvm}.  It
+would be convenient to keep a window for this console.
+@end itemize
+
+For other setting parameters and details of operation of PVM console,
+please consult its own manual.
+
+@node Runtime Options for Distributed KLIC, Known Bugs of Distributed KLIC, Setting Up PVM, Running Programs of Distributed KLIC
+@subsubsection Runtime Options for Distributed KLIC
+
+The following options are available when running programs in the
+distributed KLIC system, in addition to those available for the
+sequential version.
+
+@table @t
+@item -p @var{N}
+Specifies the number of workers (Unix processes) for running the
+program.
+
+@item -e
+Specifies eager transfer mode.  Normally, KLIC transfers data structures
+between processors on demands.  Thus, nested data structures are
+transferred one level at a time.  In the eager transfer mode, nested
+structures are sent at a time as far as they are already defined.  This
+makes the execution more efficient for some programs, but may degrade
+the performance for others.
+
+@item -E @var{Level}
+Specifies how many level of nested data structures are to be transferred
+at each communication.
+
+@item -I @var{MicroSec}
+Specifies interval between interprocessor communication polling.
+Whether such polling is needed and which value to be appropriate
+depend on host systems and implementations of the physical communication
+layer.  In most cases, its default value of 10000 is appropriate.
+
+@item -n
+Specifies printing out of some runtime statistics on interprocess
+communication.
+
+@item -notimer
+Specifies not to use timer-driven communication polling.  Whether such
+polling is mandatory depends on implementation of the physical
+communication layer.
+
+@item -relsp
+Specifies that relative path should be used for the executable file on
+spawning worker tasks.
+
+@item -S
+Specifies not to notify receiver processes of communication packets by
+sending singals.  On some implementations, this may speed up program
+execution by eliminating signal sending overheads.
+@end table
+
+@node Known Bugs of Distributed KLIC,  , Runtime Options for Distributed KLIC, Running Programs of Distributed KLIC
+@subsubsection Known Bugs of Distributed KLIC
+
+@itemize @bullet
+@item
+Atoms and functors newly registered during program execution may not be
+handled properly.
+
+@item
+Specification of spying (@pxref{Spying}) is effective only within the
+computation node where it is specified.
+@end itemize
+
+@node Shared-Memory KLIC,  , Distributed KLIC, Using KLIC
+@section Shared-Memory Implementation of KLIC 
+@cindex shared-memory KLIC
+@cindex parallel processing
+
+A version of the shared-memory parallel implementation of KLIC is
+included in this KLIC distribution.  The implementation contains
+hardware, operating system, and C compiler dependent parts.  The version
+included is for Sparc-based systems running SunOS 5.3 and Alpha-based
+systems running DEC OSF/1.  Gnu CC should be used for their compilation.
+
+@menu
+* Installation of Shared-Memory KLIC::  
+* Compiling Programs for Shared-Memory KLIC::  
+* Running Programs of Shared-Memory KLIC::  
+@end menu
+
+@node Installation of Shared-Memory KLIC, Compiling Programs for Shared-Memory KLIC, Shared-Memory KLIC, Shared-Memory KLIC
+@subsection Installation of Shared-Memory KLIC
+@cindex configuration
+
+To install the shared-memory parallel version of KLIC, you have to first
+answer affirmatively to the question from the configuration script
+asking whether to configure shared-memory parallel implementation.
+
+The rest of the installation procedure is the same as the procedure
+without the shared-memory KLIC system.
+
+The shared-memory KLIC system runs exactly the same as its sequential
+version when the option for shared-memory parallel processing
+(@code{-shm}) is not specified on compilation.
+
+@node Compiling Programs for Shared-Memory KLIC, Running Programs of Shared-Memory KLIC, Installation of Shared-Memory KLIC, Shared-Memory KLIC
+@subsection Compiling Programs for Shared-Memory KLIC
+
+Compilation procedure is almost the same for the sequential version
+except that the following option is available.
+
+@table @t
+@item -shm
+Specifies compilation for the shared-memory KLIC system.  Without this
+option, the compiled object code will run only sequentially.
+@end table
+
+@node Running Programs of Shared-Memory KLIC,  , Compiling Programs for Shared-Memory KLIC, Shared-Memory KLIC
+@subsection Running Programs of Shared-Memory KLIC
+
+@menu
+* Runtime Options for Shared-Memory KLIC::  
+* Known Bugs of Shared-Memory KLIC::  
+@end menu
+
+@node Runtime Options for Shared-Memory KLIC, Known Bugs of Shared-Memory KLIC, Running Programs of Shared-Memory KLIC, Running Programs of Shared-Memory KLIC
+@subsubsection Runtime Options for Shared-MemoryKLIC
+
+The following options are available when running programs in the
+shared-memory KLIC system, in addition to those available for the
+sequential version.
+
+@table @t
+@item -p @var{N}
+Specifies the number of workers (Unix processes) for running the
+program.
+
+@item -D
+Reports process numbers of children workers.  Maybe useful for lower
+level debugging.
+
+@item -S @var{Size}
+Specifies the size of the shared heap.  In the current implementation,
+shared heap is allocated at the initiation and will never be expanded.
+@end table
+
+@node Known Bugs of Shared-Memory KLIC,  , Runtime Options for Shared-Memory KLIC, Running Programs of Shared-Memory KLIC
+@subsubsection Known Bugs of Shared-Memory KLIC
+
+@itemize @bullet
+@item
+The tracer may not work correctly.
+@end itemize
+
+@node Type Index, Predicate Index, Using KLIC, Top
+@unnumbered Data Type Index
+@printindex tp
+
+@node Predicate Index, Module Index, Type Index, Top
+@unnumbered Predicate, Method and Message Index
+@printindex fn
+
+@node Module Index, Concepts, Predicate Index, Top
+@unnumbered Module Index
+@printindex pg
+
+@node Concepts,  , Module Index, Top
+@unnumbered Concept Index
+@printindex cp
+
+@contents
+
+@bye

@@ -1,0 +1,437 @@
+/* ----------------------------------------------------------
+%   (C) 1994 Institute for New Generation Computer Technology
+%       (Read COPYRIGHT for detailed information.)
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+/*
+  Character Type Encoding
+
+	lowercase & kanji	0
+	uppercase letter	1
+	digit			2
+	underbar		3
+	symbol			4
+	double quote		5
+	single quote		6
+	exclamation		7
+	comma			8
+	semicolon		9
+	vertical bar		10
+	open parenthesis	11
+	close parenthesis	12
+	open bracket		13
+	close bracket		14
+	open brace		15
+	close brace		16
+	percent			17
+
+	space and alike		20
+	end of file		21
+
+  Tokens
+	variable(Var,Seq,Name,Kind): Variable
+		Var: logical variable itself
+		Seq: sequential number in one scan
+		Name: variable name string
+		Kind: `void' or `normal'
+	number(Value): Number (integer or floating)
+	string(String): String Literal	
+	atom(Atom): Atom
+	',': Comma
+	'|': Vertical bar
+	'(': Open parenthesis immediately following an atom
+	' (': Open parenthesis not immediately following an atom
+	')': Cloase parenthesis
+	'[': Open bracket
+	']': Close bracket
+	'{': Open curly brace
+	'}': Close curly brace
+	error(ReasonString): Error found while scanning
+	eof: End of file
+*/
+
+:- module scanner.
+
+scan(Tokens)-F :-
+	getchar(C,Type)-F,
+	scan(Type,C,vtab(0,[]),Tokens)-F.
+
+scan(0,C0,V0,T0)-F :-
+	getchar(C1,Type1)-F,
+	scan_name(Type1,C1,Name,Type,C)-F,
+	atom_chars(Atom,[C0|Name]),
+	scan_after_atom(Type,C,Atom,V0,T0,T)-F.
+scan(1,C0,vtab(Seq0,Tab0),T0)-F :-
+	getchar(C1,Type1)-F,
+	scan_name(Type1,C1,Name,Type,C)-F,
+	make_new_string(VarName,[C0|Name]),
+	lookup_var(Tab0,Seq0,VarName,Vseq,Var,Kind,Tab,Seq),
+	T0=[variable(Var,Vseq,VarName,Kind)|T],
+	scan(Type,C,vtab(Seq,Tab),T)-F.
+scan(2,C0,V0,T0)-F :-
+	scan_number(2,C0,Number,C,Type,L,L)-F,
+	T0=[number(Number)|T],
+	scan(Type,C,V0,T)-F.
+scan(3,C0,vtab(Seq0,Tab),T0)-F :-
+	getchar(C1,Type1)-F,
+	scan_name(Type1,C1,Name,Type,C)-F,
+	make_new_string(VarName,[C0|Name]),
+	T0=[variable(_,Seq0,VarName,void)|T],
+	Seq := Seq0+1,
+	scan(Type,C,vtab(Seq,Tab),T)-F.
+scan(4,C0,V0,T0)-F :-
+	getchar(C1,Type1)-F,
+	( C0=:=0'., Type1>=20, V0=vtab(_,Tab) -> T0=[], finalize_vars(Tab)
+	; C0=:=0'/ ->
+	  ( C1=:=0'* ->
+	    get0(C2)-F,
+	    scan_comment(C2,Type,C)-F,
+	    scan(Type, C, V0, T0)-F
+	  ; C1=\=0'* ->
+	    scan_sname(Type1,C1,Name,Type,C)-F,
+	    atom_chars(Atom,[C0|Name]),
+	    scan_after_atom(Type,C,Atom,V0,T0,T)-F
+	  )
+	; otherwise; true ->
+	  scan_sname(Type1,C1,Name,Type,C)-F,
+	  atom_chars(Atom,[C0|Name]),
+	  scan_after_atom(Type,C,Atom,V0,T0,T)-F
+	).
+scan(5,C0,V0,T0)-F :-
+	get0(C1)-F,
+	scan_string(C1,C0,Elements,C,Type,Err)-F,
+	(
+	    Err = [] ->
+	    make_new_string(String,Elements),
+	    T0=[string(String)|T],
+	    scan(Type,C,V0,T)-F
+	; otherwise ;
+	    true ->
+	    T0=[error(Err)|T],
+	    scan(Type,C,V0,T)-F
+	).
+scan(6,C0,V0,T0)-F :-
+	get0(C1)-F,
+	scan_string(C1,C0,Name,C,Type,Err)-F,
+	(
+	    Err = [] ->
+	    atom_chars(Atom,Name),
+	    scan_after_atom(Type,C,Atom,V0,T0,T)-F
+	; otherwise ;
+	    true ->
+	    T0=[error(Err)|T],
+	    scan(Type,C,V0,T)-F
+	).
+scan(7,_,V0,T0)-F :-
+	getchar(C,Type)-F,
+	scan_after_atom(Type,C,(!),V0,T0,T)-F.
+scan(9,_,V0,T0)-F :-
+	getchar(C,Type)-F,
+	scan_after_atom(Type,C,(;),V0,T0,T)-F.
+scan(8,_,V0,T0)-F :- T0=[(',')|T], scan_rest(V0,T)-F.
+scan(10,_,V0,T0)-F :- T0=['|'|T], scan_rest(V0,T)-F.
+scan(11,_,V0,T0)-F :- T0=[' ('|T], scan_rest(V0,T)-F.
+scan(12,_,V0,T0)-F :- T0=[')'|T], scan_rest(V0,T)-F.
+scan(13,_,V0,T0)-F :- T0=['['|T], scan_rest(V0,T)-F.
+scan(14,_,V0,T0)-F :- T0=[']'|T], getchar(C,Type)-F,
+	(
+	    Type=11 -> T=['('|T1], scan_rest(V0,T1)-F
+	; otherwise ;
+	    true -> scan(Type,C,V0,T)-F
+	).
+scan(15,_,V0,T0)-F :- T0=['{'|T], scan_rest(V0,T)-F.
+scan(16,_,V0,T0)-F :- T0=['}'|T], scan_rest(V0,T)-F.
+scan(17,_,V0,T0)-F :- get0(C)-F, scan_comment_line(C,V0,T0)-F.
+scan(20,_,V0,T0)-F :- scan_rest(V0,T0)-F.
+scan(21,_,vtab(_,Tab),T0)-F :- T0=[eof], finalize_vars(Tab).
+
+scan_after_atom(Type,C,Atom,V0,T0,T)-F :- Type=:=11 |
+	T0=[atom(Atom), '('|T], scan_rest(V0,T)-F.
+scan_after_atom(Type,C,Atom,V0,T0,T)-F :- Type=\=11 |
+	T0=[atom(Atom)|T], scan(Type,C,V0,T)-F.
+
+scan_comment_line(C0,V,T)-F :- C0<0 |
+	scan(21,C0,V,T)-F.
+scan_comment_line(C0,V,T)-F :- C0>=0, C0=:=10 |
+	scan_rest(V,T)-F.
+scan_comment_line(C0,V,T)-F :- C0>=0, C0=\=10 |
+	getchar(C,_)-F, scan_comment_line(C,V,T)-F.
+
+scan_comment(C0,Type,C)-F :- C0=:=0'* |
+	get0(C1)-F,
+	( C1=:=0'/ -> getchar(C,Type)-F
+	; C1=\=0'/ -> scan_comment(C1,Type,C)-F
+	).
+scan_comment(C0,Type,C)-F :- C0=\=0'* |
+	get0(C1)-F, scan_comment(C1,Type,C)-F.
+
+scan_rest(V,T)-F :- getchar(C,Type)-F, scan(Type,C,V,T)-F.
+
+scan_name(Type0,C0,Name0,Type,C)-F :- Type0 =< 3 |
+	Name0=[C0|Name],
+	getchar(C1,Type1)-F,
+	scan_name(Type1,C1,Name,Type,C)-F.
+scan_name(Type0,C0,Name0,Type,C)-F :- Type0 > 3 |
+	Name0=[], C=C0, Type=Type0.
+
+scan_sname(Type0,C0,Name0,Type,C)-F :- Type0 =:= 4 |
+	Name0=[C0|Name],
+	getchar(C1,Type1)-F,
+	scan_sname(Type1,C1,Name,Type,C)-F.
+scan_sname(Type0,C0,Name0,Type,C)-F :- Type0 =\= 4 |
+	Name0=[], C=C0, Type=Type0.
+
+scan_number(2,C0,N,C,Type,L,LT0)-F :-
+	LT0=[C0|LT],
+	getchar(C1,Type1)-F,
+	scan_number(Type1,C1,N,C,Type,L,LT)-F.
+scan_number(6,_,N,C,Type,L,LT)-F :-
+	LT=[],
+	char_list_to_int(L,0,N0),
+	getchar(C1,Type1)-F,
+	( N0=:=0 -> N=C1, getchar(C,Type)-F
+	; N0=\=0 -> scan_based_number(Type1,C1,N0,0,N,C,Type)-F
+	).
+scan_number(_,0'.,N,C,Type,L,LT0)-F :-
+	getchar(C1,Type1)-F,
+	( Type1=:=2 ->
+	    LT0=[0'.|LT],
+	    scan_fraction(Type1,C1,N,C,Type,L,LT)-F
+	; Type1=\=2 ->
+	    ungetc(C1)-F, Type=4, C=0'., LT0=[],
+	    char_list_to_int(L,0,N)
+	).
+otherwise.
+scan_number(Type0,C0,N,C,Type,L,LT)-F :-
+	Type=Type0, C=C0, LT=[],
+	char_list_to_int(L,0,N).
+
+scan_fraction(2,C0,N,C,Type,L,LT0)-F :-
+	LT0=[C0|LT],
+	getchar(C1,Type1)-F,
+	scan_fraction(Type1,C1,N,C,Type,L,LT)-F.
+scan_fraction(Type0,C0,N,C,Type,L,LT0)-F :- (C0=0'e; C0=0'E) |
+	getchar(C1,Type1)-F,
+	( (Type1=2; C1=0'- ; C1=0'+) ->
+	    LT0=[C0|LT],
+	    scan_exponent(Type1,C1,N,C,Type,L,LT)-F
+	; otherwise ;
+	    true ->
+	    ungetc(C1)-F, Type=Type0, C=C0,
+	    char_list_to_float(L,LT0,N)
+	).
+otherwise.
+scan_fraction(Type0,C0,N,C,Type,L,LT)-F :-
+	Type=Type0, C=C0,
+	char_list_to_float(L,LT,N).
+
+scan_exponent(Type0,Sign,N,C,Type,L,LT0)-F :- (Sign=0'- ; Sign=0'+) |
+	getchar(C1,Type1)-F, LT0=[Sign|LT],
+	scan_unsigned_exponent(Type1,C1,N,C,Type,L,LT)-F.
+otherwise.
+scan_exponent(Type0,C0,N,C,Type,L,LT)-F :-
+	scan_unsigned_exponent(Type0,C0,N,C,Type,L,LT)-F.
+
+scan_unsigned_exponent(Type0,C0,N,C,Type,L,LT0)-F :- Type0 =:= 2 |
+	LT0=[C0|LT],
+	getchar(C1,Type1)-F,
+	scan_unsigned_exponent(Type1,C1,N,C,Type,L,LT)-F.
+scan_unsigned_exponent(Type0,C0,N,C,Type,L,LT)-F :- Type0 =\= 2 |
+	Type=Type0, C=C0,
+	char_list_to_float(L,LT,N).
+
+char_list_to_int([],N0,N) :- N=N0.
+char_list_to_int([C|T],N0,N) :-
+	char_list_to_int(T,~(10*N0+(C-0'0)),N).
+
+char_list_to_float(L,LT,N) :-
+	LT=[0' ],
+	generic:new(string,S,L,8),
+	generic:new(float,N,S).
+
+scan_based_number(2,C0,B,N0,N,C,Type)-F :-
+	V := C0-0'0,
+	( V < B ->
+	  N1 := B*N0+V,
+	  getchar(C1,Type1)-F,
+	  scan_based_number(Type1,C1,B,N1,N,C,Type)-F
+	; V >= B -> N=N0, C=C0, Type=2 ).
+scan_based_number(0,C0,B,N0,N,C,Type)-F :-
+	V := C0-0'a+10,
+	( V < B ->
+	  N1 := B*N0+V,
+	  getchar(C1,Type1)-F,
+	  scan_based_number(Type1,C1,B,N1,N,C,Type)-F
+	; V >= B -> N=N0, C=C0, Type=0 ).
+scan_based_number(1,C0,B,N0,N,C,Type)-F :-
+	V := C0-0'A+10,
+	( V < B ->
+	  N1 := B*N0+V,
+	  getchar(C1,Type1)-F,
+	  scan_based_number(Type1,C1,B,N1,N,C,Type)-F
+	; V >= B -> N=N0, C=C0, Type=1 ).
+otherwise.
+scan_based_number(Type0,C0,_,N0,N,C,Type)-F :-
+	N=N0, C=C0, Type=Type0.
+
+lookup_var([],Seq0,Name,Vseq,Var,Kind,Tab,Seq) :-
+	Vseq=Seq0, Tab=[Name=var(Var,Seq0,Kind,1)], Seq := Seq0+1.
+lookup_var([Name=var(Var0,Vseq0,Kind0,Occur0)|T],
+	   Seq0,Name,Vseq,Var,Kind,Tab,Seq) :-
+	Var=Var0, Vseq=Vseq0, Kind=Kind0,
+	Tab=[Name=var(Var0,Vseq0,Kind0,~(Occur0+1))|T], Seq=Seq0.
+otherwise.
+lookup_var([H|T],Seq0,Name,Vseq,Var,Kind,Tab,Seq) :- H=(Name0=V0) |
+	Tab=[H|TabT],
+	lookup_var(T,Seq0,Name,Vseq,Var,Kind,TabT,Seq).
+
+finalize_vars([]).
+finalize_vars([_Name=var(_,_,Kind,Occur)|T]) :-
+	(
+	    Occur=1 -> Kind=void
+	;
+	    Occur>1 -> Kind=normal
+	),
+	finalize_vars(T).
+
+scan_string(Q,Q,E0,C,Type,Err)-F :-
+	get0(C1)-F,
+	( C1 =:= Q -> E0=[Q|E], get0(C2)-F, scan_string(C2,Q,E,C,Type,Err)-F
+	; C1 =\= Q -> E0=[], Err=[], C=C1, chartype(C1,Type)
+	).
+scan_string(0'\,Q,E0,C,Type,Err)-F :-
+	get0(C1)-F,
+	escape_char(C1,Meaning),
+	scan_escape(Meaning,Q,E0,C,Type,Err)-F.
+/*
+scan_string(10,_Q,E0,C,Type,Err)-F :-
+	Err="newline within a string literal or a quoted atom name",
+	E0=[],
+	getchar(C,Type)-F.
+*/
+scan_string(-1,_Q,E0,C,Type,Err)-F :-
+	Err="end of file within a string literal or a quoted atom name",
+	E0=[], C= -1, Type=21.
+otherwise.
+scan_string(C0,Q,E0,C,Type,Err)-F :-
+	E0=[C0|E], get0(C1)-F, scan_string(C1,Q,E,C,Type,Err)-F.
+
+escape_char(0'a,Meaning) :- Meaning=7.
+escape_char(0'b,Meaning) :- Meaning=8.
+escape_char(0't,Meaning) :- Meaning=9.
+escape_char(0'n,Meaning) :- Meaning=10.
+escape_char(0'v,Meaning) :- Meaning=11.
+escape_char(0'f,Meaning) :- Meaning=12.
+escape_char(0'r,Meaning) :- Meaning=13.
+escape_char(0'',Meaning) :- Meaning=0''.
+escape_char(0'",Meaning) :- Meaning=0'".
+escape_char(0'?,Meaning) :- Meaning=0'?.
+escape_char(0'\,Meaning) :- Meaning=0'\.
+escape_char(0'x,Meaning) :- Meaning=hexadecimal.
+escape_char(10, Meaning) :- Meaning=escaped_newline.
+escape_char(C,  Meaning) :- 0'0=<C, C<0'8 | Meaning=octal(~(C-0'0)).
+otherwise.
+escape_char(C,  Meaning) :- Meaning=C.
+
+scan_escape(Meaning,Q,E0,C,Type,Err)-F :- integer(Meaning) |
+	E0=[Meaning|E],
+	get0(C1)-F,
+	scan_string(C1,Q,E,C,Type,Err)-F.
+scan_escape(escaped_newline,Q,E0,C,Type,Err)-F :-
+	get0(C1)-F,
+	scan_string(C1,Q,E0,C,Type,Err)-F.
+scan_escape(hexadecimal,Q,E0,C,Type,Err)-F :-
+	get0(C1)-F,
+	scan_hex_escape(C1,0,Q,E0,C,Type,Err)-F.
+scan_escape(octal(N),Q,E0,C,Type,Err)-F :-
+	get0(C1)-F,
+	scan_octal_escape(C1,N,Q,E0,C,Type,Err)-F.
+
+scan_octal_escape(C1,N,Q,E0,C,Type,Err)-F :- 0'0=<C1, C1<0'8 |
+	NN := N*8+C1-0'0,
+	get0(C2)-F,
+	scan_octal_escape_2(C2,NN,Q,E0,C,Type,Err)-F.
+otherwise.
+scan_octal_escape(C1,N,Q,E0,C,Type,Err)-F :-
+	E0=[N|E],
+	scan_string(C1,Q,E,C,Type,Err)-F.
+
+scan_octal_escape_2(C1,N,Q,E0,C,Type,Err)-F :- 0'0=<C1, C1<0'8 |
+	NN := N*8+C1-0'0,
+	(
+	    NN < 256 ->
+	    E0=[NN|E],
+	    get0(C2)-F,
+	    scan_string(C2,Q,E,C,Type,Err)-F
+	; otherwise ;
+	    true ->
+	    Err="too large element in octal escape sequence",
+	    scan_string(C1,Q,E0,C,Type,_)-F
+	).
+otherwise.
+scan_octal_escape_2(C1,N,Q,E0,C,Type,Err)-F :-
+	E0=[N|E],
+	scan_string(C1,Q,E,C,Type,Err)-F.
+
+scan_hex_escape(C1,N,Q,E0,C,Type,Err)-F :- 0'0=<C1, C1=<0'9 |
+	NN := 16*N+C1-0'0,
+	get0(C2)-F,
+	scan_hex_escape(C2,NN,Q,E0,C,Type,Err)-F.
+scan_hex_escape(C1,N,Q,E0,C,Type,Err)-F :- 0'a=<C1, C1=<0'f |
+	NN := 16*N+C1-0'a,
+	get0(C2)-F,
+	scan_hex_escape(C2,NN,Q,E0,C,Type,Err)-F.
+scan_hex_escape(C1,N,Q,E0,C,Type,Err)-F :- 0'A=<C1, C1=<0'F |
+	NN := 16*N+C1-0'A,
+	get0(C2)-F,
+	scan_hex_escape(C2,NN,Q,E0,C,Type,Err)-F.
+otherwise.
+scan_hex_escape(C1,N,Q,E0,C,Type,Err)-F :- N >= 256 |
+	Err="too large element in hexadecimal escape sequence",
+	scan_string(C1,Q,E0,C,Type,_)-F.
+scan_hex_escape(C1,N,Q,E0,C,Type,Err)-F :- N < 256 |
+	E0=[N|E],
+	get0(C2)-F,
+	scan_string(C2,Q,E0,C,Type,Err)-F.
+
+atom_chars(Atom, Name) :-
+	generic:new(string, NameS, Name, 8),
+	atom_table:make_atom(NameS, Atom).
+
+make_new_string(Str,Elems) :-
+	generic:new(string,Str,Elems,8).
+
+get0(C)-F :- F<=getc(C).
+getchar(C,Type)-F :- get0(C)-F, chartype(C,Type).
+ungetc(C)-F :- F<=ungetc(C).
+
+chartype(C,T) :- integer(C) |
+    V = {  21,
+	% eof
+           20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
+	% nul soh stx etx eot enq ack bel  bs  ht  nl  vt  np  cr  so  si
+	   20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
+        % dle dc1 dc2 dc3 dc4 nak syn etb can  em sub esc  fs  gs  rs  us
+	   20,  7,  5,  4,  4, 17,  4,  6, 11, 12,  4,  4,  8,  4,  4,  4,
+	%  sp   !   "   #   $   %   &   '   (   )   *   +   ,   -   .   /
+	    2,  2,  2,  2,  2,  2,  2,  2,  2,  2,  4,  9,  4,  4,  4,  4,
+        %   0   1   2   3   4   5   6   7   8   9   :   ;   <   =   >   ?
+	    4,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
+        %   @   A   B   C   D   E   F   G   H   I   J   K   L   M   N   O
+	    1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 13,  4, 14,  4,  3,
+        %   P   Q   R   S   T   U   V   W   X   Y   Z   [   \   ]   ^   _
+	    4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        %   `   a   b   c   d   e   f   g   h   i   j   k   l   m   n   o
+	    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 15, 10, 16,  4, 20,
+        %   p   q   r   s   t   u   v   w   x   y   z   {   |   }   ~ del
+	    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 },
+    vector_element(V,~(C+1),T).

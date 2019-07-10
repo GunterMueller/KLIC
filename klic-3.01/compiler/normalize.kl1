@@ -1,0 +1,750 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1993, 1994, 1995 Institute for New Generation Computer Technology 
+% %       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+% ----------------------------------------------------------- */
+%
+%  referred from klic_comp_kl1cmp.
+%
+%  referring modules.
+%        klic_comp_insert, klic_comp_generate, klic_comp_gb,
+%        klic_comp_kl1cmp, klic_comp_util, klic_comp_message
+
+:- module klic_comp_normalize.
+
+% generate(   +,      +,    -,    -,   +,   -)
+generate(Name/Arty,Clauses,Works,Info0,Info,Code)-Pool :-
+    separate_cond(Clauses,Cond,Ans)-Pool,
+    klic_comp_insert:make_index_tree(Cond,[],e,Tree,Name/Arty),
+    make_arg_assoc(0,Arty,AL),
+    klic_comp_generate:gen_code(Tree,interrupt,lab(_Top),AL,0,
+				Works,0,_,0,_,Info0,Info,Code,[]).
+
+make_arg_assoc(K,N,AL) :- K>=N | AL = [].
+make_arg_assoc(K,N,AL0) :- K<N |
+    K1 := K+1,
+    AL0 = [$(arg(head,K),a(K),any)|AL],
+    make_arg_assoc(K1,N,AL).
+
+%%%%% separate_cond
+separate_cond([],Cond,Ans)-P :- Cond=[], Ans=normal.
+separate_cond([otherwise|CT],Cond,Ans)-P :- CT=[] |
+    klic_comp_message:warning(
+	"No clauses follow \"otherwise\"; \"otherwise\" ignored", [])-P,
+    Cond=[], Ans=normal.
+separate_cond([otherwise|CT],Cond,Ans)-P :- CT\=[] |
+    Cond = [otherwise|CondT],
+    separate_cond(CT,CondT,Ans)-P.
+separate_cond([alternatively|CT],Cond,Ans)-P :- CT=[] |
+    klic_comp_message:warning(
+	"No clauses follow \"alternatively\"; \"alternatively\" ignored",
+	[])-P,
+    Cond=[], Ans=normal.
+separate_cond([alternatively|CT],Cond,Ans)-P :- CT\=[] |
+    Cond = [alternatively|CondT],
+    separate_cond(CT,CondT,Ans)-P.
+separate_cond([clause(ID,H,G,B)|CT],Clauses,Ans)-P :-
+    norm_head(H,[],Vars0)+Cond+Cond1,
+    norm_guard(G,Vars0,B,Cond,Clauses0,ClauseT,Cond1,Ans0)-P,
+    separate_cond_1(CT,ClauseT,Ans,Clauses,Clauses0,ID,Ans0)-P.
+
+separate_cond_1(CT,ClauseT,Ans,Clauses,Clauses0,ID,Ans0)-P :- Ans0=normal |
+    Clauses = Clauses0,
+    separate_cond(CT,ClauseT,Ans)-P.
+separate_cond_1(CT,ClauseT,Ans,Clauses,Clauses0,ID,Ans0)-P :- Ans0\=normal |
+    klic_comp_message:warning("Clause deleted: ~w", [ID])-P,
+    separate_cond(CT,Clauses,Ans)-P.
+
+% /*
+%   Normalize Clause
+% 
+%   a list of:
+% 	Position:Pattern			% Guard unification
+%   or
+% 	gb(Name(Position,...),OutputType)	% guard builtin with output
+%   or
+% 	gp(Name(Position,...))			% guard builtin w/o output
+%   or
+% 	il(Format,[Arg,...],Info)		% inline expansion
+% 	  Arg is either a Position or "var(X)" which means a new variable.
+% 	  Info is a list of elements of the form "K=(x(X):Type)".
+% 
+%   "Position" is one of:
+% 	head			% head of the clause
+% 	atom(Value)		% symbolic atom constant
+% 	int(Value)		% integer constant
+% 	float(Value)		% floating point constant
+% 	list(Value)		% list constant
+% 	funct(Value)		% functor constant
+%	predicate(Module,Pred,Arity)
+%				% predicate constant
+% 	arg(head,Pos)		% arg "Pos" of the predicate
+% 	arg(ValueID,Pos)	% arg "Pos" (int const) of a functor
+% 	gb(Name(Position,...)	% output of guard builtin predicate
+% 	gg(Call,K)		% K'th output of guard generic method
+%
+%       string(Value)           % string constant  
+%       vector(Value)           % vector constant  
+% 
+%   "Pattern" is either a position described above or one of:
+% 	list			% list
+% 	functor(F,Arity)	% functor
+% 	object			% any data object
+% 	object(Class)		% data object of class Class
+% 	bound			% bound to any value
+% 	atom			% any atom
+% 	int			% any integer
+%	float			% any floating point
+% 	atomic			% any atomic value
+% 	functor			% any functor
+% */
+
+norm_head(functor(H))-Vars-Cond :- functor(H,_,NA) |
+	norm_args(0,NA,H,head)-Vars-Cond.
+norm_head(atom(H))-Vars-Cond.
+
+norm_args(K,N,_,_)-Vars-C :- K>=N | true.
+norm_args(K,N,F,Fid)-Vars-C :- K<N, K1 := K+1, arg(K1,F,FK1) |
+    norm_guard_term(FK1,arg(Fid,K))-Vars-C,
+    norm_args(K1,N,F,Fid)-Vars-C.
+
+norm_guard_term(T,Pos)-Vars-C :- T=variable(K) |
+    klic_comp_util:assoc(Vars,K,Ans),
+    norm_guard_term_1(Ans,K,Pos)-Vars-C.
+norm_guard_term(T,Pos)-Vars-C :- T=integer(A) |
+    C <= (Pos:int(A)).
+norm_guard_term(T,Pos)-Vars-C :-
+	(T=atom(A); T=float(A); T=predicate(M,P,A); T=string(A)) |
+    C <= (Pos:T).
+norm_guard_term(list([H|T]),Pos)-Vars-C :-
+    C <= (Pos:list),
+    norm_guard_term(H,arg(Pos,car))-Vars-C,
+    norm_guard_term(T,arg(Pos,cdr))-Vars-C.
+norm_guard_term(functor(S),Pos)-Vars-C :- functor(S,F,A) |
+    C <= (Pos:functor(F,A)),
+    norm_args(0,A,S,Pos)-Vars-C.
+
+norm_guard_term_1(yes(rename(J)),K,Pos)-Vars-C :-
+    norm_guard_term(variable(J),Pos)-Vars-C.
+otherwise.
+norm_guard_term_1(no,K,Pos)+Vars0+Vars-C :-
+    Vars = [K=Pos|Vars0].
+norm_guard_term_1(yes(Value),K,Pos)-Vars-C :- C <= (Pos:Value).
+
+norm_guard([functor((X0;Y0))|Rest],Vars0,B,CC,C,CT,Cond,Ans)-P :- 
+    Cond = [],
+    klic_comp_util:append(X0,Rest,X),
+    klic_comp_util:append(CC,CCXT,CCX),
+    norm_guard(X,Vars0,B,CCX,C,CT1,CCXT,Ans0)-P,
+    ( Ans0=normal ->
+	klic_comp_util:append(Y0,Rest,Y),
+	klic_comp_util:append(CC,CCYT,CCY),
+	norm_guard(Y,Vars0,B,CCY,CT1,CT,CCYT,Ans)-P
+    ; Ans0\=normal -> Ans=Ans0 ).
+otherwise.
+norm_guard([],Vars,B,CC,Clauses,CT,Cond,Ans)-P :- 
+    Clauses = [CC-Body|CT], Cond = [], 
+    norm_body(B,Body,Vars,Ans)-P.
+norm_guard([Guard|Rest],Vars0,B,CC,C,CT,CCT,Ans)-P :-
+	( Guard=functor(One); Guard=atom(One) ) |
+    norm_guard_goal(One,Ans0,Vars0,Vars,CCT,CCT1)-P,
+    ( Ans0=normal ->
+	norm_guard(Rest,Vars,B,CC,C,CT,CCT1,Ans)-P
+    ; Ans0\=normal -> Ans=Ans0 ).
+
+% ----- Norm Guard Goal -----
+norm_guard_goal(X=Y,Ans)-Vars-CCT-P :- 
+    norm_guard_unify(X,Y,Ans)-Vars-CCT-P.
+norm_guard_goal(atom(generic):G,Ans)-Vars-CCT-P :-
+    norm_guard_generic(G)-Vars+Ans-CCT-P.
+norm_guard_goal(atom(inline):Format0,Ans)-Vars-CCT-P :- 
+    ( Format0=functor(Format:Args0) ->
+	norm_inline(Args0,Args,Args,[],Format,Ans)-Vars-CCT-P
+    ; otherwise ; true ->
+	norm_inline(atom([]),Args,Args,[],Format0,Ans)-Vars-CCT-P ).
+otherwise.
+norm_guard_goal(X,Ans)-Vars-CCT-P :-
+    klic_comp_gb:is_guard_builtin(X,Ans0),
+    ( Ans0=yes(Blts) ->
+	norm_guard_builts(Blts)-Vars+Ans-CCT-P
+    ; Ans0=no(XX) ->
+	klic_comp_message:report_error("Unrecognized guard goal: ~w",[XX])-P
+    ).
+
+ norm_inline(atom([]),Args0,Args,Info,Format,Ans)-Vars-CCT-P :-
+     Args0 = [], CCT <= il(Format,Args,Info), Ans=normal.
+ norm_inline(list([A0|Rest0]),Args0,Args,Info0,Format,Ans)-Vars-CCT-P :-
+     Args0 = [A|Rest], 
+     norm_inline_arg(A0,A,Ans0,Info0,Info)-Vars-CCT-P,
+     ( Ans0=normal ->
+	norm_inline(Rest0,Rest,Args,Info,Format,Ans)-Vars-CCT-P
+     ; Ans0\=normal-> Ans=Ans0 ).
+
+  norm_inline_arg(functor(variable(K)+Type0),A,Ans,Info0,Info,Vars0,Vars)
+                                                                 -CCT-P :- 
+      A = +X,      Info = Info0,         Vars = Vars0, 
+      inline_arg_type(Type0,Type),
+      norm_gblt_arg(variable(K),Type,X,Vars,Ans)-CCT-P.
+  norm_inline_arg(functor(variable(K)-Type0),A,Ans,Info0,Info,Vars0,Vars)
+                                                            +CCT0+CCT-P :- 
+      A = -var(K), Info = [K:Type|Info0],Vars = [K=var(K)|Vars0], CCT = CCT0,
+      klic_comp_util:assoc(Vars0,K,AssocAns),
+      inline_arg_type(Type0,Type),
+      norm_inline_arg_1(AssocAns,Vars0,K,Type,Ans)-P.
+otherwise.
+  norm_inline_arg(Arg,_X,Ans,_Info0,_Info,_Vars0,_Vars)-CCT-P :-
+      _Info = _Info0,
+      klic_comp_message:warning("Illegal argument to inline: ~w",[Arg])-P,
+      Ans=abnormal.
+
+   norm_inline_arg_1(yes(_),Vars0,K,Type,Ans)-P :-
+       Arg = variable(K)-Type,
+       klic_comp_message:warning(
+	"Non-first variable occurrence as inline output: ~w",[Arg])-P,
+       Ans=abnormal.
+   norm_inline_arg_1(no,Vars0,K,Type,Ans)-P :-
+       Ans=normal.
+
+   inline_arg_type(atom(T0), T) :- T=T0.
+   inline_arg_type(functor(F0), F) :-
+       functor(F0,P,1), arg(1,F0,A0) |
+       inline_arg_type(A0,A),
+       functor_table:(F=..[P,A]).
+   inline_arg_type(functor(F0), F) :-
+       functor(F0,P,2), arg(1,F0,A0), arg(1,F0,B0) |
+       inline_arg_type(A0,A), inline_arg_type(B0,B),
+       functor_table:(F=..[P,A,B]).
+
+% Norm Guard Unify 
+norm_guard_unify(Const,Const,Ans)-Vars-CCT-P :- Ans=normal.
+otherwise.
+norm_guard_unify(variable(K),X,Ans)-Vars-CCT-P :-
+    klic_comp_util:assoc(Vars,K,AssocAns),
+    ( AssocAns=yes(Pos) ->
+	( Pos=rename(J) ->
+		norm_guard_unify(variable(J),X,Ans)-Vars-CCT-P
+	; otherwise ; true ->
+		Ans = normal,
+		norm_guard_term(X,Pos)-Vars-CCT )
+    ; AssocAns=no ->
+	Ans = normal,
+	norm_guard_unify_new(X,K)-Vars-P ).
+norm_guard_unify(list([HX|TX]),list([HY|TY]),Ans)-Vars-CCT-P :-
+    norm_guard_unify(HX,HY,Ans0)-Vars-CCT-P,
+    ( Ans0=normal ->
+	norm_guard_unify(TX,TY,Ans)-Vars-CCT-P
+    ; Ans0\=normal -> Ans=Ans0 ).
+norm_guard_unify(functor(X),functor(Y),Ans)-Vars-CCT-P :- 
+    functor(X,F,A), functor(Y,F,A) |
+	klic_comp_util:univ(X,LX),
+	klic_comp_util:univ(Y,LY),
+	norm_guard_unify_args(LX,LY)-Vars+normal+Ans-CCT-P.
+norm_guard_unify(vector(X), vector(Y), Ans)-Vars-CCT-P :- 
+    vector(X,N), vector(Y,N) |
+	klic_comp_util:vector_to_list(X,LX),
+	klic_comp_util:vector_to_list(Y,LY),
+	norm_guard_unify_args(LX,LY)-Vars+normal+Ans-CCT-P.
+otherwise.
+norm_guard_unify(X,variable(K),Ans)-Vars-CCT-P :-
+    norm_guard_unify(variable(K),X,Ans)-Vars-CCT-P.
+otherwise.
+norm_guard_unify(X,Y,Ans)-Vars-CCT-P :-
+    klic_comp_message:warning("Unification always fails: ~w=~w",[X,Y])-P,
+    Ans=abnormal.
+
+  norm_guard_unify_new(variable(K),J,Vars0,Vars)-P :-
+      klic_comp_util:assoc(Vars0,K,Ans),
+      ( Ans=yes(Pos) -> Vars=[J=Pos|Vars0]
+      ; Ans=no -> Vars=[J=rename(K)|Vars0] ).
+  norm_guard_unify_new(T,J,Vars,Vars1)-P :-
+	(T=atom(X); T=float(X); T=predicate(M,F,A)) |
+      Vars1 = [J=T|Vars].
+  norm_guard_unify_new(T,J,Vars,Vars1)-P :- T=integer(X) |
+      Vars1 = [J=int(X)|Vars].
+  otherwise.
+  norm_guard_unify_new(X,_J)-Vars-P :-
+      klic_comp_message:report_error(
+	"Structure allocation not allowed in guard: ~w", [X])-P.
+
+norm_guard_unify_args([],_)-Vars-Ans-CCT-P.
+norm_guard_unify_args([HX|TX],[HY|TY])-Vars+Ans0+Ans-CCT-P :- Ans0\=normal |
+	Ans=Ans0.
+norm_guard_unify_args([HX|TX],[HY|TY])-Vars+Ans0+Ans-CCT-P :- Ans0=normal |
+	norm_guard_unify(HX,HY,Ans1)-Vars-CCT-P,
+	norm_guard_unify_args(TX,TY)-Vars+Ans1+Ans-CCT-P.
+
+% ----- NORM GUARD GENERIC ----- 
+norm_guard_generic(G0,Vars0,Vars,Ans)-CCT-P :-
+    norm_gg_in_out(G0,Funct,Obj0,In0,NumOuts,Out,Ans0),
+    norm_guard_generic_1(G0,Vars0,Vars,Ans,Funct,Obj0,In0,NumOuts,Out,Ans0)
+	-CCT-P.
+
+norm_guard_generic_1(G0,Vars0,Vars,Ans,Funct,Obj0,In0,NumOuts,Out,Ans00)
+	-CCT-P :- Ans00=normal |
+    norm_gg_in(Obj0,object,Obj,Vars0,Ans0)-CCT-P,
+    norm_guard_generic_2(In0,In,Vars0,Vars,Ans,Funct,Obj,NumOuts,Out,Ans0)
+	-CCT-P.
+norm_guard_generic_1(G0,Vars0,Vars,Ans,Funct,Obj0,In0,NumOuts,Out,Ans00)
+	-CCT-P :- Ans00\=normal |
+    Ans=Ans00.
+
+norm_guard_generic_2(In0,In,Vars0,Vars,Ans,Funct,Obj,NumOuts,Out,Ans00)
+	-CCT-P :- Ans00=normal |
+    norm_gg_ins(In0,In,Vars0,Ans0)-CCT-P,
+    norm_guard_generic_3(Ans0,In,Vars0,Vars,Ans,Funct,Obj,NumOuts,Out)-CCT-P.
+norm_guard_generic_2(In0,In,Vars0,Vars,Ans,Funct,Obj,NumOuts,Out,Ans00)
+	-CCT-P :- Ans00\=normal |
+    Ans=Ans00.
+
+norm_guard_generic_3(Ans0,In,Vars0,Vars,Ans,Funct,Obj,NumOuts,Out)
+	-CCT-P :- Ans0=normal |
+    Call=gg(Funct,Obj,In),
+    CCT <= gg(Call,NumOuts),
+    klic_comp_util:length(In,Nin),
+    norm_gg_outs(Out,Nin,Call,Vars0,Vars)-CCT-P,
+    Ans=normal.
+norm_guard_generic_3(Ans0,In,Vars0,Vars,Ans,Funct,Obj,NumOuts,Out)
+	-CCT-P :- Ans0\=normal |
+    Ans=Ans0.
+
+norm_gg_in_out(functor(Goal:Out0),Funct,Obj,In,NumO,Outs,Ans) :- 
+    norm_gg_count_out(Out0,Outs,0,NumO),
+    norm_gg(Goal,Funct,Obj,In,Ans).
+otherwise.
+norm_gg_in_out(Goal,Funct,Obj,In,NumO,Outs,Ans) :-
+    NumO = 0, Outs = [],
+    norm_gg(Goal,Funct,Obj,In,Ans).
+
+norm_gg_count_out(functor(One:Rest0),Outs,N0,N) :-
+    Outs = [One|Rest],
+    N1 := N0+1,
+    norm_gg_count_out(Rest0,Rest,N1,N).
+otherwise.
+norm_gg_count_out(Last,Outs,N0,N) :- 
+    Outs = [Last],
+    N := N0+1.
+
+norm_gg(functor(Goal),Funct,Obj,In,Ans) :- functor(Goal,F0,A0) |
+    Funct = F/A,
+    norm_gg_1(F,A,Obj,In,Goal,F0,A0,Ans).
+otherwise.
+norm_gg(_,_Funct,_Obj,_In,Ans) :- Ans = abnormal.
+
+norm_gg_1(F,A,Obj,In,Goal,generic,2,Ans) :-
+    arg(1,Goal,Obj), arg(2,Goal,Term),
+    norm_gg_2(F,A,Obj,In,Term,Ans).
+otherwise.
+norm_gg_1(F,A,Obj,In,Goal,F0,A0,Ans) :-
+    F=F0, A=A0, Ans = normal,
+    klic_comp_util:univ(Goal,[_,Obj|In]).
+
+norm_gg_2(F,A,Obj,In,functor(Term),Ans) :- functor(Term,F0,A0) |
+    F = F0, A = A0, Ans = normal,
+    klic_comp_util:univ(Term,[_|In]).
+otherwise.
+norm_gg_2(F,A,Obj,In,_Term,Ans) :- Ans = abnormal.
+
+norm_gg_ins([],In,_,Ans)-CCT-P :- 
+    In = [], Ans=normal.
+norm_gg_ins([In0|Ins0],In1,Vars,Ans)-CCT-P :-
+    In1 = [In|Ins],
+    norm_gg_in(In0,bound,In,Vars,Ans0)-CCT-P,
+    norm_gg_ins_1(Ins0,Ins,Vars,Ans,Ans0)-CCT-P.
+ 
+norm_gg_ins_1(Ins0,Ins,Vars,Ans,Ans0)-CCT-P :- Ans0=normal |
+    norm_gg_ins(Ins0,Ins,Vars,Ans)-CCT-P.
+norm_gg_ins_1(Ins0,Ins,Vars,Ans,Ans0)-CCT-P :- Ans0\=normal |
+    Ans=Ans0.
+
+norm_gg_in(variable(K),Type,In,Vars,Ans)-CCT-P :-
+    klic_comp_util:assoc(Vars,K,AssocAns),
+    norm_gg_in_1(K,Type,In,Vars,Ans,AssocAns)-CCT-P.
+otherwise.
+norm_gg_in(C0,Type,C,_Vars,Ans)-CCT-P :-
+    is_const(C0,C,_Type,yes,IsAns),
+    norm_gg_in_2(C0,Type,Ans,IsAns)-CCT-P.
+
+norm_gg_in_1(K,Type,In,Vars,Ans,yes(rename(J)))-CCT-P :-
+    norm_gg_in(variable(J),Type,In,Vars,Ans)-CCT-P.
+norm_gg_in_1(K,Type,In,Vars,Ans,no)-CCT-P :-
+    klic_comp_message:warning("Never proceeding guard generic call", [])-P,
+    Ans=abnormal.
+otherwise.
+norm_gg_in_1(K,Type,In,Vars,Ans,yes(Value))-CCT-P :-
+    In=Value, CCT <= (Value:Type), Ans=normal.
+
+norm_gg_in_2(C0,object,   Ans,yes)-CCT-P :-
+    klic_comp_message:warning("Non-object given as generic call arg: ~w", 
+			     [C0])-P,
+    Ans=normal.
+norm_gg_in_2(C0,object(_),Ans,yes)-CCT-P :-
+    klic_comp_message:warning("Non-object given as generic call arg: ~w", 
+			     [C0])-P,
+    Ans=normal.
+norm_gg_in_2(C0,Type,Ans,no)-CCT-P :-
+    klic_comp_message:warning(
+	"Non-const structure in guard generic call arg: ~w", [C0])-P,
+    Ans=abnormal.
+otherwise.
+norm_gg_in_2(C0,_        ,Ans,yes)-CCT-P :-
+    Ans=normal.
+
+norm_gg_outs([],_,_,Vars0,Vars)+CCT0+CCT+P0+P :-
+    Vars = Vars0, CCT = CCT0, P = P0.
+norm_gg_outs([Out|Outs],K,Call,Vars0,Vars)-CCT-P :-
+    norm_guard_term(Out,gg(Call,K),Vars0,Vars1)-CCT,
+    K1 := K+1,
+    norm_gg_outs(Outs,K1,Call,Vars1,Vars)-CCT-P.
+
+norm_guard_builts([],Vars0,Vars,Ans)-CCT-P :-
+    Vars = Vars0, Ans=normal.
+norm_guard_builts([$(In,Out,PredName)|Blts],Vars0,Vars,Ans)-CCT-P :-
+    norm_gblt_args(In,Inputs,Vars0,Ans0)-CCT-P,
+    norm_guard_builts_1(Blts,Vars0,Vars,Ans,Out,PredName,Inputs,Ans0)-CCT-P.
+
+norm_guard_builts_1(Blts,Vars0,Vars,Ans,Out,PredName,Inputs,Ans0)-CCT-P :-
+	Ans0=normal, Out = none |
+    functor_table:(Call=..[PredName|Inputs]),
+    CCT <= gp(Call),
+    norm_guard_builts(Blts,Vars0,Vars,Ans)-CCT-P.
+norm_guard_builts_1(Blts,Vars0,Vars,Ans,Out,PredName,Inputs,Ans0)-CCT-P :-
+	Ans0=normal, Out = (O:OType) |
+    functor_table:(Call=..[PredName|Inputs]),
+    CCT <= gb(Call,OType),
+    norm_guard_term(O,gb(Call),Vars0,Vars1)-CCT,
+    norm_guard_builts(Blts,Vars1,Vars,Ans)-CCT-P.
+norm_guard_builts_1(Blts,Vars0,Vars,Ans,Out,PredName,Inputs,Ans0)-CCT-P :-
+	Ans0\=normal |
+    Ans=Ans0.
+
+norm_gblt_args([],Inputs,_Vars,Ans)-CCT-P :-
+    Inputs = [], Ans=normal.
+norm_gblt_args([X0:Type|T],Inputs,Vars,Ans)-CCT-P :-
+    Inputs = [X|VT],
+    norm_gblt_arg(X0,Type,X,Vars,Ans0)-CCT-P,
+    norm_gblt_args_1(T,VT,Vars,Ans,Ans0)-CCT-P.
+
+norm_gblt_args_1(T,VT,Vars,Ans,Ans0)-CCT-P :- Ans0=normal |
+    norm_gblt_args(T,VT,Vars,Ans)-CCT-P.
+norm_gblt_args_1(T,VT,Vars,Ans,Ans0)-CCT-P :- Ans0\=normal |
+    Ans=Ans0.
+
+norm_gblt_arg(variable(K),Type,Pos,Vars,Ans)-CCT-P :-
+    klic_comp_util:assoc(Vars,K,AAns),
+    norm_gblt_arg_1(K,Type,Pos,Vars,Ans,AAns)-CCT-P.
+otherwise.
+norm_gblt_arg(C0,Type,C,_Vars,Ans)-CCT-P :-
+    is_const(C0,C,Type0,yes,CAns),
+    norm_gblt_arg_2(CAns,Type,C,Type0,Ans,C0)-P.
+
+norm_gblt_arg_1(K,Type,Pos,Vars,Ans,yes(rename(J)))-CCT-P :-
+    norm_gblt_arg(variable(J),Type,Pos,Vars,Ans)-CCT-P.
+otherwise.
+norm_gblt_arg_1(K,Type,Pos,Vars,Ans,yes(Value))-CCT-P :-
+    Pos = Value, CCT <= (Value:Type), Ans=normal.
+norm_gblt_arg_1(K,Type,Pos,Vars,Ans,no)-CCT-P :-
+    klic_comp_message:warning("Never proceeding guard builtin", [])-P,
+    Ans=abnormal.
+
+norm_gblt_arg_2(yes,Type,C,Type0,Ans,C0)-P :-
+    klic_comp_insert:subsumed_type(Type0,Type,SAns),
+    check_gblt_input(SAns,Ans,C0)-P.
+norm_gblt_arg_2(no ,Type,C,Type0,Ans,C0)-P :-
+    klic_comp_message:warning(
+	"Non-const structure in guard builtin arg: ~w", [C0])-P,
+    Ans=abnormal.
+
+check_gblt_input(Ans0,Ans,_)-P :- Ans0=normal | Ans=Ans0.
+check_gblt_input(Ans0,Ans,C)-P :- Ans0\=normal |
+    klic_comp_message:warning("Guard builtin arg type mismatch: ~w", [C])-P,
+    Ans=Ans0.
+
+% ----- NORM BODY -----
+norm_body([],       Body,_V,Ans)-P :- Body = [], Ans=normal.
+norm_body([G0|Rest],Body,V0,Ans)-P :- G0 = functor(F) |
+    norm_top_goal(F,G,V0,V1,Ans0)-P,
+    norm_body_1([G0|Rest],Body,V0,V1,Ans,G,Ans0)-P.
+otherwise.
+norm_body(Goals,Body,V0,Ans)-P :-
+    norm_body_tail(Goals,Body,[],V0,Ans)-P.
+
+norm_body_1([_|Rest],Body,V0,V1,Ans,G,Ans0)-P :- Ans0=normal |
+    Body = [G|L],
+    norm_body(Rest,L,V1,Ans)-P.
+norm_body_1(Goals,Body,V0,V1,Ans,G,Ans0)-P :- Ans0\=normal |
+    norm_body_tail(Goals,Body,[],V0,Ans)-P.
+
+norm_body_tail([],        Rest,L,_V,Ans)-P :- Rest = L, Ans=normal.
+norm_body_tail([G0|Rest0],Rest,L,V0,Ans)-P :-
+    norm_tail_goal(G0,G,V0,V1,Ans0)-P,
+    norm_body_tail_1(Rest0,Rest,[G|L],V1,Ans,Ans0)-P.
+
+norm_body_tail_1(Rest0,Rest,L,V1,Ans,Ans0)-P :- Ans0=normal |
+    norm_body_tail(Rest0,Rest,L,V1,Ans)-P.
+norm_body_tail_1(Rest0,Rest,L,V1,Ans,Ans0)-P :- Ans0\=normal | Ans=Ans0.
+
+norm_top_goal((X=Y),G,V0,V,Ans)-P :- 
+    G = (PosX=PosY),
+    norm_body_arg(X,PosX,V0,V1,Ans0)-P, 
+    norm_top_goal_unify(Y,PosY,V1,V,Ans,Ans0)-P.
+norm_top_goal((AG:functor(G0@Prio)),G,V0,V,Ans)-P:- AG=atom(generic) |
+    klic_comp_message:warning("Ignored pragma for a generic call: ~w", 
+			     [generic:G0@Prio])-P,
+    norm_top_goal(functor(AG:G0),G,V0,V,Ans)-P.
+otherwise.
+norm_top_goal((AG:G),Goal,V0,V,Ans)-P :- AG=atom(generic) |
+    Goal = gcall(F,A,Args),
+    norm_body_args(G,F,A,Args,V0,V,Ans)-P.
+otherwise.
+norm_top_goal(G0,Goal,V0,V,Ans)-P :-
+    klic_comp_bb:is_body_builtin(G0,Ans0), 
+    norm_top_goal_builtin(Ans0,Goal,V0,V,Ans)-P.
+otherwise.
+norm_top_goal(G0,Goal,V0,V,Ans)-P :- 
+    Ans=abnormal.
+
+norm_top_goal_unify(Y,PosY,V1,V,Ans,Ans0)-P :- Ans0=normal |
+    norm_body_arg(Y,PosY,V1,V,Ans)-P.
+norm_top_goal_unify(Y,PosY,V1,V,Ans,Ans0)-P :- Ans0\=normal | Ans=Ans0.
+    
+norm_top_goal_builtin(yes(G,_Module,IInfo,OInfo),Goal,V0,V,Ans)-P :-
+    Goal = builtin(F,A,Args,IInfo,OInfo),
+    norm_body_args(functor(G),F,A,Args,V0,V,Ans)-P.
+norm_top_goal_builtin(no,Goal,V0,V,Ans)-P :-
+    Ans=abnormal.
+
+norm_tail_goal(functor(X=Y),Goal,V0,V,Ans)-P :- 
+    Goal = (PosX=PosY),
+    norm_body_arg(X,PosX,V0,V1,Ans0)-P, 
+    norm_tail_goal_unify(Y,PosY,V1,V,Ans,Ans0)-P.
+norm_tail_goal('$macroexpanded'(Name,[]),Goal,V0,V,Ans)-P :- 
+    norm_tail_goal(atom(Name),Goal,V0,V,Ans)-P.
+norm_tail_goal(functor(AG:functor(G0@P)),G,V0,V,Ans)+Po0+Po :-
+	AG=atom(generic) |
+    klic_comp_message:warning("Ignored pragma for a generic call: ~w", 
+			     [generic:G0@P],Po0,Po1),
+    norm_tail_goal(functor(AG:G0),G,V0,V,Ans)+Po1+Po.
+otherwise.
+norm_tail_goal('$macroexpanded'(Name,Args),Goal,V0,V,Ans)-P :- 
+    functor_table:(Goal0=..[Name|Args]),
+    norm_tail_goal(functor(Goal0),Goal,V0,V,Ans)-P.
+norm_tail_goal(functor(AG:T),Call,V0,V,Ans)-P :-
+	AG=atom(generic), T=functor(G) |
+    klic_comp_util:univ(G,[F|Args0]),
+    norm_tail_goal_generic(T,Call,V0,V,Ans,F,Args0)-P.
+norm_tail_goal(functor(AG:T),Call,V0,V,Ans)-P :-
+	AG=atom(generic), T=atom(G) |
+    norm_tail_goal_generic(T,Call,V0,V,Ans,G,[])-P.
+otherwise.
+norm_tail_goal(functor(M:T),G,V0,V,Ans)-Pool :- M=atom(Mod), T=functor(G0@P) |
+    norm_pragma(functor(M:G0),G,V0,V,P,Ans)-Pool.
+otherwise.
+norm_tail_goal(functor(M:G0),Call,V0,V,Ans)-P :- M=atom(Mod) |
+    Call = xcall(Mod,F,A,Args),
+    norm_body_args(G0,F,A,Args,V0,V,Ans)-P.
+norm_tail_goal(functor(G0@P),G,V0,V,Ans)-Pool :- 
+    norm_pragma(G0,G,V0,V,P,Ans)-Pool.
+otherwise.
+norm_tail_goal(T,Call,V0,V,Ans)-P :- T=functor(G0) |
+    klic_comp_bb:is_body_builtin(G0,Ans0),
+    norm_tail_goal_builtin(Ans0,T,Call,V0,V,Ans)-P.
+otherwise.
+norm_tail_goal(G0,Call,V0,V,Ans)-P :-
+    Call = call(F,A,Args),
+    norm_body_args(G0,F,A,Args,V0,V,Ans)-P.
+
+norm_tail_goal_unify(Y,PosY,V1,V,Ans,Ans0)-P :- Ans0=normal |
+    norm_body_arg(Y,PosY,V1,V,Ans)-P.
+norm_tail_goal_unify(Y,PosY,V1,V,Ans,Ans0)-P :- Ans0\=normal | Ans=Ans0.
+
+norm_tail_goal_generic(G,Call,V0,V,Ans,new,Args0)-P :-
+    norm_body_args(G,F,A,Args,V0,V,Ans)-P,
+    Call=gcall(F,A,Args).
+norm_tail_goal_generic(G,Call,V0,V,Ans,generic,[_Obj,_Funct])-P :-
+    norm_body_args(G,F,A,Args,V0,V,Ans)-P,
+    Args = [Obj,Funct],
+    Call=xcall(generic,generic,2,[Funct,Obj]).
+otherwise.
+norm_tail_goal_generic(G,Call,V0,V,Ans,F,[Obj])-P :-
+    norm_body_args(functor($(atom(F),Obj)),_,_,RealArgs,V0,V,Ans)-P,
+    Call=xcall(generic,generic,2,RealArgs).
+otherwise.
+norm_tail_goal_generic(G,Call,V0,V,Ans,F,[Obj|Rest])-P :-
+    functor_table:(Funct=..[F|Rest]),
+    norm_body_args(functor($(functor(Funct),Obj)),_,_,RealArgs,V0,V,Ans)-P,
+    Call=xcall(generic,generic,2,RealArgs).
+
+norm_tail_goal_builtin(yes(_,Module,_,_),G0,Call,V0,V,Ans)-P :-
+    Call = xcall(Module,F,A,Args),
+    norm_body_args(G0,F,A,Args,V0,V,Ans)-P.
+norm_tail_goal_builtin(no,G0,Call,V0,V,Ans)-P :- 
+    Call = call(F,A,Args),
+    norm_body_args(G0,F,A,Args,V0,V,Ans)-P.
+
+norm_pragma(T,G,V0,V,P,Ans)-Pool :- T=functor(G0) |
+    klic_comp_bb:is_body_builtin(G0,Ans0), 
+    norm_pragma_0(Ans0,T,G,V0,V,P,Ans)-Pool.
+norm_pragma(T,G,V0,V,P,Ans)-Pool :- T=atom(G0) |
+    klic_comp_bb:is_body_builtin(G0,Ans0), 
+    norm_pragma_0(Ans0,T,G,V0,V,P,Ans)-Pool.
+
+norm_pragma_0(yes(_,Module,_,_),G0,G,V0,V,P,Ans)-Pool :-
+    norm_pragma_1(functor(atom(Module):G0),G,V0,V,P,Ans)-Pool.
+norm_pragma_0(no,G0,G,V0,V,P,Ans)-Pool :-
+    norm_pragma_1(G0,G,V0,V,P,Ans)-Pool.
+
+norm_pragma_1(G0,G,V0,V,atom(lower_priority),       Ans)-Pool :- 
+    norm_pragma_1(G0,G,V0,V,functor(lower_priority(integer(1))),Ans)-Pool.
+norm_pragma_1(G0,G,V0,V,functor(priority(P0)),      Ans)-Pool :- 
+    norm_pragma_priority(G0,G,V0,V,P0,Ans)-Pool.
+norm_pragma_1(G0,G,V0,V,functor(lower_priority(P0)),Ans)-Pool :- 
+    norm_pragma_lower_priority(G0,G,V0,V,P0,Ans)-Pool.
+norm_pragma_1(G0,G,V0,V,functor(node(N0)),          Ans)-Pool :- 
+    norm_pragma_node(G0,G,V0,V,N0,Ans)-Pool.
+otherwise.
+norm_pragma_1(G0,G,V0,V,Pragma,Ans)-Pool :- 
+      klic_comp_message:report_error(
+	"Illegal pragma: ~w attached to goal: ~w", [Pragma,G0])-Pool.
+
+norm_pragma_priority(functor(atom(M):G1),G,V0,V,P0,Ans)-Pool :- 
+    G=xpcall(P,M,F,A,Args),
+    norm_body_args(G1,F,A,Args,V0,V1,Ans0)-Pool,
+    norm_pragma_pragma_arg(P0,P,V1,V,Ans,Ans0)   -Pool.
+norm_pragma_priority(atom(F),G,V0,V,P0,Ans)-Pool :-
+    G = pcall(P,F,0,[]),
+    norm_pragma_pragma_arg(P0,P,V0,V,Ans,normal) -Pool.
+otherwise.
+norm_pragma_priority(functor(G1),G,V0,V,P0,Ans)-Pool :-
+    G = pcall(P,F,A,Args),
+    norm_body_args(functor(G1),F,A,Args,V0,V1,Ans0)-Pool,
+    norm_pragma_pragma_arg(P0,P,V1,V,Ans,Ans0)   -Pool.
+
+norm_pragma_lower_priority(functor(atom(M):G1),G,V0,V,P0,Ans)-Pool :-
+    G = xlcall(P,M,F,A,Args),
+    norm_body_args(G1,F,A,Args,V0,V1,Ans0)-Pool,
+    norm_pragma_pragma_arg(P0,P,V1,V,Ans,Ans0)   -Pool.
+norm_pragma_lower_priority(atom(F),G,V0,V,P0,Ans)-Pool :-
+    G = lcall(P,F,0,[]),
+    norm_pragma_pragma_arg(P0,P,V0,V,Ans,normal) -Pool.
+otherwise.
+norm_pragma_lower_priority(FG1,G,V0,V,P0,Ans)-Pool :- FG1=functor(G1) |
+    G = lcall(P,F,A,Args),
+    norm_body_args(FG1,F,A,Args,V0,V1,Ans0)-Pool,
+    norm_pragma_pragma_arg(P0,P,V1,V,Ans,Ans0)   -Pool.
+
+norm_pragma_node(functor(atom(M):G1),G,V0,V,N0,Ans)-Pool :-
+    G=xthrow(N,M,F,A,Args),
+    norm_body_args(G1,F,A,Args,V0,V1,Ans0)-Pool,
+    norm_pragma_pragma_arg(N0,N,V1,V,Ans,Ans0)   -Pool.
+norm_pragma_node(atom(F),G,V0,V,N0,Ans)-Pool :-
+    G=throw(N,F,0,[]),
+    norm_pragma_pragma_arg(N0,N,V0,V,Ans,normal) -Pool.
+otherwise.
+norm_pragma_node(FG1,G,V0,V,N0,Ans)-Pool :- FG1=functor(G1) |
+    G=throw(N,F,A,Args),
+    norm_body_args(FG1,F,A,Args,V0,V1,Ans0)-Pool,
+    norm_pragma_pragma_arg(N0,N,V1,V,Ans,Ans0)   -Pool.
+
+norm_pragma_pragma_arg(P0,P,V1,V,Ans,Ans0)-Pool :- Ans0=normal |
+    norm_body_arg(P0,P,V1,V,Ans)-Pool.
+norm_pragma_pragma_arg(P0,P,V1,V,Ans,Ans0)-Pool :- Ans0\=normal | Ans=Ans0.
+
+% ----- Norm Body Args ----
+norm_body_args(functor(G0),F,A,Args,Vars0,Vars,Ans)-Pool :- functor(G0,F0,A0) |
+	F = F0, A = A0,
+	klic_comp_util:univ(G0,[_|L0]),
+	norm_body_args(L0,Args,Vars0,Vars,Ans)-Pool.
+norm_body_args(atom(G0),F,A,Args,Vars0,Vars,Ans)-Pool :- 
+    F = G0, A = 0, Args = [], Vars = Vars0, Ans=normal.
+otherwise.
+norm_body_args(G,F,A,Args,Vars0,Vars,Ans)-Pool :-
+    klic_comp_message:report_error("Illegal body goal: ~w", [G])-Pool,
+    Ans=abnormal.
+
+norm_body_args([],     Args,Vars0,Vars,Ans)-Pool :- 
+    Args = [], Vars = Vars0, Ans=normal.
+norm_body_args([H0|T0],Args,Vars0,Vars,Ans)-Pool :- 
+    Args = [H|T],
+    norm_body_arg(H0,H,Vars0,Vars1,Ans0)-Pool,
+    norm_body_args_1(T0,T,Vars1,Vars,Ans,Ans0)-Pool.
+
+norm_body_args_1(T0,T,Vars1,Vars,Ans,Ans0)-Pool :- Ans0=normal |
+    norm_body_args(T0,T,Vars1,Vars,Ans)-Pool.
+norm_body_args_1(T0,T,Vars1,Vars,Ans,Ans0)-Pool :- Ans0\=normal | Ans=Ans0.
+
+norm_body_arg(X,Pos,Vars0,Vars,Ans)-P :- X=variable(K) |
+    klic_comp_util:assoc(Vars0,K,AAns), 
+    norm_body_arg_1(K,Pos,Vars0,Vars,Ans,AAns)-P.
+otherwise.
+norm_body_arg(A,Pos,Vars0,Vars,Ans)-P :- 
+    norm_body_arg_2(A,Pos,Vars0,Vars,Ans)-P.
+
+norm_body_arg_1(_K,Pos,Vars0,Vars,Ans,yes(Value))-P :- Value=rename(J) |
+    norm_body_arg(variable(J),Pos,Vars0,Vars,Ans)-P.
+norm_body_arg_1(K,Pos,Vars0,Vars,Ans,no)-P :-
+    Pos=var(K), Vars=[K=var(K)|Vars0], Ans=normal.
+otherwise.
+norm_body_arg_1(_K,Pos,Vars0,Vars,Ans,yes(Value))-P :-
+    Pos=Value, Vars=Vars0, Ans=normal.
+
+norm_body_arg_2(variable(K),C,Vars,Vars1,Ans)-P :- 
+    C = var(K), Vars1 = [K=var(K)|Vars], Ans=normal.
+otherwise.
+norm_body_arg_2(C0,         C,Vars0,Vars,Ans)-P :- 
+    is_const(C0,C,_,yes,Ans0),
+    norm_body_arg_3(C0,C,Vars0,Vars,Ans,Ans0)-P.
+
+norm_body_arg_3(C0,         C,Vars0,Vars,Ans,yes)-P :-
+    Vars = Vars0, Ans=normal.
+norm_body_arg_3(C0,C,Vars0,Vars,Ans,no)-P :- C0=list([H|T]) |
+    norm_body_arg(H,Vcar,Vars0,Vars1,Ans0)-P,
+    norm_body_arg_3_1(T,Vcar,Vcdr,Vars1,Vars,Ans,C,Ans0)-P.
+norm_body_arg_3(C0,C,Vars0,Vars,Ans,no)-P :- C0=functor(S), functor(S,F,A) | 
+    klic_comp_util:univ(S,[_|L0]),
+    norm_body_args(L0,L,Vars0,Vars,Ans0)-P,
+    norm_body_arg_3_2(C,mkfunct(F/A,L),Ans,Ans0)-P.
+norm_body_arg_3(C0,C,Vars0,Vars,Ans,no)-P :- C0=vector(S), vector(S,N) |
+    klic_comp_util:vector_to_list(S,L0),
+    norm_body_args(L0,L,Vars0,Vars,Ans0)-P,
+    norm_body_arg_3_2(C,mkvect(N,L),Ans,Ans0)-P.
+
+norm_body_arg_3_1(T,Vcar,Vcdr,Vars1,Vars,Ans,C,Ans00)-P :- Ans00=normal |
+    norm_body_arg(T,Vcdr,Vars1,Vars,Ans0)-P,
+    norm_body_arg_3_2(C,cons(Vcar,Vcdr),Ans,Ans0)-P.
+norm_body_arg_3_1(T,Vcar,Vcdr,Vars1,Vars,Ans,C,Ans00)-P :- Ans00\=normal |
+    Ans=Ans00.
+
+norm_body_arg_3_2(C,R,Ans,Ans0)-P :- Ans0=normal | C=R, Ans=Ans0.
+norm_body_arg_3_2(C,R,Ans,Ans0)-P :- Ans0\=normal | Ans=Ans0.
+
+% --
+is_const(T,B,C,yes,Ans) :- T=atom(A) | yes_const(T,B,C,atom,Ans).
+is_const(T,B,C,yes,Ans) :- T=integer(N) | yes_const(int(N),B,C,int,Ans).
+is_const(T,B,C,yes,Ans) :- T=float(N) | yes_const(T,B,C,float,Ans).
+is_const(T,B,C,yes,Ans) :- T=predicate(M,F,A) | yes_const(T,B,C,predicate,Ans).
+is_const(X,B,C,yes,Ans) :- X=list([H|T]) |
+    is_const(H,_,_,yes,Ans1), is_const(T,_,_,Ans1,Ans2),
+    is_const_1(X,B,C,Ans2,Ans,list).
+is_const(T,B,C,yes,Ans) :- T=functor(F) |
+    klic_comp_util:univ(F,[_|L]),
+    is_const_args(yes,L,Ans1),
+    is_const_1(T,B,C,Ans1,Ans,functor).
+is_const(T,B,C,yes,Ans) :- T=string(S) | yes_const(T,B,C,string,Ans).
+is_const(T,B,C,yes,Ans) :- T=vector(V) |
+    klic_comp_util:vector_to_list(V,L),
+    is_const_args(yes,L,Ans0),
+    is_const_1(T,B,C,Ans0,Ans,vector).
+otherwise.
+is_const(X,B,C,YorN,Ans) :- Ans = no.
+
+is_const_1(B0,B,C,no ,Ans,C0) :- Ans = no.
+is_const_1(B0,B,C,yes,Ans,C0) :- yes_const(B0,B,C,C0,Ans).
+
+is_const_args(Ans0,_,Ans) :- Ans0=no | Ans=Ans0.
+is_const_args(Ans0,L,Ans) :- Ans0=yes, L=[] | Ans=Ans0.
+is_const_args(Ans0,L,Ans) :- Ans0=yes, L=[H|T] |
+    is_const(H,_,_,Ans0,AnsH),
+    is_const_args(AnsH,T,Ans).
+
+yes_const(T,B,C,Type,Ans) :- B=T, C=Type, Ans=yes.

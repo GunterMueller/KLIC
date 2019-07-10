@@ -1,0 +1,193 @@
+/* ---------------------------------------------------------- 
+%   (C) 1994 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- module splay_tree.
+
+/*
+	Creation
+*/
+
+create(Pool) :-
+    default_comparator(Cmpr),
+    Pool=pool(Cmpr,[]).
+
+create(Cmpr,Pool) :-
+    Pool=pool(Cmpr,[]).
+
+default_comparator(Cmpr) :-
+    Cmpr=predicate#(comparator:sort/5).
+
+refer(X0,Y0,X,Y,S) :-
+    comparator:sort(X0,Y0,X,Y,S).
+
+
+/*
+	Emptiness Test
+*/
+empty(Empty)-Pool :- true |
+    (
+	Pool=pool(_Cmpr,[]) -> Empty=yes
+      ; otherwise ;
+	true -> Empty=no
+    ).
+
+empty(Key,Empty,pool(Cmpr,T),New) :-
+    empty_sub(T,Key,Empty,Cmpr),
+    New=pool(Cmpr,T).
+
+empty_sub([],_,Empty,_) :- Empty=yes.
+empty_sub(n(_,K,_,_),K,Empty,_) :- Empty=no.
+otherwise.
+empty_sub(n(L,K0,_,R),K,Empty,Cmpr) :-
+    generic:call(Cmpr,K,K0,_,_,S),
+    (
+	S=no -> empty_sub(L,K,Empty,Cmpr)
+      ;
+	S=yes -> empty_sub(R,K,Empty,Cmpr)
+    ).
+
+/*
+	Updating an Element
+*/
+
+update(Key,Value,New,pool(Cmpr,T0),Pool) :-
+    update(T0,Key,Value,New,T,Cmpr),
+    Pool=pool(Cmpr,T).
+
+put(Key,New,pool(Cmpr,T0),Pool) :-
+    update(T0,Key,_Value,New,T,Cmpr),
+    Pool=pool(Cmpr,T).
+
+update(T0,K,VO,V,T,Cmpr) :-
+    update(T0,K,VO,V,LL,VN,RR,Cmpr),
+    T = n(LL,K,VN,RR).
+
+update([],K,_VO,V,LL,VN,RR,Cmpr) :- LL=[], VN=V, RR=[].
+update(n(L,K,V0,R),K,VO,V,LL,VN,RR,_Cmpr) :-
+    VO=V0, VN=V, LL=L, RR=R.
+otherwise.
+update(n(L,K0,V0,R),K,VO,V,LL,VN,RR,Cmpr) :-
+    generic:call(Cmpr,K,K0,_,_,S),
+    (
+	S=no -> update_left(L,K,VO,V,K0,V0,R,LL,VN,RR,Cmpr)
+      ;
+	S=yes -> update_right(R,K,VO,V,K0,V0,L,LL,VN,RR,Cmpr)
+    ).
+
+/* K < K0, K1 > R0 */
+update_left([],K,_VO,V,K0,V0,R0,LL,VN,RR,Cmpr) :-
+    LL=[], VN=V, RR=n([],K0,V0,R0).
+update_left(n(L1,K,V1,R1),K,VO,V,K0,V0,R0,LL,VN,RR,_Cmpr) :-
+    VO=V1, VN=V, LL=L1, RR=n(R1,K0,V0,R0).
+otherwise.
+update_left(n(L1,K1,V1,R1),K,VO,V,K0,V0,R0,LL,VN,RR,Cmpr) :-
+    generic:call(Cmpr,K1,K,_,_,S),
+    (
+	S=yes ->
+	update(L1,K,VO,V,LL,VN,RR0,Cmpr),
+	RR=n(RR0,K1,V1,n(R1,K0,V0,R0))
+      ;
+	S=no ->
+	update(R1,K,VO,V,LL0,VN,RR0,Cmpr),
+	LL=n(L1,K1,V1,LL0),
+	RR=n(RR0,K0,V0,R0)
+    ).
+
+/* K > K0, K1 > L0 */
+update_right([],K,_VO,V,K0,V0,L0,LL,VN,RR,Cmpr) :-
+    LL=n(L0,K0,V0,[]), VN=V, RR=[].
+update_right(n(L1,K,V1,R1),K,VO,V,K0,V0,L0,LL,VN,RR,_Cmpr) :-
+    VO=V1, VN=V, LL=n(L0,K0,V0,L1), RR=R1.
+otherwise.
+update_right(n(L1,K1,V1,R1),K,VO,V,K0,V0,L0,LL,VN,RR,Cmpr) :-
+    generic:call(Cmpr,K1,K,_,_,S),
+    (
+	S=yes ->
+	update(L1,K,VO,V,LL0,VN,RR0,Cmpr),
+	LL=n(L0,K0,V0,LL0),
+	RR=n(RR0,K1,V1,R1)
+      ;
+	S=no ->
+	update(R1,K,VO,V,LL0,VN,RR,Cmpr),
+	LL=n(n(L0,K0,V0,L1),K1,V1,LL0)
+    ).
+
+/*
+	Removing an Element
+*/
+
+get(Key,Value,pool(Cmpr,T0),Pool) :-
+    get(T0,Key,Value,T,Cmpr),
+    Pool=pool(Cmpr,T).
+
+get([],K,VO,T,Cmpr) :-	/* AMANUMA */
+    VO =[],
+    T  = [].
+get(n(L0,K,V0,R0),K,VO,T,Cmpr) :-
+    VO=V0,
+    (
+	L0=n(L1,K1,V1,R1) ->
+	T=n(L1,K1,V1,RR),
+	reform_tree(R1,R0,RR)
+      ;
+	L0=[] -> T=R0
+    ).
+otherwise.
+get(n(L0,K0,V0,R0),K,VO,T,Cmpr) :-
+    generic:call(Cmpr,K,K0,_,_,S),
+    (
+	S=no -> T=n(LL,K0,V0,R0), get(L0,K,VO,LL,Cmpr)
+      ;
+	S=yes -> T=n(L0,K0,V0,RR), get(R0,K,VO,RR,Cmpr)
+    ).
+
+/*
+	Getting All the Elements
+*/
+
+get_all(All,pool(Cmpr,T),Pool) :-
+    get_all_sub(T,All,[]),
+    Pool=pool(Cmpr,[]).
+
+get_all_sub([],All,AllT) :- All=AllT.
+get_all_sub(n(L,K,V,R),All,AllT) :-
+    get_all_sub(L,All,All1),
+    All1=[K=V|All2],
+    get_all_sub(R,All2,AllT).
+
+/*
+	Obtaining the Maximum/Minimum Element
+*/
+
+get_max(Key,Value,pool(Cmpr,T0),Pool) :-
+    get_max_sub(T0,Key,Value,T),
+    Pool=pool(Cmpr,T).
+
+get_max_sub(n(L,K,V,[]),Key,Value,T) :-
+    Key=K, Value=V, T=L.
+get_max_sub(n(L,K,V,n(LL,KK,VV,RR)),Key,Value,T) :-
+    T=n(L,K,V,TT),
+    get_max_sub(n(LL,KK,VV,RR),Key,Value,TT).
+
+get_min(Key,Value,pool(Cmpr,T0),Pool) :-
+    get_min_sub(T0,Key,Value,T),
+    Pool=pool(Cmpr,T).
+
+get_min_sub(n([],K,V,R),Key,Value,T) :-
+    Key=K, Value=V, T=R.
+get_min_sub(n(n(LL,KK,VV,RR),K,V,R),Key,Value,T) :-
+    T=n(TT,K,V,R),
+    get_min_sub(n(LL,KK,VV,RR),Key,Value,TT).
+
+/*
+	Common Subroutine for Tree Reforming
+*/
+
+reform_tree(n(L0,K0,V0,R0),RT,T) :-
+    T=n(L0,K0,V0,RR),
+    reform_tree(R0,RT,RR).
+reform_tree([],T0,T) :- T=T0.

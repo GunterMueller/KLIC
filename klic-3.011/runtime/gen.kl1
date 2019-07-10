@@ -1,0 +1,35 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- inline:"#include <klic/gobj.h>".
+:- inline:"#include <klic/g_pointer.h>".
+:- inline:"#include <klic/g_termarray.h>".
+:- inline:"typedef q * (*gd_func)();".
+
+:- module generic.
+
+new(X,Funct,Argv) :- inline:"
+{
+  unsigned long argc;
+  q *argv;
+  gd_func func = (gd_func)(((struct pointer_object *)
+                           (data_objectp(%1)))->pointer);
+  argc = ((struct termarray_object *)(data_objectp(%2)))->nterm;
+  argv = ((struct termarray_object *)(data_objectp(%2)))->terms;
+  %0   = (q)func(argc,argv,allocp);
+  allocp = heapp;
+}":[X0-any,Funct+functor,Argv+functor] | X0=X.
+
+generic(Funct,Obj) :- inline:"
+  allocp = gd_generic(allocp,%1,symval((functorp(%0))->functor),
+                     &((functorp(%0))->args[0]));
+":[Funct+functor,Obj+object] | true .
+generic(Funct,Obj) :- inline:"{
+  extern unsigned long enter_functor();
+  unsigned long funct = enter_functor(symval(%0), 0);
+  allocp = gd_generic(allocp, %1, funct, 0);
+}":[Funct+atom,Obj+object] | true .

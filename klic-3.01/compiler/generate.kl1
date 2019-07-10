@@ -1,0 +1,867 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+----------------------------------------------------------- */
+
+/*
+  Code generation
+*/
+
+/*
+  gen_code( Source code info to generate object,
+	    Label to jump on suspension or failure,
+	    lab(Label for this node) or none,
+	    Position-value association list,
+	    First work register number available,
+	    Next work register number available,
+	    First label number available,
+	    Next label number available,
+	    Possible suspensions so far,
+	    Max number of suspension reasons,
+	    Collected info top,
+	    Collected info tail,
+	    Top of the generated code,		% implicit argument
+	    Tail of the generated code)		% implicit argument
+
+  Value positions are one of the following.
+	reg(Reg)		% on register numbered Reg
+	atom(A)			% symbolic atom constant
+	int(N)			% integer constant
+	float(X)		% floating point constant
+	predicate(M,P,A)	% predicate constant
+	list(L)			% list constant
+	functor(F)		% functor constant
+	arg(head,Pos)		% arg "Pos" of the predicate
+	arg(ValueID,Pos)	% arg "Pos" (int const) of a functor
+	var(Id)			% newly created variable
+	cons(ValueID,ValueID)	% create new cons
+	mkfunct(F/A,[ValueID,..]) % create new functor
+	mkvect(N,[ValueID,..])	% create new vector
+
+  Position-value association list has the elements of the format:
+	$(Position,Register,Type)
+  where the type field is one of:
+	any			% unknown (possibly unbound)
+	bound			% bound to some value
+	atom			% symbolic atom
+	int			% integer
+	float			% floating point
+	list			% cons
+	functor			% functor
+*/
+
+:- module klic_comp_generate.
+
+gen_code(other(SC,Next),Lint,Lab,AL)-W-L-S-I-Code :-
+    W0=W, S0=S,
+    gen_code(SC,Loth,Lab,AL)-W-L-S-I-Code,
+    W1=W, S1=S,
+    gen_new_lab(Loth)-L-Code, Code <= otherwise,
+    W<==W0, S<==S0,
+    gen_code(Next,Lint,none,AL)-W-L-S-I-Code,
+    klic_comp_util:max(S1)-S,
+    klic_comp_util:max(W1)-W.
+gen_code(alter(SC,Next),Lint,Lab,AL)-W-L-S-I-Code :-
+    W0=W,
+    gen_code(SC,Lalt,Lab,AL)-W-L-S-I-Code,
+    W1=W,
+    gen_new_lab(Lalt)-L-Code, Code <= alternatively,
+    W<==W0,
+    gen_code(Next,Lint,none,AL)-W-L-S-I-Code,
+    klic_comp_util:max(W1)-W.
+gen_code(e,Lint,Lab,_AL)-W-L-S-I-Code :-
+    make_label(Lab,Lint).
+gen_code(l(Body),Lint,Lab,AL)-W-L-S-I-Code :-
+    gen_lab(Lab)-L-Code,
+    gen_body(Body,S,qp)-L-W-AL-I-Code.
+gen_code(x(If,Then,Uncond),Lint,Lab,AL)-W-L-S-I-Code :-
+    gen_lab(Lab)-L-Code,
+    gen_cond(If,Luncond)-W-AL-S-I-Code,
+    W1=W, S1=S,
+    gen_code(Then,Luncond,none,AL)-W-L-S-I-Code,
+    W2=W, S2=S,
+    W<==W1, S<==S1,
+    gen_code(Uncond,Lint,lab(Luncond),AL)-W-L-S-I-Code,
+    klic_comp_util:max(S2)-S,
+    klic_comp_util:max(W2)-W.
+gen_code(v(P,e,e,e,B,U),Lint,Lab,AL)-W-L-S-I-Code :-
+    S1:=S+1,
+    gen_lab(Lab)-L-Code,
+    load_pos(P,Reg)-W-AL-I-Code,
+    W1=W,
+    gen_new_lab(Loop)-L-Code,
+    Code <= if_ref(Reg,Ltest),
+    add_info(Reg,bound)-AL,
+    gen_code(B,Luncond,none,AL)-W-L-S-I-Code,
+    gen_new_lab(Ltest)-L-Code,
+    Code <= deref(Reg,Loop,Luncond),
+    klic_comp_util:max(S1)-S,
+    W2=W, W<==W1,
+    gen_code(U,Lint,lab(Luncond),AL)-W-L-S-I-Code,
+    klic_comp_util:max(W2)-W.
+otherwise.
+gen_code(Tree,Lint,Lab,AL)-W-L-S-I-Code :-
+	Tree=v(P,A,C,F,B,U) |
+    gen_type_known(P,AL,Ans),
+    gen_code_1(Ans,Tree,Lint,Lab,AL)-W-L-S-I-Code.
+
+gen_code_1(yes(Reg,Type),Tree,Lint,Lab,AL)-W-L-S-I-Code :-
+	Tree=v(P,A,C,F,B,U) |
+    gen_type_code(Type,A,C,F,Lbound,Lab,Reg,AL)-W-L-S-I-Code,
+    gen_code(B,Luncond,lab(Lbound),AL)-W-L-S-I-Code,
+    gen_code(U,Lint,lab(Luncond),AL)-W-L-S-I-Code.
+gen_code_1(no,Tree,Lint,Lab,AL)-W-L-S-I-Code:-
+	Tree = v(P,a([],e,IC,IN,e),e,e,e,U), IN=e |
+    gen_code_3(Tree,Lint,Lab,AL)-W-L-S-I-Code.
+gen_code_1(no,Tree,Lint,Lab,AL)-W-L-S-I-Code:-
+	Tree = v(P,a([],e,IC,IN,e),e,e,e,U), IN\=e |
+    /* integer-only case */
+    S0=S,
+    S4:=S0+1,
+    gen_lab(Lab)-L-Code,
+    load_pos(P,Reg)-W-AL-I-Code,
+    AL1=AL,
+    W1=W,
+    gen_new_lab(Loop)-L-Code,
+    Code <= if_not_int(Reg,Ltest),
+    add_info(Reg,int)-AL,
+    gen_code(IN,Lcases,none,AL)-W-L-S-I-Code,
+    S1=S,
+    S<==S0,
+    gen_cases(IC,Luncond,lab(Lcases),int,Reg,AL)-W-L-S0-I-Code,
+    W3=W,
+    gen_new_lab(Ltest)-L-Code,
+    Code <= if_not_ref(Reg,Luncond), 
+    Code <= deref(Reg,Loop,Luncond),
+    klic_comp_util:max(S1)-S,
+    klic_comp_util:max(S4)-S,
+    W<==W1, AL<==AL1,
+    gen_code(U,Lint,lab(Luncond),AL)-W-L-S-I-Code,
+    klic_comp_util:max(W3)-W.
+otherwise.
+gen_code_1(no,Tree,Lint,Lab,AL)-W-L-S-I-Code :-
+    gen_code_3(Tree,Lint,Lab,AL)-W-L-S-I-Code.
+
+gen_type_code(atomic,A,C,F,Lbound,Lab,Reg,AL)-W-L-S-I-Code :-
+    gen_atomic(A,Lbound,Lab,Reg,AL)-W-L-S-I-Code.
+gen_type_code(list,A,C,F,Lbound,Lab,Reg,AL)-W-L-S-I-Code :-
+    gen_code(C,Lbound,Lab,AL)-W-L-S-I-Code.
+gen_type_code(functor,A,C,F,Lbound,Lab,Reg,AL)-W-L-S-I-Code :-
+    gen_functs(F,Lbound,Lab,Reg,AL)-W-L-S-I-Code.
+
+gen_code_3(v(P,A,C,F,B,U),Lint,Lab,AL,W0,W)-L+S0+S-I-Code :-
+    S5:=S0+1,
+    gen_lab(Lab)-L-Code,
+    load_pos(P,Reg,W0,W1)-AL-I-Code,
+    gen_new_lab(Lloop)-L-Code,
+    Code <= sw_tag(Reg),
+    gen_code_3_1(C,Lbound,Reg,AL,W1,W2)-L+S0+S1-I-Code,
+    gen_code_3_2(A,Lbound,Reg,AL,W1,W3)-L+S0+S2-I-Code,
+    gen_code_3_3(F,Lbound,Reg,AL,W1,W4)-L+S0+S3-I-Code,
+    Code <= case_label("VARREF"),
+    Code <= deref(Reg,Lloop,Luncond),
+    Code <= end_sw,
+    Code <= goto(Lbound),
+    add_info(Reg,bound,AL,ALB),
+    gen_code(B,Luncond,lab(Lbound),ALB,W1,W5)-L+S0+S4-I-Code,
+    klic_comp_util:max_vect({S1,S2,S3,S4,S5}, S6),
+    gen_code(U,Lint,lab(Luncond),AL,W1,W6)-L+S6+S-I-Code,
+    klic_comp_util:max_vect({W2,W3,W4,W5,W6},W).
+
+gen_code_3_1(C,Lbound,Reg,AL)-W-L-S-I-Code :- C=e | true.
+gen_code_3_1(C,Lbound,Reg,AL)-W-L-S-I-Code :- C\=e |
+    case_info(Reg,list,"CONS")-AL-Code,
+    gen_code(C,Lbound,none,AL)-W-L-S-I-Code.
+
+gen_code_3_2(A,Lbound,Reg,AL)-W-L-S-I-Code :- A=e | true.
+gen_code_3_2(A,Lbound,Reg,AL)-W-L-S-I-Code :- A\=e |
+    case_info(Reg,atomic,"ATOMIC")-AL-Code,
+    gen_atomic(A,Lbound,none,Reg,AL)-W-L-S-I-Code.
+
+gen_code_3_3(F,Lbound,Reg,AL)-W-L-S-I-Code :- F=e | true.
+gen_code_3_3(F,Lbound,Reg,AL)-W-L-S-I-Code :- F\=e |
+    case_info(Reg,functor,"FUNCTOR")-AL-Code,
+    gen_functs(F,Lbound,none,Reg,AL)-W-L-S-I-Code.
+
+case_info(Reg,Type,Lab)-AL-Code :-
+    Code <= case_label(Lab),
+    add_info(Reg,Type)-AL.
+
+gen_atomic(Tree,Lint,Lab,_Reg,_AL)-W-L-S-I-Code :- Tree=e |
+    make_label(Lab,Lint).
+gen_atomic(Tree,Lint,Lab,Reg,AL)-W-L-S-I-Code :-
+	Tree=a(AC,AN,IC,IN,UN) |
+    gen_lab(Lab)-L-Code,
+    ( AC=[], AN=e, IN=e ->
+	gen_atomic_2(IC,IN,UN,Lint,Reg,AL,_,_)-W-L+S+S-S-I-Code
+    ; AC=[], AN=e, IN\=e ->
+	Code <= if_not_int(Reg,Lint),
+	gen_atomic_2(IC,IN,UN,Lint,Reg,AL,_,_)-W-L+S+S-S-I-Code
+    ; AC\=[], AN=e, IC=[], IN=e ->
+	( AC=[_] -> true; otherwise; true -> Code <= if_int(Reg,Lan) ),
+	add_info(Reg,atom,AL,ALA),
+	S0=S,
+	W0=W,
+	gen_cases(AC,Lan,none,sym,Reg,ALA)-W-L-S-I-Code,
+        W1=W, W<==W0,
+	gen_atomic_2([],e,UN,Lint,Reg,AL,_,Lan)-W-L+S0+S-S-I-Code,
+	klic_comp_util:max(W1)-W
+    ; otherwise ; true ->
+	Code <= if_int(Reg,Lic),
+	add_info(Reg,atom,AL,ALA),
+	S0=S,
+	W0=W,
+	gen_cases(AC,Lan,none,sym,Reg,ALA)-W-L-S-I-Code,
+	S1=S, S<==S0,
+	W1=W, W<==W0,
+	gen_code(AN,Lun,lab(Lan),ALA)-W-L-S-I-Code,
+	W2=W, W<==W0,
+	gen_atomic_2(IC,IN,UN,Lint,Reg,AL,Lic,Lun)-W-L+S0+S1-S-I-Code,
+	klic_comp_util:max_vect({W1,W2,W},WM),
+	W<==WM
+    ).
+
+gen_atomic_2(IC,IN,UN,Lint,Reg,AL,Lic,Lun,W2,W,L2,L,S0,S1,S2,S,I2,I)-Code :-
+    add_info(Reg,int,AL,ALI),
+    gen_cases(IC,Lin,lab(Lic),int,Reg,ALI,W2,W3,L2,L3,S0,S3,I2,I3)  -Code,
+    gen_code(IN,Lun,lab(Lin),ALI,W3,W4,L3,L4,S0,S4,I3,I4)-Code,
+    klic_comp_util:max_vect({S1,S2,S3,S4},SM) ,
+    gen_code(UN,Lint,lab(Lun),AL,W4,W,L4,L,SM,S,I4,I)-Code.
+
+gen_functs(e,Lint,Lab,_Reg,_AL)-W-L-S-I-Code :-
+    make_label(Lab,Lint).
+gen_functs(f(FC,FO,FN),Lint,Lab,Reg,AL)-W-L-S-I-Code :-
+    W0=W,
+    gen_cases(FC,Lfo,Lab,funct,Reg,AL)-W-L-S-I-Code,
+    W1=W, W<==W0,
+    gen_gobjs(FO,Lfn,lab(Lfo),Reg,AL)-W-L-S-I-Code,
+    W2=W, W<==W0,
+    gen_code(FN,Lint,lab(Lfn),AL)-W-L-S-I-Code,
+    W3=W,
+    klic_comp_util:max_vect({W1,W2,W3},WM),
+    W<==WM.
+
+gen_gobjs(e,Lint,Lab,_Reg,_AL)-W-L-S-I-Code :-
+    make_label(Lab,Lint).
+gen_gobjs(o(Classes,Uncond),Lint,Lab,Reg,AL)-W-L-S-I-Code :-
+    gen_lab(Lab)-L-Code,
+    Code <= if_not_gobj(Reg,Lint),
+    gen_classes(Classes,Luncond,none,Reg,AL)-W-L-S-I-Code,
+    gen_code(Uncond,Lint,lab(Luncond),AL)-W-L-S-I-Code.
+
+gen_classes([],Lint,Lab,_Reg,_AL)-W-L-S-I-Code :-
+    make_label(Lab,Lint).
+gen_classes([Class-Node|Rest],Lint,Lab,Reg,AL)-W-L-S-I-Code :-
+    gen_lab(Lab)-L-Code,
+    Code <= if_not_class(Reg,Class,Lrest),
+    I <= guse(Class),
+    gen_code(Node,Lint,none,AL)-W-L-S-I-Code,
+    gen_classes(Rest,Lint,lab(Lrest),Reg,AL)-W-L-S-I-Code.
+
+gen_cases([],Lint,Lab,_Kind,_Reg,_AL)-W-L-S-I-Code :-
+    make_label(Lab,Lint).
+gen_cases(Cases,Lint,Lab,Kind,Reg,AL)-W-L-S-I-Code :-
+	Cases=[H|T], T=[], H=(V-Node) |
+    gen_lab(Lab)-L-Code,
+    gen_if_not(Kind,V,Reg,Lint,Instr)-I,
+    Code <= Instr,
+    gen_code(Node,Lint,none,AL)-W-L-S-I-Code.
+gen_cases(Cases,Lint,Lab,Kind,Reg,AL)-W-L-S-I-Code :-
+	Cases=[H|T], T\=[] |
+    gen_lab(Lab)-L-Code,
+    gen_sw_instr(Kind,Reg,Instr),
+    Code <= Instr,
+    gen_all_cases(Cases,Lint,Kind,AL)-W-L-S-I-Code,
+    Code <= end_sw,
+    Code <= goto(Lint).
+
+gen_if_not(sym,V,Reg,Lint,Instr)-I :-
+    AV=atom(V), Instr=if_not(Reg,AV,Lint), I <= AV.
+gen_if_not(int,V,Reg,Lint,Instr)-I :-
+    IV=int(V), Instr=if_not(Reg,IV,Lint).
+gen_if_not(funct,V,Reg,Lint,Instr)-I :-
+    Instr=if_funct_not(Reg,V,Lint), I <= funct(V).
+
+gen_sw_instr(sym,Reg,Instr) :- Instr=sw_sym(Reg).
+gen_sw_instr(int,Reg,Instr) :- Instr=sw_int(Reg).
+gen_sw_instr(funct,Reg,Instr) :- Instr=sw_funct(Reg).
+
+gen_all_cases([],Lint,_Kind,_AL)-W-L-S-I-Code.
+gen_all_cases([V-Node|T],Lint,Kind,AL)-W-L-S-I-Code :-
+    gen_case_lab(Kind,V,Instr)-I,
+    Code <= Instr,
+    S0=S, W0=W,
+    gen_code(Node,Lint,none,AL)-W-L-S-I-Code,
+    S1=S, S<==S0, W1=W, W<==W0,
+    gen_all_cases(T,Lint,Kind,AL)-W-L-S-I-Code,
+    klic_comp_util:max(S1)-S, klic_comp_util:max(W1)-W.
+
+gen_case_lab(sym,V,Instr)-I :-
+    Instr=case_sym(V), I<=atom(V).
+gen_case_lab(int,V,Instr)-I :-
+    Instr=case_int(V).
+gen_case_lab(funct,V,Instr)-I :-
+    Instr=case_funct(V), I<=funct(V).
+
+gen_lab(lab(X))-L-Code :- gen_new_lab(X)-L-Code.
+gen_lab(none)-L-Code.
+
+gen_new_lab(Lab)-L-Code :- Lab=L, Code <= label(Lab), L+=1.
+
+gen_type_known(Pos,AL,Ans) :-
+    assocx(AL,Pos,Ans0),
+    basic_type(Ans0,Ans).
+
+basic_type(Yes,Ans) :- Yes=yes(R,atom(_))	| atomic_type(R,Ans).
+basic_type(Yes,Ans) :- Yes=yes(R,atom)		| atomic_type(R,Ans).
+basic_type(Yes,Ans) :- Yes=yes(R,int)		| atomic_type(R,Ans).
+basic_type(Yes,Ans) :- Yes=yes(R,atomic)	| atomic_type(R,Ans).
+basic_type(Yes,Ans) :- Yes=yes(R,functor)	| functor_type(R,Ans).
+basic_type(Yes,Ans) :- Yes=yes(R,functor(_))	| functor_type(R,Ans).
+basic_type(Yes,Ans) :- Yes=yes(R,functor(_,_))	| functor_type(R,Ans).
+basic_type(Yes,Ans) :- Yes=yes(R,list)		| Ans=Yes.
+otherwise.
+basic_type(_,Ans) :- Ans = no.
+
+atomic_type(R,Ans) :- Ans=yes(R,atomic).
+functor_type(R,Ans) :- Ans=yes(R,functor).
+
+gen_cond(gp(Call),Lint)-W-AL-S-I-Code :- functor(Call,F,A) |
+	klic_comp_util:univ(Call,[_|Args0]),
+	prep_poss_gb(Args0,Args1)-W-AL-I-Code,
+	strip_types(Args1,Args),
+	Code <= gblt_pred(F,A,Args,Lint).
+gen_cond(gb(Call,Otype),Lint)-W-AL-S-I-Code :- functor(Call,F,A) |
+	XW=x(W), W+=1,
+	klic_comp_util:univ(Call,[_|Args0]),
+	prep_poss_gb(Args0,Args1)-W-AL-I-Code,
+	strip_types(Args1,Args2),
+	klic_comp_util:append(Args2,[r(XW)],Args),
+	Code <= gblt_pred(F,A,Args,Lint),
+	$(gb(Call),XW,Otype)=> AL.
+gen_cond(gg(gg(F/A,Obj0,Args0),NumOuts),Lint)-W-AL-S-I-Code :-
+	I <= funct(F/A1),
+	A1:=A+NumOuts-1 ,
+	prep_poss(Args0,Args)-W-AL-I-Code,
+	set_generic_args(Args,0)-W-AL-I-Code,
+	load_pos(Obj0,Obj)-W-AL-I-Code,
+	klic_comp_util:length(Args,Nin),
+	Code <= guard_generic(r(Obj),F/A1,Nin,Lint),
+	load_guard_generic_out(Nin,A1,gg(F/A,Obj0,Args0))-W-AL-I-Code.
+gen_cond(eq(X,Y),Lint)-W-AL-S-I-Code :-
+	S += 1,
+	load_pos(X,VX)-W-AL-I-Code,
+	load_pos(Y,VY)-W-AL-I-Code,
+	Code <= if_not_eq(VX,VY,Lint).
+gen_cond(il(Format,Args0,Info),Lint)-W-AL-S-I-Code :-
+	S += 1,
+	load_inline_args(Args0,Info,Args)-W-AL-I-Code,
+	Code <= inline(Format,Args,Lint),
+	add_inline_info(Info)-AL.
+
+add_inline_info([])-AL.
+add_inline_info([K:Type|Rest])-AL :-
+    assocx(AL,var(K),yes(Where,_)),
+    $(var(K),Where,Type) => AL,
+    add_inline_info(Rest)-AL.
+
+load_guard_generic_out(K,N,_)-W-AL-I-Code :- K=:= N | true.
+load_guard_generic_out(K,N,Call)-W-AL-I-Code :- K < N |
+    XW=x(W), W+=1,
+    K1 := K+1,
+    $(gg(Call,K),XW,any)=>AL,
+    Code <= load_generic_arg(XW,K),
+    load_guard_generic_out(K1,N,Call)-W-AL-I-Code.
+
+prep_poss([],Args)-W-AL-I-Code :- Args=[].
+prep_poss([H0|T0],Args)-W-AL-I-Code :-
+    Args = [H|T],
+    prep_pos(H0,H)-W-AL-I-Code,
+    prep_poss(T0,T)-W-AL-I-Code.
+
+prep_poss_gb([],Args)-W-AL-I-Code :- Args=[].
+prep_poss_gb([H0|T0],Args)-W-AL-I-Code :-
+    Args = [H|T],
+    prep_pos_gb(H0,H)-W-AL-I-Code,
+    prep_poss_gb(T0,T)-W-AL-I-Code.
+
+prep_pos_gb(P,H)-W-AL-I-Code :-
+    assocx(AL,P,Ans),
+    prep_pos_gb_1(Ans,H)-W-AL-I-Code.
+
+prep_pos_gb_1(no(T),H)-W-AL-I-Code :- T=atom(_) |
+    XR=x(W), W+=1, I<=T, H=(r(XR):atom),
+    Code <= load_const(XR,T).
+prep_pos_gb_1(no(T),H)-W-AL-I-Code :- T=int(_) |
+    XR=x(W), W+=1, H=(r(XR):int),
+    Code <= load_const(XR,T).
+otherwise.
+prep_pos_gb_1(H0,H)-W-AL-I-Code :- prep_pos_1(H0,H)-W-AL-I-Code.
+
+
+prep_vec_elems([],Args)-W-AL-I-Code :- Args=[].
+prep_vec_elems([H0|T0],Args)-W-AL-I-Code :-
+    Args = [H|T],
+    prep_pos(H0,H1)-W-AL-I-Code,
+    alloc_if_var(H1,H)-W-AL-Code,
+    prep_vec_elems(T0,T)-W-AL-I-Code.
+
+alloc_if_var(X0,X)-W-AL-Code :- X0=var(N) |
+    XW=x(W), W+=1,
+    X = (r(XW):any),
+    $(X0,XW,any)=>AL,
+    Code <= alloc_var(XW,0), Code <= make_space(1).
+otherwise.
+alloc_if_var(X0,X)-W-AL-Code :- X=X0.
+
+prep_pos(P,H)-W-AL-I-Code :-
+    assocx(AL,P,Ans),
+    prep_pos_1(Ans,H)-W-AL-I-Code.
+
+prep_pos_1(yes(Reg,Type),H)-W-AL-I-Code :-
+    H=(r(Reg):Type).
+prep_pos_1(no(cons(X0,Y0)),H)-W-AL-I-Code :-
+    H = (r(XR):cons),
+    prep_pos(X0,X)-W-AL-I-Code,
+    prep_pos(Y0,Y)-W-AL-I-Code,
+    XR=x(W), W+=1,
+    alloc_args([Y,X],0)-W-AL-I-Code,
+    Code <= make_cons(XR).
+prep_pos_1(no(mkfunct(F/A,Args0)),H)-W-AL-I-Code :-
+    I <= funct(F/A),
+    A1 := A+1 ,
+    H = (r(XR):functor),
+    prep_poss(Args0,Args)-W-AL-I-Code,
+    Code <= alloc_functor_id(F,A),
+    XR=x(W), W+=1,
+    alloc_args(Args,1)-W-AL-I-Code,
+    Code <= make_functor(XR,A1).
+prep_pos_1(no(mkvect(Length,Args0)),H)-W-AL-I-Code :-
+    H = (r(XR):vector),
+    prep_vec_elems(Args0,Args)-W-AL-I-Code,
+    XR=x(W), W+=1,
+    alloc_args(Args,0)-W-AL-I-Code,
+    Code <= make_vector(XR,Length).
+prep_pos_1(no(T),H)-W-AL-I-Code :- T=atom(_) |
+    I<=T, H=T.
+prep_pos_1(no(T),H)-W-AL-I-Code :- T=predicate(M,F,A) |
+    I<=ext(M,F,A), I<=const(Id,T),
+    H=const(Id).
+prep_pos_1(no(T),H)-W-AL-I-Code :-
+	( T=float(_); T=list(_); T=functor(_);
+	  T=string(_); T=vector(_) ) |
+    I<=const(Id,T),
+    H=const(Id).
+otherwise.
+prep_pos_1(no(T),H)-W-AL-I-Code :- H=T.
+
+alloc_args([],_)-W-AL-I-Code :- true.
+alloc_args([H|T],K)-W-AL-I-Code :-
+    K1 := K+1,
+    alloc_one(H,K)-W-AL-I-Code,
+    alloc_args(T,K1)-W-AL-I-Code.
+
+alloc_one(r(Reg):_Type,K)-W-AL-I-Code :-
+    Code <= alloc_value(Reg,K).
+otherwise.
+alloc_one(P,K)-W-AL-I-Code :-
+    assocx(AL,P,Ans),
+    alloc_one_1(Ans,K)-W-AL-I-Code.
+
+alloc_one_1(yes(R,Type),K)-W-AL-I-Code :-
+    alloc_one(r(R):Type,K)-W-AL-I-Code.
+alloc_one_1(no(T),K)-W-AL-I-Code :- T=var(N) |
+    $(T,XW,any) => AL,
+    Code <= alloc_var(XW,K),
+    XW=x(W), W+=1.
+alloc_one_1(no(T),K)-W-AL-I-Code :- ( T=atom(_); T=int(_); T=const(_) ) |
+    Code <= alloc_const(T,K).
+alloc_one_1(no(T),K)-W-AL-I-Code :- T=arg(X0,J) |
+    load_pos(X0,X)-W-AL-I-Code,
+% Changed for interpreter
+%    Code <= alloc_elem(X,J,K).
+    XX=x(W), W+=1,
+    Code <= get_elem(XX,X,J),
+    Code <= alloc_value(XX,K).
+
+load_inline_args([],_,Args)-W-AL-I-Code :- Args=[].
+load_inline_args([+X|Xs],Info,Args)-W-AL-I-Code :-
+    Args = [R|Rs],
+    load_pos(X,R)-W-AL-I-Code,
+    load_inline_args(Xs,Info,Rs)-W-AL-I-Code.
+load_inline_args([-X|Xs],[_:Type|Info],Args)-W-AL-I-Code :-
+    XW=x(W), W+=1,
+    Reg=r(XW),
+    $(X,Reg,Type)=>AL,
+    Args = [Reg|Rs],
+    load_inline_args(Xs,Info,Rs)-W-AL-I-Code.
+
+load_pos(X0,R)-W-AL-I-Code :-
+    prep_pos(X0,X1)-W-AL-I-Code,
+    load_reg(X1,R,_Type)-W-AL-I-Code.
+
+load_reg(r(X):Type0,Reg,Type)-W-AL-I-Code :- Reg=X, Type=Type0.
+otherwise.
+load_reg(P,Reg,Type)-W-AL-I-Code :-
+    assocx(AL,P,Ans),
+    load_reg_1(Ans,Reg,Type)-W-AL-I-Code.
+
+load_reg_1(yes(Reg0,Type0),Reg,Type)-W-AL-I-Code :-
+    Reg=Reg0, Type=Type0.
+load_reg_1(no(T),Reg,Type)-W-AL-I-Code :-
+    Reg=x(W), W+=1,
+    load_reg_2(T,Reg,Type)-W-AL-I-Code.
+
+load_reg_2(T,Reg,Type)-W-AL-I-Code :- T=arg(X0,K) |
+      Type=any,
+      $(T,Reg,Type)=>AL,
+      load_pos(X0,X)-W-AL-I-Code,
+      Code <= get_elem(Reg,X,K).
+load_reg_2(T,Reg,Type)-W-AL-I-Code :- T=atom(_) |
+      Type=atom,
+      Code <= load_const(Reg,T).
+load_reg_2(T,Reg,Type)-W-AL-I-Code :- T=int(_) |
+      Type=int,
+      Code <= load_const(Reg,T).
+load_reg_2(T,Reg,Type)-W-AL-I-Code :- T=var(K) |
+      Type=any,
+      $(T,Reg,Type)=>AL,
+      Code <= load_newvar(Reg).
+load_reg_2(T,Reg,Type)-W-AL-I-Code :- T=const(Id) |
+      Type=known,
+      Code <= load_const(Reg,T).
+
+gen_body([],_,Q)-L-W-AL-I-Code :-
+	Code <= proceed(Q).
+gen_body([call(F,A,Args0)],S,Q)-L-W-AL-I-Code :-
+	I <= exec(F/A),
+	prep_poss(Args0,Args)-W-AL-I-Code,
+	move_args(Args,0)-W-AL-I-Code,
+	Code <= execute(F,A,S,Q).
+otherwise.
+gen_body([H|T],S,Q0)-L-W-AL-I-Code :-
+    gen_body_goal(H,Q0,Q)-L-W-AL-I-Code,
+    gen_body(T,S,Q)-L-W-AL-I-Code.
+
+gen_body_goal(X0=Y0)-Q-L-W-AL-I-Code :-
+    prep_pos(X0,X)-W-AL-I-Code,
+    prep_pos(Y0,Y)-W-AL-I-Code,
+    body_unify(X,Y)-W-AL-I-Q-Code.
+gen_body_goal(builtin(F,A,Args,IInfo,OInfo))-Q-L-W-AL-I-Code :-
+    prep_poss(Args,Args1)-W-AL-I-Code,
+    bb_in(IInfo,Args1,ArgsN,1,Checks,Inputs)-W-AL-I-Code,
+    Code <= bblt(Checks,F,Inputs,OArgs),
+    bb_out(ArgsN,Checks,OInfo,OArgs)-W-AL-I-Q-Code.
+gen_body_goal(call(F,A,Args0))-Q-L-W-AL-I-Code :-
+    set_call(Args0,[push_goal(Q,Q1),set_pred(F,A)])-W-AL-I-Code,
+    Q <== Q1.
+gen_body_goal(xcall(M,F,A,Args))-Q-L-W-AL-I-Code :-
+    I <= ext(M,F,A),
+    set_call(Args,[push_goal(Q,Q1),set_ext_pred(M,F,A)])-W-AL-I-Code,
+    Q <== Q1.
+gen_body_goal(gcall(new,A,[atom(Class),Obj0|Args0]))-Q-L-W-AL-I-Code :-
+    I <= gnew(Class),
+    A1 := A-2 ,
+    prep_poss(Args0,Args)-W-AL-I-Code,
+    set_generic_args(Args,0)-W-AL-I-Code,
+    ObjReg=x(W), W+=1,
+    Code <= new_generic(Class,A1,ObjReg,Q),
+    Q <== qp,
+    prep_pos(Obj0,Obj)-W-AL-I-Code,
+    body_unify(Obj,r(ObjReg):any)-W-AL-I-Q-Code.
+gen_body_goal(gcall(generic,2,[Obj0,mkfunct(F/A,A0)]))-Q-L-W-AL-I-Code :-
+    A1 := A+1 ,
+    gen_body_goal(gcall(F,A1,[Obj0|A0]))-Q-L-W-AL-I-Code.
+gen_body_goal(gcall(generic,2,[Obj0,atom(F)]))-Q-L-W-AL-I-Code :-
+    gen_body_goal(gcall(F,1,[Obj0]))-Q-L-W-AL-I-Code.
+gen_body_goal(gcall(generic,2,[Obj0,functor(X)]))-Q-L-W-AL-I-Code :-
+	functor(X,F,A) |
+    A1 := A+1,
+    klic_comp_util:univ(X,[_|A0]),
+    gen_body_goal(gcall(F,A1,[Obj0|A0]))-Q-L-W-AL-I-Code.
+otherwise.
+gen_body_goal(gcall(F,A,[Obj0|Args0]))-Q-L-W-AL-I-Code :-
+    A1 := A-1,
+    I <= funct(F/A1),
+    prep_poss(Args0,Args)-W-AL-I-Code,
+    set_generic_args(Args,0)-W-AL-I-Code,
+    load_pos(Obj0,Obj)-W-AL-I-Code,
+    Code <= call_generic(r(Obj),F/A1,Q),
+    Q <== qp.
+gen_body_goal(throw(P0,F,A,Args))-Q-L-W-AL-I-Code :-
+    set_call(Args,[heappos(Q1),set_pred(F,A)])-W-AL-I-Code,
+    load_pos(P0,P)-W-AL-I-Code,
+    XW=x(W), W+=1,
+    Code <= set_qp(XW, Q),
+    XW1=x(W), W+=1,
+    Code <= set_qp(XW1, Q1),
+    Code <= throw_goal(P,XW,XW1),
+    Q <== qp.
+gen_body_goal(xthrow(P0,M,F,A,Args))-Q-L-W-AL-I-Code :-
+    I <= ext(M,F,A),
+    set_call(Args,[heappos(Q1),set_ext_pred(M,F,A)])-W-AL-I-Code,
+    load_pos(P0,P)-W-AL-I-Code,
+    XW=x(W), W+=1,
+    Code <= set_qp(XW, Q),
+    XW1=x(W), W+=1,
+    Code <= set_qp(XW1, Q1),
+    Code <= throw_goal(P,XW,XW1),
+    Q <== qp.
+gen_body_goal(pcall(P,F,A,Args))-Q-L-W-AL-I-Code :-
+    set_call(Args,[heappos(Q1),set_pred(F,A)])-W-AL-I-Code,
+    enq_at_prio(P,abs)-W-AL-I-Q-Code,
+    Q1 = Q, Q <== qp.
+gen_body_goal(lcall(P,F,A,Args))-Q-L-W-AL-I-Code :-
+    set_call(Args,[heappos(Q1),set_pred(F,A)])-W-AL-I-Code,
+    enq_at_prio(P,rel)-W-AL-I-Q-Code,
+    Q1 = Q, Q <== qp.
+gen_body_goal(xpcall(P,M,F,A,Args))-Q-L-W-AL-I-Code :-
+    I <= ext(M,F,A),
+    set_call(Args,[heappos(Q1),set_ext_pred(M,F,A)])-W-AL-I-Code,
+    enq_at_prio(P,abs)-W-AL-I-Q-Code,
+    Q1 = Q, Q <== qp.
+gen_body_goal(xlcall(P,M,F,A,Args))-Q-L-W-AL-I-Code :-
+    I <= ext(M,F,A),
+    set_call(Args,[heappos(Q1),set_ext_pred(M,F,A)])-W-AL-I-Code,
+    enq_at_prio(P,rel)-W-AL-I-Q-Code,
+    Q1 = Q, Q <== qp.
+
+set_call(Args0,Ins)-W-AL-I-Code :-
+    prep_poss(Args0,Args)-W-AL-I-Code,
+    set_call_merge(Ins)-Code,
+    set_args(Args,0)-W-AL-I-Code,
+    klic_comp_util:length(Args,Arity),
+    Arity2 := Arity+2,
+    Code <= make_space(Arity2).
+
+set_call_merge([X|Y])-Code :- Code <= X, set_call_merge(Y)-Code.
+set_call_merge([]   )-Code.
+
+enq_at_prio(P,AorR)-W-AL-I-Q-Code :- P=int(A) |
+    prio_code(AorR,int,P)-Q-W-Code.
+otherwise.
+enq_at_prio(P,AorR)-W-AL-I-Q-Code :-
+    load_reg(P,Reg,Type)-W-AL-I-Code,
+    prio_code(AorR,Type,r(Reg))-Q-W-Code.
+
+prio_code(abs,Type,X,Q0,Q)-W-Code :- Type\=int |
+    W0=x(W), W+=1,
+    W1=x(W), W+=1,
+    Code <= set_qp(W0, Q0),
+    Code <= set_qp(W1, Q),
+    Code <= enq_at_prio(X,W0,W1).
+prio_code(abs,Type,X,Q0,Q)-W-Code :- Type=int |
+    W0=x(W), W+=1,
+    W1=x(W), W+=1,
+    Code <= set_qp(W0, Q0),
+    Code <= set_qp(W1, Q),
+    Code <= enq_at_prio_no_check(X,W0,W1).
+prio_code(rel,Type,X,Q0,Q)-W-Code :- Type\=int |
+    W0=x(W), W+=1,
+    W1=x(W), W+=1,
+    Code <= set_qp(W0, Q0),
+    Code <= set_qp(W1, Q),
+    Code <= enq_at_lower_prio(X,W0,W1).
+prio_code(rel,Type,X,Q0,Q)-W-Code :- Type=int |
+    W0=x(W), W+=1,
+    W1=x(W), W+=1,
+    Code <= set_qp(W0, Q0),
+    Code <= set_qp(W1, Q),
+    Code <= enq_at_lower_prio_no_check(X,W0,W1).
+
+body_unify(X,X)-W-AL-I-Q-Code.
+body_unify(var(K),var(J))-W-AL-I-Q-Code :-
+    Reg=x(W), W+=1,
+    $(var(K),Reg,any)=>AL, $(var(J),Reg,any)=>AL,
+    Code <= alloc_var(Reg,0), Code <= make_space(1).
+otherwise.
+body_unify(V,Y)-W-AL-I-Q-Code :- V=var(K) |
+    $(V,Reg,Type)=>AL,
+    load_reg(Y,Reg,Type)-W-AL-I-Code.
+body_unify(X,V)-W-AL-I-Q-Code :- V=var(K) |
+    $(V,Reg,Type)=>AL,
+    load_reg(X,Reg,Type)-W-AL-I-Code.
+otherwise.
+body_unify(X,Y)-W-AL-I+Q0+Q-Code :-
+    Q = qp,
+    prep_call_arg(X,XX)-W-AL-I-Code,
+    prep_call_arg(Y,YY)-W-AL-I-Code,
+    body_unify_1(XX,YY,Q0)-W-AL-I-Code.
+
+body_unify_1((Rx:TypeX),(Ry:TypeY),Q0)-W-AL-I-Code :-
+    body_unify_2(Rx,TypeX,Ry,TypeY,Q0)-Code.
+otherwise.
+body_unify_1((Rx:TypeX),YY,Q0)-W-AL-I-Code :-
+    TypeY=known, Ry=YY ,
+    body_unify_2(Rx,TypeX,Ry,TypeY,Q0)-Code.
+body_unify_1(XX,(Ry:TypeY),Q0)-W-AL-I-Code :-
+    TypeX=known, Rx=XX ,
+    body_unify_2(Rx,TypeX,Ry,TypeY,Q0)-Code.
+otherwise.
+body_unify_1(XX,YY,Q0)-W-AL-I-Code :-
+    load_reg(XX,R,Type)-W-AL-I-Code,
+    body_unify_1(r(R):Type,YY,Q0)-W-AL-I-Code.
+
+body_unify_2(Rx,any,Ry,any,Q0)-Code:- Code <= unify(Rx,Ry,Q0).
+otherwise.
+body_unify_2(Rx,any,Ry,TypeY,Q0)-Code:- Code <= unify_value(Rx,Ry,Q0).
+body_unify_2(Rx,TypeX,Ry,any,Q0)-Code:- Code <= unify_value(Ry,Rx,Q0).
+otherwise.
+body_unify_2(Rx,TypeX,Ry,TypeY,Q0)-Code:- Code <= unify(Rx,Ry,Q0).
+
+bb_in([],Args,Outs,_,Checks,Inputs)-W-AL-I-Code :-
+    Checks=[], Inputs=[], Outs=Args.
+bb_in([IType|IInfo],[A0|Args0],Outs,N,Checks,Inputs)-W-AL-I-Code :-
+    Inputs = [A|InputsT],
+    N1 := N+1,
+    prep_call_arg(A0,A1)-W-AL-I-Code,
+    bb_in_type(A1,A,Type),
+    klic_comp_insert:subsumed_type(Type,IType,Ans),
+    bb_in_check(Ans,N,ChecksT,Checks),
+    bb_in(IInfo,Args0,Outs,N1,ChecksT,InputsT)-W-AL-I-Code.
+
+bb_in_type((R:Type0),A,Type) :-
+    A=R,  Type=Type0.
+otherwise.
+bb_in_type(A1,A,Type) :- A=A1, Type=A1.
+
+bb_in_check(normal,N,ChecksT,Checks) :- Checks=ChecksT.
+bb_in_check(abnormal,N,ChecksT,Checks) :- Checks=[N|ChecksT].
+
+bb_out([],_Checks,[],OArgs)-W-AL-I-Q-Code :- OArgs = [].
+bb_out([A0|Args],Checks,[OType|OInfo],OArgs0)-W-AL-I-Q-Code :-
+    XW=x(W), W+=1,
+    Reg=r(XW),
+    OArgs0=[Reg|OArgs],
+    bb_out_type(Checks,OType,Type),
+    body_unify(A0,Reg:Type)-W-AL-I-Q-Code,
+    bb_out(Args,Checks,OInfo,OArgs)-W-AL-I-Q-Code.
+
+bb_out_type(Checks,OType,Type) :- Checks=[] | Type=OType.
+bb_out_type(Checks,OType,Type) :- Checks\=[] | Type=any.
+
+%prep_call_arg(T,Arg)-W-AL-I-Code :- (T=var(_); T=arg(_,_)) |
+%    Arg=(r(X):Type), load_reg(T,X,Type)-W-AL-I-Code.
+%otherwise.
+%prep_call_arg(T,Arg)-W-AL-I-Code :- Arg=T.
+prep_call_arg(T,Arg)-W-AL-I-Code :-
+    Arg=(r(X):Type), load_reg(T,X,Type)-W-AL-I-Code.
+
+set_args([],_)-W-AL-I-Code.
+set_args([H|T],K)-W-AL-I-Code :-
+    K1 := K+1,
+    set_one(H,K)-W-AL-I-Code,
+    set_args(T,K1)-W-AL-I-Code.
+
+set_one(r(R):_,K)-W-AL-I-Code :-
+    Code <= set_value(K,R).
+otherwise.
+set_one(P,K)-W-AL-I-Code :-
+    assocx(AL,P,Ans),
+    set_one_1(Ans,K)-W-AL-I-Code.
+
+set_one_1(yes(R,Type),K)-W-AL-I-Code :-
+    set_one(r(R):Type,K)-W-AL-I-Code.
+set_one_1(no(T),K)-W-AL-I-Code :- ( T=atom(_); T=int(_); T=const(_) ) |
+    Code <= set_const(K,T).
+set_one_1(no(T),K)-W-AL-I-Code :- T=arg(X0,J) |
+    Reg=x(W), W+=1, $(T,Reg,any)=>AL,
+    load_pos(X0,X)-W-AL-I-Code,
+    Code <= get_elem(Reg,X,J),
+    Code <= set_value(K,Reg).
+set_one_1(no(T),K)-W-AL-I-Code :- T=var(J) |
+    Reg=x(W), W+=1,
+    $(T,Reg,any)=>AL,
+    Code <= set_newvar(K,Reg).
+
+set_generic_args([],_K)-W-AL-I-Code.
+set_generic_args([A0|Rest],K)-W-AL-I-Code :-
+    K1 := K+1,
+    prep_call_arg(A0,A1)-W-AL-I-Code,
+    strip_type(A1,Arg),
+    Code <= store_generic_arg(Arg,K),
+    set_generic_args(Rest,K1)-W-AL-I-Code.
+
+move_args([],_K)-W-AL-I-Code.
+move_args([H|T],K)-W-AL-I-Code :-
+    used_in(T,a(K),AL,Ans),
+    move_args_1(Ans,H,T,K)-W-AL-I-Code.
+
+move_args_1(no,H,T,K)-W-AL-I-Code :-
+    K1 := K+1,
+    move_one(H,a(K))-W-AL-I-Code,
+    move_args(T,K1)-W-AL-I-Code.
+move_args_1(yes,H,T,K)-W-AL-I-Code :-
+	( H=(r(a(_)):Type); H=arg(_,_); H=var(_) ) |
+    Reg=x(W), W+=1,
+    K1 := K+1,
+    V=(r(Reg):Type),
+    move_one(H,Reg)-W-AL-I-Code,
+    move_args(T,K1)-W-AL-I-Code,
+    move_one(V,a(K))-W-AL-I-Code.
+otherwise.
+move_args_1(yes,H,T,K)-W-AL-I-Code :-
+    K1 := K+1,
+    move_args(T,K1)-W-AL-I-Code,
+    move_one(H,a(K))-W-AL-I-Code.
+
+move_one(r(R):_,R)-W-AL-I-Code.
+otherwise.
+move_one(r(R1):_,R2)-W-AL-I-Code :-
+    Code <= move(R2,R1).
+otherwise.
+move_one(P,R)-W-AL-I-Code :-
+    assocx(AL,P,Ans),
+    move_one_1(Ans,R)-W-AL-I-Code.
+
+move_one_1(yes(Reg,Type),R)-W-AL-I-Code :-
+    move_one(r(Reg):Type,R)-W-AL-I-Code.
+move_one_1(no(P),R)-W-AL-I-Code :- ( P=atom(_); P=int(_); P=const(_) ) |
+    Code <= load_const(R,P).
+move_one_1(no(P),R)-W-AL-I-Code :- P=arg(X0,J) |
+    $(P,R,any)=>AL1,
+    load_pos(X0,X)-W-AL-I-Code,
+    Code <= get_elem(R,X,J).
+move_one_1(no(P),R)-W-AL-I-Code :- P=var(K) |
+    Reg=x(W), W+=1,
+    $(P,Reg,any)=>AL,
+    Code <= load_newvar(Reg),
+    Code <= move(R,Reg).
+
+used_in([],   Reg,AL,Ans) :- Ans = no.
+used_in([r(Reg):_Type|_],Reg,_, Ans) :- Ans = yes.
+used_in([arg(Pos,_)|T],  Reg,AL,Ans) :- 
+    assocx(AL,Pos,Ans0),
+    used_in_1(T,Reg,AL,Ans,Ans0).
+used_in([Pos|T],      Reg,AL,Ans) :- Pos=var(_) |
+    assocx(AL,Pos,Ans0),
+    used_in_1(T,Reg,AL,Ans,Ans0).
+otherwise.
+used_in([_|T],Reg,AL,Ans) :- used_in(T,Reg,AL,Ans).
+
+used_in_1(T,Reg,AL,Ans,yes(Reg,_)) :- Reg0=Reg | Ans=yes.
+otherwise.
+used_in_1(T,Reg,AL,Ans,_) :- used_in(T,Reg,AL,Ans).
+
+strip_types([],T) :- T=[].
+strip_types([H|T0],VT) :- strip_type(H,V), VT = [V|T], strip_types(T0,T).
+
+strip_type((A:_Type),Arg) :- Arg=A.
+otherwise.
+strip_type(A1,Arg) :- Arg=A1.
+
+make_label(none,_L0).
+make_label(lab(L),L0) :- L=L0.
+
+add_info(Reg,NewT)-AL :- 
+    rassoc(AL,Pos,Reg),
+    $(Pos,Reg,NewT)=>AL.
+
+rassoc([$(P,R,_)|_],P1,R) :- P = P1.
+otherwise.
+rassoc([_|Rest],P,R) :- rassoc(Rest,P,R).
+
+assocx([$(P,R,T)|_],P,Ans) :- Ans = yes(R,T).
+assocx([],      P,Ans) :- Ans = no(P).
+otherwise.
+assocx([_|Rest],H,Ans)  :- assocx(Rest,H,Ans).

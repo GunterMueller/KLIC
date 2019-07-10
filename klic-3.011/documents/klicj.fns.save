@@ -1,0 +1,220 @@
+\initial {$}
+\entry {\code {$:=} on\ \code {builtin}}{22}
+\entry {\code {$<} on\ \code {builtin}}{23}
+\entry {\code {$=:=} on\ \code {builtin}}{23}
+\entry {\code {$=<} on\ \code {builtin}}{23}
+\entry {\code {$={\tt \backslashcurfont }=} on\ \code {builtin}}{23}
+\entry {\code {$>} on\ \code {builtin}}{23}
+\entry {\code {$>=} on\ \code {builtin}}{23}
+\initial {:}
+\entry {\code {:=} on\ \code {builtin}}{20}
+\initial {<}
+\entry {\code {<} on\ \code {builtin}}{21}
+\initial {=}
+\entry {\code {=} on\ \code {builtin}}{16}
+\entry {\code {=..} on\ \code {述語}}{25}
+\entry {\code {=:=} on\ \code {builtin}}{21}
+\entry {\code {=<} on\ \code {builtin}}{21}
+\entry {\code {={\tt \backslashcurfont }=} on\ \code {builtin}}{21}
+\initial {>}
+\entry {\code {>} on\ \code {builtin}}{21}
+\entry {\code {>=} on\ \code {builtin}}{21}
+\initial {@}
+\entry {\code {@<} on\ \code {builtin}}{17}
+\entry {\code {@=<} on\ \code {builtin}}{17}
+\entry {\code {@>} on\ \code {builtin}}{17}
+\entry {\code {@>=} on\ \code {builtin}}{17}
+\initial {{\indexbackslash }}
+\entry {\code {{\tt \backslashcurfont }=} on\ \code {builtin}}{17}
+\initial {A}
+\entry {\code {accept} on\ \code {バウンド・ソケット}}{35}
+\entry {\code {access} on\ \code {unix ストリーム}}{35}
+\entry {\code {acos} on\ \code {float}}{23}
+\entry {\code {add} on\ \code {float}}{23}
+\entry {\code {add} on\ \code {timer}}{44}
+\entry {\code {addop} on\ \code {Prolog 風の I/O }}{40}
+\entry {\code {append_open} on\ \code {klicio ストリーム}}{40}
+\entry {\code {append_open} on\ \code {unix ストリーム}}{34}
+\entry {\code {apply} on\ \code {predicate}}{32}
+\entry {\code {arg} on\ \code {builtin}}{24}
+\entry {\code {argc} on\ \code {predicate}}{37}
+\entry {\code {argv} on\ \code {unix}}{37}
+\entry {\code {arity} on\ \code {predicate}}{32}
+\entry {\code {asin} on\ \code {float}}{23}
+\entry {\code {atan} on\ \code {float}}{23}
+\entry {\code {atom} on\ \code {builtin}}{19}
+\entry {\code {atom_number} on\ \code {atom_table}}{19}
+\entry {\code {atomic} on\ \code {builtin}}{18}
+\initial {B}
+\entry {\code {bind} on\ \code {unix ストリーム}}{34}
+\initial {C}
+\entry {\code {call} on\ \code {predicate}}{33}
+\entry {\code {cd} on\ \code {unix ストリーム}}{35}
+\entry {\code {ceil} on\ \code {float}}{23}
+\entry {\code {chmod} on\ \code {unix ストリーム}}{36}
+\entry {\code {compare} on\ \code {builtin}}{16}
+\entry {\code {compare} on\ \code {timer}}{44}
+\entry {\code {connect} on\ \code {unix ストリーム}}{34}
+\entry {\code {cos} on\ \code {float}}{23}
+\entry {\code {cosn} on\ \code {float}}{23}
+\entry {\code {current_node} on\ \code {builtin}}{17}
+\entry {\code {current_priority} on\ \code {builtin}}{17}
+\initial {D}
+\entry {\code {divide} on\ \code {float}}{23}
+\initial {E}
+\entry {\code {element} on\ \code {string}}{4, 30}
+\entry {\code {element} on\ \code {vector}}{28}
+\entry {\code {element_size} on\ \code {string}}{30}
+\entry {\code {equal} on\ \code {float}}{24}
+\entry {\code {exit} on\ \code {unix}}{37}
+\entry {\code {exp} on\ \code {float}}{23}
+\initial {F}
+\entry {\code {fclose} on\ \code {C 風の I/O }}{38}
+\entry {\code {fclose} on\ \code {Prolog 風の I/O }}{40}
+\entry {\code {feof} on\ \code {C 風の I/O }}{37}
+\entry {\code {feof} on\ \code {Prolog 風の I/O }}{40}
+\entry {\code {fflush} on\ \code {C 風の I/O }}{39}
+\entry {\code {fflush} on\ \code {Prolog 風の I/O }}{41}
+\entry {\code {float} on\ \code {builtin}}{21}
+\entry {\code {float} on\ \code {float}}{21}
+\entry {\code {floor} on\ \code {float}}{23}
+\entry {\code {fork} on\ \code {unix ストリーム}}{36}
+\entry {\code {fork_with_pipes} on\ \code {unix ストリーム}}{37}
+\entry {\code {fread} on\ \code {C 風の I/O }}{38}
+\entry {\code {fread} on\ \code {Prolog 風の I/O }}{41}
+\entry {\code {fseek} on\ \code {C 風の I/O }}{38}
+\entry {\code {fseek} on\ \code {Prolog 風の I/O }}{40}
+\entry {\code {ftell} on\ \code {C 風の I/O }}{38}
+\entry {\code {ftell} on\ \code {Prolog 風の I/O }}{40}
+\entry {\code {functor} on\ \code {builtin}}{24}
+\entry {\code {fwrite} on\ \code {C 風の I/O }}{39}
+\entry {\code {fwrite} on\ \code {Prolog 風の I/O }}{41}
+\initial {G}
+\entry {\code {gc} on\ \code {system_control}}{43}
+\entry {\code {get_atom_name} on\ \code {atom_table}}{19}
+\entry {\code {get_atom_string} on\ \code {atom_table}}{19}
+\entry {\code {get_time_of_day} on\ \code {timer}}{43}
+\entry {\code {getc} on\ \code {C 風の I/O }}{38}
+\entry {\code {getc} on\ \code {Prolog 風の I/O }}{41}
+\entry {\code {getenv} on\ \code {unix ストリーム}}{36}
+\entry {\code {gett} on\ \code {Prolog 風の I/O }}{40}
+\entry {\code {getwt} on\ \code {Prolog 風の I/O }}{40}
+\entry {\code {greater_than} on\ \code {float}}{23}
+\initial {H}
+\entry {\code {hash} on\ \code {builtin}}{17}
+\initial {I}
+\entry {\code {instantiate_after} on\ \code {timer}}{44}
+\entry {\code {instantiate_at} on\ \code {timer}}{44}
+\entry {\code {instantiate_every} on\ \code {timer}}{44}
+\entry {\code {integer} on\ \code {builtin}}{19}
+\entry {\code {intern} on\ \code {atom_table}}{19}
+\initial {J}
+\entry {\code {join} on\ \code {string}}{31}
+\entry {\code {join} on\ \code {vector}}{29}
+\initial {K}
+\entry {\code {kill} on\ \code {unix ストリーム}}{36}
+\entry {\code {klicio} on\ \code {predicate}}{39}
+\initial {L}
+\entry {\code {less_than} on\ \code {float}}{23}
+\entry {\code {less_than} on\ \code {string}}{31}
+\entry {\code {linecount} on\ \code {C 風の I/O }}{38}
+\entry {\code {linecount} on\ \code {Prolog 風の I/O }}{41}
+\entry {\code {list} on\ \code {builtin}}{25}
+\entry {\code {log} on\ \code {float}}{23}
+\initial {M}
+\entry {\code {make_atom} on\ \code {atom_table}}{19}
+\entry {\code {mktemp} on\ \code {unix ストリーム}}{35}
+\entry {\code {module} on\ \code {module}}{32}
+\entry {\code {module} on\ \code {predicate}}{33}
+\entry {\code {multiply} on\ \code {float}}{23}
+\initial {N}
+\entry {\code {name} on\ \code {module}}{32}
+\entry {\code {name} on\ \code {predicate}}{33}
+\entry {\code {new} on\ \code {merge}}{26}
+\entry {\code {new} on\ \code {module}}{32}
+\entry {\code {new} on\ \code {predicate}}{32}
+\entry {\code {new} on\ \code {random_numbers}}{44}
+\entry {\code {new} on\ \code {string}}{30}
+\entry {\code {new} on\ \code {vector}}{28}
+\entry {\code {new} on\ \code {オブジェクト生成}}{22}
+\entry {\code {new_functor} on\ \code {builtin}}{25}
+\entry {\code {new_string} on\ \code {builtin}}{30}
+\entry {\code {new_vector} on\ \code {builtin}}{28}
+\entry {\code {nl} on\ \code {Prolog 風の I/O }}{41}
+\entry {\code {not_equal} on\ \code {float}}{24}
+\entry {\code {not_greater_than} on\ \code {float}}{23}
+\entry {\code {not_less_than} on\ \code {float}}{23}
+\entry {\code {not_less_than} on\ \code {string}}{31}
+\entry {\code {\var {Number}} on\ \code {C 風の I/O }}{39}
+\entry {\code {\var {Number}} on\ \code {Prolog 風の I/O }}{41}
+\initial {P}
+\entry {\code {postmortem} on\ \code {system_control}}{43}
+\entry {\code {pow} on\ \code {float}}{23}
+\entry {\code {predicate} on\ \code {predicate}}{32}
+\entry {\code {putc} on\ \code {C 風の I/O }}{39}
+\entry {\code {putc} on\ \code {C 風の入出力}}{5}
+\entry {\code {putc} on\ \code {Prolog 風の I/O }}{41}
+\entry {\code {putenv} on\ \code {unix ストリーム}}{36}
+\entry {\code {putt} on\ \code {Prolog 風の I/O }}{41}
+\entry {\code {puttq} on\ \code {Prolog 風の I/O }}{41}
+\entry {\code {putwt} on\ \code {Prolog 風の I/O }}{41}
+\entry {\code {putwtq} on\ \code {Prolog 風の I/O }}{41}
+\initial {R}
+\entry {\code {read_open} on\ \code {klicio ストリーム}}{40}
+\entry {\code {read_open} on\ \code {unix ストリーム}}{34}
+\entry {\code {rmop} on\ \code {Prolog 風の I/O }}{40}
+\initial {S}
+\entry {\code {search_character} on\ \code {builtin}}{31}
+\entry {\code {search_character} on\ \code {string}}{31}
+\entry {\code {set_element} on\ \code {string}}{31}
+\entry {\code {set_element} on\ \code {vector}}{28}
+\entry {\code {set_string_element} on\ \code {builtin}}{31}
+\entry {\code {set_vector_element} on\ \code {builtin}}{28}
+\entry {\code {setarg} on\ \code {builtin}}{25}
+\entry {\code {signal_stream} on\ \code {unix ストリーム}}{36}
+\entry {\code {sin} on\ \code {float}}{23}
+\entry {\code {sinh} on\ \code {float}}{23}
+\entry {\code {size} on\ \code {string}}{30}
+\entry {\code {size} on\ \code {vector}}{28}
+\entry {\code {split} on\ \code {string}}{31}
+\entry {\code {split} on\ \code {vector}}{28}
+\entry {\code {sqrt} on\ \code {float}}{23}
+\entry {\code {stderr} on\ \code {klicio ストリーム}}{40}
+\entry {\code {stderr} on\ \code {unix ストリーム}}{34}
+\entry {\code {stdin} on\ \code {klicio ストリーム}}{40}
+\entry {\code {stdin} on\ \code {unix ストリーム}}{34}
+\entry {\code {stdout} on\ \code {klicio ストリーム}}{40}
+\entry {\code {stdout} on\ \code {unix ストリーム}}{34}
+\entry {\code {string} on\ \code {builtin}}{30, 31}
+\entry {\code {string} on\ \code {string}}{30, 31}
+\entry {\code {string_element} on\ \code {builtin}}{4, 30}
+\entry {\code {string_less_than} on\ \code {builtin}}{31}
+\entry {\code {string_not_less_than} on\ \code {builtin}}{31}
+\entry {\code {sub} on\ \code {timer}}{44}
+\entry {\code {subtract} on\ \code {float}}{23}
+\entry {\code {sync} on\ \code {C 風の I/O }}{38}
+\entry {\code {sync} on\ \code {Prolog 風の I/O }}{40}
+\entry {\code {system} on\ \code {unix ストリーム}}{36}
+\initial {T}
+\entry {\code {tan} on\ \code {float}}{23}
+\entry {\code {tanh} on\ \code {float}}{23}
+\entry {\code {times} on\ \code {unix}}{37}
+\initial {U}
+\entry {\code {umask} on\ \code {unix ストリーム}}{36}
+\entry {\code {unbound} on\ \code {builtin}}{17}
+\entry {\code {ungetc} on\ \code {C 風の I/O }}{38}
+\entry {\code {ungetc} on\ \code {Prolog 風の I/O }}{41}
+\entry {\code {unix} on\ \code {unix}}{33}
+\entry {\code {unlink} on\ \code {unix ストリーム}}{35}
+\entry {\code {unwrap} on\ \code {変換}}{42}
+\entry {\code {update_open} on\ \code {klicio ストリーム}}{40}
+\entry {\code {update_open} on\ \code {unix ストリーム}}{34}
+\initial {V}
+\entry {\code {vector} on\ \code {builtin}}{28}
+\entry {\code {vector} on\ \code {vector}}{28}
+\entry {\code {vector_element} on\ \code {builtin}}{28}
+\initial {W}
+\entry {\code {wait} on\ \code {builtin}}{16}
+\entry {\code {wrap} on\ \code {variable}}{43}
+\entry {\code {write_open} on\ \code {klicio ストリーム}}{40}
+\entry {\code {write_open} on\ \code {unix ストリーム}}{34}

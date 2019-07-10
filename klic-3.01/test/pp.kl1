@@ -1,0 +1,12 @@
+:- module main.
+
+main :- pp(12).
+
+pp(N) :- true | p([N|L],M), r(M,L).
+
+p([],M) :- true | M=[].
+p([N|L],M) :- true | M=[N|M1], 
+        p(L,M2), p(M2,M1).
+
+r([0|_],M) :- true | M=[].
+r([N|L1],M) :- N > 0, N1:=N-1 | M=[N1|M1], r(L1,M1).

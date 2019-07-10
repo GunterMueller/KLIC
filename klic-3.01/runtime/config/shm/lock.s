@@ -1,0 +1,1 @@
+/home/gunter/GM_LANGUAGES/PROLOG/KLIC/klic-3.01/runtime/config/shm/INTEL/lock.s

@@ -1,0 +1,19 @@
+# ---------------------------------------------------------- 
+#   (C)1993, 1994, 1995 Institute for New Generation Computer Technology 
+#	(Read COPYRIGHT for detailed information.) 
+#   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+#       (Read COPYRIGHT-JIPDEC for detailed information.)
+# ----------------------------------------------------------
+
+SHELL = /bin/sh
+
+.SUFFIXES: $(SUFFIXES) .kl1 .ext
+DISTTYPE = pvm
+PARALLEL = 0
+ARCHIVES = libklics.a libklicd.a libklic.a libklict.a
+KLICDB= klic.db
+TARGETS = $(KLICDB) $(ARCHIVES) $(DLLIBS) pipedio $(EXTENSION)
+COMPILEINC = ../include/klic
+EXTCOMPILEINC = ../include/klic
+EXTENSION =
+INSTALL_EXTENSTION =

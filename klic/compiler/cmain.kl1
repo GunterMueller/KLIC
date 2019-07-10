@@ -1,0 +1,22 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1993,1995 Institute for New Generation Computer Technology 
+% %       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+% ----------------------------------------------------------- */
+
+:- module main.
+
+% ------------- UNIX Interface ---------
+main :-
+    unix:argv(List),
+    kl1cmps(List,normal).
+
+kl1cmps([File|Next],normal):-
+    klic_comp_kl1cmp:klcmp(File,Ans),
+    kl1cmps(Next,Ans)@lower_priority.
+kl1cmps([],normal) :- unix:exit(0).
+otherwise.
+kl1cmps(_,Ans) :- wait(Ans) | unix:exit(-1).
+
+

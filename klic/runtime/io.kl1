@@ -1,0 +1,136 @@
+/* ---------------------------------------------------------- 
+%   (C)1993 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+:- inline:"
+#include <stdio.h>
+#include <klic/gobj.h>
+#include <klic/g_pointer.h>
+#ifdef DIST
+#include <klic/distio.h>
+#endif
+extern q gd_new_pointer();
+#define file_pointer(x) \\
+  ((FILE*)((struct pointer_object *)(data_objectp(x)))->pointer)
+
+struct byte_string_object;
+static FILE *open_named_file(str, mode)
+     struct byte_string_object *str;
+     char *mode;
+{
+  extern unsigned char *generic_string_body();
+  extern unsigned long generic_string_size();
+  char buf[1024];
+  (void)strncpy(buf,generic_string_body(str),generic_string_size(str));
+  buf[generic_string_size(str)] = '\\0';
+  return fopen(buf,mode);
+}".
+
+:- module io.
+
+outstreamq(Path,S) :-
+    generic:string(Path):_:_,
+    inline:"
+{
+  FILE *file =
+    open_named_file((struct byte_string_object *)functorp(%0), \"w\");
+  if (file==NULL) goto %f;
+  %1 = gd_new_pointer((q)file,allocp);
+  allocp = heapp;
+}":[Path+functor,File-any] |
+    S=normal(Out), out(Out,File).
+otherwise.
+outstreamq(_Path,S) :- S=abnormal.
+
+outstream(Path,S) :- outstreamq(Path,S0), testok(S0,S).
+
+outstream(S) :- inline:"
+{
+  %0 = gd_new_pointer((q)stdout,allocp);
+  allocp = heapp;
+}":[File-any] |
+    out(S,File).
+
+out([],File) :- inline:"
+{
+  FILE *f = file_pointer(%0);
+  if (f!=stdout && f!=stderr) (void)fclose(f);
+}":[File+bound] | true.
+out([putc(X)|Rest],File) :-
+    inline:"klic_putc(intval(%1), file_pointer(%0));":[File+bound,X+int] |
+    out(Rest,File).
+out([nl|Rest],File) :- out([putc(10)|Rest],File).
+out([flush|Rest],File) :-
+    inline:"(void)fflush(file_pointer(%0));":[File+bound] |
+    out(Rest,File).
+out([print(X0)|Rest],File) :- functor(X0,_,A) |
+    waitAll(1,A,X0,X0,X),
+    wait_and_print(X,File,Rest,S),
+    out(S,File).
+out([puts(S)|Rest],File) :- string(S,L,8) |
+    puts(S,0,L,Rest0,Rest),
+    out(Rest0,File).
+out([sync(X)|Rest],File) :-
+    X=0, out(Rest,File).
+
+wait_and_print(X,File,S0,S) :-
+    inline:"fprint(file_pointer(%0),%1);":[File+bound,X+bound] |
+    S=S0.
+
+waitAll(A0,A,_,X0,X) :- A0>A | X=X0.
+waitAll(A0,A,F,X0,X) :- A0=<A, arg(A0,F,FA0), functor(FA0,_,AFA0) |
+    A1:=A0+1,
+    waitAll(1,AFA0,FA0,X0,X1),
+    waitAll(A1,A,F,X1,X).
+
+instreamq(Path,S) :-
+    generic:string(Path):_:_,
+    inline:"
+{
+  FILE *file =
+    open_named_file((struct byte_string_object *)functorp(%0), \"r\");
+  if (file==NULL) goto %f;
+  %1 = gd_new_pointer((q)file,allocp);
+  allocp = heapp;
+}":[Path+functor,File-any] |
+    S=normal(In), in(In,File).
+otherwise.
+instreamq(_Path,S) :- S=abnormal.
+
+instream(Path,S) :- instreamq(Path,S0), testok(S0,S).
+
+instream(S) :- inline:"
+{
+  %0 = gd_new_pointer((q)stdin,allocp);
+  allocp = heapp;
+}
+":[File-any] |
+    in(S,File).
+
+in([],File) :- inline:"
+{
+  FILE *f = file_pointer(%0);
+  if (f!=stdin) (void)fclose(f);
+}":[File+bound] | true.
+in([getc(X)|Rest],File) :-
+    inline:"%1 = makeint(getc(file_pointer(%0)));":[File+bound,W-int] |
+    X=W, in(Rest,File).
+in([sync(X)|Rest],File) :- X=0, in(Rest,File).
+
+testok(normal(S0),S) :- S=S0.
+
+puts(_X0,N,N,Rest,RestN):- Rest=RestN.
+otherwise.
+puts(X0,M,N,Rest,RestN):- string_element(X0,M,E)|
+        M1 := M + 1,
+        Rest = [putc(E)|Rest1],
+        puts(X0,M1,N,Rest1,RestN).
+
+errstream(S) :- inline:"
+{
+  %0 = gd_new_pointer((q)stderr,allocp);
+  allocp = heapp;
+}":[File-any] |
+    out(S,File).

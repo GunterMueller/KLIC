@@ -1,0 +1,87 @@
+#!/bin/sh
+# ---------------------------------------------------------- 
+#   (C)1995 Institute for New Generation Computer Technology 
+#       (Read COPYRIGHT for detailed information.) 
+#-----------------------------------------------------------
+if [ -z "$LN" ]; then
+  if [ -f ../config.sh ]
+   then . ../config.sh
+   elif [ "$1" = none ]; then DEF_LN=ln
+   else
+    echo ''
+    echo Please run Configure first !!
+    echo ''
+    exit 1
+   fi
+  LN=$DEF_LN
+  if [ -z "$LN" ]; then
+    echo ''
+    echo Please run Configure first !!
+    echo ''
+    exit 1
+  fi
+fi
+if [ "$1" = "-install" ]
+then shift; install=true
+else install=false
+fi
+
+cd ../runtime
+remove=false
+arch=$1
+if [ "$arch" = "" ]; then arch=pvm
+elif [ "$arch" = none ]; then
+    arch=pvm
+    remove=true
+fi
+if [ ! -d config/$arch ]; then
+  echo Architecture "'$arch'" not found;
+  cd config;
+  echo ''
+  echo Existing architectures are:
+  for i in *
+  do
+    [ -d $i ] && echo "	$i"
+  done
+  exit 1
+elif $remove; then echo un-install parallel code.
+elif $install; then true
+else echo setting-up for "'$arch'".
+fi  
+
+h=`(cd config/$arch; echo *.h)`
+c=`(cd config/$arch; echo *.c)`
+s=`(cd config/$arch; echo *.s)`
+if [ "$h" != "*.h" ]
+then (cd ../include/klic; rm -f $h)
+else h=''
+fi
+if [ "$c" != "*.c" ]
+then rm -f $c
+else c=''
+fi
+if [ "$s" != "*.s" ]
+then rm -f $s
+else s=''
+fi
+
+if $remove; then exit; fi
+if $install; then
+  for file in $c
+  do
+    $LN config/$arch/$file .
+  done
+
+  for file in $h
+  do
+    $LN ../../runtime/config/$arch/$file ../include/klic/
+  done
+  for file in $s
+  do
+    $LN config/$arch/$file .
+  done
+  echo parallel arch "'$arch'" installed.
+else
+  (cd config/$arch; make setup)
+  make distributed-system-clean
+fi

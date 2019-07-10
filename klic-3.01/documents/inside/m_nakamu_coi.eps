@@ -1,0 +1,628 @@
+%!PS-Adobe-2.0 EPSF-1.2
+%%BoundingBox: 36 -244 342 -20
+%%HiResBoundingBox: 36.160 -243.231 341.542 -20.351
+
+%% @(#)$Header: /misc/cvsroot/KLIC/inside/m_nakamu_coi.eps,v 1.1.1.1 1997/12/25 04:48:03 sekita Exp $
+/ellipsedict 6 dict def
+ellipsedict /mtrx matrix put
+
+/ellipse
+ { ellipsedict begin
+      /yrad exch def
+      /xrad exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      xrad yrad scale
+      0 0 1 0 360 arc
+      savematrix setmatrix
+   end
+ } def
+
+/arrowtipdict 8 dict def
+arrowtipdict /mtrx matrix put
+
+/arrowtip
+ { arrowtipdict begin
+      /dy exch def
+      /dx exch def
+      /h exch def
+      /w exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      dy dx atan rotate
+      0 0 moveto
+      w neg h lineto
+      w neg h neg lineto
+      savematrix setmatrix
+   end
+ } def
+
+/tgifarcdict 8 dict def
+tgifarcdict /mtrx matrix put
+
+/tgifarcn
+ { tgifarcdict begin
+      /endangle exch def
+      /startangle exch def
+      /yrad exch def
+      /xrad exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      xrad yrad scale
+      0 0 1 startangle endangle arc
+      savematrix setmatrix
+   end
+ } def
+
+/tgifarc
+ { tgifarcdict begin
+      /endangle exch def
+      /startangle exch def
+      /yrad exch def
+      /xrad exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      xrad yrad scale
+      0 0 1 startangle endangle arcn
+      savematrix setmatrix
+   end
+ } def
+
+/setuserscreendict 22 dict def
+setuserscreendict begin
+   /tempctm matrix def
+   /temprot matrix def
+   /tempscale matrix def
+
+   /concatprocs
+    { /proc2 exch cvlit def
+      /proc1 exch cvlit def
+      /newproc proc1 length proc2 length add array def
+      newproc 0 proc1 putinterval
+      newproc proc1 length proc2 putinterval
+      newproc cvx
+    } def
+   /resmatrix matrix def
+   /findresolution
+    { 72 0 resmatrix defaultmatrix dtransform
+      /yres exch def /xres exch def
+      xres dup mul yres dup mul add sqrt
+    } def
+end
+
+/setuserscreen
+ { setuserscreendict begin
+      /spotfunction exch def
+      /screenangle exch def
+      /cellsize exch def
+
+      /m tempctm currentmatrix def
+      /rm screenangle temprot rotate def
+      /sm cellsize dup tempscale scale def
+
+      sm rm m m concatmatrix m concatmatrix pop
+
+      1 0 m dtransform /y1 exch def /x1 exch def
+
+      /veclength x1 dup mul y1 dup mul add sqrt def
+      /frequency findresolution veclength div def
+
+      /newscreenangle y1 x1 atan def
+
+      m 2 get m 1 get mul m 0 get m 3 get mul sub 0 gt
+
+      {{neg} /spotfunction load concatprocs
+         /spotfunction exch def
+      } if
+
+      frequency newscreenangle /spotfunction load setscreen
+   end
+ } def
+
+/setpatterndict 18 dict def
+setpatterndict begin
+   /bitison
+    { /ybit exch def /xbit exch def
+      /bytevalue bstring ybit bwidth mul xbit 8 idiv add get def
+
+      /mask 1 7 xbit 8 mod sub bitshift def
+      bytevalue mask and 0 ne
+    } def
+end
+
+/bitpatternspotfunction
+ { setpatterndict begin
+      /y exch def /x exch def
+
+      /xindex x 1 add 2 div bpside mul cvi def
+      /yindex y 1 add 2 div bpside mul cvi def
+
+      xindex yindex bitison
+       { /onbits onbits 1 add def 1 }
+       { /offbits offbits 1 add def 0 }
+       ifelse
+   end
+ } def
+
+/setpattern
+ { setpatterndict begin
+      /cellsz exch def
+      /angle exch def
+      /bwidth exch def
+      /bpside exch def
+      /bstring exch def
+
+      /onbits 0 def /offbits 0 def
+      cellsz angle /bitpatternspotfunction load setuserscreen
+      {} settransfer
+      offbits offbits onbits add div setgray
+   end
+ } def
+
+/inch {72 mul} def
+
+/showpattern
+ { /ang exch def
+   /pat exch def
+   pat 8 1 ang 72 300 32 div div setpattern
+
+   newpath
+      0 0 moveto 1 inch 0 lineto
+      1 inch dup lineto 0 1 inch lineto
+   closepath fill
+ } def
+
+/patdict 10 dict def
+
+/patbyte
+ { currentdict /retstr get exch
+   pat i cellsz mod get put
+ } def
+
+/patproc
+ { 0 1 widthlim {patbyte} for retstr
+   /i i 1 add def
+ } def
+
+/patfill
+ { patdict begin
+      /h exch def
+      /w exch def
+      /lty exch def
+      /ltx exch def
+      /cellsz exch def
+      /pat exch def
+
+      /widthlim w cellsz div cvi 1 sub def
+      /retstr widthlim 1 add string def
+      /i 0 def
+
+      ltx lty translate
+      w h true [1 0 0 1 0 0] {patproc} imagemask
+      ltx neg lty neg translate
+   end
+ } def
+
+/pat1 <ffffffffffffffff> def
+/pat2 <0000000000000000> def
+/pat3 <8000000008000000> def
+/pat4 <8800000022000000> def
+/pat5 <8800220088002200> def
+/pat6 <8822882288228822> def
+/pat7 <aa55aa55aa55aa55> def
+/pat8 <8040201008040201> def
+/pat9 <8844221188442211> def
+/pat10 <77bbddee77bbddee> def
+/pat11 <c1e070381c0e0783> def
+/pat12 <8040200002040800> def
+/pat13 <40a00000040a0000> def
+/pat14 <ff888888ff888888> def
+/pat15 <ff808080ff080808> def
+/pat16 <f87422478f172271> def
+/pat17 <038448300c020101> def
+/pat18 <081c22c180010204> def
+/pat19 <8080413e080814e3> def
+
+/centertext { dup stringwidth pop 2 div neg 0 rmoveto } def
+
+/righttext { dup stringwidth pop neg 0 rmoveto } def
+
+1.415 setmiterlimit
+
+%####### .pskanjiEXT ############################
+% define Ryumin-Times-H font
+12 dict begin
+  /FontName /Ryumin-Times-H def
+  /FontType 0 def
+  /WMode 0 def
+  /FMapType 3 def
+  /FontMatrix matrix def
+  /Encoding [0 1] def
+  /FDepVector
+  [/Times-Roman findfont [1 0 0 1 0 0.01] makefont
+    /Ryumin-Light-Ext-H findfont
+  ] def
+  FontName currentdict
+end
+definefont pop
+
+% define Gothic-Helvetica-H font
+12 dict begin
+  /FontName /Gothic-Helvetica-H def
+  /FontType 0 def
+  /WMode 0 def
+  /FMapType 3 def
+  /FontMatrix matrix def
+  /Encoding [0 1] def
+  /FDepVector
+  [/Helvetica findfont [1 0 0 1 0 0.01] makefont
+    /GothicBBB-Medium-Ext-H findfont
+  ] def
+  FontName currentdict
+end
+definefont pop
+
+gsave
+
+0.565 -0.565 scale
+
+gsave
+   1 setlinewidth
+   newpath
+      268 254 moveto
+      0 64 atan dup cos 8 mul 332 exch sub
+      exch sin 8 mul 254 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      332 254 8 3 64 0 arrowtip
+   closepath fill
+grestore
+
+/Courier findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      348 205 moveto (method) show
+      348 224 moveto (table) show
+   grestore
+
+/Courier findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      188 269 moveto (pointer) show
+   grestore
+
+1 setlinewidth
+newpath
+   172 238 moveto
+   284 238 lineto
+   284 430 lineto
+   172 430 lineto
+closepath stroke
+1 setlinewidth
+
+gsave
+   1 setlinewidth
+   newpath
+      172 286 moveto
+      284 286 lineto
+   stroke
+grestore
+
+/Courier findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      188 333 moveto (object) show
+      188 352 moveto ( body) show
+   grestore
+
+1 setlinewidth
+newpath
+   332 238 moveto
+   428 238 lineto
+   428 366 lineto
+   332 366 lineto
+closepath stroke
+1 setlinewidth
+
+gsave
+   1 setlinewidth
+   newpath
+      332 270 moveto
+      428 270 lineto
+   stroke
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      332 302 moveto
+      428 302 lineto
+   stroke
+grestore
+
+/Courier findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      380 317 moveto (.) show
+   grestore
+
+/Courier findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      380 333 moveto (.) show
+   grestore
+
+/Courier findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      380 349 moveto (.) show
+   grestore
+
+/Courier findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      338 259 moveto (method1) show
+   grestore
+
+/Courier findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      339 290 moveto (method2) show
+   grestore
+
+1 setlinewidth
+newpath
+   460 222 moveto
+   540 222 lineto
+   540 286 lineto
+   460 286 lineto
+closepath stroke
+1 setlinewidth
+
+gsave
+   1 setlinewidth
+   newpath
+      476 286 moveto
+      476 302 lineto
+      556 302 lineto
+      556 238 lineto
+      540 238 lineto
+   stroke
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      492 302 moveto
+      492 318 lineto
+      572 318 lineto
+      572 254 lineto
+      556 254 lineto
+   stroke
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      508 318 moveto
+      508 334 lineto
+      588 334 lineto
+      588 270 lineto
+      572 270 lineto
+   stroke
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      524 334 moveto
+      524 350 lineto
+      604 350 lineto
+      604 286 lineto
+      588 286 lineto
+   stroke
+grestore
+
+/Courier findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      476 205 moveto (C-function) show
+   grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      420 253 moveto
+      0 41 atan dup cos 8 mul 461 exch sub
+      exch sin 8 mul 253 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      461 253 8 3 41 0 arrowtip
+   closepath fill
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      422 286 moveto
+      5 53 atan dup cos 8 mul 475 exch sub
+      exch sin 8 mul 291 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      475 291 8 3 53 5 arrowtip
+   closepath fill
+grestore
+
+1 setlinewidth
+newpath
+   128 64 moveto
+   160 64 lineto
+   160 96 lineto
+   128 96 lineto
+closepath stroke
+1 setlinewidth
+
+1 setlinewidth
+newpath
+   192 64 moveto
+   224 64 lineto
+   224 96 lineto
+   192 96 lineto
+closepath stroke
+1 setlinewidth
+
+1 setlinewidth
+newpath
+   256 64 moveto
+   288 64 lineto
+   288 96 lineto
+   256 96 lineto
+closepath stroke
+1 setlinewidth
+
+gsave
+   1 setlinewidth
+   newpath
+      64 80 moveto
+      0 64 atan dup cos 8 mul 128 exch sub
+      exch sin 8 mul 80 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      128 80 8 3 64 0 arrowtip
+   closepath fill
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      160 80 moveto
+      0 32 atan dup cos 8 mul 192 exch sub
+      exch sin 8 mul 80 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      192 80 8 3 32 0 arrowtip
+   closepath fill
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      224 80 moveto
+      0 32 atan dup cos 8 mul 256 exch sub
+      exch sin 8 mul 80 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      256 80 8 3 32 0 arrowtip
+   closepath fill
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      288 80 moveto
+      0 32 atan dup cos 8 mul 320 exch sub
+      exch sin 8 mul 80 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      320 80 8 3 32 0 arrowtip
+   closepath fill
+grestore
+
+/Courier findfont [24 0 0 -24 0 0] makefont setfont
+   gsave
+      128 51 moveto (hook chain) show
+   grestore
+
+/Courier findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      108 140 moveto ( goal ) show
+      108 159 moveto (record) show
+   grestore
+
+1 setlinewidth
+newpath 141 146 48 24 ellipse stroke
+1 setlinewidth
+
+/Courier findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      242 140 moveto ( goal ) show
+      242 159 moveto (record) show
+   grestore
+
+1 setlinewidth
+newpath 275 146 48 24 ellipse stroke
+1 setlinewidth
+
+gsave
+   1 setlinewidth
+   newpath
+      144 88 moveto
+      35 0 atan dup cos 8 mul 144 exch sub
+      exch sin 8 mul 123 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      144 123 8 3 0 35 arrowtip
+   closepath fill
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      274 87 moveto
+      35 0 atan dup cos 8 mul 274 exch sub
+      exch sin 8 mul 122 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      274 122 8 3 0 35 arrowtip
+   closepath fill
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      209 87 moveto
+      150 0 atan dup cos 8 mul 209 exch sub
+      exch sin 8 mul 237 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      209 237 8 3 0 150 arrowtip
+   closepath fill
+grestore
+
+/Courier findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      68 278 moveto (consumer) show
+      68 297 moveto ( object) show
+   grestore
+
+grestore
+

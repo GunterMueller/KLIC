@@ -1,0 +1,24 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+:- module integer_arithmetics.
+
+add(X,Y,Z)		:- R:=X+Y | Z=R.
+subtract(X,Y,Z) 	:- R:=X-Y | Z=R.
+multiply(X,Y,Z) 	:- R:=X*Y | Z=R.
+divide(X,Y,Z)		:- R:=X/Y | Z=R.
+modulo(X,Y,Z)		:- R:=X mod Y | Z=R.
+
+and(X,Y,Z)		:- R:=X/\Y | Z=R.
+or(X,Y,Z)		:- R:=X\/Y | Z=R.
+exclusive_or(X,Y,Z) 	:- R:=X xor Y | Z=R.
+
+shift_right(X,Y,Z)	:- R:=X>>Y | Z=R.
+shift_left(X,Y,Z)	:- R:=X<<Y | Z=R.
+
+complement(X,Z)		:- R:= \(X) | Z=R.
+plus(X,Z)		:- R:= +X | Z=R.
+minus(X,Z)		:- R:= -X | Z=R.

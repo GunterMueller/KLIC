@@ -1,0 +1,326 @@
+/* ---------------------------------------------------------- 
+%   (C) 1994 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- module parser.
+
+parse(Tokens,Ops,Result) :-
+    wparse(Tokens,Ops,Res1),
+    wait_parse(Res1,Result).
+
+wait_parse(Result0,Result) :- Result0=normal(WTerm) |
+    ( WTerm=end_of_file -> Term=end_of_file
+    ; WTerm\=end_of_file -> variable:unwrap(WTerm,Term) ),
+    Result = normal(Term).
+otherwise.
+wait_parse(Res1,Result):- Result=Res1.
+
+wparse([eof], _, Result) :- Result = normal(end_of_file).
+otherwise.
+wparse(Tokens, Ops, Result) :-
+	wparse(Tokens, 1200, Ops, Result0),
+	last_check(Result0, Result).
+
+% last_check(Result0, Result)
+
+last_check(normal(Term, []), Result) :-
+	Result = normal(Term).
+last_check(normal(_Term, [H|T]), Result) :-
+	Result = abnormal("operator expected", [H|T]).
+last_check(abnormal(X, ErrPos), Result) :-
+	Result = abnormal(X, ErrPos).
+
+% wparse(TokenList, Precedence, Operators, Result)
+
+wparse([], _, _, Result) :-
+	Result = abnormal("expression expected", []).
+wparse([Token|Rest], Prec, Ops, Result) :-
+	wparse(Token, Rest, Prec, Ops, Result).
+
+% wparse(Token, RestOfTokens, Precedence, Operators, Result)
+
+wparse(variable(_Variable,_,VarName,_), S1, Prec, Ops, Result) :-
+    after_term(S1, 0, variable(VarName), Prec, Ops, Result).
+wparse(('|'), S1, Prec, Ops, Result) :- true |
+    wparse(atom('|'), S1, Prec, Ops, Result).
+wparse(atom(Atom), S1, Prec, Ops, Result) :- true |
+    (
+	S1 = [number(Number)|S2], Atom = (-) ->
+	(
+	    integer(Number) -> Negated = integer(~(-Number))
+	; otherwise ;
+	    true ->
+	    generic:new(float, Zero, 0),
+	    generic:subtract(Zero, Number, MinusNumber),
+	    Negated = floating_point(MinusNumber)
+	),
+	after_term(S2, 0, Negated, Prec, Ops, Result)
+    ;
+	S1 = ['('|S2] ->
+	parse_comma_list(S2, Ops, 999, never, ')', Res1),
+	(
+	    Res1 = normal(Elements, S3) ->
+            wrap_functor([Atom|Elements],WTerm),
+	    after_term(S3, 0, WTerm, Prec, Ops, Result)
+	; otherwise ;
+	    true -> Result = Res1
+	)
+    ; otherwise ;
+	true ->
+	prefixop(Atom, Ops, Prec, OP),
+	(
+	    OP = prefix(OPrec, APrec) ->
+	    wparse(S1, APrec, Ops, Res1),
+	    (
+		Res1 = normal(Arg, S11) ->
+	        wrap_functor([Atom,Arg],WTerm),
+		after_term(S11, OPrec, WTerm, Prec, Ops, Res0)
+	    ; otherwise ;
+		true -> Res0 = Res1
+	    ),
+	    after_term(S1, 0, atom(Atom), Prec, Ops, Res2),
+	    select_better(Res0, Res2, Result)
+	;
+	    OP = none ->
+	    after_term(S1, 0, atom(Atom), Prec, Ops, Result)
+	)
+    ).
+wparse(number(Number), S0, Prec, Ops, Result) :- integer(Number) |
+    after_term(S0, 0, integer(Number), Prec, Ops, Result).
+wparse(number(Number), S0, Prec, Ops, Result) :- generic:float(Number) |
+    after_term(S0, 0, floating_point(Number), Prec, Ops, Result).
+wparse(string(String), S0, Prec, Ops, Result) :-
+    (
+	S0=[string(Another)|S1] ->
+	generic:join(String, Another, Appended),
+	wparse(string(Appended), S1, Prec, Ops, Result)
+    ; otherwise ;
+	true ->
+	after_term(S0, 0, string(String), Prec, Ops, Result)
+    ).
+wparse('[', S1, Prec, Ops, Result) :- true |
+    (
+	S1=[']'|S2] ->
+	wparse(atom([]), S2, Prec, Ops, Result)
+    ; otherwise ;
+	true ->
+	parse_comma_list(S1, Ops, 999, '|', ']', Res1),
+	(
+	    Res1 = normal(Elements, S3) ->
+	    wrap_list(Elements,WElements),
+	    after_term(S3, 0, WElements, Prec, Ops, Result)
+	; otherwise ;
+	    true -> Result = Res1
+	)
+    ).
+wparse('{', S1, Prec, Ops, Result) :- true |
+    (
+	S1=['}'|S2] ->
+	new_vector(V,0),
+	after_term(S2, 0, vector(V), Prec, Ops, Result)
+      ; otherwise ;
+	true ->
+	parse_comma_list(S1, Ops, 999, never, '}', Res1),
+	(
+	    Res1 = normal(Elements, S3) ->
+	    generic:new(vector,Vector,Elements),
+	    after_term(S3, 0, vector(Vector), Prec, Ops, Result)
+	  ; otherwise ;
+	    true -> Result = Res1
+	)
+    ).
+wparse(Token, S1, Prec, Ops, Result) :- (Token='('; Token=' (') |
+    wparse(S1, 1200, Ops, Res1),
+    (
+	Res1 = normal(Term, S2) ->
+	(
+	    S2=[')'|S3] ->
+	    after_term(S3, 0, Term, Prec, Ops, Result)
+	  ; otherwise ;
+	    true ->
+	    Result=abnormal("close parenthesis expected", S2)
+	)
+      ; otherwise ;
+	true -> Result = Res1
+    ).
+wparse(Token, S0, _, _, Result) :- Token=error(Message) |
+    Result = abnormal(Message, S0).
+otherwise.
+wparse(Token, S0, _, _, Result) :-
+    Result = abnormal("term expected to start", [Token|S0]).
+
+% after_term(Tokens, MinPrec, Term, MaxPrec, Ops, Result)
+
+after_term([atom(Atom)|S1], MinPrec, Term, Prec, Ops, Result) :-
+    infixop(Atom, Ops, MinPrec, Prec, IOP),
+    postfixop(Atom, Ops, MinPrec, Prec, POP),
+    (
+	IOP = none ->
+	(
+	    POP = none -> Result = normal(Term, [atom(Atom)|S1])
+	;
+	    POP = postfix(POprec) ->
+            wrap_functor([Atom,Term],WExpr),
+	    after_term(S1, POprec, WExpr, Prec, Ops, Result)
+	)
+    ;
+	IOP = infix(IOprec, Rprec) ->
+	wparse(S1, Rprec, Ops, Res0),
+	(
+	    POP = none ->
+	    (
+		Res0 = normal(Right, S2) ->
+                wrap_functor([Atom,Term,Right],WExpr),
+		after_term(S2, IOprec, WExpr, Prec, Ops, Result)
+	    ; otherwise ;
+		true -> Result = Res0
+	    )
+	;
+	    POP = postfix(POprec1) ->
+            wrap_functor([Atom,Term],WExpr),
+	    after_term(S1, POprec1, WExpr, Prec, Ops, Res2),
+	    select_better(Res0, Res2, Result)
+	)
+    ).
+
+after_term([(',')|S1], MinPrec, Term, Prec, Ops, Result) :-
+    MinPrec < 1000, Prec >= 1000 |
+    wparse(S1, 1000, Ops, Res1),
+    (
+	Res1 = normal(Right, S2) ->
+	after_term(S2, 999, functor((Term,Right)), Prec, Ops, Result)
+    ; otherwise ;
+	true ->	Result = Res1
+    ).
+after_term([('|')|S1], MinPrec, Term, Prec, Ops, Result) :-
+    MinPrec < 1100, Prec >= 1100 |
+    wparse(S1, 1100, Ops, Res1),
+    (
+	Res1 = normal(Right, S2) ->
+	after_term(S2, 1099, functor('|'(Term,Right)), Prec, Ops, Result)
+    ; otherwise ;
+	true -> Result = Res1
+    ).
+otherwise.
+after_term(S1, _MinPrec, Term, _Prec, _Ops, Result) :-
+    Result = normal(Term, S1).
+
+% parse_comma_list(Tokens, Ops, Prec, Bar, Closer, Result),
+
+parse_comma_list(S1, Ops, Prec, Bar, Close, Result) :-
+    parse_comma_list(S1, Ops, Prec, Bar, Close, Top, Top, Result).
+
+parse_comma_list(S1, Ops, Prec, Bar, Close, Top, Tail, Result) :-
+    wparse(S1, Prec, Ops, Res1),
+    (
+	Res1 = normal(Term, S2) ->
+	Tail = [Term|NewTail],
+	(
+	    S2 = [','|S3] ->
+	    parse_comma_list(S3, Ops, Prec, Bar, Close,
+			     Top, NewTail, Result)
+	;
+	    S2 = [Close|S3] ->
+	    NewTail = [],
+	    Result = normal(Top, S3)
+	;
+	    S2 = [Bar|S3] ->
+	    wparse(S3, Prec, Ops, Res2),
+	    (
+		Res2 = normal(ParsedTail, S4) ->
+		NewTail = ParsedTail,
+		(
+		    S4 = [Close|S5] ->
+		    Result = normal(Top, S5)
+		; otherwise ;
+		    true ->
+		    Result = abnormal("close parenthesis expected", S4)
+		)
+	    ; otherwise ;
+		true -> Result = Res2
+	    )
+	; otherwise ;
+	    true ->
+	    Result = abnormal("comma or close parenthesis expected", S2)
+	)
+      ; otherwise ;
+	true -> Result = Res1
+    ).
+
+list_to_comma_list([H|T], X) :- T=[] | X = H.
+list_to_comma_list([H|T], X) :- T\=[] | X = (H,Y), list_to_comma_list(T, Y).
+
+select_better(R1, R2, Result) :-
+	R1=normal(X1, S1), R2=normal(X2, S2) |
+    longer(S1, S2, Longer),
+    ( Longer = no -> Result = R1; Longer = yes -> Result = R2 ).
+select_better(R1, R2, Result) :- R1=normal(X, S), R2=abnormal(_, _) |
+    Result = R1.
+select_better(R1, R2, Result) :- R1=abnormal(_, _), R2=normal(X, S) |
+    Result = R2.
+select_better(R1, R2, Result) :- R1=abnormal(X1, S1), R2=abnormal(X2, S2) |
+    longer(S1, S2, Longer),
+    ( Longer = no -> Result = R1; Longer = yes -> Result = R2 ).
+
+prefixop(Atom, ops(Pre,_In,_Post), Prec, OP) :-
+    lookup_op(Pre, Atom, Kind, P),
+    (
+	P > Prec -> OP = none
+    ; otherwise ;
+	Kind = fx -> P1 := P-1, OP = prefix(P, P1)
+    ;
+	Kind = fy -> OP = prefix(P, P)
+    ).
+
+infixop(Atom, ops(_Pre, In, _Post), Min, Max, OP) :-
+    lookup_op(In, Atom, Kind, P),
+    (
+	Kind = xfx, P > Min, P =< Max -> P1 := P-1, OP = infix(P, P1)
+    ;
+	Kind = xfy, P > Min, P =< Max -> OP = infix(P, P)
+    ;
+	Kind = yfx, P >= Min, P < Max -> P1 := P-1, OP = infix(P, P1)
+    ; otherwise ;
+	true -> OP = none
+    ).
+
+postfixop(Atom, ops(_Pre, _In, Post), Min, Max, OP) :-
+    lookup_op(Post, Atom, Kind, P),
+    (
+	P > Max -> OP = none
+    ; otherwise ;
+	Kind = xf, P > Min -> OP = postfix(P)
+    ;
+	Kind = yf, P >= Min -> OP = postfix(P)
+    ).
+
+lookup_op([], _, Kind, P) :- Kind = none, P = 9999.
+lookup_op([op(Atom0, Kind0, P0)|_T], Atom, Kind, P) :- Atom0=Atom |
+    Kind = Kind0, P = P0.
+lookup_op([op(Atom0,_Kind0,_P0)| T], Atom, Kind, P) :- Atom0\=Atom |
+    lookup_op(T, Atom, Kind, P).
+
+% Auxiliary
+
+longer([_|_], [], YorN) :- YorN = yes.
+longer([_|T1], [_|T2], YorN) :- longer(T1, T2, YorN).
+longer([], _, YorN) :- YorN = no.
+
+wrap_list([],WL):- WL=atom([]).
+wrap_list([WE|R],WL):- WL = list([WE|WR]),
+    wrap_list(R,WR).
+otherwise.
+wrap_list(ETC,WETC):- WETC=ETC.
+
+wrap_functor(List,WF) :-
+    functor_table:(F=..List),
+    wrap_functor1(F,WF).
+
+wrap_functor1(L,WF) :- L=[H|T] | WF=list(L).
+otherwise.
+wrap_functor1(F,WF):- WF = functor(F).
+
+unwrap(W,T) :- variable:unwrap(W,T).

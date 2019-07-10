@@ -1,0 +1,18 @@
+#!/bin/sh
+# ---------------------------------------------------------- 
+#   (C)1995 Institute for New Generation Computer Technology 
+#       (Read COPYRIGHT for detailed information.) 
+#-----------------------------------------------------------
+for f in $*
+do
+    case $f in
+	atomt.c|bag.c|bagk.c|bagks.c|bags.c|bodyblt.c| \
+	compare.c|farith.c|functt.c|gcmerge.c|gen.c|gunix.c| \
+	iarith.c|io.c|parse.c|queue.c|read.c|scan.c|setk.c| \
+	setks.c|splay.c|stack.c|sysc.c|termio.c|unparse.c|uterms.c|var.c|\
+	version.c|distpkt.*|distproc.*|distio.*);;
+	*-t.c|*-d.c);;
+	*)
+		rcsdiff $f  || ci -u $f;;
+    esac
+done

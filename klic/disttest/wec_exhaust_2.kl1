@@ -1,0 +1,140 @@
+% Test for "WEC exhausted" (2)
+
+% Unificatin and fetching when WEC is exhausted.  (2)
+% When exrefs form a chain of references.  
+
+:- module main.
+
+main :- lib:io(Os), 
+	lib:prsl(Os,Os2,'### InterNode Test [WEC exhausted (2)] Begin ###',_), 
+	test_unify(Os2,Os3), 
+	test_fetch(Os3,Os4), 
+	lib:prsl(Os4,[],'### InterNode Test [WEC exhausted (2)] End ###',_). 
+
+%============================================================================
+%
+%	    %unify ------------------------------------>
+%	+---------+       +---------+                      +---------+       
+%	|EXREFx  -------->|EXREFx  --------> ...  -------->|         |
+%	+---------+       +---------+                      +---------+
+%
+%============================================================================
+
+test_unify(Os,OsE):- 
+	lib:prs(Os,Os2,'chain of exrefs : unification (a-f) : ',_), 
+	test_unify(Os2,OsE,Cs), 
+	Cs=[dd(dest([1,1,1,1]),data(term),out(a)),
+	    dd(dest([-1,-1,-1,-1]),data({a,b,c}),out(b)),
+	    dd(dest([1,2,3,4,5,6,7,8]),data([a,b,c,d,e,f,g]),out(c)),
+	    dd(dest([-1,-2,-3,-4,-5,-6,-7,-8]),data([a,[b,c],[d,e,f],g]),out(d)),
+	    dd(dest([1,-1,1,-1,1,-1,1,-1]),data([[[]]]),out(e)),
+	    dd(dest([-1,1,-2,2,-3,3,-4,4]),data([[a],[b],[c]]),out(f))]. 
+
+test_unify(Os,OsE,[dd(dest(Ds),data(Data),out(Out))|Cs]):- 
+	testEXREFs_unify(Ds,Data,Test), pr(Os,Os2,Test,Out), 
+	test_unify(Os2,OsE,Cs). 
+test_unify(Os,OsE,[]):- lib:prsl(Os,OsE,'...done',_). 
+
+%---------------------------------------------------------------------------
+testEXREFs_unify([D|Ds],TermData,Test) :- true | 
+	nextnode(D,NextNode), 
+	exportUnbound_unify(done,NextNode,EUNDF,Ds,TermData), 
+	termDetect_unify(EUNDF,TermData,Test).
+
+exportUnbound_unify(done,NextNode,Unbound,Ds,TermData) :- wait(NextNode) | 
+	testEXREF_unify(Unbound,Ds,TermData)@node(NextNode).
+
+termDetect_unify(EUNDF,TermData,Test) :- EUNDF = TermData | Test = done.
+otherwise.
+termDetect_unify(_,_,Test) :- true | Test = fail.
+
+testEXREF_unify(EXREF,[D|Ds],TermData) :- true |
+	sendWEC(EXREF,Send), nextnode(D,NextNode), 
+	exportUnbound_unify(Send,NextNode,EXREF,Ds,TermData).
+
+testEXREF_unify(EXREF,[],TermData) :- true | 
+	sendWEC(EXREF,Send), bindTermData(Send,EXREF,TermData).
+
+%============================================================================
+%
+%	    %read ------------------------------------->
+%	                    %read --------------------->
+%	+---------+       +---------+                      +---------+       
+%	|EXREF   -------->|EXREF   --------> ...  -------->|         |
+%	+---------+       +---------+                      +---------+
+%
+%============================================================================
+
+test_fetch(Os,OsE):- 
+	lib:prs(Os,Os2,'chain of exrefs : fetching (a-f) : ',_), 
+	test_fetch(Os2,OsE,Cs), 
+	Cs=[dd(dest([1,1,1,1]),data(term),out(a)),
+	    dd(dest([-1,-1,-1,-1]),data({a,b,c}),out(b)),
+	    dd(dest([1,2,3,4,5,6,7,8]),data([a,b,c,d,e,f,g]),out(c)),
+	    dd(dest([-1,-2,-3,-4,-5,-6,-7,-8]),data([a,[b,c],[d,e,f],g]),out(d)),
+	    dd(dest([1,-1,1,-1,1,-1,1,-1]),data([[[]]]),out(e)),
+	    dd(dest([-1,1,-2,2,-3,3,-4,4]),data([[a],[b],[c]]),out(f))]. 
+
+test_fetch(Os,OsE,[dd(dest(Ds),data(Data),out(Out))|Cs]):- 
+	testEXREFs_fetch(Ds,Data,Test), pr(Os,Os2,Test,Out), 
+	test_fetch(Os2,OsE,Cs). 
+test_fetch(Os,OsE,[]):- lib:prsl(Os,OsE,'...done',_). 
+
+%---------------------------------------------------------------------------
+testEXREFs_fetch([D|Ds],TermData,Test) :- true |
+	nextnode(D,NextNode), 
+	exportUnbound_fetch(done,NextNode,EUNDF,Ds,TermData,Gen,ParRead), 
+	bindTermData(Gen,EUNDF,TermData), 
+	termDetect_fetch(ParRead,Test).
+
+exportUnbound_fetch(done,NextNode,Unbound,Ds,TermData,Gen,Read) :- 
+    wait(NextNode) | 
+	testEXREF_fetch(Unbound,Ds,TermData,Gen,Read)@node(NextNode).
+
+termDetect_fetch(done,Test) :- true | Test = done.
+otherwise.
+termDetect_fetch(_,Test) :- true | Test = fail.
+
+testEXREF_fetch(EXREF,[D|Ds],TermData,Gen,MyRead) :- true |
+	sendWEC(EXREF,Send), nextnode(D,NextNode), 
+	exportUnbound_fetch(Send,NextNode,EXREF,Ds,TermData,Gen,ParRead), 
+	readTest(ParRead,EXREF,TermData,MyRead).
+
+testEXREF_fetch(EXREF,[],TermData,Gen,MyRead) :- true | 
+	sendWEC(EXREF,Send), 
+	endEXREFs(Send,EXREF,TermData,Gen,MyRead).
+
+endEXREFs(done,EXREF,TermData,Gen,MyRead) :- true | 
+	Gen = done, 
+	readTest(done,EXREF,TermData,MyRead).
+	
+readTest(done,EXREF,TermData,Read) :- EXREF = TermData | Read = done.
+otherwise.
+readTest(_,_,_,Read) :- true | Read = fail.
+
+%----------------------------------------------------------------------------
+bindTermData(done,EUNDF,TermData) :- true | EUNDF = TermData.
+sendWEC(EXREF,Send) :- true | 
+	nextnode(OtherNode), sendWEC(done,30,OtherNode,EXREF,Send).
+sendWEC(done,N,DestNode,EXREF,Send) :- N > 0, wait(DestNode) | 
+	consumeWEC(EXREF,Consume)@node(DestNode), 
+	NM1 := N - 1, sendWEC(Consume,NM1,DestNode,EXREF,Send).
+sendWEC(done,N,_,_,Send) :- N = 0 | Send = done. 
+consumeWEC(_,Consume) :- true | Consume = done. 
+
+%============================================================================
+nextnode(Next) :- true | nextnode(1,Next).
+
+nextnode(Add,Next):- 
+	current_node(Current,NumberOfNodes), 
+	modNode(~(Current+Add),NumberOfNodes,Next).  
+
+modNode(CalNode,NumberOfNodes,Node) :- CalNode >= 0 | 
+	Node := CalNode mod NumberOfNodes.
+modNode(CalNode,NumberOfNodes,Node) :- CalNode <  0 | 
+	CalNode2 := CalNode + NumberOfNodes, 
+	modNode(CalNode2,NumberOfNodes,Node).
+
+pr(Os,OsE,done,Out):- lib:prs(Os,OsE,Out,_). 
+otherwise. 
+pr(Os,OsE,_,Out):- lib:prs_err(Os,OsE,Out,_). 

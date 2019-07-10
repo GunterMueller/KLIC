@@ -1,0 +1,102 @@
+/* ---------------------------------------------------------- 
+%   (C) 1994 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- module klic_reader.
+
+parse_one_term_reporting_errors(In, s(Ops,OnErr), Result, InT) :-
+    In = [linecount(Before)|In0],
+    scanner:scan(Tokens, In0, In1),
+    parser:parse(Tokens, Ops, Result0),
+    (
+	Result0 = normal(Term) -> Result = Term, InT = In1
+    ;
+	Result0 = abnormal(Reason, Rest) ->
+	unix:unix(U),
+	U = [stderr(normal(Err))],
+	In1 = [linecount(After)|In2],
+	report_syntax_error(Reason, Before, After, Tokens, Rest, Err, OnErr),
+	parse_one_term_reporting_errors(In2, s(Ops,OnErr), Result, InT)
+    ).
+
+wparse_one_term_reporting_errors(In, s(Ops,OnErr), Result, InT) :-
+    In = [linecount(Before)|In0],
+    scanner:scan(Tokens, In0, In1),
+    parser:wparse(Tokens, Ops, Result0),
+    (
+	Result0 = normal(Term) -> Result = normal(Term), InT = In1
+    ;
+	Result0 = abnormal(Reason, Rest) ->
+	unix:unix(U),
+	U = [stderr(normal(Err))],
+	In1 = [linecount(After)|In2],
+	report_syntax_error(Reason, Before, After, Tokens, Rest, Err, OnErr),
+	wparse_one_term_reporting_errors(In2, s(Ops,OnErr), Result, InT)
+    ).
+
+report_syntax_error(Reason, LB, LA, Tokens, Rest, Err, OnErr) :-
+	integer(OnErr) |
+    Err = [fwrite("{SYNTAX ERROR: in lines ")|Err1],
+    LB1 := LB+1,
+    LA1 := LA+1,
+    write_number(LB1,Err1,[fwrite("-")|Err2]),
+    write_number(LA1,Err2,
+	[fwrite("}\n** "),
+	 fwrite(Reason),
+	 fwrite(" **\n")|Err3]),
+    length(Tokens, TotalLen),
+    length(Rest, RestLen),
+    write_tokens(~(TotalLen-RestLen), Tokens, Err3,
+	[fwrite("\n** here **\n")|Err4]),
+    write_tokens(RestLen, Rest, Err4, [putc(10), fflush(Sync)]),
+    ( OnErr < 0, wait(Sync) -> unix:exit(OnErr)
+    ; OnErr =:= 0 -> true ).
+
+write_tokens(0, _)-Err.
+write_tokens(N, [H|T])-Err :- N > 0 |
+    write_one_token(H)-Err,
+    write_tokens(~(N-1), T)-Err.
+
+write_one_token(variable(_,_,Name,_))-Err :-
+    write_string(Name)-Err, blank-Err.
+write_one_token(number(Number))-Err :-
+    write_number(Number)-Err, blank-Err.
+write_one_token(open(Atom))-Err :-
+    write_atom(Atom)-Err, write_char(0'()-Err, blank-Err.
+write_one_token(atom(Atom))-Err :-
+    write_atom(Atom)-Err, blank-Err.
+write_one_token(string(Elems))-Err :-
+    write_char(0'")-Err, write_string(Elems)-Err,
+    write_char(0'")-Err, blank-Err.
+write_one_token(eof)-Err.
+write_one_token(error(_))-Err.
+otherwise.
+write_one_token(Atom)-Err :-
+    write_atom(Atom)-Err, blank-Err.
+
+blank-Err :- write_char(0' )-Err.
+
+write_char(C, Err0, Err) :- Err0 = [putc(C)|Err].
+
+write_atom(Atom, Err0, Err) :-
+    atom_table:get_atom_string(Atom, String),
+    Err0 = [fwrite(String)|Err].
+
+write_string(String)-Err :- Err <= fwrite(String).
+
+write_number(0)-Err :- write_char(0'0)-Err.
+write_number(N)-Err :- N > 0 | write_decimal(N)-Err.
+write_number(F)-Err :- generic:float(F) | Err <= fwrite("<float>").
+
+write_decimal(0)-Err.
+write_decimal(N)-Err :- N > 0 |
+    write_decimal(~(N/10))-Err,
+    write_char(~(N mod 10 + 0'0))-Err.
+
+length(L, N) :- length(L, 0, N).
+
+length([], N0, N) :- N = N0.
+length([_|T], N0, N) :- length(T, ~(N0+1), N).

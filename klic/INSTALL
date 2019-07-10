@@ -1,0 +1,139 @@
+========================================================
+(C)1993, 1994, 1995 Institute for New Generation Computer Technology
+(Read COPYRIGHT for detailed information.)
+(C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+(Read COPYRIGHT-JIPDEC for detailed information.)
+========================================================
+
+How to INSTALL KL1 to C compiler
+================================
+November 8, 1993
+Last Revision: June 20, 1995
+Takashi Chikayama (Univ. of Tokyo)
+Tetsuro Fujise (Mitsubishi Research Inst., Inc.)
+Daigo Sekita (Mitsubishi Research Inst., Inc.)
+
+The following is an excerpt from KLIC.info in the directory
+"documents".  Please consult the info pages for installation of a
+distributed parallel system.
+
+Installation
+============
+
+Installation of KLIC should be fairly easy.
+
+Host-dependent and preference-based customizations are made by running a
+configuration script provided with the distribution.  Then `make all'
+should compile the whole system.  You can make sure that the system has
+been compiled without problems by running `make tests'.  Then you can
+install the system by `make install'.
+
+
+
+Configuration
+-------------
+
+First thing to do in installation of KLIC is to configure the KLIC
+system depending on the host computer system and your preference.
+
+Go to the root directory of the distribution (referred to as ROOT in
+what follows).  Then, run the configuration script there by a command
+`./Configure'.  The script will search for available software tools in
+your system and ask your preferences.
+
+The default shell programs on some Unix systems based on BSD 4.2 do
+not understand some of the constructs used in this configuration
+script.  In such a case, obtain a modern shell (such as GNU `bash') and
+let it execute the script, as follows.
+
+     % bash Configure
+
+If you have built the system before and rebuilding it in the same
+directory, it will ask whether the same values you specified the last
+time should be used as default values.
+
+The next question it asks (or the first, if it is the first time to
+build the system) is whether to configure also for parallel
+implementations.  If you want to install only the sequential system,
+please answer `no' to the question.  See relevant sections (*note
+Distributed KLIC::. and *note Shared-Memory KLIC::.), for further
+details of configuraion of parallel versions of the system.
+
+   The configuration script will make three files.
+
+     `ROOT/Makefile'
+     `ROOT/include/klic/config.h'
+     `ROOT/config.sh'
+
+   The last one records the specified options for reconfiguration.
+
+   The configuration script asks about the parallelism used in the
+installation procedure.  You can specify non-zero parallelism here to
+speed up the procedure if you are installing your system on a lightly
+loaded multiprocessor system.  Do *not* use parallel execution features
+of the `make' program.
+
+
+Compiling the KLIC system
+-------------------------
+
+After configuring the system, typing in `make all' should compile the
+whole KLIC system, including the KL1 to C compiler and the runtime
+libraries.
+
+
+Testing the Compilation
+-----------------------
+
+After system compilation is finished, you are recommended to test
+whether the compilation went without problems.  To do that, type in
+`make tests' in the root directory of the distribution (not in its
+subdirectory `test').  This will compile and run several KL1 test
+programs and compares the output with the expected output.
+
+
+Installing the Objects
+----------------------
+
+After compilation, typing in `make install' will install the compiler,
+header files and runtime libraries to directories specified on
+configuration (*Note Configuration::).
+
+
+Cleaning Up the Installation Directory
+--------------------------------------
+
+After installation has been done, typing in `make distclean' will delete
+all the files *not* included in the distribution.
+
+Normal users should *not* try `make realclean', which will delete C
+program source files generated from KL1.  A working KL1 to C compiler
+will be needed to regenerate the C program source files.
+
+
+When Something Goes Wrong
+-------------------------
+
+When the installation procedure went wrong because of misconfiguration,
+you had better start all over again from the configuration step (*Note
+Configuration::).  The configuraion script will ask you whether to clean
+up the system for reconfiguration.  Please answer affirmative then.
+
+Dependency rules written in Makefiles are inappropriate for using
+parallel make features provided by some versions of `make'.  The
+compilation procedure of KLIC relies on the fact that contents of atom
+and functor databases are monotonically increasing.  Dependencies on
+them are intentionally omitted to avoid redundant recompilation.  Use
+the parallel compilation feature of the compiler driver `klic' that
+understands the mechanism instead.  Parallelism used during
+installation procedure is specified at the configuration step (*Note
+Configuration::).
+
+If you think the problem is due to the distributed code, please report
+your problem to the following address.
+
+     `klic-bugs@icot.or.jp'
+
+Including information on your host system (hardware and operating
+system), your configuration (contents of the file `config.sh'), and log
+of your installation would be of great help in analysing your problems.

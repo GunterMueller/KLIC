@@ -1,0 +1,731 @@
+% (C) 1998 Japan Information Processing Development Center
+% 詳細な配布条件については、COPYRIGHT-JIPDEC.jを参照してください。
+
+\newcommand{\rokrefspace}{\hspace{0.5em}}
+
+%===========================================================================
+% generic object
+%===========================================================================
+\newcommand{\rokobject}{オブジェクト}
+\newcommand{\rokobjects}{オブジェクト(群)}
+\newcommand{\rokgen}{ジェネレータ}
+\newcommand{\rokgens}{ジェネレータ(群)}
+\newcommand{\rokcon}{コンシューマ}
+\newcommand{\rokcons}{コンシューマ(群)}
+\newcommand{\rokderef}{デレファレンス}
+\newcommand{\rokactiveunify}{active unify}
+\newcommand{\rokpassiveunify}{passive unify}
+\newcommand{\rokreply}{リプライ}
+\newcommand{\rokexref}{外部参照}
+\newcommand{\rokmethod}{メソッド}
+\newcommand{\rokgenericobject}{ジェネリック・\rokobject}
+\newcommand{\rokgenobject}{\rokgen ・\rokobject }
+\newcommand{\rokconobject}{\rokcon ・\rokobject }
+\newcommand{\rokreplyconobject}{\rokreply ・\rokcon ・\rokobject }
+\newcommand{\rokreplyobject}{\rokreply ・\rokobject }
+\newcommand{\rokexrefobject}{\rokexref \rokobject}
+\newcommand{\rokgenexrefobject}{\rokgen \rokexref \rokobject}
+\newcommand{\rokconexrefobject}{\rokcon \rokexref \rokobject}
+\newcommand{\rokconexrefobjects}{\rokcon \rokexref \rokobjects }
+\newcommand{\rokgeneratemethod}{{\em generate}\/ \rokmethod }
+\newcommand{\rokunifymethod}{{\em unify}\/ \rokmethod}
+
+%===========================================================================
+% messages
+%===========================================================================
+\newcommand{\rokmesread}{{\tt \%read\/}}
+\newcommand{\rokmesreadXR}{{\tt \%read(X,Ret)\/ }}
+\newcommand{\rokmesreadXXR}{{\tt \%read(X',Ret)\/ }}
+\newcommand{\rokmesanswer}{{\tt \%answer\_value\/ }}
+\newcommand{\rokmesanswerRvalue}{{\tt \%answer\_value(Ret,value)\/}}
+\newcommand{\rokmesunify}{{\tt \%unify\/}}
+\newcommand{\rokmesunifyXY}{{\tt \%unify(X,Y)\/}}
+\newcommand{\rokmesunifyXvalue}{{\tt \%unify(X,value)\/}}
+\newcommand{\rokmesrelease}{{\tt \%release\/}}
+\newcommand{\rokmesreleaseX}{{\tt \%release(X)\/}}
+\newcommand{\rokmesreleaseRet}{{\tt \%release(Ret)\/}}
+\newcommand{\rokmescancel}{{\tt \%cancel\/}}
+\newcommand{\rokmescancelXR}{{\tt \%cancel(X,Ret)\/}}
+\newcommand{\rokterminatedmessage}{{\tt \%terminated}}
+\newcommand{\rokthrowmessage}{{\tt \%throw\_goal}}
+\newcommand{\rokcheckmessage}{{\tt \%check}}
+\newcommand{\roksuspendedmessage}{{\tt \%suspended}}
+
+\newcommand{\rokunifymessageARG}[3]{
+        {\tt \%unify(}{#1}{\tt ,}{#2}{\tt ,}{#3}{\tt )}
+}
+
+\newcommand{\rokreadmessageARG}[3]{
+        {\tt \%read(}{#1}{\tt ,}{#2}{\tt ,}{#3}{\tt )}
+}
+
+\newcommand{\rokanswermessageARG}[2]{
+        {\tt \%answer\_value(}{#1}{\tt ,}{#2}{\tt )}
+}
+
+\newcommand{\rokreleasemessageARG}[1]{
+        {\tt \%release(}{#1}{\tt )}
+}
+
+
+%===========================================================================
+% node/processor
+%===========================================================================
+\newcommand{\roknode}{ワーカ}
+\newcommand{\roknodei}{{\bf worker~i\/}}
+\newcommand{\roknodej}{{\bf worker~j\/}}
+
+%===========================================================================
+% variable, value
+%===========================================================================
+\newcommand{\rokvarProc}{{\tt Proc}}
+\newcommand{\rokvarX}{{\tt X}}
+\newcommand{\rokvarRet}{{\tt Ret}}
+\newcommand{\rokvarTn}{{\tt Tn}}
+
+%===========================================================================
+% figures
+%===========================================================================
+
+\newcommand{\rokdatacell}[4]{
+        \put(0,0){\framebox(10,4){#1}}
+        \put(0,4){\makebox(0,0)[br]{#2}}
+        \put(5,5){\makebox(0,0)[b]{#3}}
+        \put(5,0){\makebox(0,0)[t]{#4}}
+}
+
+\newcommand{\rokgenconexrefobj}[3]{
+        \put(0,0){\framebox(10,10){}}
+        \put(0,10){\makebox(0,0)[br]{#1}}
+        \put(1,7){\makebox(0,0)[bl]{\footnotesize\tt EX}}
+        \put(1,1){\makebox(0,0)[bl]{#2}}
+        \put(5,-1){\makebox(0,0)[t]{#3}}
+}
+
+\newcommand{\rokgenconexrefobjrelease}[3]{
+        \put(0,0){\dashbox{1}(10,10){}}
+        \put(0,10){\makebox(0,0)[br]{#1}}
+        \put(1,7){\makebox(0,0)[bl]{\footnotesize\tt EX}}
+        \put(1,1){\makebox(0,0)[bl]{#2}}
+        \put(5,-1){\makebox(0,0)[t]{#3}}
+}
+
+\newcommand{\rokexrefobjXrelease}{
+        \put( 0, 0){\rokdatacell{\footnotesize\tt value}{}{}{}}
+        \multiput(9,2)(2,0){3}{\put(0,0){\line(1,0){1}}}
+        \put(15, 2){\vector(1,0){2}}
+        \put(17,-6){\rokgenconexrefobjrelease{\footnotesize\tt X}{}{}}
+        \multiput(25,-2)(2,0){10}{\put(0,0){\line(1,0){1}}}
+        \put(45,-2){\vector(1,0){29}}
+        \put(45,-6){\line(0,1){3}}
+        \put(46,-3){\oval(2,2)[tl]}
+        \put(34,-8){\makebox(0,0)[l]{\footnotesize \rokmesunifyXvalue}}
+        \put(60,-8){\vector(1,0){6}}
+}
+
+\newcommand{\rokexrefobjXandVrelease}{
+        \put( 0, 0){\rokdatacell{\footnotesize\tt value}{}{}{}} %
+        \put( 0,17){\rokexrefobjXrelease}
+}
+
+\newcommand{\rokpeexrefobjXandVrelease}{
+        \put( 0,27){\line(1,0){35}}
+        \put(35,27){\line(0,-1){27}}
+        \put( 4, 3){\rokexrefobjXandVrelease}
+        \put( 9,12.5){\line(0,1){2}}
+        \put(10,12.5){\line(0,1){2}}
+}
+
+\newcommand{\rokconobj}{
+        \put(0,0){\framebox(10,8){}}
+        \put(5,-1){\makebox(0,0)[t]{\footnotesize\it consumer}}
+}
+
+\newcommand{\rokconobjs}{
+        \put(0,0){\framebox(10,8){}}
+        \put(5,-1){\makebox(0,0)[t]{\footnotesize\it consumers}}
+}
+
+\newcommand{\rokconobjss}{
+        \put(0,0){\rokconobj}
+        \put(8, 6){\line(1,0){5}}
+        \multiput(14,6)(2,0){3}{\put(0,0){\line(1,0){1}}}
+        \put(20,6){\vector(1,0){5}}
+        \put(25,0){\rokconobj}
+}
+
+\newcommand{\rokpegenexrefobjandcon}{
+        \put( 0,35){\line(1,0){36}}
+        \put(36,-8){\line(0,1){43}}
+        \put( 5,28){\rokdatacell{}{\tt Y}{}{}}
+        \put(13,30){\vector(1,0){9}}
+        \put(22,24){\rokconobjs}
+        \put( 5,11){\rokdatacell{}{}{}{}}
+        \put(13,13){\line(1,0){3}}
+        \put(16,14){\oval(2,2)[br]}
+        \put(17,14){\line(0,1){5}}
+        \put(16,19){\oval(2,2)[tr]}
+        \put(16,20){\line(-1,0){14}}
+        \put( 2,21){\oval(2,2)[bl]}
+        \put( 1,21){\line(0,1){8}}
+        \put( 2,29){\oval(2,2)[tl]}
+        \put( 2,30){\vector(1,0){3}}
+        \put(30,30){\line(1,0){3}}
+        \put(33,29){\oval(2,2)[tr]}
+        \put(34,29){\line(0,-1){8}}
+        \put(33,21){\oval(2,2)[br]}
+        \put(33,20){\line(-1,0){13}}
+        \put(20,19){\oval(2,2)[tl]}
+        \put(19,19){\line(0,-1){5}}
+        \put(20,14){\oval(2,2)[bl]}
+        \put(20,13){\vector(1,0){2}}
+        \put(22, 5){\rokgenconexrefobj{\footnotesize\tt X}{}
+                        {\shortstack{{\footnotesize\it generator}
+                                        \\$\downarrow$
+                                        \\{\footnotesize\it consumer}}}}
+        \put(30, 9){\vector(1,0){30}}
+        \put(46, 6){\makebox(0,0)[r]{\footnotesize \rokmesread}}
+        \put(48, 6){\vector(1,0){6}}
+        \put( 9,22.5){\line(0,1){2}}
+        \put(10,22.5){\line(0,1){2}}
+}
+
+\newcommand{\rokunifyconcon}{
+        \put( 5,28){\rokdatacell{}{}{}{}}
+        \put(13,30){\vector(1,0){9}}
+        \put(22,24){\rokconobjss}
+        \put( 5,11){\rokdatacell{}{}{}{}}
+        \put(13,13){\line(1,0){3}}
+        \put(16,14){\oval(2,2)[br]}
+        \put(17,14){\line(0,1){5}}
+        \put(16,19){\oval(2,2)[tr]}
+        \put(16,20){\line(-1,0){14}}
+        \put( 2,21){\oval(2,2)[bl]}
+        \put( 1,21){\line(0,1){8}}
+        \put( 2,29){\oval(2,2)[tl]}
+        \put( 2,30){\vector(1,0){3}}
+        \put(55,30){\line(1,0){3}}
+        \put(58,29){\oval(2,2)[tr]}
+        \put(59,29){\line(0,-1){8}}
+        \put(58,21){\oval(2,2)[br]}
+        \put(58,20){\line(-1,0){38}}
+        \put(20,19){\oval(2,2)[tl]}
+        \put(19,19){\line(0,-1){5}}
+        \put(20,14){\oval(2,2)[bl]}
+        \put(20,13){\vector(1,0){2}}
+        \put(22, 7){\rokconobjss}
+        \put( 9,22.5){\line(0,1){2}}
+        \put(10,22.5){\line(0,1){2}}
+}
+
+\newcommand{\rokvariablecell}{
+        \put(0,0){\rokdatacell{}{}{\footnotesize\sf variable}{}}
+}
+
+\newcommand{\rokvariablecellX}{
+        \put(0,0){\rokdatacell{}{\footnotesize\tt X}{}{}}
+}
+
+\newcommand{\rokvariablecellY}{
+        \put(0,0){\rokdatacell{}{\footnotesize\tt Y}{}{}}
+}
+
+\newcommand{\rokexporttable}[1]{
+        \put(0,0){\line(0,1){10}}
+        \put(10,0){\line(0,1){10}}
+        \put(0,3){\line(1,0){10}}
+        \put(0,7){\line(1,0){10}}
+        \put(5,11){\makebox(0,0)[b]{#1}}
+}
+
+\newcommand{\rokexportTable}[3]{
+        \put( 0, 0){\line(0,1){14}}
+        \put(10, 0){\line(0,1){14}}
+        \put( 0, 3){\line(1,0){10}}
+        \put( 0,11){\line(1,0){10}}
+        \put( 5,15){\makebox(0,0)[b]{#1}}
+        \put(-0.5,11){\makebox(0,0)[r]{#2}}
+        \put( 1, 4){\makebox(0,0)[bl]{#3}}
+}
+
+\newcommand{\rokpeLeft}[1]{
+        \put(0,19){\line(1,0){19}}
+        \put(19,0){\line(0,1){19}}
+        \put(0,20){\makebox(0,0)[bl]{#1}}
+}
+
+\newcommand{\rokpeRight}[1]{
+        \put(0,0){\line(0,1){19}}
+        \put(0,19){\line(1,0){30}}
+        \put(30,20){\makebox(0,0)[br]{#1}}
+}
+
+\newcommand{\rokpeLeftbefore}{
+        \put( 0, 0){\rokpeLeft{\footnotesize \roknodei}}
+}
+
+\newcommand{\rokpeRightbefore}{
+        \put( 0, 0){\rokpeRight{\footnotesize \roknodej}}
+        \put( 5, 1){\rokexportTable{\footnotesize\sf export table}
+                                {\footnotesize\tt id}{}}
+        \put(19, 8){\rokvariablecell}
+        \put(13,10){\vector(1,0){6}}
+}
+
+\newcommand{\rokpeBothbefore}{
+        \put( 0, 0){\rokpeLeftbefore}
+        \put(35, 0){\rokpeRightbefore}
+        \put(27,16){\vector(-1,0){5}}
+        \put(29,16){\circle*{1.5}}
+        \put(29,15){\line(0,-1){4}}
+        \put(30,11){\oval(2,2)[bl]}
+        \put(30,10){\vector(1,0){10}}
+        \put(34, 9){\makebox(0,0)[tr]{\footnotesize\tt <j,id>}}
+}
+
+\newcommand{\rokgenconexrefobjid}[3]{
+        \put(0,0){\framebox(10,10){}}
+        \put(0,10){\makebox(0,0)[br]{#1}}
+        \put(1,7){\makebox(0,0)[bl]{\footnotesize\tt EX}}
+        \put(5,1){\makebox(0,0)[b]{#2}}
+        \put(5,-1){\makebox(0,0)[t]{#3}}
+}
+
+\newcommand{\rokpeLargeLeft}[1]{
+        \put(0,19){\line(1,0){32}}
+        \put(32,0){\line(0,1){19}}
+        \put(0,20){\makebox(0,0)[bl]{#1}}
+}
+
+\newcommand{\rokpeLeftafter}{
+        \put( 0, 0){\rokpeLargeLeft{\footnotesize \roknodei}}
+        \put( 3,10){\rokdatacell{}{}{}{}}
+        \put(11,12){\vector(1,0){6}}
+        \put(17, 4){\rokgenconexrefobjid{}{\footnotesize\tt <j,id>}
+                                     {\footnotesize\it generator}}
+}
+
+\newcommand{\rokpeBothafter}{
+        \put( 0, 0){\rokpeLeftafter}
+        \put(48, 0){\rokpeRightbefore}
+        \put(25,10){\vector(1,0){28}}
+}
+
+%---------------------------------------------------------------------------
+% Fetching a Value from Remote Memory
+%---------------------------------------------------------------------------
+
+\newcommand{\rokexporttablerelease}[1]{
+        \put(0,0){\line(0,1){10}}
+        \put(10,0){\line(0,1){10}}
+        \multiput(0,3)(2,0){5}{\put(0,0){\line(1,0){1}}}
+        \multiput(0,7)(2,0){5}{\put(0,0){\line(1,0){1}}}
+        \put(5,11){\makebox(0,0)[b]{#1}}
+}
+
+\newcommand{\rokconreplyreleased}[1]{
+        \put(-1.5,-2.5){\oval(4,4)[bl]}
+        \put(-1.5, 2.5){\oval(4,4)[tl]}
+        \put( 1.5,-2.5){\oval(4,4)[br]}
+        \put( 1.5, 2.5){\oval(4,4)[tr]}
+        \put(-0.5,-4.5){\line(1,0){1}}
+        \put(-0.5, 4.5){\line(1,0){1}}
+        \put(-3.5,-1.5){\line(0,1){1}}
+        \put(-3.5, 0.5){\line(0,1){1}}
+        \put( 3.5,-1.5){\line(0,1){1}}
+        \put( 3.5, 0.5){\line(0,1){1}}
+        \put(0,1){\makebox(0,0)[b]{\tiny reply}}
+        \put(0,-1){\makebox(0,0)[t]{#1}}
+}
+
+\newcommand{\rokreferencedcellwithvalue}{
+        \put(0,0){\rokdatacell{\footnotesize\tt value}{}
+                              {\footnotesize\sf referenced}{}}
+}
+
+\newcommand{\rokconreply}[1]{
+        \put(0,0){\oval(7,9)}
+        \put(0,1){\makebox(0,0)[b]{\tiny reply}}
+        \put(0,-1){\makebox(0,0)[t]{#1}}
+}
+
+\newcommand{\roksuspendedgoal}[1]{
+        \put(0,0){\oval(7,7)}
+        \put(0,-1){\makebox(0,0)[t]{\tiny goal}}
+        \put(0,-4){\makebox(0,0)[t]{#1}}
+}
+
+\newcommand{\rokresumedgoal}[1]{
+        \put(0,0){\oval(7,7)}
+        \put(0,-1){\makebox(0,0)[t]{\tiny goal}}
+        \put(0,-3){\makebox(0,0)[t]{#1}}
+}
+
+\newcommand{\rokpeleft}[1]{
+        \put(0,32){\line(1,0){42}}
+        \put(42,0){\line(0,1){32}}
+        \put(0,32){\makebox(0,0)[bl]{#1}}
+}
+
+\newcommand{\rokperight}[1]{
+        \put(0,0){\line(0,1){32}}
+        \put(0,32){\line(1,0){42}}
+        \put(42,32){\makebox(0,0)[br]{#1}}
+}
+
+\newcommand{\rokperightlarge}[1]{
+        \put(0,0){\line(0,1){32}}
+        \put(0,32){\line(1,0){48}}
+        \put(48,32){\makebox(0,0)[br]{#1}}
+}
+
+\newcommand{\rokreferencedcell}{
+        \put(0,0){\rokdatacell{}{}{\footnotesize\sf referenced}{}}
+}
+
+\newcommand{\rokpesmallleft}[1]{
+        \put(0,18){\line(1,0){42}}
+        \put(42,0){\line(0,1){18}}
+        \put(0,18){\makebox(0,0)[bl]{#1}}
+}
+
+\newcommand{\rokpesmallright}[1]{
+        \put(0,0){\line(0,1){18}}
+        \put(0,18){\line(1,0){42}}
+        \put(42,18){\makebox(0,0)[br]{#1}}
+}
+
+% fetchbefore
+
+\newcommand{\rokpeleftfetchbefore}{
+        \put( 0, 0){\rokpesmallleft{}}
+        \put( 5,11){\rokdatacell{}{}{}{}}
+        \put(13.5,13){\vector(1,0){13.5}}
+        \put(27, 5){\rokgenconexrefobj{\footnotesize\tt X}{}
+                                      {\footnotesize\it generator}}
+}
+
+\newcommand{\rokperightfetchbefore}{
+        \put( 0,0){\rokpesmallright{}}
+        \put( 5,4){\rokexporttable{\footnotesize\sf export table}}
+        \put(19,7){\rokreferencedcell}
+        \put(13,9){\vector(1,0){6}}
+}
+
+\newcommand{\rokpebothfetchbefore}{
+        \put( 0,0){\rokpeleftfetchbefore}
+        \put(80,0){\rokperightfetchbefore}
+        \put(35,9){\vector(1,0){50}}
+}
+
+% fetchread
+
+\newcommand{\rokpeleftfetchread}{
+        \put( 0, 0){\rokpeleft{}}
+        \put( 5,25){\rokdatacell{}{}{}{}}
+        \put(21,25.5){\roksuspendedgoal{}}
+        \put(27,19){\rokgenconexrefobj{\footnotesize\tt X}{\footnotesize\tt Ret}
+                                   {\footnotesize\it consumer}}
+        \put(27, 2){\rokexporttable{\footnotesize\sf export table}}
+        \put(13.5,27){\vector(1,0){4}}
+        \put(23,27){\vector(1,0){4}}
+        \put(29, 7){\line(-1,0){27}}
+        \put( 2, 8){\oval(2,2)[bl]}
+        \put( 1, 8){\line(0,1){18}}
+        \put( 2,26){\oval(2,2)[tl]}
+        \put( 2,27){\vector(1,0){3}}
+}
+
+\newcommand{\rokperightfetchread}{
+        \put( 0, 0){\rokperight{}}
+        \put( 5,18){\rokexporttable{\footnotesize\sf export table}}
+        \put(19,21){\rokreferencedcell}
+        \put(13,23){\vector(1,0){6}}
+}
+
+\newcommand{\rokpebothfetchread}{
+        \put( 0,0){\rokpeleftfetchread}
+        \put(80,0){\rokperightfetchread}
+        \put(35,23){\vector(1,0){50}}
+        \put(47.5,15){\makebox(0,0)[bl]{\footnotesize {\rokmesreadXR}}}
+        \put(68,16){\vector(1,0){6}}
+        \put(62,14.5){\line(0,-1){6.5}}
+        \put(61,8){\oval(2,2)[br]}
+        \put(61,7){\vector(-1,0){24}}
+        \put(44,6){\makebox(0,0)[tl]{\footnotesize\sf return address}}
+        \put(57,17.5){\line(0,1){4.5}}
+        \put(58,22){\oval(2,2)[tl]}
+}
+
+% fetchhook
+
+\newcommand{\rokpeleftfetchhook}{
+        \put( 0, 0){\rokpeleft{}}
+        \put( 5,25){\rokdatacell{}{}{}{}}
+        \put(21,25.5){\roksuspendedgoal{}}
+        \put(27,19){\rokgenconexrefobj{\footnotesize\tt X}{\footnotesize\tt Ret}
+                                   {\footnotesize\it consumer}}
+        \put(27, 2){\rokexporttable{\footnotesize\sf export table}}
+        \put(13.5,27){\vector(1,0){4}}
+        \put(23,27){\vector(1,0){4}}
+        \put(29, 7){\line(-1,0){27}}
+        \put( 2, 8){\oval(2,2)[bl]}
+        \put( 1, 8){\line(0,1){18}}
+        \put( 2,26){\oval(2,2)[tl]}
+        \put( 2,27){\vector(1,0){3}}
+}
+
+\newcommand{\rokperightfetchhook}{
+        \put( 0, 0){\rokperight{}}
+        \put( 5,18){\rokexporttable{\footnotesize\sf export table}}
+        \put(19,21){\rokreferencedcell}
+        \put(35.5,20.5){\rokconreply{\footnotesize\tt Ret}}
+        \put(13,23){\vector(1,0){6}}
+        \put(27,23){\vector(1,0){5}}
+}
+
+\newcommand{\rokpebothfetchhook}{
+        \put( 0,0){\rokpeleftfetchhook}
+        \put(80,0){\rokperightfetchhook}
+        \put(35,23){\vector(1,0){50}}
+        \put(115.5,17){\line(0,-1){9}}
+        \put(114.5,8){\oval(2,2)[br]}
+        \put(114.5,7){\vector(-1,0){77.5}}
+        \put(44,6){\makebox(0,0)[tl]{\footnotesize\sf return address}}
+}
+
+% fetchrelease
+
+\newcommand{\rokpeleftfetchrelease}{
+        \put( 0, 0){\rokpeleft{}}
+        \put( 5,25){\rokdatacell{\footnotesize\tt value}{}{}{}}
+        \put(21,25.5){\roksuspendedgoal{\footnotesize\it resumed}}
+        \put(27,19){\rokgenconexrefobjrelease{\footnotesize\tt X}
+                   {\footnotesize\tt Ret}{\footnotesize\it consumer}}
+        \put(27, 2){\rokexporttablerelease{\footnotesize\sf export table}}
+        \put(13.5,27){\line(1,0){1}}
+        \put(15.5,27){\vector(1,0){2}}
+        \put(23,27){\line(1,0){1}}
+        \put(25,27){\vector(1,0){2}}
+        \multiput(28.2,7)(-2,0){13}{\put(0,0){\line(-1,0){1}}}
+        \put( 2, 8){\oval(2,2)[bl]}
+        \multiput(1,9)(0,2){8}{\put(0,0){\line(0,1){1}}}
+        \put( 1,25){\line(0,1){1}}
+        \put( 2,26){\oval(2,2)[tl]}
+        \put( 3,27){\vector(1,0){2}}
+}
+
+\newcommand{\rokperightfetchrelease}{
+        \put( 0, 0){\rokperight{}}
+        \put( 5,18){\rokexporttable{\footnotesize\sf export table}}
+        \put(19,21){\rokreferencedcellwithvalue}
+        \put(13,23){\vector(1,0){6}}
+}
+
+\newcommand{\rokpebothfetchrelease}{
+        \put( 0,0){\rokpeleftfetchrelease}
+        \put(80,0){\rokperightfetchrelease}
+        \multiput(35,23)(2,0){14}{\put(0,0){\line(1,0){1}}}
+        \put(63,23){\vector(1,0){22}}
+        \put(48.5,15){\makebox(0,0)[bl]{\footnotesize {\rokmesreleaseX}}}
+        \put(66,16){\vector(1,0){6}}
+        \put(63,17.5){\line(0,1){4.5}}
+        \put(64,22){\oval(2,2)[tl]}
+}
+
+% fetchanswer
+
+\newcommand{\rokpeleftfetchanswer}{
+        \put( 0, 0){\rokpeleftfetchhook}
+}
+
+\newcommand{\rokperightfetchanswer}{
+        \put( 0, 0){\rokperightfetchrelease}
+        \put(35.5,20.5){\rokconreplyreleased{\footnotesize\tt Ret}}
+        \put(27.5,23){\line(1,0){1}}
+        \put(30,23){\vector(1,0){2}}
+}
+
+\newcommand{\rokpebothfetchanswer}{
+        \put( 0,0){\rokpeleftfetchanswer}
+        \put(80,0){\rokperightfetchanswer}
+        \put(35,23){\vector(1,0){50}}
+        \put(52,17.5){\makebox(0,0)[bl]{\footnotesize {\rokmesanswer}}}
+        \put(60.5,17){\makebox(0,0)[tl]{\footnotesize {\tt (Ret,value)}}}
+        \put(50,17){\vector(-1,0){6}}
+        \put(64,14.5){\line(0,-1){6.5}}
+        \put(63,8){\oval(2,2)[br]}
+        \put(63,7){\vector(-1,0){26}}
+        \put(44,6){\makebox(0,0)[tl]{\footnotesize\sf return address}}
+        \multiput(115.5,17)(0,-2){5}{\line(0,-1){1}}
+        \put(114.5,8){\oval(2,2)[br]}
+        \multiput(113.5,7)(-2,0){26}{\line(-1,0){1}}
+}
+
+%---------------------------------------------------------------------------
+% Creation of reference loop by unification 
+%---------------------------------------------------------------------------
+
+\newcommand{\rokpeleftunifyloop}{
+        \put( 0, 0){\rokpeleft{}}
+        \put( 5,25){\rokvariablecellX}
+        \put(27,19){\rokgenconexrefobj{}{}{}}
+        \put(27, 2){\rokexporttable{\footnotesize\sf export table}}
+        \put(13.5,27){\vector(1,0){13.5}}
+        \put(29, 7){\vector(-1,0){13.5}}
+        \put( 5, 5){\rokvariablecellY}
+        \put( 9,15){\line(0,1){4}}
+        \put(11,15){\line(0,1){4}}
+}
+
+\newcommand{\rokperightunifyloop}{
+        \put( 0, 0){\rokperightlarge{}}
+        \put( 5,18){\rokexporttable{\footnotesize\sf export table}}
+        \put(13,23){\vector(1,0){6}}
+        \put(19,21){\rokreferencedcell}
+        \put(27,23){\vector(1,0){6}}
+        \put(33,15){\rokgenconexrefobj{}{}{}}
+        \put(41,19){\line(1,0){5}}
+        \put(46,18){\oval(2,2)[tr]}
+        \put(47,18){\line(0,-1){10}}
+        \put(46, 8){\oval(2,2)[br]}
+        \put(46, 7){\vector(-1,0){79}}
+}
+
+\newcommand{\rokpebothunifyloop}{
+        \put( 0,0){\rokpeleftunifyloop}
+        \put(35,23){\vector(1,0){40}}
+        \put(70,0){\rokperightunifyloop}
+}
+
+%---------------------------------------------------------------------------
+% Creation of reference loops by remote value fetch
+%---------------------------------------------------------------------------
+
+\newcommand{\rokpeleftfetchmsusp}{
+        \put( 0, 0){\rokpeleft{}}
+        \put( 5,25){\rokvariablecellX}
+        \put(21,25.5){\roksuspendedgoal{}}
+        \put(27,19){\rokgenconexrefobj{}{\footnotesize\tt Ret}{}}
+        \put(27, 2){\rokexporttable{\footnotesize\sf export table}}
+        \put( 5,14){\rokvariablecellY}
+        \put(13.5,16){\line(1,0){6.5}}
+        \put(20,17){\oval(2,2)[br]}
+        \put(21,17){\vector(0,1){5}}
+        \put(13.5,27){\vector(1,0){4}}
+        \put(23,27){\vector(1,0){4}}
+        \put(29, 7){\line(-1,0){27}}
+        \put( 2, 8){\oval(2,2)[bl]}
+        \put( 1, 8){\line(0,1){18}}
+        \put( 2,26){\oval(2,2)[tl]}
+        \put( 2,27){\vector(1,0){3}}
+}
+
+\newcommand{\rokpebothfetchmsusp}{
+        \put( 0,0){\rokpeleftfetchmsusp}
+        \put(80,0){\rokperightfetchhook}
+        \put(35,23){\vector(1,0){50}}
+        \put(115.5,17){\line(0,-1){9}}
+        \put(114.5,8){\oval(2,2)[br]}
+        \put(114.5,7){\vector(-1,0){77.5}}
+        \put(44,6){\makebox(0,0)[tl]{\footnotesize\sf return address}}
+}
+
+\newcommand{\rokpeleftfetchresumed}{
+        \put( 0, 0){\rokpeleft{}}
+        \put( 5,25){\rokvariablecellX}
+        \put(21,25.5){\rokresumedgoal{\footnotesize\it resumed}}
+        \put(27,19){\rokgenconexrefobj{}{\footnotesize\tt Ret}{}}
+        \put(27, 2){\rokexporttable{\footnotesize\sf export table}}
+        \put( 5,14){\rokdatacell{\footnotesize\tt value}
+                                {\footnotesize\tt Y}{}{}}
+        \multiput(14,16)(2,0){3}{\put(0,0){\line(1,0){1}}}
+        \put(20,17){\oval(2,2)[br]}
+        \put(21,18){\line(0,1){1}}
+        \put(21,20){\line(0,1){1}}
+        \put(13.5,27){\vector(1,0){4}}
+        \put(23,27){\vector(1,0){4}}
+        \put(29, 7){\line(-1,0){27}}
+        \put( 2, 8){\oval(2,2)[bl]}
+        \put( 1, 8){\line(0,1){18}}
+        \put( 2,26){\oval(2,2)[tl]}
+        \put( 2,27){\vector(1,0){3}}
+}
+
+\newcommand{\rokpebothfetchresumed}{
+        \put( 0,0){\rokpeleftfetchresumed}
+        \put(80,0){\rokperightfetchhook}
+        \put(35,23){\vector(1,0){50}}
+        \put(115.5,17){\line(0,-1){9}}
+        \put(114.5,8){\oval(2,2)[br]}
+        \put(114.5,7){\vector(-1,0){77.5}}
+        \put(44,6){\makebox(0,0)[tl]{\footnotesize\sf return address}}
+}
+
+%---------------------------------------------------------------------------
+% Cancel of a read request
+%---------------------------------------------------------------------------
+
+\newcommand{\rokpeleftcancel}{
+        \put( 0, 0){\rokpeleft{}}
+        \put( 5,25){\rokvariablecellX}
+        \put(27,19){\rokgenconexrefobj{}{\footnotesize\tt Ret}{}}
+        \put(27, 2){\rokexporttable{\footnotesize\sf export table}}
+        \put(13.5,27){\vector(1,0){13.5}}
+        \put(29, 7){\line(-1,0){27}}
+        \put( 2, 8){\oval(2,2)[bl]}
+        \put( 1, 8){\line(0,1){18}}
+        \put( 2,26){\oval(2,2)[tl]}
+        \put( 2,27){\vector(1,0){3}}
+}
+
+\newcommand{\rokpebothcancelsend}{
+        \put( 0,0){\rokpeleftcancel}
+        \put(80,0){\rokperightfetchhook}
+        \put(35,23){\vector(1,0){50}}
+        \put(115.5,17){\line(0,-1){9}}
+        \put(114.5,8){\oval(2,2)[br]}
+        \put(114.5,7){\vector(-1,0){77.5}}
+        \put(44,6){\makebox(0,0)[tl]{\footnotesize\sf return address}}
+}
+
+\newcommand{\rokpebothcancelsendwithmsg}{
+        \put(0,0){\rokpebothcancelsend}
+        \put(45,15){\makebox(0,0)[bl]{\footnotesize {\rokmescancelXR}}}
+        \put(70,16){\vector(1,0){6}}
+        \put(59,17.5){\line(0,1){4.5}}
+        \put(60,22){\oval(2,2)[tl]}
+        \put(64,14.5){\line(0,-1){6.5}}
+        \put(63,8){\oval(2,2)[br]}
+}
+
+\newcommand{\rokperightreleasebycancel}{
+        \put( 0, 0){\rokperight{}}
+        \put( 5,18){\rokexporttable{\footnotesize\sf export table}}
+        \put(19,21){\rokreferencedcell}
+        \put(13,23){\vector(1,0){6}}
+}
+
+\newcommand{\rokperightcancelrelease}{
+        \put( 0, 0){\rokperightreleasebycancel}
+        \put(35.5,20.5){\rokconreplyreleased{\footnotesize\tt Ret}}
+        \put(27.5,23){\line(1,0){1}}
+        \put(30,23){\vector(1,0){2}}
+}
+
+\newcommand{\rokpebothcancelrelease}{
+        \put( 0,0){\rokpeleftcancel}
+        \put(80,0){\rokperightcancelrelease}
+        \put(35,23){\vector(1,0){50}}
+        \put(52,16){\makebox(0,0)[l]{\footnotesize {\rokmesreleaseRet}}}
+        \put(50.5,16){\vector(-1,0){6}}
+        \put(69,14.5){\line(0,-1){6.5}}
+        \put(68,8){\oval(2,2)[br]}
+        \put(68,7){\vector(-1,0){31}}
+        \put(44,6){\makebox(0,0)[tl]{\footnotesize\sf return address}}
+        \multiput(115.5,17)(0,-2){5}{\line(0,-1){1}}
+        \put(114.5,8){\oval(2,2)[br]}
+        \multiput(113.5,7)(-2,0){25}{\line(-1,0){1}}
+}
+
+

@@ -1,0 +1,17 @@
+/* ---------------------------------------------------------- 
+%   (C) 1994 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- module keyed_set.
+
+create(Hasher,Stream,Size) :-
+	keyed_sorted_set:create(Stream).
+
+create(Stream,Size) :-
+	keyed_sorted_set:create(Stream).
+
+create(Stream) :-
+	keyed_sorted_set:create(Stream).

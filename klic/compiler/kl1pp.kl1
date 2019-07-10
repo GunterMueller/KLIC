@@ -1,0 +1,54 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1995 Institute for New Generation Computer Technology 
+% %       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+% ----------------------------------------------------------- */
+
+:- module main.
+
+main :-
+	unix:argc(N),
+	unix:argv(Args),
+	kl1pp(N, Args).
+
+kl1pp(_, []) :- true |
+        klicio:klicio([stdin(InRes), stdout(OutRes)]),
+        checkAndCont(InRes, OutRes).
+kl1pp(_, [FName]) :- string(FName, _, _)  |
+	klicio:klicio([read_open(FName, InRes),	stdout(OutRes)]),
+	checkAndCont(InRes, OutRes).
+kl1pp(_, [InName, OutName]) :- string(InName, _, _),
+                               string(OutName, _, _) |
+        klicio:klicio([read_open(InName, InRes), write_open(OutName, OutRes)]),
+        checkAndCont(InRes, OutRes).
+otherwise.
+kl1pp(_, Args) :- true |
+        klic_comp_message:report_error("usage: kl1pp [infile [outfile]]", []).
+
+checkAndCont(normal(In), normal(Out)) :- true |
+    In=[getwt(T)|In1],
+    getTerms(T, Terms0, [], In1),
+    klic_comp_cmacro:expand(Terms0, Terms),
+    klic_comp_macro_interface:expand_macro(Terms, ExpTerms0),
+    outTerms(ExpTerms0, Out).
+otherwise.
+checkAndCont(_, _) :- true |
+    klic_comp_message:report_error("I/O error",[]).
+
+getTerms(normal(end_of_file), T0, T, In0) :- T0=T, In0=[].
+otherwise.
+getTerms(normal(Term), T0, T, In0) :- true |
+    T0=[Term|T1],
+    In0=[getwt(NextT)|In1],
+    getTerms(NextT, T1, T, In1).
+otherwise.
+getTerms(_, T0, T, In0) :- true |
+    T0=T, In0=[],
+    klic_comp_message:report_error("Error occured while reading progs", []).
+
+outTerms([], Out0) :- Out0=[].
+outTerms([T|Rest], Out0) :- 
+   Out0=[putwt(T),putc(0'.), nl|Out1],
+   outTerms(Rest, Out1).
+

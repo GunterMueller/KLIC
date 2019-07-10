@@ -1,0 +1,59 @@
+% N-Queens using layered-streams
+% by A. Okimura
+% (ICOT TR-421, p.119, 1988)
+
+:- module main.
+
+main:-true|
+	klicio:klicio([stdout(Res)]),
+	check_stream(Res).
+
+check_stream(normal(S)) :-
+	go(8,N),
+	S = [putt(N),nl].
+check_stream(abnormal).
+
+go(M,N) :- true | queen(1,M,begin,A), count(A,N).
+
+count(L,N) :- true | count(L,0,N).
+count([X|Xs],M,N) :- M1 := M+1 | count(Xs,M1,N).
+count([],M,N) :- true | M = N.
+
+queen(I,N,In,Out) :- I < N, I1 := I+1 |
+	q(1,N,In,Mid),
+	queen(I1,N,Mid,Out).
+queen(N,N,In,Out) :- true | lastQ(1,N,In,Out).
+
+q(I,N,In,Out) :- I =< N, I1 := I+1 |
+	filter(In,I,1,Out1),
+	q(I1,N,In,Outs),
+	Out=[[I|Out1]|Outs].
+q(I,N,_,Out) :- I > N | Out = [].
+
+lastQ(I,N,In,Out) :- I =< N, I1 := I+1 |
+	lastFilter([I],In,I,1,Out,Out1),
+	lastQ(I1,N,In,Out1).
+lastQ(I,N,_,Out) :- I > N | Out = [].
+
+filter(begin,_,_,Out) :- true | Out = begin.
+filter([],_,_,Out) :- true | Out = [].
+filter([[I|_]|Ins],I,D,Out) :- true | filter(Ins,I,D,Out).
+filter([[J|_]|Ins],I,D,Out) :- D =:= I-J | filter(Ins,I,D,Out).
+filter([[J|_]|Ins],I,D,Out) :- D =:= J-I | filter(Ins,I,D,Out).
+otherwise.
+filter([[J|In1]|Ins],I,D,Out) :- D1 := D+1 |
+	filter(In1,I,D1,Out1),
+	filter(Ins,I,D,Outs),
+	Out = [[J|Out1]|Outs].
+
+lastFilter(Stack,begin,_,_,S,T) :- true | S = [Stack|T].
+lastFilter(Stack,[],_,_,S,T) :- true | S = T.
+lastFilter(Stack,[[I|_]|Ins],I,D,S,T) :- true | lastFilter(Stack,Ins,I,D,S,T).
+lastFilter(Stack,[[J|_]|Ins],I,D,S,T) :- D =:= I-J |
+	lastFilter(Stack,Ins,I,D,S,T).
+lastFilter(Stack,[[J|_]|Ins],I,D,S,T) :- D =:= J-I |
+	lastFilter(Stack,Ins,I,D,S,T).
+otherwise.
+lastFilter(Stack,[[J|In]|Ins],I,D,S,T) :- D1 := D+1 |
+	lastFilter([J|Stack],In,I,D1,S,SS),
+	lastFilter(Stack,Ins,I,D,SS,T).

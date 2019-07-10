@@ -1,0 +1,17 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+:- module main.
+
+main :- unix:unix([connect(inet("localhost",12345),normal([getc(C)|T])),
+		stdout(normal(U))]),
+	loop(C,T,U).
+
+loop(-1,T,U) :- T=[], U=[putc(10)].
+loop(C,T,U) :- C =\= -1 |
+	U=[putc(C)|U1],
+	T=[getc(C1)|T1],
+	loop(C1,T1,U1).

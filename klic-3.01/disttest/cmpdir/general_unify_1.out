@@ -1,0 +1,6 @@
+'### InterNode Test [General Unification (1)] Begin ###'
+'F=f(V), V={F} : (a-e) : 'abcde'...done'
+'V={F}, F=f(V) : (a-e) : 'abcde'...done'
+'F=f(V,V), V={F,F} : (a-c) : 'abc'...done'
+'V={F,F}, F=f(V,V) : (a-c) : 'abc'...done'
+'### InterNode Test [General Unification (1)] End ###'

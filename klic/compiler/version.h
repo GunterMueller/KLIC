@@ -1,0 +1,2 @@
+#define KLIC_VERSION	"3.005"
+#define KLIC_DATE	"Thu Feb  13 17:11:01 JST 2003"

@@ -1,0 +1,147 @@
+% test for "return back" a %throw_goal message.  
+%
+%   a: throw_goal({1})
+%   b: throw_goal({{},[],3}) 
+%   c: throw_goal({1,a,{},4,[],6}) 
+%   d: throw_goal({a,2,{},b,5,[],7})
+%   e: throw_goal({1,a,{},4,[],b,7,c,[],0,{},2}) 
+%   f: throw_goal([a]) 
+%   g: throw_goal([{},[],3])
+%   h: throw_goal(string#"")
+%   i: throw_goal(string#"S")
+%   j: throw_goal(string#"This is string")
+
+%===========================================================================
+:- module main.
+main :- lib:io(Os), 
+	lib:prsl(Os,Os2,'### InterNode Test [Return Back %throw_goal] Begin ###',Done), 
+	b(Os2,Done). 
+
+b(Os,done):-
+	lib:prs(Os,Os2,'Test for throw_goal throw & back (a-j) : ',Done), 
+	b_a(Os2,Done). 
+
+%===========================================================================
+%%%% a: throw_goal({1}) 
+b_a(Os,done):- b_a_exe(Os,{1}).
+b_a_exe(Os,A):- nextNode(Next,Current), b_a_exe(Os,A,Next,Current).
+b_a_exe(Os,A,Next,Current):- wait(Next) | b_a_mid(Os,A,Current)@node(Next).
+b_a_mid(Os,A,Back):- wait(Back) | b_a_ck1(Os,A)@node(Back).
+b_a_ck1(Os,{1}):- lib:prs(Os,Os2,a,Done), b_a_nxt(Os2,Done).
+otherwise.
+b_a_ck1(Os,_):- lib:prs_err(Os,Os2,a,Done), b_a_nxt(Os2,Done).
+b_a_nxt(Os,done):- nextNode(Next), b_a_mv(Os,Next).
+b_a_mv(Os,Next):- wait(Next) | b_b(Os,done)@node(Next).
+
+%%%% b: throw_goal({{},[],3}) 
+b_b(Os,done):- b_b_exe(Os,{{},[],3}).
+b_b_exe(Os,A):- nextNode(Next,Current), b_b_exe(Os,A,Next,Current).
+b_b_exe(Os,A,Next,Current):- wait(Next) | b_b_mid(Os,A,Current)@node(Next).
+b_b_mid(Os,A,Back):- wait(Back) | b_b_ck1(Os,A)@node(Back).
+b_b_ck1(Os,{{},[],3}):- lib:prs(Os,Os2,b,Done), b_b_nxt(Os2,Done).
+otherwise.
+b_b_ck1(Os,_):- lib:prs_err(Os,Os2,b,Done), b_b_nxt(Os2,Done).
+b_b_nxt(Os,done):- nextNode(Next), b_b_mv(Os,Next).
+b_b_mv(Os,Next):- wait(Next) | b_c(Os,done)@node(Next).
+
+%%%% c: throw_goal({1,a,{},4,[],6})
+b_c(Os,done):- b_c_exe(Os,{1,a,{},4,[],6}).
+b_c_exe(Os,A):- nextNode(Next,Current), b_c_exe(Os,A,Next,Current).
+b_c_exe(Os,A,Next,Current):- wait(Next) | b_c_mid(Os,A,Current)@node(Next).
+b_c_mid(Os,A,Back):- wait(Back) | b_c_ck1(Os,A)@node(Back).
+b_c_ck1(Os,{1,a,{},4,[],6}):- lib:prs(Os,Os2,c,Done), b_c_nxt(Os2,Done).
+otherwise.
+b_c_ck1(Os,_):- lib:prs_err(Os,Os2,c,Done), b_c_nxt(Os2,Done).
+b_c_nxt(Os,done):- nextNode(Next), b_c_mv(Os,Next).
+b_c_mv(Os,Next):- wait(Next) | b_d(Os,done)@node(Next).
+
+%%%% d: throw_goal({a,2,{},b,5,[],7})
+b_d(Os,done):- b_d_exe(Os,{a,2,{},b,5,[],7}).
+b_d_exe(Os,A):- nextNode(Next,Current), b_d_exe(Os,A,Next,Current).
+b_d_exe(Os,A,Next,Current):- wait(Next) | b_d_mid(Os,A,Current)@node(Next).
+b_d_mid(Os,A,Back):- wait(Back) | b_d_ck1(Os,A)@node(Back).
+b_d_ck1(Os,{a,2,{},b,5,[],7}):- lib:prs(Os,Os2,d,Done), b_d_nxt(Os2,Done).
+otherwise.
+b_d_ck1(Os,_):- lib:prs_err(Os,Os2,d,Done), b_d_nxt(Os2,Done).
+b_d_nxt(Os,done):- nextNode(Next), b_d_mv(Os,Next).
+b_d_mv(Os,Next):- wait(Next) | b_e(Os,done)@node(Next).
+
+%%%% e: throw_goal({1,a,{},4,[],b,7,c,[],0,{},2})
+b_e(Os,done):- b_e_exe(Os,{1,a,{},4,[],b,7,c,[],0,{},2}).
+b_e_exe(Os,A):- nextNode(Next,Current), b_e_exe(Os,A,Next,Current).
+b_e_exe(Os,A,Next,Current):- wait(Next) | b_e_mid(Os,A,Current)@node(Next).
+b_e_mid(Os,A,Back):- wait(Back) | b_e_ck1(Os,A)@node(Back).
+b_e_ck1(Os,{1,a,{},4,[],b,7,c,[],0,{},2}):- lib:prs(Os,Os2,e,Done), b_e_nxt(Os2,Done).
+otherwise.
+b_e_ck1(Os,_):- lib:prs_err(Os,Os2,e,Done), b_e_nxt(Os2,Done).
+b_e_nxt(Os,done):- nextNode(Next), b_e_mv(Os,Next).
+b_e_mv(Os,Next):- wait(Next) | b_f(Os,done)@node(Next).
+
+%%%% f: throw_goal([a])
+b_f(Os,done):- b_f_exe(Os,[a]).
+b_f_exe(Os,A):- nextNode(Next,Current), b_f_exe(Os,A,Next,Current).
+b_f_exe(Os,A,Next,Current):- wait(Next) | b_f_mid(Os,A,Current)@node(Next).
+b_f_mid(Os,A,Back):- wait(Back) | b_f_ck1(Os,A)@node(Back).
+b_f_ck1(Os,[a]):- lib:prs(Os,Os2,f,Done), b_f_nxt(Os2,Done).
+otherwise.
+b_f_ck1(Os,_):- lib:prs_err(Os,Os2,f,Done), b_f_nxt(Os2,Done).
+b_f_nxt(Os,done):- nextNode(Next), b_f_mv(Os,Next).
+b_f_mv(Os,Next):- wait(Next) | b_g(Os,done)@node(Next).
+
+%%%% g: throw_goal([{},[],3])
+b_g(Os,done):- b_g_exe(Os,[{},[],3]).
+b_g_exe(Os,A):- nextNode(Next,Current), b_g_exe(Os,A,Next,Current).
+b_g_exe(Os,A,Next,Current):- wait(Next) | b_g_mid(Os,A,Current)@node(Next).
+b_g_mid(Os,A,Back):- wait(Back) | b_g_ck1(Os,A)@node(Back).
+b_g_ck1(Os,[{},[],3]):- lib:prs(Os,Os2,g,Done), b_g_nxt(Os2,Done).
+otherwise.
+b_g_ck1(Os,_):- lib:prs_err(Os,Os2,g,Done), b_g_nxt(Os2,Done).
+b_g_nxt(Os,done):- nextNode(Next), b_g_mv(Os,Next).
+b_g_mv(Os,Next):- wait(Next) | b_h(Os,done)@node(Next).
+
+%%%% h: throw_goal(string#"")
+b_h(Os,done):- b_h_exe(Os,string#"").
+b_h_exe(Os,A):- nextNode(Next,Current), b_h_exe(Os,A,Next,Current).
+b_h_exe(Os,A,Next,Current):- wait(Next) | b_h_mid(Os,A,Current)@node(Next).
+b_h_mid(Os,A,Back):- wait(Back) | b_h_ck1(Os,A)@node(Back).
+b_h_ck1(Os,string#""):- lib:prs(Os,Os2,h,Done), b_h_nxt(Os2,Done).
+otherwise.
+b_h_ck1(Os,_):- lib:prs_err(Os,Os2,h,Done), b_h_nxt(Os2,Done).
+b_h_nxt(Os,done):- nextNode(Next), b_h_mv(Os,Next).
+b_h_mv(Os,Next):- wait(Next) | b_i(Os,done)@node(Next).
+
+%%%% i: throw_goal(string#"S")
+b_i(Os,done):- b_i_exe(Os,string#"S").
+b_i_exe(Os,A):- nextNode(Next,Current), b_i_exe(Os,A,Next,Current).
+b_i_exe(Os,A,Next,Current):- wait(Next) | b_i_mid(Os,A,Current)@node(Next).
+b_i_mid(Os,A,Back):- wait(Back) | b_i_ck1(Os,A)@node(Back).
+b_i_ck1(Os,string#"S"):- lib:prs(Os,Os2,i,Done), b_i_nxt(Os2,Done).
+otherwise.
+b_i_ck1(Os,_):- lib:prs_err(Os,Os2,i,Done), b_i_nxt(Os2,Done).
+b_i_nxt(Os,done):- nextNode(Next), b_i_mv(Os,Next).
+b_i_mv(Os,Next):- wait(Next) | b_j(Os,done)@node(Next).
+
+%%%% j: throw_goal(string#"This is string")
+b_j(Os,done):- b_j_exe(Os,string#"This is string").
+b_j_exe(Os,A):- nextNode(Next,Current), b_j_exe(Os,A,Next,Current).
+b_j_exe(Os,A,Next,Current):- wait(Next) | b_j_mid(Os,A,Current)@node(Next).
+b_j_mid(Os,A,Back):- wait(Back) | b_j_ck1(Os,A)@node(Back).
+b_j_ck1(Os,string#"This is string"):- lib:prs(Os,Os2,j,Done), b_j_nxt(Os2,Done).
+otherwise.
+b_j_ck1(Os,_):- lib:prs_err(Os,Os2,j,Done), b_j_nxt(Os2,Done).
+b_j_nxt(Os,done):- nextNode(Next), b_j_mv(Os,Next).
+b_j_mv(Os,Next):- wait(Next) | b_end(Os,done)@node(Next).
+
+%---------------------------------------------------------------------------
+b_end(Os,done):- lib:prsl(Os,Os2,'...done',Done), done(Os2,Done). 
+
+%===========================================================================
+done(Os,done):- 
+	lib:prsl(Os,Os2,'### InterNode Test [Return Back %throw_goal] End ###',_), 
+	Os2 = [].  
+
+%===========================================================================
+nextNode(Next):- nextNode(Next,_). 
+nextNode(Next,Current):- 
+	current_node(Current,Number), Next := (Current+1) mod Number.
+

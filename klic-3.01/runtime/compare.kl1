@@ -1,0 +1,14 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+:- module comparator.
+
+/*
+	Default Comparator
+*/
+
+sort(X0,Y0,X,Y,S) :- compare(X0,Y0,Ans), Ans=<0 | S= no, X=X0, Y=Y0.
+sort(X0,Y0,X,Y,S) :- compare(X0,Y0,Ans), Ans >0 | S=yes, X=Y0, Y=X0.

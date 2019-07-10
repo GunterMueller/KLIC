@@ -1,0 +1,15 @@
+:- module main.
+
+:- with((X=0,Y=1,Z=2)).
+
+main :-
+    klicio:klicio([stdout(Res)]),
+    check_outstream(Res).
+
+check_outstream(normal(S)) :-
+    foo(X, R),
+    S=[putt(R),nl].
+check_outstream(abnormal).
+
+foo(X, R) :- 
+    R = [Y,Z].

@@ -1,0 +1,115 @@
+.TH KLIC 1 "1999" "Japan Information Processing Develepment Center"
+.SH NAME
+klic \- Portable KL1 compiler
+.SH SYNOPSIS
+.B klic
+.RI "[\|" options "\|]"
+.RI "[\|" files " .\|.\|.\|]"
+.SH DESCRIPTION
+.LP
+\fBklic\fR is an implementation of a concurrent logic programming
+language KL1.  The system is portable to almost any UNIX system by its
+compilation scheme using C as the intermediate language.
+.SH OPTIONS
+.TP
+.B \-c
+Stop after generating relocatable object and don't link the program.
+.TP
+.B \-C
+Stop after translation into C.
+.TP
+.B \-d
+Don't try any compilation (dry run).  Implies \fB-v\fR.
+.TP
+.B \-dp
+Compile for distributed parallel execution (available only when
+installed with distributed parallel system configuration).
+.TP
+.BI \-D " database_manager"
+Specifies alternative database manager program.
+.TP
+.B \-g
+Debug flag passed to the C compiler.
+.TP
+.BI \-I " directory"
+Specifies alternative include directory for C compilation.
+.TP
+.BI \-K " klic_compiler"
+Specifies alternative KL1 to C translator.
+.TP
+.BI \-l " library"
+Specifies additional library for linking.
+.TP
+.BI \-L " directory"
+Specifies additional directory to be searched for \fB-l\fR.
+.TP
+.BI \-o " file"
+Specifies the name of executable file.
+.TP
+.BI \-O " [\|level\|]"
+Specifies optimization level.  With no \fIlevel\fR specified,
+level of 1 is assumed.  When non-zero
+level is specified, some additional optimization flags may be
+also passed to the C compiler.  Such Additional optimization
+flags are system dependent and determined on KLIC system
+installation procedure.
+.TP
+.BI \-P " [\|parallel\|]"
+Run subtasks (C compilers &c) in parallel.  At most \fIparallel\fR
+subtasks are forked at a time.
+.TP
+.B \-R
+Specifies recompilation regardless of file dates.
+.TP
+.B \-shm
+Compile for shared memory parallel execution (available only when
+installed with shared memory parallel system configuration).
+.TP
+.B \-S
+Stop after generating assembly code output.
+.TP
+.B \-n
+Link with the non-debugging runtime library.  Default uses the
+debugging library.
+.TP
+.B \-v
+Verbose run.  All the commands executed through the compielr
+driver will be output to standard error.
+.TP
+.BI \-x " directory"
+Use database file \fBklic.db\fR in the \fIdirectory\fR and
+also place \fBatom.c\fR and \fBfunct.c\fR and their corresponding
+objects in the same directory.  This flag is useful when
+programs to be linked together are distributed to multiple
+directories.
+.TP
+.BI \-X " directory"
+When the database file \fBklic.db\fR does not exist, initiate it
+from the database initiation file \fBklicdb.init\fR under \fIdirectory\fR.
+It defaults to the default library directory.
+.TP
+.BI \-Fld " loader"
+Force the linker program to \fIloader\fR. The default linker
+which is used by klic command is selected by the linked programs, i.e,
+"cc" in C version, and "f77" or "cc" in Fortran version. This option make
+the linker program \fIloader\fR forcely.
+.TP
+.BI \-Flo " options"
+Force the linker options to to \fIoptions\fR. 
+.SH BUGS
+.LP
+Send bug reports to \fBklic-bugs@icot.or.jp\fR.
+.LP
+Distributed parallel implementation is a beta version.
+.LP
+The released version is not throughly tested.
+.LP
+This list is incomplete.
+.SH COPYRIGHT
+Copyright (C) 1993, 1994, 1995 Institute for New Generation Computer
+ Technology
+(C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+ (Read COPYRIGHT-JIPDEC for detailed information.)
+.SH AUTHOR
+Institute for New Generation Computer Technology, Japan Information
+Processing Development Center. 

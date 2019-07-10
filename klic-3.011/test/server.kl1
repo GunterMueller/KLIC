@@ -1,0 +1,19 @@
+:- module main.
+
+main :- unix:unix([bind(inet(12345),
+			normal([accept(S)])),
+		   stdin(normal(I)),
+		   stdout(normal(O))]),
+	acc(S),
+	loop(I,O).
+
+acc(normal(S)) :-
+	builtin:print(accepted),
+	X=string#"abc",
+	S=[fwrite(X,N),fflush(_)|S1],
+	continue(5,X,S1).
+
+continue(0,_,S) :- S=[].
+continue(K,X,S) :- K>0 | S=[fwrite(X,N)|S1], continue(~(K-1),X,S1).
+
+loop(I,O) :- I=[getc(C)|IT], O=[putc(C)|OT], loop(IT,OT).

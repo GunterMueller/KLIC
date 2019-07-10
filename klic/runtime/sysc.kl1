@@ -1,0 +1,55 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- inline:"
+#include <klic/gd_macro.h>
+
+GD_USE_CLASS(predicate);
+
+static q* gc_postmortem_args(allocp, ntop, otop, nsize, osize)
+     q *allocp, *ntop, *otop;
+     unsigned int nsize, osize;
+{
+  declare_globals;
+  extern q *copy_one_term();
+  if (postmortem_args != 0) {
+    return copy_one_term(&postmortem_args, allocp,
+			 ntop, otop, nsize, osize);
+  } else {
+    return allocp;
+  }
+}
+".
+
+:- module system_control.
+
+postmortem(ModName,Goal,Result) :- functor(Goal,PredName,Arity) |
+    generic:new(module,Module,ModName),
+    generic:new(predicate,Predicate,Module,PredName,Arity),
+    register_postmortem(Predicate,Goal,Result).
+
+register_postmortem(Predicate,Goal,Result) :- inline:"
+{
+  postmortem_pred = ((struct predicate_object *)functorp(%0))->pdesc;
+  if (postmortem_args ==0) register_gc_hook(gc_postmortem_args);
+  postmortem_args = %1;
+}":[Predicate+object(predicate),Goal+any] | Result=[].
+
+gc(Before,After) :- inline:"
+{
+  %0 = makeint(allocp-new_space_top);
+  allocp = real_heaplimit;
+  heaplimit = 0;
+}":[Before0-int] |
+    Before=Before0,
+    after_gc(After).
+
+after_gc(After) :- inline:"
+{
+  %0 = makeint(allocp-new_space_top);
+}":[After0-int] |
+    After=After0.

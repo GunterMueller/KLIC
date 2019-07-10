@@ -1,0 +1,34 @@
+% % read -dp2 N<CR>
+
+%  PEi <--- %read    ---  PEj   (1)
+%  PEi  --- %answer  ---> PEj   (1)
+%  PEi <--- %release ---  PEj   (1)
+%  PEi <--- %unify   ---  PEj   (1)
+
+%  PEi <--- %read    ---  PEj   (2)
+%  PEi  --- %answer  ---> PEj   (2)
+%  PEi <--- %release ---  PEj   (2)
+%  PEi <--- %unify   ---  PEj   (2)
+
+%		:
+
+%  PEi <--- %read    ---  PEj   (N)
+%  PEi  --- %answer  ---> PEj   (N)
+%  PEi <--- %release ---  PEj   (N)
+%  PEi <--- %unify   ---  PEj   (N)
+
+%  PEi <--- %read    ---  PEj   (N+1)
+%  PEi  --- %answer  ---> PEj   (N+1)
+%  PEi <--- %release ---  PEj   (N+1)
+
+:- module main. 
+
+main:- unix:argv(ISL), rlib:isltoi(ISL,N), 
+	current_node(Current,Number), Node:=(Current+1) mod Number, 
+	gen(N,ack,As), con(As)@node(Node). 
+
+gen(N,ack,As):- N > 0 | As=[Ack|As2], gen(~(N-1),Ack,As2). 
+gen(N,ack,As):- N=:=0 | As=[]. 
+
+con([Ack|As]):- Ack=ack, con(As). 
+con([]). 

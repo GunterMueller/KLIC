@@ -1,0 +1,68 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+:- module queue.
+
+
+create(Stream) :-
+	CAR = CDR,
+	main(Stream,[],0)+CAR+CDR.
+
+
+main([],		 []		)+No+CAR+CDR :- CDR = [].
+main([],		 [S|ST]	)+No+CAR+CDR :- main(S,ST)+No+CAR+CDR.
+main([do(S)|T],	 ST		)+No+CAR+CDR :- main(S,[T|ST])+No+CAR+CDR.
+otherwise.
+main([Message|T],ST		)+No+CAR+CDR :-
+	message(Message)-No-CAR-CDR,
+	main(T,ST)+No+CAR+CDR.
+
+
+message(empty(YorN))-No-CAR-CDR :-
+	No =:= 0 |
+	YorN = yes.
+message(empty(YorN))-No-CAR-CDR :-
+	No =\= 0 |
+	YorN = no.
+
+message(put(Value),No1,No2)-CAR-CDR :-
+	No2 := No1 + 1,
+	dlist(Value)-CDR.
+
+message(get(Value),No1,No2)-CAR-CDR :-
+	No1 > 0 |
+	No2 := No1 -1,
+	dlist(Value)-CAR.
+
+message(get_if_any(Value),No1,No2)-CAR-CDR :-
+	No1 =:= 0 |
+	No2 = No1,
+	Value = {}.
+message(get_if_any(Value1),No1,No2)-CAR-CDR :-
+	No1 =\= 0 |
+	message(get(Value2),No1,No2)-CAR-CDR,
+	Value1 = {Value2}.
+
+message(get_all(Values),No1,No2,CAR1,CAR2)-CDR :-
+	No2 = 0,
+	get_all(No1,CAR1,CAR2,Values).
+
+message(carbon_copy(Values))-No-CAR-CDR :-
+	get_all(No,CAR,_,Values).
+
+
+dlist(V,LIST,CDR) :-
+	LIST = [V|CDR].
+
+
+get_all(No,CAR,TAIL,V):-
+	No =:= 0 |
+	CAR	= TAIL,
+	V	= [].
+get_all(No,[CAR|CDR],TAIL,V1):-
+	No =\= 0 |
+	V1 = [CAR|V2],
+	get_all(~(No-1),CDR,TAIL,V2).

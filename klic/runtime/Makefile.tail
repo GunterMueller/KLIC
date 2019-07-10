@@ -1,0 +1,1385 @@
+# ---------------------------------------------------------- 
+#   (C)1993, 1994, 1995 Institute for New Generation Computer Technology 
+#	(Read COPYRIGHT for detailed information.) 
+#   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+#       (Read COPYRIGHT-JIPDEC for detailed information.)
+# ----------------------------------------------------------
+
+SHMCFLAGS = $(CFLAGS) -DDEBUGLIB -DSHM -I../include
+DEFINITIONS=$(DISTCFLAGS) -I../include 
+KLIC =  ../compiler/klic -P$(PARALLEL) $(KLICOPT) \
+	-R -I../include -X. -K$(KL1CMP) -D../compiler/klicdb -v 
+
+HEADERS = $(COMPILEINC)/config.h $(COMPILEINC)/alloc.h \
+	$(COMPILEINC)/atomstuffs.h $(COMPILEINC)/klichdr.h \
+	$(COMPILEINC)/basic.h $(COMPILEINC)/bb.h \
+	$(COMPILEINC)/control.h $(COMPILEINC)/functorstuffs.h \
+	$(COMPILEINC)/predinfo.h $(COMPILEINC)/gb.h \
+	$(COMPILEINC)/gobj.h $(COMPILEINC)/g_methtab.h \
+	$(COMPILEINC)/index.h $(COMPILEINC)/param.h \
+	$(COMPILEINC)/primitives.h $(COMPILEINC)/schedule.h \
+	$(COMPILEINC)/susp.h $(COMPILEINC)/struct.h \
+	$(COMPILEINC)/timing.h $(COMPILEINC)/unify.h \
+	$(COMPILEINC)/trace.h \
+	$(COMPILEINC)/g_basic.h $(COMPILEINC)/g_extern.h \
+	$(COMPILEINC)/g_extinl.h $(COMPILEINC)/gd_macro.h \
+	$(COMPILEINC)/gd_methtab.h $(COMPILEINC)/gdobject.h \
+	$(COMPILEINC)/generic.h $(COMPILEINC)/newatom.h \
+	$(COMPILEINC)/gc_macro.h $(COMPILEINC)/gc_methtab.h \
+	$(COMPILEINC)/gcobject.h $(COMPILEINC)/gg_macro.h \
+	$(COMPILEINC)/gg_methtab.h $(COMPILEINC)/gmodule.h \
+	$(COMPILEINC)/goalobj.h \
+	$(COMPILEINC)/g_pointer.h $(COMPILEINC)/g_string.h \
+	$(COMPILEINC)/g_vector.h $(COMPILEINC)/g_float.h \
+	$(COMPILEINC)/g_termarray.h
+
+EXTHEADERS = \
+	$(EXTCOMPILEINC)/traceio.h \
+	$(EXTCOMPILEINC)/interpe.h \
+	$(EXTCOMPILEINC)/msgfmt.h \
+	$(EXTCOMPILEINC)/rmon.h \
+	$(EXTCOMPILEINC)/sighndl.h \
+	$(EXTCOMPILEINC)/distio.h \
+	$(EXTCOMPILEINC)/distpkt.h \
+	$(EXTCOMPILEINC)/distproc.h \
+	$(EXT_OTHER_HEADES)
+
+SHMHEDAERS = $(COMPILEINC)/shm.h $(COMPILEINC)/shm_machine.h
+
+NODSRCS = alloc.c gc.c unify2.c version.c \
+	cmphsh.c wakeup.c signal.c asyncio.c \
+	faisus.c intrpt.c print.c unify.c bb.c \
+	generic.c trace.c step.c otbl.c recsusp.c main.c \
+	options.c timer.c ktimer.c xio.c \
+	$(NODNODEBUGSRCS) $(GENERIC_SRCS)
+
+SRCS = $(NODSRCS) $(KL1CSRCS) $(KL1NODCSRCS) $(DISTSRCS)
+
+COMMONKL1SRCS = \
+	atomt.kl1 functt.kl1 gcmerge.kl1 gen.kl1 \
+	iarith.kl1 farith.kl1 uterms.kl1 sysc.kl1 \
+	parse.kl1 scan.kl1 read.kl1 var.kl1 termio.kl1 unparse.kl1 \
+	stack.kl1 queue.kl1 bag.kl1 bags.kl1 bagk.kl1 bagks.kl1 \
+	setk.kl1 setks.kl1 splay.kl1 compare.kl1 itimer.kl1
+COMMONKL1CSRCS = \
+	atomt.c functt.c gcmerge.c gen.c \
+	iarith.c farith.c uterms.c sysc.c \
+	parse.c scan.c read.c var.c termio.c unparse.c \
+	stack.c queue.c bag.c bags.c bagk.c bagks.c \
+	setk.c setks.c splay.c compare.c itimer.c
+COMMONKL1OBJS = \
+	atomt.o functt.o gcmerge.o gen.o \
+	iarith.o farith.o uterms.o sysc.o \
+	parse.o scan.o read.o var.o termio.o unparse.o \
+	stack.o queue.o bag.o bags.o bagk.o bagks.o \
+	setk.o setks.o splay.o compare.o itimer.o
+
+KL1SRCS = bodyblt.kl1 gunix.kl1 io.kl1
+KL1NODOBJS = bodyblt.o gunix.o io.o
+KL1NODCSRCS = bodyblt.c gunix.c io.c
+KL1DOBJS = bodyblt-d.o gunix-d.o io-d.o
+KL1DSRCS = bodyblt-d.c gunix-d.c io-d.c
+KL1SOBJS = bodyblt-s.o gunix-s.o io.o
+
+EXT = \
+	atomt.ext functt.ext gcmerge.ext gen.ext \
+	iarith.ext farith.ext uterms.ext sysc.ext \
+	parse.ext scan.ext read.ext var.ext termio.ext unparse.ext \
+	stack.ext queue.ext bag.ext bags.ext bagk.ext bagks.ext \
+	setk.ext setks.ext splay.ext compare.ext itimer.ext \
+	bodyblt.ext gunix.ext io.ext 
+
+COMMONOBJS = \
+	$(COMMONKL1OBJS) \
+	alloc.o bb.o unify2.o version.o \
+	generic.o gtermarray.o gpointer.o random.o \
+	gmerge.o cmphsh.o wakeup.o \
+	gcode.o gmodule.o ggoal.o \
+	signal.o asyncio.o \
+	otbl.o main.o \
+	timer.o ktimer.o xio.o
+
+NODOBJS = gio.o gmvv.o gstring.o gfloat.o \
+	newatom.o options.o
+DOBJS   = gio-d.o gmvv-d.o gstring-d.o gfloat-d.o \
+	trace-d.o sched-d.o newatom.o options.o
+DSRCS   = gio-d.c gmvv-d.c gstring-d.c gfloat-d.c \
+	trace-d.c sched-d.c newatom.c options.c
+NODEBUGOBJS = gc.o faisus.o   print.o   unify.o
+DEBUGOBJS = gc-t.o faisus-t.o print-t.o unify-t.o recsusp.o
+DEBUGSRCS = gc-t.c faisus-t.c print-t.c unify-t.c recsusp.c
+
+NODNODEBUGOBJS = kmain.o debug.o sched.o intrpt.o
+NODNODEBUGSRCS = kmain.c debug.c sched.c intrpt.c
+NODDEBUGOBJS = kmain-t.o debug-t.o sched-t.o intrpt-t.o trace.o step.o
+NODDEBUGSRCS = kmain-t.c debug-t.c sched-t.c intrpt-t.c trace.c step.c
+DDEBUGOBJS = kmain-d.o debug-d.o sched-d.o intrpt-d.o trace-d.o step-d.o
+DDEBUGSRCS = kmain-d.c debug-d.c sched-d.c intrpt-d.c trace-d.c step-d.c
+
+SDEBUGOBJS = kmain-s.o options-s.o debug-s.o newatom-s.o sched-s.o \
+	intrpt-s.o gc-s.o trace-s.o faisus-t.o print-t.o unify-t.o \
+	recsusp.o gio.o gmvv-s.o gstring-s.o gfloat-s.o step-s.o
+
+GENERIC_SRCS = \
+	gmvv.c gio.c gstring.c gtermarray.c \
+	gfloat.c gmerge.c gcode.c gmodule.c ggoal.c gpointer.c \
+	random.c
+
+GENERIC_DSRCS = \
+	ge_exref.c ge_readhook.c ge_replyhook.c
+GENERIC_DOBJS = \
+	ge_exref.o ge_readhook.o ge_replyhook.o
+
+DISTSRCS = \
+	cntlmsg.c datamsg.c export_table.c ge_exref.c \
+	ge_readhook.c ge_replyhook.c import_table.c \
+	init_dist.c sendrecv.c distrmon.c profile.c \
+	$(DIST_OTHER_SRCS)
+
+DISTOBJS = \
+	cntlmsg.o datamsg.o export_table.o ge_exref.o \
+	ge_readhook.o ge_replyhook.o import_table.o \
+	init_dist.o sendrecv.o distrmon.o profile.o \
+	$(DIST_OTHER_OBJS)
+
+GENERIC_SSRCS = gg_shvar.c gg_shbusy.c
+GENERIC_SOBJS = gg_shvar.o gg_shbusy.o
+
+SHMSRCS = shm_rsv.c shm_throw.c shm_obj.c shm_gc.c
+SHMOBJS = shm_rsv.o shm_throw.o shm_obj.o shm_gc.o
+
+ALLOBJS = $(COMMONOBJS) $(NODEBUGOBJS) $(DEBUGOBJS) \
+	$(KL1NODOBJS) $(KL1DOBJS) $(KL1SOBJS) $(NODOBJS) $(DOBJS) \
+	$(NODNODEBUGOBJS) $(NODDEBUGOBJS) $(DDEBUGOBJS) $(SDEBUGOBJS) \
+	$(DISTOBJS) $(SHMOBJS) $(GENERIC_SOBJS)
+
+uplevel:
+	cd ..;make runtimedir
+all: $(TARGETS) $(EXTENSION)
+
+dll: $(DLLIBS)
+
+dist: $(COMMONKL1CSRCS) $(KL1NODCSRCS) \
+	atom.h funct.h atom.c funct.c predicates.c version.c
+
+libklic.a: $(COMMONOBJS) $(KL1NODOBJS) $(NODEBUGOBJS) \
+	$(NODNODEBUGOBJS) $(NODOBJS)
+	ar rcv $@ $?
+	$(RANLIB) $@
+
+libklict.a: $(COMMONOBJS) $(KL1NODOBJS) $(DEBUGOBJS) \
+	$(NODDEBUGOBJS) $(NODOBJS)
+	ar rcv $@ $?
+	$(RANLIB) $@
+
+libklicd.a: $(COMMONOBJS) $(KL1DOBJS) $(DEBUGOBJS) \
+	$(DDEBUGOBJS) $(DOBJS) $(DISTOBJS)
+	ar rcv $@ $?
+	$(RANLIB) $@
+
+libklics.a: $(COMMONOBJS) $(KL1SOBJS) $(SDEBUGOBJS) \
+	$(GENERIC_SOBJS) $(SHMOBJS)
+	ar rcv $@ $?
+	$(RANLIB) $@
+
+libklic$(DLLEXT): $(COMMONOBJS) $(KL1NODOBJS) $(NODEBUGOBJS) \
+	$(NODNODEBUGOBJS) $(NODOBJS)
+	$(LDSHARED) -o $@ $?
+
+libklict$(DLLEXT): $(COMMONOBJS) $(KL1NODOBJS) $(DEBUGOBJS) \
+	$(NODDEBUGOBJS) $(NODOBJS)
+	$(LDSHARED) -o $@ $?
+
+libklicd$(DLLEXT): $(COMMONOBJS) $(KL1DOBJS) $(DEBUGOBJS) \
+	$(DDEBUGOBJS) $(DOBJS) $(DISTOBJS)
+	$(LDSHARED) -o $@ $?
+
+libklics$(DLLEXT): $(COMMONOBJS) $(KL1SOBJS) $(SDEBUGOBJS) \
+	$(GENERIC_SOBJS) $(SHMOBJS)
+	$(LDSHARED) -o $@ $?
+
+kmain-t.c: kmain.c
+	rm -f $@; $(LN) $? $@
+debug-t.c: debug.c
+	rm -f $@; $(LN) $? $@
+gc-t.c: gc.c
+	rm -f $@; $(LN) $? $@
+faisus-t.c: faisus.c
+	rm -f $@; $(LN) $? $@
+intrpt-t.c: intrpt.c
+	rm -f $@; $(LN) $? $@
+print-t.c: print.c
+	rm -f $@; $(LN) $? $@
+unify-t.c: unify.c
+	rm -f $@; $(LN) $? $@
+sched-t.c: sched.c
+	rm -f $@; $(LN) $? $@
+
+kmain-t.o: kmain-t.c
+	$(CC) $(CFLAGS) -DDEBUGLIB -I../include -c kmain-t.c
+debug-t.o: debug-t.c
+	$(CC) $(CFLAGS) -DDEBUGLIB -I../include -c debug-t.c
+gc-t.o: gc-t.c
+	$(CC) $(CFLAGS) -DDEBUGLIB -I../include -c gc-t.c
+faisus-t.o: faisus-t.c
+	$(CC) $(CFLAGS) -DDEBUGLIB -I../include -c faisus-t.c
+intrpt-t.o: intrpt-t.c
+	$(CC) $(CFLAGS) -DDEBUGLIB -I../include -c intrpt-t.c
+print-t.o: print-t.c
+	$(CC) $(CFLAGS) -DDEBUGLIB -I../include -c print-t.c
+unify-t.o: unify-t.c
+	$(CC) $(CFLAGS) -DDEBUGLIB -I../include -c unify-t.c
+sched-t.o: sched-t.c
+	$(CC) $(CFLAGS) -DDEBUGLIB -I../include -c sched-t.c
+
+kmain-d.c: kmain.c
+	rm -f $@; $(LN) $? $@
+debug-d.c: debug.c
+	rm -f $@; $(LN) $? $@
+gio-d.c: gio.c
+	rm -f $@; $(LN) $? $@
+trace-d.c: trace.c
+	rm -f $@; $(LN) $? $@
+step-d.c: step.c
+	rm -f $@; $(LN) $? $@
+sched-d.c: sched.c
+	rm -f $@; $(LN) $? $@
+bodyblt-d.c: bodyblt.c
+	rm -f $@; $(LN) $? $@
+gunix-d.c: gunix.c
+	rm -f $@; $(LN) $? $@
+io-d.c: io.c
+	rm -f $@; $(LN) $? $@
+gmvv-d.c: gmvv.c
+	rm -f $@; $(LN) $? $@
+gstring-d.c: gstring.c
+	rm -f $@; $(LN) $? $@
+gfloat-d.c: gfloat.c
+	rm -f $@; $(LN) $? $@
+intrpt-d.c: intrpt.c
+	rm -f $@; $(LN) $? $@
+
+kmain-d.o: kmain-d.c ../include/klic/distproc.h ../include/klic/interpe.h \
+	../include/klic/distio.h ../include/klic/distpkt.h
+	$(CC) $(DISTCFLAGS) -c kmain-d.c
+debug-d.o: debug-d.c ../include/klic/interpe.h ../include/klic/distio.h
+	$(CC) $(DISTCFLAGS) -c debug-d.c
+gio-d.o: gio-d.c
+	$(CC) $(DISTCFLAGS) -c gio-d.c
+trace-d.o: trace-d.c ../include/klic/distio.h
+	$(CC) $(DISTCFLAGS) -c trace-d.c
+sched-d.o: sched-d.c ../include/klic/distio.h
+	$(CC) $(DISTCFLAGS) -c sched-d.c
+bodyblt-d.o: bodyblt-d.c
+	$(CC) $(DISTCFLAGS) -c bodyblt-d.c
+gunix-d.o: gunix-d.c
+	$(CC) $(DISTCFLAGS) -c gunix-d.c
+gstring-d.o: gstring-d.c
+	$(CC) $(DISTCFLAGS) -c gstring-d.c
+gfloat-d.o: gfloat-d.c
+	$(CC) $(DISTCFLAGS) -c gfloat-d.c
+io-d.o: io-d.c
+	$(CC) $(DISTCFLAGS) -c io-d.c
+gmvv-d.o: gmvv-d.c ../include/klic/distio.h ../include/klic/distpkt.h
+	$(CC) $(DISTCFLAGS) -c gmvv-d.c
+intrpt-d.o: intrpt-d.c ../include/klic/distio.h ../include/klic/distpkt.h
+	$(CC) $(DISTCFLAGS) -c intrpt-d.c
+decode.o: decode.c
+	$(CC) $(DISTCFLAGS) -c decode.c
+datamsg.o: datamsg.c
+	$(CC) $(DISTCFLAGS) -c datamsg.c
+cntlmsg.o: cntlmsg.c
+	$(CC) $(DISTCFLAGS) -c cntlmsg.c
+export_table.o: export_table.c
+	$(CC) $(DISTCFLAGS) -c export_table.c
+ge_exref.o: ge_exref.c
+	$(CC) $(DISTCFLAGS) -c ge_exref.c
+ge_readhook.o: ge_readhook.c
+	$(CC) $(DISTCFLAGS) -c ge_readhook.c
+ge_replyhook.o: ge_replyhook.c
+	$(CC) $(DISTCFLAGS) -c ge_replyhook.c
+import_table.o: import_table.c
+	$(CC) $(DISTCFLAGS) -c import_table.c
+init_dist.o: init_dist.c
+	$(CC) $(DISTCFLAGS) -c init_dist.c
+sendrecv.o: sendrecv.c
+	$(CC) $(DISTCFLAGS) -c sendrecv.c
+#distrmon.o: distrmon.c
+#	$(CC) $(DISTCFLAGS) -c distrmon.c
+profile.o: profile.c
+	$(CC) $(DISTCFLAGS) -c profile.c
+
+pipedio: pipedio.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -I../include -o pipedio pipedio.c
+
+kmain-s.o: kmain.c ../include/klic/options.h
+	$(CC) $(SHMCFLAGS) -c -o kmain-s.o kmain.c
+options-s.o: options.c
+	$(CC) $(SHMCFLAGS) -c -o options-s.o options.c
+gc-s.o: gc.c
+	$(CC) $(SHMCFLAGS) -c -o gc-s.o gc.c
+debug-s.o: debug.c
+	$(CC) $(SHMCFLAGS) -c -o debug-s.o debug.c
+sched-s.o: sched.c
+	$(CC) $(SHMCFLAGS) -c -o sched-s.o sched.c
+newatom-s.o: newatom.c
+	$(CC) $(SHMCFLAGS) -c -o newatom-s.o newatom.c
+bodyblt-s.o: bodyblt.c
+	$(CC) $(SHMCFLAGS) -c -o bodyblt-s.o bodyblt.c
+gunix-s.o: gunix.c
+	$(CC) $(SHMCFLAGS) -c -o gunix-s.o gunix.c
+gmvv-s.o: gmvv.c
+	$(CC) $(SHMCFLAGS) -c -o gmvv-s.o gmvv.c
+gstring-s.o: gstring.c
+	$(CC) $(SHMCFLAGS) -c -o gstring-s.o gstring.c
+gfloat-s.o: gfloat.c
+	$(CC) $(SHMCFLAGS) -c -o gfloat-s.o gfloat.c
+intrpt-s.o: intrpt.c
+	$(CC) $(SHMCFLAGS) -c -o intrpt-s.o intrpt.c
+trace-s.o: trace.c
+	$(CC) $(SHMCFLAGS) -c -o trace-s.o trace.c
+step-s.o: step.c
+	$(CC) $(SHMCFLAGS) -c -o step-s.o step.c
+shm_rsv.o: shm_rsv.c
+	$(CC) $(SHMCFLAGS) -c shm_rsv.c
+shm_throw.o: shm_throw.c
+	$(CC) $(SHMCFLAGS) -c shm_throw.c
+shm_obj.o: shm_obj.c
+	$(CC) $(SHMCFLAGS) -c shm_obj.c
+shm_gc.o: shm_gc.c
+	$(CC) $(SHMCFLAGS) -c shm_gc.c
+
+.kl1.c:
+	$(KL1CMP) $<
+
+.c.o:
+	$(KLIC) -c $<
+
+.c.s:
+	$(KLIC) -S $<
+
+.kl1.ext:
+	$(KLIC) -C $<
+
+klicdb.refs: $(GENERIC_SRCS)
+	cat $(GENERIC_SRCS) \
+	| sed -n -e \
+	"s/.*G._CLASS_NAME()[ 	]*\(.*\)/class_\1/p;s/.*G_USE_PREDICATE(predicate_\(.*\)_x.*).*/ref_module_\1/p;s/.*G._USE_CLASS(\(.*\)).*/ref_class_\1/p" \
+	>newdb.refs
+	( test -f klicdb.refs && cmp klicdb.refs newdb.refs ) || \
+	rm -f klicdb.refs; mv newdb.refs klicdb.refs
+klicdb.fncts: $(GENERIC_SRCS)
+	cat $(GENERIC_SRCS) \
+	| sed -n -e "s/.*METHOD_CASE.*(\(.*\)).*/functor_\1/p" \
+	>klicdb.fncts
+klicdb.atoms: $(GENERIC_SRCS)
+	cat $(GENERIC_SRCS) \
+	| sed -n -e "s/.*METHOD_NAME_CASE(\(.*\)).*/atom_\1/p" \
+	>klicdb.atoms
+klicdb.init: klicdb.atoms klicdb.fncts
+	cat klicdb.atoms klicdb.fncts >klicdb.init
+libklic.db: klicdb.refs $(EXT)
+	../compiler/klicdb -X. -lklic klicdb.refs $(EXT)
+klic.db: klicdb.init libklic.db $(EXT)
+	../compiler/klicdb -X. $(EXT)
+atom.h: klic.db
+	../compiler/klicdb -X. $(EXT)
+funct.h: klic.db
+	../compiler/klicdb -X. $(EXT)
+atom.c: klic.db
+	../compiler/klicdb -X. $(EXT)
+funct.c: klic.db
+	../compiler/klicdb -X. $(EXT)
+predicates.c: libklic.db
+	../compiler/klicdb -X. $(EXT)
+
+version.c: ../version.sed version.c.tmplt
+	sed -f ../version.sed <version.c.tmplt >version.c
+
+tags:	$(SRCS) $(HEADERS)
+	etags $(SRCS) $(HEADERS)
+
+lint:	$(SRCS) $(HEADERS)
+	lint $(DEFINITIONS) $(SRCS) | perl clearmes.perl
+
+protoize: $(SRCS) $(HEADERS)
+	protoize -c $(DEFINITIONS) $(SRCS)
+
+# ========================================
+# Verifying a newly built compiler
+# ========================================
+
+verifydir:
+	- mkdir verifydir
+	- for file in $(COMMONKL1SRCS) $(KL1SRCS); do \
+		ln -s ../$$file verifydir; \
+	  done
+
+verify: verifydir ../compiler/kl1cmp$(CYGWIN) $(COMMONKL1CSRCS) 
+	$(KLIC) -C -K ../compiler/kl1cmp verifydir/*.kl1
+	- for kl1 in $(COMMONKL1SRCS) $(KL1SRCS); do \
+	  file=`basename $$kl1 .kl1`; \
+	  echo $$file; \
+	  tail +2 $$file.c >/tmp/$$file.old; \
+	  tail +2 verifydir/$$file.c >/tmp/$$file.new; \
+	  diff /tmp/$$file.old /tmp/$$file.new; \
+	  /bin/rm -f /tmp/$$file.old /tmp/$$file.new; \
+	done
+
+clean:
+	/bin/rm -r -f verifydir core $(ALLOBJS) Makefile.bak \
+		atom.o funct.o predicates.o \
+		$(ARCHIVES) $(DLLIBS) pipedio$(CYGWIN) \
+		rmon_server \
+		*-t.c *-d.c \
+		*~ \#*\#
+	(cd config; make clean)
+
+distributed-system-clean:
+	/bin/rm -f $(KL1DOBJS) $(DDEBUGOBJS) $(DOBJS) $(DISTOBJS) \
+		$(GENERIC_DOBJS)
+
+distclean: clean
+	LN="$(LN)" ./setupcomm none
+	/bin/rm -f Makefile *.so
+	(cd config; make distclean)
+
+realclean: distclean
+	/bin/rm -f $(COMMONKL1CSRCS) $(KL1NODCSRCS) \
+		*.ext klicdb.* libklic.db klic.db \
+		version.c atom.h funct.h atom.c funct.c predicates.c
+
+depend: $(NODSRCS) $(KL1DSRCS) $(DISTSRCS) $(NODDEBUGSRCS) $(DEBUGSRCS) \
+	$(DDEBUGSRCS) $(DSRCS) $(HEADERS)
+	./mmakedepend -- $(CFLAGS) -I../include -- \
+		$(NODSRCS) $(NODCSRCS) $(COMMONKL1CSRCS)
+	./mmakedepend -a -- $(DISTCFLAGS) -- \
+		$(KL1DSRCS) $(DISTSRCS) $(DSRCS) $(DDEBUGSRCS)
+	./mmakedepend -a -- $(CFLAGS) -DDEBUGLIB -I../include -- \
+		$(NODDEBUGSRCS) $(DEBUGSRCS)
+#	./makedepend -- $(CFLAGS)  -I../include -- $(SRCS)
+
+install: all $(INSTALL_EXTENSION)
+	- $(INSTDIR) $(KLICLIB)
+	if (test `pwd` != $(KLICLIB)) then \
+		($(INSTALL) $(ARCHIVES) $(KLICLIB)) fi
+	/bin/cp -p pipedio$(CYGWIN) $(KLICLIB)/klic/pipedio$(CYGWIN)
+	/bin/cp -p klic.db $(KLICLIB)/klicdb.init
+	/bin/cp -p libklic.db $(KLICLIB)/libklic.db
+
+install-dll: all $(INSTALL_EXTENSION)
+	- $(INSTDIR) $(KLICLIB)
+	if (test `pwd` != $(KLICLIB)) then \
+		($(INSTALL) $(DLLIBS) $(KLICLIB)) fi
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+alloc.o: alloc.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h
+gc.o: gc.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/timing.h \
+    ../include/klic/functorstuffs.h ../include/klic/gobj.h \
+    ../include/klic/g_methtab.h ../include/klic/susp.h
+unify2.o: unify2.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/functorstuffs.h ../include/klic/gobj.h \
+    ../include/klic/g_methtab.h
+version.o: version.c
+cmphsh.o: cmphsh.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/index.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/functorstuffs.h \
+    ../include/klic/atomstuffs.h
+wakeup.o: wakeup.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/gc_macro.h \
+    ../include/klic/gc_methtab.h
+signal.o: signal.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/sighndl.h 
+asyncio.o: asyncio.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/unify.h ../include/klic/asyncio.h 
+faisus.o: faisus.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/susp.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/gobj.h
+intrpt.o: intrpt.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/sighndl.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/schedule.h
+print.o: print.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/functorstuffs.h ../include/klic/atomstuffs.h \
+    ../include/klic/gobj.h ../include/klic/g_methtab.h \
+    ../include/klic/susp.h
+unify.o: unify.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/schedule.h \
+    ../include/klic/gb.h ../include/klic/gobj.h \
+    ../include/klic/g_methtab.h ../include/klic/susp.h
+bb.o: bb.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/index.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/gb.h ../include/klic/bb.h \
+    ../include/klic/g_float.h
+generic.o: generic.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/functorstuffs.h \
+    ../include/klic/atomstuffs.h ../include/klic/gd_macro.h \
+    ../include/klic/susp.h
+trace.o: trace.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/predinfo.h \
+    ../include/klic/generic.h ../include/klic/g_methtab.h \
+    ../include/klic/functorstuffs.h ../include/klic/susp.h \
+    ../include/klic/trace.h ../include/klic/traceio.h 
+otbl.o: otbl.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/g_basic.h ../include/klic/g_methtab.h
+recsusp.o: recsusp.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h 
+gg_shvar.o: gg_shvar.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h
+gg_shbusy.o: gg_shbusy.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h 
+shm_rsv.o: shm_rsv.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h
+shm_throw.o: shm_throw.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h
+shm_obj.o: shm_obj.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h
+shm_gc.o: shm_gc.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h
+bodyblt-s.o: bodyblt.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h
+gunix-s.o: gunix.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h
+kaim-s.o: kmain.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h \
+    ../include/klic/options.h
+options-s.o: options.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h \
+    ../include/klic/options.h
+debug-s.o: debug.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h
+sched-s.o: sched.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h
+intrpt-s.o: intrpt.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h
+gc-s.o: gc.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h 
+gmvv-s.o: gmvv.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h 
+gstring-s.o: gstring.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/shm.h ../include/klic/shm_machine.h 
+main.o: main.c
+timer.o: timer.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/timer.h
+ktimer.o: ktimer.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/timer.h ../include/klic/sighndl.h 
+xio.o: xio.c \
+    ../include/klic/basic.h ../include/klic/config.h 
+kmain.o: kmain.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/timing.h ../include/klic/functorstuffs.h \
+    ../include/klic/options.h
+debug.o: debug.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/index.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+sched.o: sched.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/alloc.h
+intrpt.o: intrpt.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/sighndl.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/schedule.h
+gmvv.o: gmvv.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/g_vector.h \
+    ../include/klic/atomstuffs.h ../include/klic/functorstuffs.h \
+    ../include/klic/gd_macro.h ../include/klic/gd_methtab.h
+gio.o: gio.c \
+    ../include/klic/gcobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_extern.h \
+    ../include/klic/g_extinl.h ../include/klic/g_pointer.h \
+    ../include/klic/g_string.h ../include/klic/gd_macro.h \
+    ../include/klic/atomstuffs.h ../include/klic/functorstuffs.h \
+    ../include/klic/gc_macro.h ../include/klic/gc_methtab.h
+gstring.o: gstring.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/atomstuffs.h ../include/klic/functorstuffs.h \
+    ../include/klic/gd_macro.h ../include/klic/gd_methtab.h
+gtermarray.o: gtermarray.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/g_termarray.h \
+    ../include/klic/gd_macro.h ../include/klic/gd_methtab.h
+gfloat.o: gfloat.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/gd_macro.h \
+    ../include/klic/atomstuffs.h ../include/klic/functorstuffs.h \
+    ../include/klic/gd_methtab.h
+gmerge.o: gmerge.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/gc_macro.h \
+    ../include/klic/gd_macro.h ../include/klic/gc_methtab.h
+gcode.o: gcode.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/predinfo.h \
+    ../include/klic/atomstuffs.h ../include/klic/functorstuffs.h \
+    ../include/klic/gd_macro.h ../include/klic/gmodule.h \
+    ../include/klic/gd_methtab.h
+gmodule.o: gmodule.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/predinfo.h \
+    ../include/klic/atomstuffs.h ../include/klic/functorstuffs.h \
+    ../include/klic/gd_macro.h ../include/klic/gmodule.h \
+    ../include/klic/gd_methtab.h
+ggoal.o: ggoal.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/predinfo.h \
+    ../include/klic/atomstuffs.h ../include/klic/functorstuffs.h \
+    ../include/klic/gd_macro.h ../include/klic/gmodule.h \
+    ../include/klic/goalobj.h ../include/klic/gd_methtab.h
+gpointer.o: gpointer.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/g_pointer.h \
+    ../include/klic/gd_macro.h ../include/klic/gd_methtab.h
+random.o: random.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/g_methtab.h ../include/klic/g_basic.h \
+    ../include/klic/gg_macro.h ../include/klic/susp.h \
+    ../include/klic/gg_methtab.h
+atomt.o: atomt.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h 
+functt.o: functt.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+gcmerge.o: gcmerge.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+gen.o: gen.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/gobj.h \
+    ../include/klic/g_pointer.h ../include/klic/g_termarray.h
+iarith.o: iarith.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+farith.o: farith.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+uterms.o: uterms.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/gobj.h
+sysc.o: sysc.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/gd_macro.h
+parse.o: parse.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+scan.o: scan.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+read.o: read.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+var.o: var.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+termio.o: termio.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+unparse.o: unparse.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+stack.o: stack.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+queue.o: queue.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+bag.o: bag.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+bags.o: bags.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+bagk.o: bagk.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+bagks.o: bagks.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+setk.o: setk.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+setks.o: setks.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+splay.o: splay.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+compare.o: compare.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+itimer.o: itimer.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/timer.h
+bodyblt-d.o: bodyblt-d.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/timing.h 
+gunix-d.o: gunix-d.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/gobj.h \
+    ../include/klic/g_pointer.h ../include/klic/gd_macro.h 
+io-d.o: io-d.c \
+    ../include/klic/klichdr.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/g_vector.h ../include/klic/g_float.h \
+    ../include/klic/gmodule.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/gobj.h \
+    ../include/klic/g_pointer.h
+cntlmsg.o: cntlmsg.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/functorstuffs.h ../include/klic/timing.h \
+    ../include/klic/gb.h ../include/klic/gobj.h \
+    ../include/klic/g_methtab.h ../include/klic/susp.h \
+    ../include/klic/atomstuffs.h ../include/klic/interpe.h \
+    ../include/klic/distpkt.h ../include/klic/rmon.h \
+    ../include/klic/generic.h ../include/klic/index.h \
+    ../include/klic/distio.h ../include/klic/distproc.h \
+    ../include/klic/ge_exref.h
+datamsg.o: datamsg.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/functorstuffs.h ../include/klic/timing.h \
+    ../include/klic/gb.h ../include/klic/gobj.h \
+    ../include/klic/g_methtab.h ../include/klic/susp.h \
+    ../include/klic/atomstuffs.h ../include/klic/interpe.h \
+    ../include/klic/distpkt.h ../include/klic/generic.h \
+    ../include/klic/index.h ../include/klic/distio.h \
+    ../include/klic/distproc.h
+export_table.o: export_table.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/timing.h ../include/klic/index.h \
+    ../include/klic/interpe.h ../include/klic/distpkt.h \
+    ../include/klic/distio.h ../include/klic/distproc.h
+ge_exref.o: ge_exref.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/index.h ../include/klic/gb.h ../include/klic/bb.h \
+    ../include/klic/g_basic.h ../include/klic/g_extern.h \
+    ../include/klic/g_extinl.h ../include/klic/susp.h \
+    ../include/klic/gg_macro.h ../include/klic/interpe.h \
+    ../include/klic/distpkt.h ../include/klic/distio.h \
+    ../include/klic/distproc.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/ge_exref.h \
+    ../include/klic/gc_macro.h ../include/klic/gd_macro.h \
+    ../include/klic/generic.h ../include/klic/g_methtab.h \
+    ../include/klic/gg_methtab.h
+ge_readhook.o: ge_readhook.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/interpe.h \
+    ../include/klic/distpkt.h ../include/klic/distio.h \
+    ../include/klic/distproc.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/gc_macro.h \
+    ../include/klic/gd_macro.h ../include/klic/gc_methtab.h
+ge_replyhook.o: ge_replyhook.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/gc_macro.h \
+    ../include/klic/gd_macro.h ../include/klic/gc_methtab.h
+import_table.o: import_table.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/timing.h ../include/klic/index.h \
+    ../include/klic/interpe.h ../include/klic/distpkt.h \
+    ../include/klic/distio.h ../include/klic/distproc.h
+init_dist.o: init_dist.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/timing.h ../include/klic/index.h \
+    ../include/klic/interpe.h ../include/klic/distpkt.h \
+    ../include/klic/distio.h ../include/klic/distproc.h \
+    ../include/klic/rmon.h 
+sendrecv.o: sendrecv.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/timing.h ../include/klic/distio.h \
+    ../include/klic/distproc.h ../include/klic/interpe.h \
+    ../include/klic/distpkt.h ../include/klic/rmon.h
+distrmon.o: distrmon.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/timing.h \
+    ../include/klic/distio.h ../include/klic/distproc.h \
+    ../include/klic/interpe.h ../include/klic/distpkt.h \
+    ../include/klic/rmon.h
+profile.o: profile.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/timing.h \
+    ../include/klic/distio.h ../include/klic/distproc.h \
+    ../include/klic/interpe.h ../include/klic/distpkt.h \
+    ../include/klic/rmon.h
+gio-d.o: gio-d.c \
+    ../include/klic/gcobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_methtab.h ../include/klic/g_extern.h \
+    ../include/klic/g_extinl.h ../include/klic/g_pointer.h \
+    ../include/klic/g_string.h ../include/klic/gd_macro.h \
+    ../include/klic/distio.h ../include/klic/distproc.h \
+    ../include/klic/atomstuffs.h ../include/klic/functorstuffs.h \
+    ../include/klic/gc_macro.h ../include/klic/gc_methtab.h
+gmvv-d.o: gmvv-d.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/g_vector.h \
+    ../include/klic/interpe.h ../include/klic/distpkt.h \
+    ../include/klic/atomstuffs.h ../include/klic/functorstuffs.h \
+    ../include/klic/gd_macro.h ../include/klic/gd_methtab.h
+gstring-d.o: gstring-d.c \
+    ../include/klic/gdobject.h ../include/klic/basic.h \
+    ../include/klic/config.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/bb.h ../include/klic/g_basic.h \
+    ../include/klic/g_extern.h ../include/klic/g_extinl.h \
+    ../include/klic/g_methtab.h ../include/klic/g_string.h \
+    ../include/klic/atomstuffs.h ../include/klic/functorstuffs.h \
+    ../include/klic/interpe.h ../include/klic/distpkt.h \
+    ../include/klic/gd_macro.h ../include/klic/gd_methtab.h
+trace-d.o: trace-d.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/predinfo.h \
+    ../include/klic/generic.h ../include/klic/g_methtab.h \
+    ../include/klic/functorstuffs.h ../include/klic/susp.h \
+    ../include/klic/trace.h ../include/klic/traceio.h \
+    ../include/klic/distio.h ../include/klic/distproc.h 
+sched-d.o: sched-d.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/alloc.h ../include/klic/trace.h
+newatom.o: newatom.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/newatom.h ../include/klic/struct.h \
+    ../include/klic/param.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/unify.h ../include/klic/index.h \
+    ../include/klic/atomstuffs.h 
+options.o: options.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/options.h
+kmain-d.o: kmain-d.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/timing.h ../include/klic/functorstuffs.h \
+    ../include/klic/distio.h ../include/klic/distproc.h \
+    ../include/klic/interpe.h ../include/klic/distpkt.h \
+    ../include/klic/sighndl.h ../include/klic/rmon.h \
+    ../include/klic/options.h
+debug-d.o: debug-d.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/index.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h ../include/klic/distio.h \
+    ../include/klic/distproc.h ../include/klic/interpe.h \
+    ../include/klic/distpkt.h
+sched-d.o: sched-d.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/alloc.h ../include/klic/trace.h
+intrpt-d.o: intrpt-d.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/sighndl.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/schedule.h ../include/klic/rmon.h
+trace-d.o: trace-d.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/predinfo.h \
+    ../include/klic/generic.h ../include/klic/g_methtab.h \
+    ../include/klic/functorstuffs.h ../include/klic/susp.h \
+    ../include/klic/trace.h ../include/klic/traceio.h \
+    ../include/klic/distio.h ../include/klic/distproc.h 
+kmain-t.o: kmain-t.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/timing.h ../include/klic/functorstuffs.h \
+    ../include/klic/options.h
+debug-t.o: debug-t.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/unify.h \
+    ../include/klic/index.h ../include/klic/atomstuffs.h \
+    ../include/klic/functorstuffs.h
+sched-t.o: sched-t.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/alloc.h ../include/klic/trace.h
+intrpt-t.o: intrpt-t.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/sighndl.h ../include/klic/primitives.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/schedule.h
+trace.o: trace.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/predinfo.h \
+    ../include/klic/generic.h ../include/klic/g_methtab.h \
+    ../include/klic/functorstuffs.h ../include/klic/susp.h \
+    ../include/klic/trace.h ../include/klic/traceio.h 
+gc-t.o: gc-t.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/timing.h \
+    ../include/klic/functorstuffs.h ../include/klic/gobj.h \
+    ../include/klic/g_methtab.h ../include/klic/susp.h
+faisus-t.o: faisus-t.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/alloc.h ../include/klic/control.h \
+    ../include/klic/susp.h ../include/klic/generic.h \
+    ../include/klic/g_methtab.h ../include/klic/gobj.h
+print-t.o: print-t.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/index.h ../include/klic/gb.h \
+    ../include/klic/functorstuffs.h ../include/klic/atomstuffs.h \
+    ../include/klic/gobj.h ../include/klic/g_methtab.h \
+    ../include/klic/susp.h
+unify-t.o: unify-t.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h \
+    ../include/klic/primitives.h ../include/klic/alloc.h \
+    ../include/klic/control.h ../include/klic/schedule.h \
+    ../include/klic/gb.h ../include/klic/gobj.h \
+    ../include/klic/g_methtab.h ../include/klic/susp.h
+recsusp.o: recsusp.c \
+    ../include/klic/basic.h ../include/klic/config.h \
+    ../include/klic/struct.h ../include/klic/param.h 

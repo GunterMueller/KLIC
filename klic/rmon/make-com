@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Copyright 1995 Institute for New Generation Computer Technology
+# Read COPYRIGHT for detailed information
+#
+cat <<GAZONK >klic-rmonitor
+#!/bin/sh
+# Copyright 1995 Institute for New Generation Computer Technology
+# Read COPYRIGHT for detailed information
+# (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+# (Read COPYRIGHT-JIPDEC for detailed information.)
+$1/klic/rmon_server \$* | $1/klic/klic-rmonitor.tcl \$1
+GAZONK

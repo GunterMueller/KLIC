@@ -1,0 +1,203 @@
+========================================================
+(C)1993, 1994, 1995 Institute for New Generation Computer Technology
+(Read COPYRIGHT for detailed information.)
+(C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+(Read COPYRIGHT-JIPDEC for detailed information.)
+========================================================
+
+KL1 to C compiler system: KLIC (version 3.002)
+=================================================
+Last Revision: Sept. 17, 1997
+Takashi Chikayama (Univ. of Tokyo)
+Tetsuro Fujise (Mitsubishi Research Inst.)
+Daigo Sekita (Mitsubishi Research Inst.)
+
+[1] What is KLIC
+
+KLIC is an implementation of a concurrent logic programming language
+KL1.  KL1 is based on a flat version of the Guarded Horn Clauses (GHC)
+language.  GHC is a member of so-called commited-choice logic
+programming language family and has sibblings such as Concurrent
+Prolog, Parlog, Janus and Fleng.
+
+The KLIC implementation compiles KL1 programs into C programs, then
+compiles them using C compilers of the host system, and then links the
+objects with runtime libraries (including libraries provided by UNIX).
+
+This distribution includes two parallel implementations. One is a
+distributed memory implementation, which is currently based on a free
+interprocess communication library, PVM (Parallel Virtual Machine).
+And another is shared memory implementation which is available on SUN
+SparcCenter and DEC Alpha.  
+
+  KLIC --+-- sequential impl.
+         |
+         +-- parallel impl. ---+--- distributed memory impl.
+                               |
+                               +--- shared memory impl.
+
+Caution:
+Currently some serious bugs were found in a shared memory parallel
+version.  Its bug will be fixed in next version. Thus, if you are
+using the previous (2.00x) version of shared memory implementation, 
+DO NOT update the program. 
+
+[2] Execution Environment
+
+The KLIC compiler that translates KL1 programs into C programs is
+written in KL1 itself.  Included in the distribution is the compiler
+already compiled into C, along with the original KL1 source files.
+
+KL1 programs compiled by the KLIC compiler have to be compiled by a C
+compiler and linked with the KLIC runtime library and libraries
+provided by UNIX.
+
+The system is meant to be portable to most UNIX systems.  The
+sequential system has been tested on many UNIX systems, and runs on
+virtually any system.
+
+KLIC is now available on the following platforms.
+
+Sequential Implementation:
+
+Available on many platforms, including Sun Sparc, DEC Alpha, Linux on
+IBM-PC, FreeBSD on IBM-PC.
+
+	IBM PC/AT compatible running Linux 2.0.x
+		with gcc-2.7.x
+	IBM PC/AT compatible running FreeBSD 2.2.1-RELEASE
+		with gcc-2.7.2
+	IBM PC/AT compatible running Solaris 2.5.x
+		with Sun SPARCompiler
+	Sun SparcStation 10 running SunOS 4.1.3
+		with gcc-2.7.x and cc
+	Sun SparcStation 20 running SunOS 4.1.4
+		with gcc-2.7.2
+	Sun SparcStation 20 running SunOS 5.4
+		with gcc-2.7.2 and SPARCompiler
+	SparcCenter 2000 running SunOS 5.3 (Solaris 2.3)
+		with gcc-2.7 and SunC 2.0.1
+	Ultra Enterprise 3000 running SunOS 5.5.1
+		with gcc-2.7.2.2
+	SGI Indigo2 IMPACT running IRIX 5.3 *
+		with cc
+	IBM RS6000 running AIX *
+		with cc
+        etc...
+
+*: The older version of KLIC was checked on these platforms, but the
+current has not been checked. 
+
+Parallel Implementation:
+
+NOTE: In this distribution, fatal bugs were found in shared memory
+parallel implementation. Thus PLEASE DO NOT REPLACE the old version if
+you use KLIC as parallel version.
+
+* For the distributed memory parallel implementation, the following
+three types are prepared. You can select one of these versions while
+configuring. 
+
+	a) "pvm" version: This version is compatible with the old
+	one. All the communications are done using PVM.
+
+	b) "pvm-tcp" version: On this version, communications are
+	done via TCP-IP socket. But PVM is still needed for the
+	initialization of the system. 
+
+	c) "shm" version: On this version, inter-processor
+	communications are using shared memory. It is noted that this
+	version is not identical with the "the shared memory parallel
+	implementation". Shared memory is used just for the
+	communication, i.e. there are no KLIC data on shared memory. 
+	Thus the efficiency is worse than the real "shared memory"
+	implementation.	This version DOES NOT NEED PVM.
+
+Concerning with the efficiency of the inter-processor communication,
+the "shm" version is the best and the "pvm" version is the worst. But '
+shm' is less portable, and is available just on the following
+platform. It may be harmfull to port to the other platform (especially
+to the other micro processors). 
+
+	SparcCenter 2000 running SunOS 5.3 (Solaris 2.3)
+		with gcc-2.7.0
+	Ultra-Enterprise running SunOS 5.5.1 (Solaris 2.5.1)
+		with gcc-2.7.2.1
+	DEC 7000 AXP running OSF1
+		with gcc-2.7
+	IBM PC/AT compatible multi processor machine running Linux 2.0.x
+		with gcc-2.7
+
+The "pvm" version is highly portable (as I concerned), thus please try
+"pvm" version at first if you want to use KLIC on the platform except
+the platforms previously shown.
+
+We should be obliged if you would report any successful or failed
+installations on systems other than the above-listed ones to the
+following address.
+
+	klic@icot.or.jp
+
+[3] Documents
+
+A manual of the system is provided in texinfo format with the
+distribution.  The source of the manual and preformatted info and dvi
+files should be found under the directory "documents".
+
+[4] Files
+
+See the file MANIFEST.
+
+[5] Installation
+
+Installing the runtime system requires running the configuration
+script Configure in the root directory of the KLIC system, and running
+make.  See the file INSTALL for details.
+
+[6] Functions provided
+
+This system provides the basic execution mechanism for KL1 programs.
+
+In addition to the basic functions, following functions are provided.
+
+	- Some built-in predicates (integer and floating point
+	  arithmetics, etc.)
+	- Strings, vectors and their primitive operations
+	- Tracer (stepping, spying, etc)
+	- Input/output including asynchronous I/O on sockets
+	  (not on some systems)
+	- Priority control mechanisms
+	- Parallel execution mechanisms
+
+[7] Bugs
+
+- Manuals are still incomplete.
+
+- Parallel versions are still incomplete.
+
+- Many mandatory features are missing.
+
+- We are sure there are many others.
+
+Please send bug reports and comments on the system to the following
+address.
+
+	klic-bugs@icot.or.jp
+
+Please do let us know of all bugs or inconveniences you find.  That'll
+help us improve the subsequent versions for all the users.
+
+[8] Announcements and Information Exchange
+
+Announcements of bugs, bug fixes, availability of newer versions and
+so on will be made on a mailing list with the following address.
+
+	klic-users@icot.or.jp
+
+This same mailing list may also be used to exchange information among
+users.
+
+Please send a request mail to the following address to register in or
+delete from this mailing list.
+
+	klic-requests@icot.or.jp

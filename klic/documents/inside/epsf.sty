@@ -1,0 +1,272 @@
+% EPSF macros by Kazuhiro Kazama and modified by Hideki ISOZAKI
+%   based on Trevor J. Darrell's psfig.tex
+%
+% All software, documentation, and related files in this distribution of
+% psfig/tex are Copyright (c) 1987 Trevor J. Darrell
+%
+% Permission is granted for use and non-profit distribution of psfig/tex 
+% providing that this notice be clearly maintained, but the right to
+% distribute any portion of psfig/tex for profit or as part of any commercial
+% product is specifically reserved for the author.
+\endlinechar=-1
+
+\typeout{EPSF macro package for LaTeX. version 1.2 - Released July 16, 1990}
+\newcount\@arga
+\newcount\@argb
+\newcount\@argc
+\newcount\@ctmpa
+\newcount\@ctmpb
+\newcount\@ctmpc
+\newcount\@ctmpd
+\newcount\@ctmpe
+\newdimen\@darg
+\newdimen\@bblen
+\newif\if@bbllx
+\newif\if@bblly
+\newif\if@bburx
+\newif\if@bbury
+\newif\if@height
+\newif\if@width
+\newif\if@scale
+\newif\ifno@bb
+\newif\ifepsfdraft
+\epsfdraftfalse
+\def\@setpsfile#1{
+                \typeout{epsf:[#1]}
+                \def\@psfile{#1}
+}
+\def\@setpsheight#1{
+                \@heighttrue
+                \@darg=#1\relax
+                \edef\@psheight{\number\@darg}
+}
+\def\@setpswidth#1{
+                \@widthtrue
+                \@darg=#1\relax
+                \edef\@pswidth{\number\@darg}
+}
+\def\@setpsscale#1{
+                \@scaletrue
+                \def\@pshscale{#1}
+                \def\@psvscale{#1}
+                \@bblen=#1pt\relax
+                \@bblen=1000\@bblen
+                \def\@texhscale{\expandafter\remove@dim\the\@bblen}
+                \let\@texvscale=\@texhscale
+}
+\def\@setpshscale#1{
+                \@scaletrue
+                \def\@pshscale{#1}
+                \@bblen=#1pt\relax
+                \@bblen=1000\@bblen
+                \def\@texhscale{\expandafter\remove@dim\the\@bblen}
+}
+
+\def\@setpsvscale#1{
+                \@scaletrue
+                \def\@psvscale{#1}
+                \@bblen=#1pt\relax
+                \@bblen=1000\@bblen
+                \def\@texvscale{\expandafter\remove@dim\the\@bblen}
+}
+
+\def\@setparms#1=#2,{\@nameuse{@setps#1}{#2}}
+%
+% initialize
+%
+\def\ps@init@parms{
+                \@heightfalse \@widthfalse
+                \no@bbfalse
+                \def\@psbbllx{}\def\@psbblly{}
+                \def\@psbburx{}\def\@psbbury{}
+                \def\@psheight{}\def\@pswidth{}
+                \def\@pshscale{1}\def\@psvscale{1}
+                \def\@texhscale{1000}\def\@texvscale{1000}
+                \def\@psfile{}
+                \def\@sc{}
+}
+%
+% Go through the options setting things up.
+%
+\def\parse@ps@parms#1{
+                \@for\@epsfile:=#1\do
+                   {\expandafter\@setparms\@epsfile,}}
+%
+% Compute %%BoundingBox height and width
+%
+\newif\ifnot@eof
+\newread\ps@stream
+\def\bb@search{
+        \openin\ps@stream=\@psfile
+        \no@bbtrue
+        \not@eoftrue
+        \catcode`\%=12\relax
+        \ifeof\ps@stream\typeout{epsf: File not found}\fi
+        \loop
+                \read\ps@stream to \line@in
+                \global\toks200=\expandafter{\line@in}\relax
+                \ifeof\ps@stream \not@eoffalse \fi
+                \@bbtest{\toks200}\relax
+                \if@bbmatch\not@eoffalse\expandafter\bb@cull\the\toks200\fi
+        \ifnot@eof \repeat
+        \catcode`\%=14
+}       
+
+\catcode`\%=12
+\newif\if@bbmatch
+\def\@bbtest#1{\expandafter\@a@\the#1%%BoundingBox:\@bbtest\@a@}
+\long\def\@a@#1%%BoundingBox:#2#3\@a@{
+        \ifx\@bbtest#2\@bbmatchfalse\else\@bbmatchtrue\fi}
+\def\bb@cull %%BoundingBox:{
+        \@ifnextchar\space{\@latexbug}{\bb@extract}}
+\def\bb@extract #1 #2 #3 #4 {
+        \message{BoundingBox: (#1bp,#2bp)--(#3bp,#4bp)}
+        \@darg=#1 bp\edef\@psbbllx{\number\@darg}
+        \@darg=#2 bp\edef\@psbblly{\number\@darg}
+        \@darg=#3 bp\edef\@psbburx{\number\@darg}
+        \@darg=#4 bp\edef\@psbbury{\number\@darg}
+        \no@bbfalse
+}
+\catcode`\%=14
+
+\def\compute@bb{
+                \bb@search
+                \ifno@bb \typeout{epsf: No BoundingBox}
+                \stop
+                \else
+                \@arga=\@psbburx
+                \advance\@arga by -\@psbbllx
+                \edef\@bbw{\number\@arga}
+                \@arga=\@psbbury
+                \advance\@arga by -\@psbblly
+                \edef\@bbh{\number\@arga}
+                \fi
+}
+%
+% \in@hundreds performs #1 * (#2 / #3) correct to the hundreds,
+%       then leaves the result in @result
+%
+\def\in@hundreds#1#2#3{\@argb=#2 \@argc=#3
+                     \@ctmpa=\@argb     % @ctmpa is first digit #2/#3
+                     \divide\@ctmpa by \@argc
+                     \@ctmpb=\@ctmpa
+                     \multiply\@ctmpb by \@argc
+                     \advance\@argb by -\@ctmpb
+                     \multiply\@argb by 10
+                     \@ctmpb=\@argb     % @ctmpb is second digit of #2/#3
+                     \divide\@ctmpb by \@argc
+                     \@ctmpc=\@ctmpb
+                     \multiply\@ctmpc by \@argc
+                     \advance\@argb by -\@ctmpc
+                     \multiply\@argb by 10
+                     \@ctmpc=\@argb     % @ctmpc is the third digit
+                     \divide\@ctmpc by \@argc
+                     \@arga=#1\@ctmpe=0
+                     \@ctmpd=\@arga
+                        \multiply\@ctmpd by \@ctmpa
+                        \advance\@ctmpe by \@ctmpd
+                     \@ctmpd=\@arga
+                        \divide\@ctmpd by 10
+                        \multiply\@ctmpd by \@ctmpb
+                        \advance\@ctmpe by \@ctmpd
+                        %
+                     \@ctmpd=\@arga
+                        \divide\@ctmpd by 100
+                        \multiply\@ctmpd by \@ctmpc
+                        \advance\@ctmpe by \@ctmpd
+                        %
+                     \edef\@result{\number\@ctmpe}
+}
+\def\compute@wfromh{
+                % computing : width = height * (bbw / bbh)
+                \in@hundreds{\@psheight}{\@bbw}{\@bbh}
+                \edef\@pswidth{\@result}
+}
+\def\compute@hfromw{
+                % computing : height = width * (bbh / bbw)
+                \in@hundreds{\@pswidth}{\@bbh}{\@bbw}
+                \edef\@psheight{\@result}
+}
+\def\compute@handw{
+        \if@height 
+                \if@width
+                \else
+                        \compute@wfromh
+                \fi
+        \else 
+                \if@width
+                        \compute@hfromw
+                \else
+                        \if@scale
+                                \in@hundreds{\@texvscale}{\@bbh}{1000}
+                                \let\@bbh=\@result
+                                \in@hundreds{\@texhscale}{\@bbw}{1000}
+                                \let\@bbw=\@result
+                        \fi
+                                \edef\@psheight{\@bbh}
+                                \edef\@pswidth{\@bbw}
+                \fi
+        \fi
+}
+{\catcode`\p=12\catcode`\t=12
+\gdef\remove@dim#1.#2pt{#1}}
+
+% Compute any missing values
+\def\compute@sizes{
+        \compute@bb
+        \compute@handw
+}
+%
+% \epsfile
+% usage : \epsfile{file=, height=, width=}
+% usage : \epsfile{file=, scale=}
+% usage : \epsfile{file=, vscale=, hscale=}
+%
+\def\epsfile#1{
+        \ps@init@parms
+        \parse@ps@parms{#1}
+        \compute@sizes
+        \@arga=\@psheight
+        \divide\@arga by 65536
+        \edef\@psvsize{\number\@arga}
+        \@arga=\@pswidth
+        \divide\@arga by 65536
+        \edef\@pshsize{\number\@arga}
+        \message{=>(\@pshsize bp,\@psvsize bp)}
+        \leavevmode
+        \vbox to \@psheight true sp{
+                \hbox to \@pswidth true sp{
+                \ifepsfdraft\hss\@psfile\hss\else
+                \if@height 
+                        \if@width
+                                \special{epsfile=\@psfile \space 
+                                hsize=\@pshsize \space
+                                vsize=\@psvsize \space}
+                        \else
+                                \special{epsfile=\@psfile \space 
+                                vsize=\@psvsize \space}
+                        \fi
+                \else 
+                        \if@width
+                                \special{epsfile=\@psfile \space 
+                                hsize=\@pshsize \space}
+                        \else
+                                \if@scale
+                                        \special{epsfile=\@psfile \space
+                                        vscale=\@psvscale \space
+                                        hscale=\@pshscale \space}
+                                \else
+                                        \special{epsfile=\@psfile \space}
+                                \fi
+                        \fi
+                \fi
+                \hfil\fi
+                }
+        \vfil
+        }
+}
+
+\endlinechar=13\relax
+\endinput
+
+

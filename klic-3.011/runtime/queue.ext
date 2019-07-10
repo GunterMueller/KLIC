@@ -1,0 +1,16 @@
+module_queue
+predicate_queue_xcreate_1
+predicate_queue_xmain_5
+predicate_queue_xmessage_7
+predicate_queue_xdlist_3
+predicate_queue_xget__all_4
+atom_yes
+atom_no
+functor_do_1
+functor_empty_1
+functor_put_1
+functor_get_1
+functor_get__if__any_1
+functor_get__all_1
+functor_carbon__copy_1
+ref_class_vector

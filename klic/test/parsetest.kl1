@@ -1,0 +1,35 @@
+:- module main.
+
+main :-
+	klicio:klicio([read_open(string#"parsetest.kl1",normal(In)),
+			mktemp(string#"work",Fname),
+			write_open(Fname,normal(Out))|Klicio]),
+	In = [getwt(WT)|InT],
+	test(WT,InT,Out,Fname,Klicio,Terms,Terms).
+
+test(normal(end_of_file),In,Out,Fname,Klicio,Terms,TermsT) :-
+	In=[], Out=[fclose(Sync)], TermsT=[],
+	wait_and_open(Sync,Fname,Again,Klicio,KlicioT),
+	verify(Terms,Again,Fname,KlicioT).
+otherwise.
+test(normal(WT),In,Out,Fname,Klicio,Terms,TermsT) :-
+	Out=[putwt(WT),putc(#"."),putc(10)|OutT],
+	TermsT=[normal(WT)|TermsTN],
+	cont(In,OutT,Fname,Klicio,Terms,TermsTN).
+
+cont(In,OutT,Fname,Klicio,Terms,TermsT) :-
+	In=[getwt(NWT)|InT],
+	test(NWT,InT,OutT,Fname,Klicio,Terms,TermsT).
+
+verify([],In,Fname,S) :- In=[fclose(Sync)], wait_and_unlink(Sync,Fname,S).
+verify([H|T],In,Fname,S) :-
+	In=[getwt(WT)|InT],
+	test_match(H,WT),
+	verify(T,InT,Fname,S).
+
+test_match(X,X).
+
+wait_and_open(0,Fname,Again,Klicio,KlicioT) :-
+	Klicio=[read_open(Fname,normal(Again))|KlicioT].
+
+wait_and_unlink(0,Fname,S) :- S=[unlink(Fname,0)].

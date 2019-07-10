@@ -1,0 +1,5 @@
+'### InterNode Test [%throw_goal, %read] Begin ###'
+'Test for throw_goal args (a-e) : 'abcde'...done'
+'Test for throw_goal atom/int/func/nil (a-g) : 'abcdefg'...done'
+'Test for throw_goal vector/list (a-n) : 'abcdefghijklmn'...done'
+'### InterNode Test [%throw_goal, %read] End ###'

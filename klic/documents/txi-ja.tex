@@ -1,0 +1,71 @@
+% txi-ja.tex -- adaptation to Japanese for texinfo.tex.
+% This is read when a source document says @documentlanguage ja
+% (which might happen after another @documentlanguage).
+% $Id: txi-ja.tex,v 1.2 2008/10/13 $
+%
+% Copyright 1999, 2007, 2008 Free Software Foundation.
+%
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+\txisetlanguage{USenglish}{2}{3}
+
+\gdef\putwordAppendix{付記}
+\gdef\putwordChapter{Chapter}
+\gdef\putwordfile{ファイル}
+\gdef\putwordin{in}
+\gdef\putwordIndexIsEmpty{(インデックスは空です)}
+\gdef\putwordIndexNonexistent{(インデックスはありません)}
+\gdef\putwordInfo{Info}
+\gdef\putwordInstanceVariableof{Instance Variable of}
+\gdef\putwordMethodon{Method on}
+\gdef\putwordNoTitle{無題}
+\gdef\putwordof{of}
+\gdef\putwordon{on}
+\gdef\putwordpage{頁}
+\gdef\putwordsection{section}
+\gdef\putwordSection{Section}
+\gdef\putwordsee{see}
+\gdef\putwordSee{See}
+\gdef\putwordShortTOC{簡要}
+\gdef\putwordTOC{目次}
+%
+\gdef\putwordMJan{1月}
+\gdef\putwordMFeb{2月}
+\gdef\putwordMMar{3月}
+\gdef\putwordMApr{4月}
+\gdef\putwordMMai{5月}
+\gdef\putwordMJun{6月}
+\gdef\putwordMJul{7月}
+\gdef\putwordMAug{8月}
+\gdef\putwordMSep{9月}
+\gdef\putwordMOct{10月}
+\gdef\putwordMNov{11月}
+\gdef\putwordMDec{12月}
+%
+\gdef\putwordDefmac{マクロ}
+\gdef\putwordDefspec{特殊フォーム}
+\gdef\putwordDefvar{変数}
+\gdef\putwordDefopt{ユーザオプション}
+\gdef\putwordDeffunc{関数}
+%
+\hyphenation{mini-buf-fer mini-buf-fers eshell white-space}
+%
+\gdef\today{%
+  \number\year 年\space
+  \ifcase\month
+  \or\putwordMJan\or\putwordMFeb\or\putwordMMar\or\putwordMApr
+  \or\putwordMMay\or\putwordMJun\or\putwordMJul\or\putwordMAug
+  \or\putwordMSep\or\putwordMOct\or\putwordMNov\or\putwordMDec
+  \fi
+  \number\day 日}

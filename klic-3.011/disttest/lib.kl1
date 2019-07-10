@@ -1,0 +1,57 @@
+:- module lib.  
+
+io(Os):- ioinit(Ps), checkOs(Os,Ps,ERs,Close), testexit(Close,ERs). 
+
+ioinit(Ps):- klicio:klicio([stdout(normal(Ps))]).  
+
+prs(Os,Os2,Data,Done) :- Os = [putt(Data)|Os2], Done = done. 
+prsl(Os,Os2,Data,Done) :- Os = [putt(Data),nl|Os2], Done = done. 
+prs_err(Os,Os2,Data,Done) :- Os = [putt(err(Data))|Os2], Done = done. 
+
+testexit(0,[]). 
+testexit(0,ERs):- list(ERs) | ERs=[].  
+%			      ^^^^^^ for indicating ERROR.  
+
+checkOs([putt(Out)|Os],Ps,ERs,Close):- atom(Out) | 
+	Ps=[putt(Out)|Ps2], checkOs(Os,Ps2,ERs,Close). 
+checkOs([putt(err(Out))|Os],Ps,ERs,Close):- 
+	Ps=[putt(err(Out))|Ps2], ERs=[putt(Out)|ERs2], 
+	checkOs(Os,Ps2,ERs2,Close). 
+checkOs([nl|Os],Ps,ERs,Close):- Ps=[nl|Ps2], checkOs(Os,Ps2,ERs,Close). 
+checkOs([],Ps,ERs,Close):- Ps=[fclose(Close)], ERs=[]. 
+
+nextNode(Add,Node):- 
+	current_node(CurrentNode,NumberOfNodes), 
+	modNode(~(CurrentNode+Add),NumberOfNodes,Node).  
+
+nextNodes(3,N3s):- 
+	current_node(CurrentNode,NumberOfNodes), 
+	modNode(~(CurrentNode+1),NumberOfNodes,NodeU), 
+	modNode(~(CurrentNode-1),NumberOfNodes,NodeD), 
+	modNode(~((NodeU+NodeD)/2),NumberOfNodes,NodeM), 
+	N3s = [NodeU,NodeD,NodeM]. 
+
+modNode(CalNode,NumberOfNodes,Node) :- CalNode >= 0 | 
+	Node := CalNode mod NumberOfNodes.
+modNode(CalNode,NumberOfNodes,Node) :- CalNode <  0 | 
+	CalNode2 := CalNode + NumberOfNodes, 
+	modNode(CalNode2,NumberOfNodes,Node).
+
+waitAndUnify(Wait,X,Y):- wait(Wait) | X=Y. 
+
+waitallAndUnify([Wait|As],X,Y):- wait(Wait) | waitallAndUnify(As,X,Y). 
+waitallAndUnify([],X,Y):- X=Y. 
+
+checkAndPr(Os,Os2,[done|Rs],Data,Done):- 
+	checkAndPr(Os,Os2,Rs,Data,Done). 
+checkAndPr(Os,Os2,[],Data,Done):- prs(Os,Os2,Data,Done). 
+
+eq(Data,Data,Eq):- Eq = done. 
+otherwise. 
+eq(_,_,Eq):- Eq = fail. 
+
+check([done|Ds],Done):- check(Ds,Done). 
+check([],Done):- Done = done. 
+otherwise. 
+check(_,Done):- Done = fail. 
+

@@ -1,0 +1,72 @@
+#!/usr/local/bin/perl
+# ---------------------------------------------------------- 
+#   (C)1995 Institute for New Generation Computer Technology 
+#       (Read COPYRIGHT for detailed information.) 
+#-----------------------------------------------------------
+while ($ARGV[0] =~ /^-/) {
+    $opt = shift;
+    if ($opt eq '--') {
+	last;
+    } elsif ($opt eq '-a') {
+	$append++;
+    } else {
+	die "Usage: $0 [-a] [--] files\n";
+    }
+}
+
+$key_line = "\# DO NOT DELETE THIS LINE";
+($reg_key = $key_line) =~ s/(\W)/\\\1/g;
+#print "@ARGV\n";
+open(M, "Makefile") || die;
+while (<M>) {
+    !$append && /^$reg_key/o && last;
+    push(@M, $_);
+}
+close(M);
+!$append &&
+  push(@M, "\# DO NOT DELETE THIS LINE -- make depend depends on it.\n");
+open(N, ">Makefile.new") || die;
+#  open(N, ">&STDOUT") || die;
+print N @M;
+open(I, "gcc -M @ARGV|") || die;
+while (<I>) {
+    chop;
+    s| /usr/\S+||g;
+    s|//|/|g;
+    s/ atom\.h / /g;
+    s/ funct\.h / /g;
+#    s/^(\S+\s*:)\s*(\S+)\s+([\w_\.])/\1 \2 \\\n  \3/;
+    if (@dep && $dep[$#dep] =~ s/\\$//) {
+	$dep[$#dep] .= $_;
+    } else {
+	push(@dep, $_);
+    }
+}
+foreach (@dep) {
+    s/\s+/ /g;
+    $p = "";
+    if (s/^(\S+)\s*:\s*(\S+)\s+([\w_\.])/\3/) {
+	print N "$1: $2 \\\n";
+	$p = "    ";
+    } 
+    while (length($_) > 70) {
+	s/^(.{1,70})\s(\S)/\2/;
+	print N "$p$1 \\\n";
+    }
+    print N "$p$_\n";
+}
+
+if (0) {
+while (@dep) {
+    $_ = shift(@dep);;
+    if (/\\$/ && $dep[0] =~ /^\s+$/) {
+	s/\s*\\$//;
+	shift(@dep);
+    }
+    print N;
+}
+}
+close(N);
+rename("Makefile", "Makefile.bak") || die "Cannot rename Makefile: $!\n";
+rename("Makefile.new", "Makefile") || die "Cannot rename Makefile.new: $!\n";
+

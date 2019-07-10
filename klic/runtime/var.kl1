@@ -1,0 +1,112 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+:- module variable.
+
+wrap(X,W) :- variable:unbound(X,U),
+    (
+	U={Value} -> wrap_bound(X,W)
+    ;
+	U={_,_,_} -> W=variable("_")
+    ).
+
+wrap_bound(X,W) :- integer(X) | W=integer(X).
+wrap_bound(X,W) :- generic:float(X) | W=floating_point(X).
+wrap_bound(X,W) :- atom(X) | W=atom(X).
+wrap_bound([H|T],W) :- W=list([WH|WT]), wrap(H,WH), wrap(T,WT).
+wrap_bound(X,W) :- string(X,_,_) | W=string(X).
+wrap_bound(X,W) :- vector(X,N) |
+	wrap_vec_elems(0,N,X,WV),
+	W=vector(WV).
+wrap_bound(X,W) :- functor(X,F,N), N>0 |
+	W=functor(WF),
+	wrap_funct_elems(0,N,X,[F|LT],LT,WF).
+otherwise.
+wrap_bound(X,W) :- W=unknown(X).
+
+wrap_vec_elems(K,N,WV0,WV) :- K=:=N | WV=WV0.
+wrap_vec_elems(K,N,WV0,WV) :- K < N |
+	set_vector_element(WV0,K,VK,WVK,WV1),
+	wrap(VK,WVK),
+	wrap_vec_elems(~(K+1),N,WV1,WV).
+
+wrap_funct_elems(N,N,F,L,LT,WF) :-
+	LT=[], functor_table:(WF=..L).
+wrap_funct_elems(K,N,F,L,LT,WF) :- K1 := K+1, arg(K1,F,FK) |
+	wrap(FK,WFK),
+	LT=[WFK|LTT],
+	wrap_funct_elems(K1,N,F,L,LTT,WF).
+
+unwrap(WTerm,Term):- unwrap(WTerm,Term,[],_).
+unwrap(WTerm,Term,NVT):- unwrap(WTerm,Term,[],NVT).
+
+unwrap(variable(VarName),Term)-VT :- get_variable(VarName,Term)-VT.
+unwrap(atom(Atom),Term)-VT :- Term = Atom.
+unwrap(integer(Int),Term)-VT :- Term = Int.
+unwrap(floating_point(Float),Term)-VT :- Term = Float.
+unwrap(list([CAR|CDR]),Term)-VT :-
+    Term = [NCAR|NCDR],
+    unwrap(CAR,NCAR)-VT,
+    unwrap(CDR,NCDR)-VT.
+unwrap(functor(Func),Term)-VT :- functor(Func,PF,N) |
+    unwrap_functor(0,N,Func,[PF|Args],Args,Term)-VT.
+unwrap(vector(Vec),Term)-VT :- vector(Vec,N) |
+    unwrap_vector(0,N,Vec,Term)-VT.
+unwrap(string(String),Term)-VT :- Term = String.
+unwrap(unknown(UNKN),Term)-VT :- Term = UNKN.
+
+unwrap_functor(N,N,_Func,List,Args,Term,VT,NVT) :-
+	Args=[],
+	functor_table:(Term=..List),
+	NVT=VT.
+unwrap_functor(M,N,Func,List,Args,Term,VT,NVT):-
+    M < N, M1:= M+1, arg(M1,Func,OE) |
+	unwrap(OE,NE,VT,VT1),
+	Args=[NE|Args1],
+	unwrap_functor(M1,N,Func,List,Args1,Term,VT1,NVT).
+
+unwrap_vector(N,N,OV,NV,VT,NVT):- NV=OV, NVT=VT.
+unwrap_vector(M,N,OV,NV,VT,NVT):- M =\= N |
+	M1:= M+1,
+	set_vector_element(OV,M,OE,NE,OV2),
+	unwrap(OE,NE,VT,VT2),
+	unwrap_vector(M1,N,OV2,NV,VT2,NVT).
+
+
+get_variable("_",_Term,VT,NVT):- 
+    NVT = VT.
+otherwise.
+get_variable(VarName,Term,VT,NVT):- 
+    get_variable2(VarName,Term,VT,NVT).
+
+get_variable2(VarName,Term,[],NVT):-
+    NVT = [var(VarName,Term)].
+get_variable2(VarName,Term,[var(VarName,Var)|VT],NVT):-
+    NVT = [var(VarName,Var)|VT],
+    Term= Var.
+otherwise.
+get_variable2(VarName,Term,[Var|VT],NVT):-
+    NVT=[Var|NVT2],
+    get_variable2(VarName,Term,VT,NVT2).
+
+unbound(X,Result) :- inline:"
+{
+  q tmp = %0;
+  while (isref(tmp)) {
+    q tmp1 = derefone(tmp);
+    if (tmp==tmp1 || (isref(tmp1) && tmp==derefone(tmp1))) {
+      goto really_unbound;
+    }
+    tmp = tmp1;
+  }
+  goto %f;
+ really_unbound:
+  %1 = makeint((q*)tmp-new_space_top);
+}":[X+any,Addr-int] |
+    Result={0,Addr,X}.
+otherwise.
+unbound(X,Result) :-
+    Result={X}.

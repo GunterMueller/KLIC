@@ -1,0 +1,3034 @@
+/* Compiled by KLIC compiler version 3.01 (Sun, 10 Apr 2016 19:09:11 +0900) */
+#include <klic/klichdr.h>
+#include "atom.h"
+#include "funct.h"
+
+module module_main();
+Const struct predicate predicate_main_xmain_0 =
+   { module_main, 0, 0 };
+Const struct predicate predicate_main_xgo6__6_0 =
+   { module_main, 1, 0 };
+Const struct predicate predicate_main_xgo6__2_0 =
+   { module_main, 2, 0 };
+Const struct predicate predicate_main_xgo10__5_0 =
+   { module_main, 3, 0 };
+Const struct predicate predicate_main_xgo11__5_0 =
+   { module_main, 4, 0 };
+Const struct predicate predicate_main_xgo12__5_0 =
+   { module_main, 5, 0 };
+Const struct predicate predicate_main_xgo9__6_0 =
+   { module_main, 6, 0 };
+Const struct predicate predicate_main_xgo10__6_0 =
+   { module_main, 7, 0 };
+Const struct predicate predicate_main_xgo11__6_0 =
+   { module_main, 8, 0 };
+Const struct predicate predicate_main_xgo_3 =
+   { module_main, 9, 3 };
+Const struct predicate predicate_main_xplanes_7 =
+   { module_main, 10, 7 };
+Const struct predicate predicate_main_xplane_10 =
+   { module_main, 11, 10 };
+Const struct predicate predicate_main_xcol_13 =
+   { module_main, 12, 13 };
+Const struct predicate predicate_main_xpt_16 =
+   { module_main, 13, 16 };
+Const struct predicate predicate_main_xfilter_8 =
+   { module_main, 14, 8 };
+Const struct predicate predicate_main_xroute_14 =
+   { module_main, 15, 14 };
+Const struct predicate predicate_main_xbfilter_5 =
+   { module_main, 16, 5 };
+Const struct predicate predicate_main_xnode_7 =
+   { module_main, 17, 7 };
+Const struct predicate predicate_main_xgetin_3 =
+   { module_main, 18, 3 };
+Const struct predicate predicate_main_xcompute_6 =
+   { module_main, 19, 6 };
+Const struct predicate predicate_main_xchecklist_2 =
+   { module_main, 20, 2 };
+Const struct predicate predicate_main_xshow_7 =
+   { module_main, 21, 7 };
+Const struct predicate predicate_main_xputout_3 =
+   { module_main, 22, 3 };
+Const struct predicate predicate_main_xstart_2 =
+   { module_main, 23, 2 };
+Const struct predicate predicate_main_xacknowledged_3 =
+   { module_main, 24, 3 };
+Const struct predicate predicate_main_xacknowledged_4 =
+   { module_main, 25, 4 };
+Const struct predicate predicate_main_xgen_3 =
+   { module_main, 26, 3 };
+Const struct predicate predicate_main_xgen1_2 =
+   { module_main, 27, 2 };
+Const struct predicate predicate_main_xend_1 =
+   { module_main, 28, 1 };
+Const struct predicate predicate_main_xend1_1 =
+   { module_main, 29, 1 };
+declare_method_table_of(vector);
+
+module module_main(glbl, qp, allocp, toppred)
+  struct global_variables *glbl;
+  struct goalrec *qp;
+  register q *allocp;
+  Const struct predicate *toppred;
+{
+  q a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15;
+
+  q *reasonp;
+ module_top:
+  switch_on_pred() {
+    case_pred(0, main_0_top);
+    case_pred(1, go6__6_0_top);
+    case_pred(2, go6__2_0_top);
+    case_pred(3, go10__5_0_top);
+    case_pred(4, go11__5_0_top);
+    case_pred(5, go12__5_0_top);
+    case_pred(6, go9__6_0_top);
+    case_pred(7, go10__6_0_top);
+    case_pred(8, go11__6_0_top);
+    case_pred(9, go_3_top);
+    case_pred(10, planes_7_top);
+    case_pred(11, plane_10_top);
+    case_pred(12, col_13_top);
+    case_pred(13, pt_16_top);
+    case_pred(14, filter_8_top);
+    case_pred(15, route_14_top);
+    case_pred(16, bfilter_5_top);
+    case_pred(17, node_7_top);
+    case_pred(18, getin_3_top);
+    case_pred(19, compute_6_top);
+    case_pred(20, checklist_2_top);
+    case_pred(21, show_7_top);
+    case_pred(22, putout_3_top);
+    case_pred(23, start_2_top);
+    case_pred(24, acknowledged_3_top);
+    case_pred(25, acknowledged_4_top);
+    case_pred(26, gen_3_top);
+    case_pred(27, gen1_2_top);
+    case_pred(28, end_1_top);
+    last_case_pred(29, end1_1_top);
+  }
+
+ main_0_top: {
+  qp = qp->next;
+ main_0_clear_reason:
+  reasonp = reasons;
+ main_0_0:
+  execute(go6__2_0_0);
+  goto go6__2_0_ext_interrupt;
+ main_0_ext_interrupt:
+  reasonp = 0l;
+ main_0_interrupt:
+  goto interrupt_0;
+ }
+
+ go6__6_0_top: {
+  q x0;
+  qp = qp->next;
+ go6__6_0_clear_reason:
+  reasonp = reasons;
+ go6__6_0_0:
+  a0 = makeint(6L);
+  a1 = makeint(6L);
+  allocp[0] = x0 = makeref(&allocp[0]);
+  a2 = x0;
+  allocp += 1;
+  execute(go_3_0);
+  goto go_3_ext_interrupt;
+ go6__6_0_ext_interrupt:
+  reasonp = 0l;
+ go6__6_0_interrupt:
+  goto interrupt_0;
+ }
+
+ go6__2_0_top: {
+  q x0;
+  qp = qp->next;
+ go6__2_0_clear_reason:
+  reasonp = reasons;
+ go6__2_0_0:
+  a0 = makeint(6L);
+  a1 = makeint(2L);
+  allocp[0] = x0 = makeref(&allocp[0]);
+  a2 = x0;
+  allocp += 1;
+  execute(go_3_0);
+  goto go_3_ext_interrupt;
+ go6__2_0_ext_interrupt:
+  reasonp = 0l;
+ go6__2_0_interrupt:
+  toppred = &predicate_main_xgo6__2_0;
+  goto interrupt_0;
+ }
+
+ go10__5_0_top: {
+  q x0;
+  qp = qp->next;
+ go10__5_0_clear_reason:
+  reasonp = reasons;
+ go10__5_0_0:
+  a0 = makeint(10L);
+  a1 = makeint(5L);
+  allocp[0] = x0 = makeref(&allocp[0]);
+  a2 = x0;
+  allocp += 1;
+  execute(go_3_0);
+  goto go_3_ext_interrupt;
+ go10__5_0_ext_interrupt:
+  reasonp = 0l;
+ go10__5_0_interrupt:
+  goto interrupt_0;
+ }
+
+ go11__5_0_top: {
+  q x0;
+  qp = qp->next;
+ go11__5_0_clear_reason:
+  reasonp = reasons;
+ go11__5_0_0:
+  a0 = makeint(11L);
+  a1 = makeint(5L);
+  allocp[0] = x0 = makeref(&allocp[0]);
+  a2 = x0;
+  allocp += 1;
+  execute(go_3_0);
+  goto go_3_ext_interrupt;
+ go11__5_0_ext_interrupt:
+  reasonp = 0l;
+ go11__5_0_interrupt:
+  goto interrupt_0;
+ }
+
+ go12__5_0_top: {
+  q x0;
+  qp = qp->next;
+ go12__5_0_clear_reason:
+  reasonp = reasons;
+ go12__5_0_0:
+  a0 = makeint(12L);
+  a1 = makeint(5L);
+  allocp[0] = x0 = makeref(&allocp[0]);
+  a2 = x0;
+  allocp += 1;
+  execute(go_3_0);
+  goto go_3_ext_interrupt;
+ go12__5_0_ext_interrupt:
+  reasonp = 0l;
+ go12__5_0_interrupt:
+  goto interrupt_0;
+ }
+
+ go9__6_0_top: {
+  q x0;
+  qp = qp->next;
+ go9__6_0_clear_reason:
+  reasonp = reasons;
+ go9__6_0_0:
+  a0 = makeint(9L);
+  a1 = makeint(6L);
+  allocp[0] = x0 = makeref(&allocp[0]);
+  a2 = x0;
+  allocp += 1;
+  execute(go_3_0);
+  goto go_3_ext_interrupt;
+ go9__6_0_ext_interrupt:
+  reasonp = 0l;
+ go9__6_0_interrupt:
+  goto interrupt_0;
+ }
+
+ go10__6_0_top: {
+  q x0;
+  qp = qp->next;
+ go10__6_0_clear_reason:
+  reasonp = reasons;
+ go10__6_0_0:
+  a0 = makeint(10L);
+  a1 = makeint(6L);
+  allocp[0] = x0 = makeref(&allocp[0]);
+  a2 = x0;
+  allocp += 1;
+  execute(go_3_0);
+  goto go_3_ext_interrupt;
+ go10__6_0_ext_interrupt:
+  reasonp = 0l;
+ go10__6_0_interrupt:
+  goto interrupt_0;
+ }
+
+ go11__6_0_top: {
+  q x0;
+  qp = qp->next;
+ go11__6_0_clear_reason:
+  reasonp = reasons;
+ go11__6_0_0:
+  a0 = makeint(11L);
+  a1 = makeint(6L);
+  allocp[0] = x0 = makeref(&allocp[0]);
+  a2 = x0;
+  allocp += 1;
+  execute(go_3_0);
+  goto go_3_ext_interrupt;
+ go11__6_0_ext_interrupt:
+  reasonp = 0l;
+ go11__6_0_interrupt:
+  goto interrupt_0;
+ }
+
+ go_3_top: {
+  q x0, x1, x2, x3, x4, x5, x6, x7, x8;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  qp = qp->next;
+ go_3_clear_reason:
+  reasonp = reasons;
+ go_3_0:
+ go_3_1:
+  if (!isint(a0)) goto go_3_4;
+  x0 = makeint(5L);
+  gblt_greater(a0,x0,go_3_5);
+ go_3_2:
+  if (!isint(a1)) goto go_3_3;
+  x1 = makeint(0L);
+  gblt_greater(a1,x1,go_3_5);
+  x2 = makeint(2L);
+  bblt_sub_no_check(a0,x2,x3);
+  x4 = makesym(atom_yes);
+  unify_value(a2, x4);
+  allocp[0] = (q)qp;
+  allocp[1] = (q)(&predicate_main_xstart_2);
+  allocp[2] = x5 = makeref(&allocp[2]);
+  allocp[3] = x6 = makeref(&allocp[3]);
+  allocp[4] = (q)(struct goalrec*)&allocp[0];
+  allocp[5] = (q)(&predicate_main_xgen_3);
+  allocp[6] = x3;
+  allocp[7] = a0;
+  allocp[8] = x7 = makeref(&allocp[8]);
+  x8 = a0;
+  a2 = x7;
+  a3 = a1;
+  a4 = makesym(atom_done);
+  a5 = x5;
+  a6 = x6;
+  a1 = x8;
+  a0 = makeint(0L);
+  qp = (struct goalrec*)&allocp[4];
+  allocp += 9;
+  execute(planes_7_0);
+  goto planes_7_ext_interrupt;
+ go_3_3:
+  if (!isref(a1)) goto go_3_5;
+  deref_and_jump(a1,go_3_2);
+  *reasonp++ =  a1;
+  goto go_3_5;
+ go_3_4:
+  if (!isref(a0)) goto go_3_5;
+  deref_and_jump(a0,go_3_1);
+  *reasonp++ =  a0;
+  goto go_3_5;
+ go_3_5:
+  otherwise(go_3_interrupt);
+  x0 = makesym(atom_no);
+  unify_value(a2, x0);
+  proceed();
+ go_3_ext_interrupt:
+  reasonp = 0l;
+ go_3_interrupt:
+  toppred = &predicate_main_xgo_3;
+  goto interrupt_3;
+ }
+
+ planes_7_top: {
+  q x0, x1, x2, x3, x4;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  a3 = qp->args[3];
+  a4 = qp->args[4];
+  a5 = qp->args[5];
+  a6 = qp->args[6];
+  qp = qp->next;
+ planes_7_clear_reason:
+  reasonp = reasons;
+ planes_7_0:
+ planes_7_1:
+  switch (ptagof(a0)) {
+ case ATOMIC:
+  if (!isint(a0)) goto planes_7_5;
+ planes_7_2:
+ planes_7_3:
+  if (!isint(a1)) goto planes_7_4;
+  gblt_less(a0,a1,planes_7_5);
+  x0 = makeint(1L);
+  bblt_add_no_check(a0,x0,x1);
+  allocp[0] = (q)qp;
+  allocp[1] = (q)(&predicate_main_xplanes_7);
+  allocp[2] = x1;
+  allocp[3] = a1;
+  allocp[4] = x2 = makeref(&allocp[4]);
+  allocp[5] = a3;
+  allocp[6] = x3 = makeref(&allocp[6]);
+  allocp[7] = a5;
+  allocp[8] = a6;
+  allocp[9] = (q)(struct goalrec*)&allocp[0];
+  allocp[10] = (q)(&predicate_main_xplane_10);
+  allocp[11] = makeint(1L);
+  allocp[12] = a0;
+  allocp[13] = a1;
+  allocp[14] = x4 = makeref(&allocp[14]);
+  allocp[15] = a2;
+  allocp[16] = x2;
+  allocp[17] = a3;
+  allocp[18] = a4;
+  allocp[19] = x3;
+  allocp[20] = a6;
+  a0 = a1;
+  a1 = x4;
+  qp = (struct goalrec*)&allocp[9];
+  allocp += 21;
+  execute(gen1_2_0);
+  goto gen1_2_ext_interrupt;
+ planes_7_4:
+  if (!isref(a1)) goto planes_7_5;
+  deref_and_jump(a1,planes_7_3);
+  *reasonp++ =  a1;
+  goto planes_7_5;
+ case VARREF:
+  deref_and_jump(a0,planes_7_1);
+  *reasonp++ =  a0;
+  goto planes_7_interrupt;
+  };
+  goto planes_7_5;
+ planes_7_5:
+ planes_7_6:
+  if (isref(a0)) goto planes_7_7;
+  if_not_equal(a0, a1, planes_7_interrupt);
+  unify(a5, a4);
+  a0 = a2;
+  execute(end_1_clear_reason);
+  goto end_1_ext_interrupt;
+ planes_7_7:
+  deref_and_jump(a0,planes_7_6);
+  *reasonp++ =  a0;
+  goto planes_7_interrupt;
+ planes_7_ext_interrupt:
+  reasonp = 0l;
+ planes_7_interrupt:
+  toppred = &predicate_main_xplanes_7;
+  goto interrupt_7;
+ }
+
+ plane_10_top: {
+  q x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  a3 = qp->args[3];
+  a4 = qp->args[4];
+  a5 = qp->args[5];
+  a6 = qp->args[6];
+  a7 = qp->args[7];
+  a8 = qp->args[8];
+  a9 = qp->args[9];
+  qp = qp->next;
+ plane_10_clear_reason:
+  reasonp = reasons;
+ plane_10_0:
+ plane_10_1:
+  switch (ptagof(a4)) {
+ case CONS:
+  x0 = makeint(1L);
+  bblt_add_no_check_y(a0,x0,x1);
+  allocp[0] = x3 = makeref(&allocp[0]);
+  allocp[1] = x4 = makeref(&allocp[1]);
+  x2 = makecons(&allocp[0]);
+  allocp += 2;
+  unify_value(a5, x2);
+  allocp[0] = (q)qp;
+  allocp[1] = (q)(&predicate_main_xplane_10);
+  allocp[2] = x1;
+  allocp[3] = a1;
+  allocp[4] = a2;
+  allocp[5] = x5 = makeref(&allocp[5]);
+  x6 = cdr_of(a4);
+  allocp[6] = x6;
+  allocp[7] = x3;
+  allocp[8] = a6;
+  allocp[9] = x7 = makeref(&allocp[9]);
+  allocp[10] = a8;
+  allocp[11] = a9;
+  allocp[12] = x8 = makeref(&allocp[12]);
+  allocp[13] = NILATOM;
+  allocp[14] = x8;
+  x9 = create_vector(&allocp[13], 2, allocp);
+  x10 = a1;
+  x11 = a2;
+  a5 = a3;
+  x12 = car_of(a4);
+  a8 = x4;
+  x13 = a6;
+  a10 = a7;
+  a11 = x7;
+  a12 = a9;
+  a9 = x13;
+  a7 = x12;
+  a6 = x5;
+  a4 = x9;
+  a3 = x11;
+  a2 = x10;
+  a1 = makeint(0L);
+  qp = (struct goalrec*)&allocp[0];
+  allocp += 15;
+  execute(col_13_0);
+  goto col_13_ext_interrupt;
+ case ATOMIC:
+  if (a4 != NILATOM) goto plane_10_interrupt;
+  unify(a8, a7);
+  x0 = NILATOM;
+  unify_value(a5, x0);
+  a0 = a3;
+  execute(end1_1_0);
+  goto end1_1_ext_interrupt;
+ case VARREF:
+  deref_and_jump(a4,plane_10_1);
+  *reasonp++ =  a4;
+  goto plane_10_interrupt;
+  };
+  goto plane_10_interrupt;
+ plane_10_ext_interrupt:
+  reasonp = 0l;
+ plane_10_interrupt:
+  goto interrupt_10;
+ }
+
+ col_13_top: {
+  q x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  a3 = qp->args[3];
+  a4 = qp->args[4];
+  a5 = qp->args[5];
+  a6 = qp->args[6];
+  a7 = qp->args[7];
+  a8 = qp->args[8];
+  a9 = qp->args[9];
+  a10 = qp->args[10];
+  a11 = qp->args[11];
+  a12 = qp->args[12];
+  qp = qp->next;
+ col_13_clear_reason:
+  reasonp = reasons;
+ col_13_0:
+ col_13_1:
+  switch (ptagof(a5)) {
+ case CONS:
+ col_13_2:
+  switch (ptagof(a7)) {
+ case CONS:
+  x0 = makeint(1L);
+  bblt_add_no_check_y(a1,x0,x1);
+  x2 = makeint(1L);
+  bblt_sub_no_check_y(a3,x2,x3);
+  x4 = makeint(2L);
+  bblt_sub_no_check_y(a3,x4,x5);
+  allocp[0] = x6 = makeref(&allocp[0]);
+  allocp[1] = x7 = makeref(&allocp[1]);
+  allocp[2] = x6;
+  allocp[3] = x7;
+  x8 = create_vector(&allocp[2], 2, allocp);
+  allocp[4] = x10 = makeref(&allocp[4]);
+  allocp[5] = x8;
+  x9 = makecons(&allocp[4]);
+  allocp += 6;
+  unify_value(a6, x9);
+  allocp[0] = x11 = makeref(&allocp[0]);
+  allocp[1] = x12 = makeref(&allocp[1]);
+  allocp[2] = x11;
+  allocp[3] = x12;
+  x13 = create_vector(&allocp[2], 2, allocp);
+  allocp[4] = x15 = makeref(&allocp[4]);
+  allocp[5] = x13;
+  x14 = makecons(&allocp[4]);
+  allocp += 6;
+  unify_value(a8, x14);
+  allocp[0] = x16 = makeref(&allocp[0]);
+  allocp[1] = x17 = makeref(&allocp[1]);
+  allocp[2] = x16;
+  allocp[3] = x17;
+  x18 = create_vector(&allocp[2], 2, allocp);
+  allocp[4] = (q)qp;
+  allocp[5] = (q)(&predicate_main_xcol_13);
+  allocp[6] = a0;
+  allocp[7] = x1;
+  allocp[8] = a2;
+  allocp[9] = a3;
+  allocp[10] = x18;
+  x19 = cdr_of(a5);
+  allocp[11] = x19;
+  allocp[12] = x10;
+  x20 = cdr_of(a7);
+  allocp[13] = x20;
+  allocp[14] = x15;
+  allocp[15] = a9;
+  allocp[16] = x21 = makeref(&allocp[16]);
+  allocp[17] = a11;
+  allocp[18] = a12;
+  allocp[19] = x17;
+  allocp[20] = x16;
+  x22 = create_vector(&allocp[19], 2, allocp);
+  allocp[21] = x7;
+  allocp[22] = x6;
+  x23 = create_vector(&allocp[21], 2, allocp);
+  allocp[23] = x12;
+  allocp[24] = x11;
+  x24 = create_vector(&allocp[23], 2, allocp);
+  a3 = x5;
+  a6 = x23;
+  x25 = a4;
+  a8 = car_of(a5);
+  x26 = car_of(a7);
+  a11 = makeint(1L);
+  x27 = a9;
+  a13 = a10;
+  a14 = x21;
+  a15 = a12;
+  a12 = x27;
+  a10 = x24;
+  a9 = x26;
+  a7 = x25;
+  a5 = x22;
+  a4 = x3;
+  qp = (struct goalrec*)&allocp[4];
+  allocp += 25;
+  execute(pt_16_0);
+  goto pt_16_ext_interrupt;
+ case VARREF:
+  deref_and_jump(a7,col_13_2);
+  *reasonp++ =  a7;
+  goto col_13_3;
+  };
+  goto col_13_3;
+ case VARREF:
+  deref_and_jump(a5,col_13_1);
+  *reasonp++ =  a5;
+  goto col_13_3;
+  };
+  goto col_13_3;
+ col_13_3:
+ col_13_4:
+  switch (ptagof(a4)) {
+ case FUNCTOR:
+ col_13_5:
+  if (!isgobj(a4)) goto col_13_interrupt;
+  if (!isclass(a4,vector)) goto col_13_interrupt;
+  gblt_size_of_vector(a4,x0,col_13_interrupt);
+ col_13_6:
+  if (x0 != makeint(2L)) goto col_13_interrupt;
+  x2 = makeint(0L);
+  gblt_element_of_vector(a4,x2,x1,col_13_interrupt);
+  x4 = makeint(1L);
+  gblt_element_of_vector(a4,x4,x3,col_13_interrupt);
+ col_13_7:
+  switch (ptagof(a5)) {
+ case ATOMIC:
+  if (a5 != NILATOM) goto col_13_interrupt;
+ col_13_8:
+  switch (ptagof(a7)) {
+ case ATOMIC:
+  if (a7 != NILATOM) goto col_13_interrupt;
+  unify(a11, a10);
+  x5 = NILATOM;
+  unify_value(x3, x5);
+  x6 = NILATOM;
+  unify_value(a6, x6);
+  x7 = NILATOM;
+  unify_value(a8, x7);
+  proceed();
+ case VARREF:
+  deref_and_jump(a7,col_13_8);
+  *reasonp++ =  a7;
+  goto col_13_interrupt;
+  };
+  goto col_13_interrupt;
+ case VARREF:
+  deref_and_jump(a5,col_13_7);
+  *reasonp++ =  a5;
+  goto col_13_interrupt;
+  };
+  goto col_13_interrupt;
+ case VARREF:
+  deref_and_jump(a4,col_13_4);
+  *reasonp++ =  a4;
+  goto col_13_interrupt;
+  };
+  goto col_13_interrupt;
+ col_13_ext_interrupt:
+  reasonp = 0l;
+ col_13_interrupt:
+  toppred = &predicate_main_xcol_13;
+  goto interrupt_13;
+ }
+
+ pt_16_top: {
+  q x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31, x32, x33, x34, x35, x36, x37, x38, x39, x40, x41, x42, x43, x44, x45, x46, x47;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  a3 = qp->args[3];
+  a4 = qp->args[4];
+  a5 = qp->args[5];
+  a6 = qp->args[6];
+  a7 = qp->args[7];
+  a8 = qp->args[8];
+  a9 = qp->args[9];
+  a10 = qp->args[10];
+  a11 = qp->args[11];
+  a12 = qp->args[12];
+  a13 = qp->args[13];
+  a14 = qp->args[14];
+  a15 = qp->args[15];
+  qp = qp->next;
+ pt_16_clear_reason:
+  reasonp = reasons;
+ pt_16_0:
+ pt_16_1:
+  switch (ptagof(a5)) {
+ case FUNCTOR:
+ pt_16_2:
+  if (!isgobj(a5)) goto pt_16_27;
+  if (!isclass(a5,vector)) goto pt_16_27;
+  gblt_size_of_vector(a5,x0,pt_16_27);
+ pt_16_3:
+  if (x0 != makeint(2L)) goto pt_16_27;
+  x2 = makeint(0L);
+  gblt_element_of_vector(a5,x2,x1,pt_16_27);
+  x4 = makeint(1L);
+  gblt_element_of_vector(a5,x4,x3,pt_16_27);
+ pt_16_4:
+  switch (ptagof(a6)) {
+ case FUNCTOR:
+ pt_16_5:
+  if (!isgobj(a6)) goto pt_16_27;
+  if (!isclass(a6,vector)) goto pt_16_27;
+  gblt_size_of_vector(a6,x5,pt_16_27);
+ pt_16_6:
+  if (x5 != makeint(2L)) goto pt_16_27;
+  x7 = makeint(0L);
+  gblt_element_of_vector(a6,x7,x6,pt_16_27);
+  x9 = makeint(1L);
+  gblt_element_of_vector(a6,x9,x8,pt_16_27);
+ pt_16_7:
+  switch (ptagof(a7)) {
+ case FUNCTOR:
+ pt_16_8:
+  if (!isgobj(a7)) goto pt_16_27;
+  if (!isclass(a7,vector)) goto pt_16_27;
+  gblt_size_of_vector(a7,x10,pt_16_27);
+ pt_16_9:
+  if (x10 != makeint(2L)) goto pt_16_27;
+  x12 = makeint(0L);
+  gblt_element_of_vector(a7,x12,x11,pt_16_27);
+  x14 = makeint(1L);
+  gblt_element_of_vector(a7,x14,x13,pt_16_27);
+ pt_16_10:
+  switch (ptagof(a8)) {
+ case FUNCTOR:
+ pt_16_11:
+  if (!isgobj(a8)) goto pt_16_27;
+  if (!isclass(a8,vector)) goto pt_16_27;
+  gblt_size_of_vector(a8,x15,pt_16_27);
+ pt_16_12:
+  if (x15 != makeint(2L)) goto pt_16_27;
+  x17 = makeint(0L);
+  gblt_element_of_vector(a8,x17,x16,pt_16_27);
+  x19 = makeint(1L);
+  gblt_element_of_vector(a8,x19,x18,pt_16_27);
+ pt_16_13:
+  switch (ptagof(a9)) {
+ case FUNCTOR:
+ pt_16_14:
+  if (!isgobj(a9)) goto pt_16_27;
+  if (!isclass(a9,vector)) goto pt_16_27;
+  gblt_size_of_vector(a9,x20,pt_16_27);
+ pt_16_15:
+  if (x20 != makeint(2L)) goto pt_16_27;
+  x22 = makeint(0L);
+  gblt_element_of_vector(a9,x22,x21,pt_16_27);
+  x24 = makeint(1L);
+  gblt_element_of_vector(a9,x24,x23,pt_16_27);
+ pt_16_16:
+  switch (ptagof(a10)) {
+ case FUNCTOR:
+ pt_16_17:
+  if (!isgobj(a10)) goto pt_16_27;
+  if (!isclass(a10,vector)) goto pt_16_27;
+  gblt_size_of_vector(a10,x25,pt_16_27);
+ pt_16_18:
+  if (x25 != makeint(2L)) goto pt_16_27;
+  x27 = makeint(0L);
+  gblt_element_of_vector(a10,x27,x26,pt_16_27);
+  x29 = makeint(1L);
+  gblt_element_of_vector(a10,x29,x28,pt_16_27);
+ pt_16_19:
+  if (!isint(a0)) goto pt_16_26;
+  x30 = makeint(2L);
+  gblt_less_or_eq(x30,a0,pt_16_27);
+ pt_16_20:
+  if (!isint(a3)) goto pt_16_25;
+  gblt_less(a0,a3,pt_16_27);
+ pt_16_21:
+  if (!isint(a1)) goto pt_16_24;
+  x31 = makeint(1L);
+  gblt_less_or_eq(x31,a1,pt_16_27);
+  gblt_less_or_eq(a1,a3,pt_16_27);
+ pt_16_22:
+  if (!isint(a2)) goto pt_16_23;
+  x32 = makeint(1L);
+  gblt_less_or_eq(x32,a2,pt_16_27);
+  gblt_less_or_eq(a2,a3,pt_16_27);
+  unify(a14, a13);
+  allocp[0] = (q)qp;
+  allocp[1] = (q)(&predicate_main_xnode_7);
+  allocp[2] = a0;
+  allocp[3] = a1;
+  allocp[4] = a2;
+  allocp[5] = x33 = makeref(&allocp[5]);
+  allocp[6] = x34 = makeref(&allocp[6]);
+  allocp[7] = a11;
+  allocp[8] = a12;
+  allocp[9] = makesym(functor_send_1);
+  allocp[10] = a11;
+  x35 = makefunctor(&allocp[9]);
+  allocp[11] = (q)(struct goalrec*)&allocp[0];
+  allocp[12] = (q)(&predicate_main_xfilter_8);
+  allocp[13] = a15;
+  allocp[14] = x26;
+  allocp[15] = x23;
+  allocp[16] = x35;
+  allocp[17] = x36 = makeref(&allocp[17]);
+  allocp[18] = NILATOM;
+  allocp[19] = x37 = makeref(&allocp[19]);
+  allocp[20] = NILATOM;
+  allocp[21] = (q)(struct goalrec*)&allocp[11];
+  allocp[22] = (q)(&predicate_main_xfilter_8);
+  allocp[23] = a15;
+  allocp[24] = x21;
+  allocp[25] = x28;
+  allocp[26] = makesym(atom_none);
+  allocp[27] = x38 = makeref(&allocp[27]);
+  allocp[28] = x36;
+  allocp[29] = x39 = makeref(&allocp[29]);
+  allocp[30] = x37;
+  allocp[31] = (q)(struct goalrec*)&allocp[21];
+  allocp[32] = (q)(&predicate_main_xfilter_8);
+  allocp[33] = a15;
+  allocp[34] = x16;
+  allocp[35] = x8;
+  allocp[36] = makesym(atom_none);
+  allocp[37] = x40 = makeref(&allocp[37]);
+  allocp[38] = x38;
+  allocp[39] = x41 = makeref(&allocp[39]);
+  allocp[40] = x39;
+  allocp[41] = (q)(struct goalrec*)&allocp[31];
+  allocp[42] = (q)(&predicate_main_xfilter_8);
+  allocp[43] = a15;
+  allocp[44] = x11;
+  allocp[45] = x3;
+  allocp[46] = makesym(atom_none);
+  allocp[47] = x42 = makeref(&allocp[47]);
+  allocp[48] = x40;
+  allocp[49] = x43 = makeref(&allocp[49]);
+  allocp[50] = x41;
+  allocp[51] = makesym(functor_send_1);
+  allocp[52] = a11;
+  x44 = makefunctor(&allocp[51]);
+  allocp[53] = (q)(struct goalrec*)&allocp[41];
+  allocp[54] = (q)(&predicate_main_xfilter_8);
+  allocp[55] = a15;
+  allocp[56] = x6;
+  allocp[57] = x18;
+  allocp[58] = x44;
+  allocp[59] = x45 = makeref(&allocp[59]);
+  allocp[60] = x42;
+  allocp[61] = x46 = makeref(&allocp[61]);
+  allocp[62] = x43;
+  allocp[63] = makesym(functor_send_1);
+  allocp[64] = a11;
+  x47 = makefunctor(&allocp[63]);
+  a0 = a15;
+  a1 = x1;
+  a2 = x13;
+  a3 = x47;
+  a4 = x33;
+  a5 = x45;
+  a6 = x34;
+  a7 = x46;
+  qp = (struct goalrec*)&allocp[53];
+  allocp += 65;
+  execute(filter_8_0);
+  goto filter_8_ext_interrupt;
+ pt_16_23:
+  if (!isref(a2)) goto pt_16_27;
+  deref_and_jump(a2,pt_16_22);
+  *reasonp++ =  a2;
+  goto pt_16_27;
+ pt_16_24:
+  if (!isref(a1)) goto pt_16_27;
+  deref_and_jump(a1,pt_16_21);
+  *reasonp++ =  a1;
+  goto pt_16_27;
+ pt_16_25:
+  if (!isref(a3)) goto pt_16_27;
+  deref_and_jump(a3,pt_16_20);
+  *reasonp++ =  a3;
+  goto pt_16_27;
+ pt_16_26:
+  if (!isref(a0)) goto pt_16_27;
+  deref_and_jump(a0,pt_16_19);
+  *reasonp++ =  a0;
+  goto pt_16_27;
+ case VARREF:
+  deref_and_jump(a10,pt_16_16);
+  *reasonp++ =  a10;
+  goto pt_16_27;
+  };
+  goto pt_16_27;
+ case VARREF:
+  deref_and_jump(a9,pt_16_13);
+  *reasonp++ =  a9;
+  goto pt_16_27;
+  };
+  goto pt_16_27;
+ case VARREF:
+  deref_and_jump(a8,pt_16_10);
+  *reasonp++ =  a8;
+  goto pt_16_27;
+  };
+  goto pt_16_27;
+ case VARREF:
+  deref_and_jump(a7,pt_16_7);
+  *reasonp++ =  a7;
+  goto pt_16_27;
+  };
+  goto pt_16_27;
+ case VARREF:
+  deref_and_jump(a6,pt_16_4);
+  *reasonp++ =  a6;
+  goto pt_16_27;
+  };
+  goto pt_16_27;
+ case VARREF:
+  deref_and_jump(a5,pt_16_1);
+  *reasonp++ =  a5;
+  goto pt_16_27;
+  };
+  goto pt_16_27;
+ pt_16_27:
+ pt_16_28:
+  switch (ptagof(a0)) {
+ case ATOMIC:
+ pt_16_29:
+  if (a0 != makeint(1L)) goto pt_16_54;
+ pt_16_30:
+  switch (ptagof(a5)) {
+ case FUNCTOR:
+ pt_16_31:
+  if (!isgobj(a5)) goto pt_16_54;
+  if (!isclass(a5,vector)) goto pt_16_54;
+  gblt_size_of_vector(a5,x0,pt_16_54);
+ pt_16_32:
+  if (x0 != makeint(2L)) goto pt_16_54;
+  x2 = makeint(0L);
+  gblt_element_of_vector(a5,x2,x1,pt_16_54);
+  x4 = makeint(1L);
+  gblt_element_of_vector(a5,x4,x3,pt_16_54);
+ pt_16_33:
+  switch (ptagof(a6)) {
+ case FUNCTOR:
+ pt_16_34:
+  if (!isgobj(a6)) goto pt_16_54;
+  if (!isclass(a6,vector)) goto pt_16_54;
+  gblt_size_of_vector(a6,x5,pt_16_54);
+ pt_16_35:
+  if (x5 != makeint(2L)) goto pt_16_54;
+  x7 = makeint(0L);
+  gblt_element_of_vector(a6,x7,x6,pt_16_54);
+  x9 = makeint(1L);
+  gblt_element_of_vector(a6,x9,x8,pt_16_54);
+ pt_16_36:
+  switch (ptagof(a7)) {
+ case FUNCTOR:
+ pt_16_37:
+  if (!isgobj(a7)) goto pt_16_54;
+  if (!isclass(a7,vector)) goto pt_16_54;
+  gblt_size_of_vector(a7,x10,pt_16_54);
+ pt_16_38:
+  if (x10 != makeint(2L)) goto pt_16_54;
+  x12 = makeint(0L);
+  gblt_element_of_vector(a7,x12,x11,pt_16_54);
+  x14 = makeint(1L);
+  gblt_element_of_vector(a7,x14,x13,pt_16_54);
+ pt_16_39:
+  switch (ptagof(a8)) {
+ case FUNCTOR:
+ pt_16_40:
+  if (!isgobj(a8)) goto pt_16_54;
+  if (!isclass(a8,vector)) goto pt_16_54;
+  gblt_size_of_vector(a8,x15,pt_16_54);
+ pt_16_41:
+  if (x15 != makeint(2L)) goto pt_16_54;
+  x17 = makeint(0L);
+  gblt_element_of_vector(a8,x17,x16,pt_16_54);
+  x19 = makeint(1L);
+  gblt_element_of_vector(a8,x19,x18,pt_16_54);
+ pt_16_42:
+  switch (ptagof(a9)) {
+ case FUNCTOR:
+ pt_16_43:
+  if (!isgobj(a9)) goto pt_16_54;
+  if (!isclass(a9,vector)) goto pt_16_54;
+  gblt_size_of_vector(a9,x20,pt_16_54);
+ pt_16_44:
+  if (x20 != makeint(2L)) goto pt_16_54;
+  x22 = makeint(0L);
+  gblt_element_of_vector(a9,x22,x21,pt_16_54);
+  x24 = makeint(1L);
+  gblt_element_of_vector(a9,x24,x23,pt_16_54);
+ pt_16_45:
+  switch (ptagof(a10)) {
+ case FUNCTOR:
+ pt_16_46:
+  if (!isgobj(a10)) goto pt_16_54;
+  if (!isclass(a10,vector)) goto pt_16_54;
+  gblt_size_of_vector(a10,x25,pt_16_54);
+ pt_16_47:
+  if (x25 != makeint(2L)) goto pt_16_54;
+  x27 = makeint(0L);
+  gblt_element_of_vector(a10,x27,x26,pt_16_54);
+  x29 = makeint(1L);
+  gblt_element_of_vector(a10,x29,x28,pt_16_54);
+ pt_16_48:
+  if (!isint(a1)) goto pt_16_53;
+  x30 = makeint(1L);
+  gblt_less_or_eq(x30,a1,pt_16_54);
+ pt_16_49:
+  if (!isint(a3)) goto pt_16_52;
+  gblt_less_or_eq(a1,a3,pt_16_54);
+ pt_16_50:
+  if (!isint(a2)) goto pt_16_51;
+  x31 = makeint(1L);
+  gblt_less_or_eq(x31,a2,pt_16_54);
+  gblt_less_or_eq(a2,a3,pt_16_54);
+  allocp[0] = makesym(functor_step_3);
+  allocp[1] = makeint(0L);
+  allocp[2] = x33 = makeref(&allocp[2]);
+  allocp[3] = x34 = makeref(&allocp[3]);
+  x32 = makefunctor(&allocp[0]);
+  allocp[4] = makesym(functor_step_3);
+  allocp[5] = makeint(1L);
+  allocp[6] = x36 = makeref(&allocp[6]);
+  allocp[7] = x37 = makeref(&allocp[7]);
+  x35 = makefunctor(&allocp[4]);
+  allocp[8] = x39 = makeref(&allocp[8]);
+  allocp[9] = x35;
+  x38 = makecons(&allocp[8]);
+  allocp[10] = x38;
+  allocp[11] = x32;
+  x40 = makecons(&allocp[10]);
+  allocp += 12;
+  unify_value(x8, x40);
+  allocp[0] = NILATOM;
+  allocp[1] = x36;
+  x41 = makecons(&allocp[0]);
+  allocp[2] = x41;
+  allocp[3] = x33;
+  x42 = makecons(&allocp[2]);
+  allocp[4] = (q)qp;
+  allocp[5] = (q)(&predicate_main_xnode_7);
+  allocp[6] = makeint(1L);
+  allocp[7] = a1;
+  allocp[8] = a2;
+  allocp[9] = x42;
+  allocp[10] = x43 = makeref(&allocp[10]);
+  allocp[11] = a11;
+  allocp[12] = a12;
+  allocp[13] = (q)(struct goalrec*)&allocp[4];
+  allocp[14] = (q)(&predicate_main_xroute_14);
+  allocp[15] = a15;
+  allocp[16] = x1;
+  allocp[17] = x6;
+  allocp[18] = x11;
+  allocp[19] = x16;
+  allocp[20] = x21;
+  allocp[21] = x26;
+  allocp[22] = x3;
+  allocp[23] = x39;
+  allocp[24] = x13;
+  allocp[25] = x18;
+  allocp[26] = x23;
+  allocp[27] = x28;
+  allocp[28] = x43;
+  a0 = x34;
+  a1 = x37;
+  a2 = a13;
+  a3 = a14;
+  qp = (struct goalrec*)&allocp[13];
+  allocp += 29;
+  execute(acknowledged_4_clear_reason);
+  goto acknowledged_4_ext_interrupt;
+ pt_16_51:
+  if (!isref(a2)) goto pt_16_54;
+  deref_and_jump(a2,pt_16_50);
+  *reasonp++ =  a2;
+  goto pt_16_54;
+ pt_16_52:
+  if (!isref(a3)) goto pt_16_54;
+  deref_and_jump(a3,pt_16_49);
+  *reasonp++ =  a3;
+  goto pt_16_54;
+ pt_16_53:
+  if (!isref(a1)) goto pt_16_54;
+  deref_and_jump(a1,pt_16_48);
+  *reasonp++ =  a1;
+  goto pt_16_54;
+ case VARREF:
+  deref_and_jump(a10,pt_16_45);
+  *reasonp++ =  a10;
+  goto pt_16_54;
+  };
+  goto pt_16_54;
+ case VARREF:
+  deref_and_jump(a9,pt_16_42);
+  *reasonp++ =  a9;
+  goto pt_16_54;
+  };
+  goto pt_16_54;
+ case VARREF:
+  deref_and_jump(a8,pt_16_39);
+  *reasonp++ =  a8;
+  goto pt_16_54;
+  };
+  goto pt_16_54;
+ case VARREF:
+  deref_and_jump(a7,pt_16_36);
+  *reasonp++ =  a7;
+  goto pt_16_54;
+  };
+  goto pt_16_54;
+ case VARREF:
+  deref_and_jump(a6,pt_16_33);
+  *reasonp++ =  a6;
+  goto pt_16_54;
+  };
+  goto pt_16_54;
+ case VARREF:
+  deref_and_jump(a5,pt_16_30);
+  *reasonp++ =  a5;
+  goto pt_16_54;
+  };
+  goto pt_16_54;
+ case VARREF:
+  deref_and_jump(a0,pt_16_28);
+  *reasonp++ =  a0;
+  goto pt_16_81;
+  };
+  goto pt_16_54;
+ pt_16_54:
+ pt_16_55:
+  if (isref(a0)) goto pt_16_80;
+  if_not_equal(a0, a3, pt_16_81);
+ pt_16_56:
+  switch (ptagof(a5)) {
+ case FUNCTOR:
+ pt_16_57:
+  if (!isgobj(a5)) goto pt_16_81;
+  if (!isclass(a5,vector)) goto pt_16_81;
+  gblt_size_of_vector(a5,x0,pt_16_81);
+ pt_16_58:
+  if (x0 != makeint(2L)) goto pt_16_81;
+  x2 = makeint(0L);
+  gblt_element_of_vector(a5,x2,x1,pt_16_81);
+  x4 = makeint(1L);
+  gblt_element_of_vector(a5,x4,x3,pt_16_81);
+ pt_16_59:
+  switch (ptagof(a6)) {
+ case FUNCTOR:
+ pt_16_60:
+  if (!isgobj(a6)) goto pt_16_81;
+  if (!isclass(a6,vector)) goto pt_16_81;
+  gblt_size_of_vector(a6,x5,pt_16_81);
+ pt_16_61:
+  if (x5 != makeint(2L)) goto pt_16_81;
+  x7 = makeint(0L);
+  gblt_element_of_vector(a6,x7,x6,pt_16_81);
+  x9 = makeint(1L);
+  gblt_element_of_vector(a6,x9,x8,pt_16_81);
+ pt_16_62:
+  switch (ptagof(a7)) {
+ case FUNCTOR:
+ pt_16_63:
+  if (!isgobj(a7)) goto pt_16_81;
+  if (!isclass(a7,vector)) goto pt_16_81;
+  gblt_size_of_vector(a7,x10,pt_16_81);
+ pt_16_64:
+  if (x10 != makeint(2L)) goto pt_16_81;
+  x12 = makeint(0L);
+  gblt_element_of_vector(a7,x12,x11,pt_16_81);
+  x14 = makeint(1L);
+  gblt_element_of_vector(a7,x14,x13,pt_16_81);
+ pt_16_65:
+  switch (ptagof(a8)) {
+ case FUNCTOR:
+ pt_16_66:
+  if (!isgobj(a8)) goto pt_16_81;
+  if (!isclass(a8,vector)) goto pt_16_81;
+  gblt_size_of_vector(a8,x15,pt_16_81);
+ pt_16_67:
+  if (x15 != makeint(2L)) goto pt_16_81;
+  x17 = makeint(0L);
+  gblt_element_of_vector(a8,x17,x16,pt_16_81);
+  x19 = makeint(1L);
+  gblt_element_of_vector(a8,x19,x18,pt_16_81);
+ pt_16_68:
+  switch (ptagof(a9)) {
+ case FUNCTOR:
+ pt_16_69:
+  if (!isgobj(a9)) goto pt_16_81;
+  if (!isclass(a9,vector)) goto pt_16_81;
+  gblt_size_of_vector(a9,x20,pt_16_81);
+ pt_16_70:
+  if (x20 != makeint(2L)) goto pt_16_81;
+  x22 = makeint(0L);
+  gblt_element_of_vector(a9,x22,x21,pt_16_81);
+  x24 = makeint(1L);
+  gblt_element_of_vector(a9,x24,x23,pt_16_81);
+ pt_16_71:
+  switch (ptagof(a10)) {
+ case FUNCTOR:
+ pt_16_72:
+  if (!isgobj(a10)) goto pt_16_81;
+  if (!isclass(a10,vector)) goto pt_16_81;
+  gblt_size_of_vector(a10,x25,pt_16_81);
+ pt_16_73:
+  if (x25 != makeint(2L)) goto pt_16_81;
+  x27 = makeint(0L);
+  gblt_element_of_vector(a10,x27,x26,pt_16_81);
+  x29 = makeint(1L);
+  gblt_element_of_vector(a10,x29,x28,pt_16_81);
+ pt_16_74:
+  if (!isint(a1)) goto pt_16_79;
+  x30 = makeint(1L);
+  gblt_less_or_eq(x30,a1,pt_16_81);
+ pt_16_75:
+  if (!isint(a0)) goto pt_16_78;
+  gblt_less_or_eq(a1,a0,pt_16_81);
+ pt_16_76:
+  if (!isint(a2)) goto pt_16_77;
+  x31 = makeint(1L);
+  gblt_less_or_eq(x31,a2,pt_16_81);
+  gblt_less_or_eq(a2,a0,pt_16_81);
+  allocp[0] = makesym(functor_step_3);
+  allocp[1] = makeint(0L);
+  allocp[2] = x33 = makeref(&allocp[2]);
+  allocp[3] = x34 = makeref(&allocp[3]);
+  x32 = makefunctor(&allocp[0]);
+  allocp[4] = makesym(functor_step_3);
+  allocp[5] = makeint(1L);
+  allocp[6] = x36 = makeref(&allocp[6]);
+  allocp[7] = x37 = makeref(&allocp[7]);
+  x35 = makefunctor(&allocp[4]);
+  allocp[8] = x39 = makeref(&allocp[8]);
+  allocp[9] = x35;
+  x38 = makecons(&allocp[8]);
+  allocp[10] = x38;
+  allocp[11] = x32;
+  x40 = makecons(&allocp[10]);
+  allocp += 12;
+  unify_value(x18, x40);
+  allocp[0] = NILATOM;
+  allocp[1] = x36;
+  x41 = makecons(&allocp[0]);
+  allocp[2] = x41;
+  allocp[3] = x33;
+  x42 = makecons(&allocp[2]);
+  allocp[4] = (q)qp;
+  allocp[5] = (q)(&predicate_main_xnode_7);
+  allocp[6] = a0;
+  allocp[7] = a1;
+  allocp[8] = a2;
+  allocp[9] = x42;
+  allocp[10] = x43 = makeref(&allocp[10]);
+  allocp[11] = a11;
+  allocp[12] = a12;
+  allocp[13] = (q)(struct goalrec*)&allocp[4];
+  allocp[14] = (q)(&predicate_main_xroute_14);
+  allocp[15] = a15;
+  allocp[16] = x1;
+  allocp[17] = x6;
+  allocp[18] = x11;
+  allocp[19] = x16;
+  allocp[20] = x21;
+  allocp[21] = x26;
+  allocp[22] = x3;
+  allocp[23] = x8;
+  allocp[24] = x13;
+  allocp[25] = x39;
+  allocp[26] = x23;
+  allocp[27] = x28;
+  allocp[28] = x43;
+  a0 = x34;
+  a1 = x37;
+  a2 = a13;
+  a3 = a14;
+  qp = (struct goalrec*)&allocp[13];
+  allocp += 29;
+  execute(acknowledged_4_clear_reason);
+  goto acknowledged_4_ext_interrupt;
+ pt_16_77:
+  if (!isref(a2)) goto pt_16_81;
+  deref_and_jump(a2,pt_16_76);
+  *reasonp++ =  a2;
+  goto pt_16_81;
+ pt_16_78:
+  if (!isref(a0)) goto pt_16_81;
+  deref_and_jump(a0,pt_16_75);
+  *reasonp++ =  a0;
+  goto pt_16_81;
+ pt_16_79:
+  if (!isref(a1)) goto pt_16_81;
+  deref_and_jump(a1,pt_16_74);
+  *reasonp++ =  a1;
+  goto pt_16_81;
+ case VARREF:
+  deref_and_jump(a10,pt_16_71);
+  *reasonp++ =  a10;
+  goto pt_16_81;
+  };
+  goto pt_16_81;
+ case VARREF:
+  deref_and_jump(a9,pt_16_68);
+  *reasonp++ =  a9;
+  goto pt_16_81;
+  };
+  goto pt_16_81;
+ case VARREF:
+  deref_and_jump(a8,pt_16_65);
+  *reasonp++ =  a8;
+  goto pt_16_81;
+  };
+  goto pt_16_81;
+ case VARREF:
+  deref_and_jump(a7,pt_16_62);
+  *reasonp++ =  a7;
+  goto pt_16_81;
+  };
+  goto pt_16_81;
+ case VARREF:
+  deref_and_jump(a6,pt_16_59);
+  *reasonp++ =  a6;
+  goto pt_16_81;
+  };
+  goto pt_16_81;
+ case VARREF:
+  deref_and_jump(a5,pt_16_56);
+  *reasonp++ =  a5;
+  goto pt_16_81;
+  };
+  goto pt_16_81;
+ pt_16_80:
+  deref_and_jump(a0,pt_16_55);
+  *reasonp++ =  a0;
+  goto pt_16_81;
+ pt_16_81:
+ pt_16_82:
+  switch (ptagof(a2)) {
+ case ATOMIC:
+ pt_16_83:
+  if (a2 != makeint(0L)) goto pt_16_108;
+ pt_16_84:
+  switch (ptagof(a5)) {
+ case FUNCTOR:
+ pt_16_85:
+  if (!isgobj(a5)) goto pt_16_108;
+  if (!isclass(a5,vector)) goto pt_16_108;
+  gblt_size_of_vector(a5,x0,pt_16_108);
+ pt_16_86:
+  if (x0 != makeint(2L)) goto pt_16_108;
+  x2 = makeint(0L);
+  gblt_element_of_vector(a5,x2,x1,pt_16_108);
+  x4 = makeint(1L);
+  gblt_element_of_vector(a5,x4,x3,pt_16_108);
+ pt_16_87:
+  switch (ptagof(a6)) {
+ case FUNCTOR:
+ pt_16_88:
+  if (!isgobj(a6)) goto pt_16_108;
+  if (!isclass(a6,vector)) goto pt_16_108;
+  gblt_size_of_vector(a6,x5,pt_16_108);
+ pt_16_89:
+  if (x5 != makeint(2L)) goto pt_16_108;
+  x7 = makeint(0L);
+  gblt_element_of_vector(a6,x7,x6,pt_16_108);
+  x9 = makeint(1L);
+  gblt_element_of_vector(a6,x9,x8,pt_16_108);
+ pt_16_90:
+  switch (ptagof(a7)) {
+ case FUNCTOR:
+ pt_16_91:
+  if (!isgobj(a7)) goto pt_16_108;
+  if (!isclass(a7,vector)) goto pt_16_108;
+  gblt_size_of_vector(a7,x10,pt_16_108);
+ pt_16_92:
+  if (x10 != makeint(2L)) goto pt_16_108;
+  x12 = makeint(0L);
+  gblt_element_of_vector(a7,x12,x11,pt_16_108);
+  x14 = makeint(1L);
+  gblt_element_of_vector(a7,x14,x13,pt_16_108);
+ pt_16_93:
+  switch (ptagof(a8)) {
+ case FUNCTOR:
+ pt_16_94:
+  if (!isgobj(a8)) goto pt_16_108;
+  if (!isclass(a8,vector)) goto pt_16_108;
+  gblt_size_of_vector(a8,x15,pt_16_108);
+ pt_16_95:
+  if (x15 != makeint(2L)) goto pt_16_108;
+  x17 = makeint(0L);
+  gblt_element_of_vector(a8,x17,x16,pt_16_108);
+  x19 = makeint(1L);
+  gblt_element_of_vector(a8,x19,x18,pt_16_108);
+ pt_16_96:
+  switch (ptagof(a9)) {
+ case FUNCTOR:
+ pt_16_97:
+  if (!isgobj(a9)) goto pt_16_108;
+  if (!isclass(a9,vector)) goto pt_16_108;
+  gblt_size_of_vector(a9,x20,pt_16_108);
+ pt_16_98:
+  if (x20 != makeint(2L)) goto pt_16_108;
+  x22 = makeint(0L);
+  gblt_element_of_vector(a9,x22,x21,pt_16_108);
+  x24 = makeint(1L);
+  gblt_element_of_vector(a9,x24,x23,pt_16_108);
+ pt_16_99:
+  switch (ptagof(a10)) {
+ case FUNCTOR:
+ pt_16_100:
+  if (!isgobj(a10)) goto pt_16_108;
+  if (!isclass(a10,vector)) goto pt_16_108;
+  gblt_size_of_vector(a10,x25,pt_16_108);
+ pt_16_101:
+  if (x25 != makeint(2L)) goto pt_16_108;
+  x27 = makeint(0L);
+  gblt_element_of_vector(a10,x27,x26,pt_16_108);
+  x29 = makeint(1L);
+  gblt_element_of_vector(a10,x29,x28,pt_16_108);
+ pt_16_102:
+  if (!isint(a0)) goto pt_16_107;
+  x30 = makeint(1L);
+  gblt_less_or_eq(x30,a0,pt_16_108);
+ pt_16_103:
+  if (!isint(a3)) goto pt_16_106;
+  gblt_less_or_eq(a0,a3,pt_16_108);
+ pt_16_104:
+  if (!isint(a1)) goto pt_16_105;
+  x31 = makeint(1L);
+  gblt_less_or_eq(x31,a1,pt_16_108);
+  gblt_less_or_eq(a1,a3,pt_16_108);
+  x32 = makeint(2L);
+  bblt_sub_no_check(a3,x32,x33);
+  allocp[0] = makesym(functor_step_3);
+  allocp[1] = x33;
+  allocp[2] = x35 = makeref(&allocp[2]);
+  allocp[3] = x36 = makeref(&allocp[3]);
+  x34 = makefunctor(&allocp[0]);
+  allocp[4] = x38 = makeref(&allocp[4]);
+  allocp[5] = x34;
+  x37 = makecons(&allocp[4]);
+  allocp += 6;
+  unify_value(x28, x37);
+  allocp[0] = NILATOM;
+  allocp[1] = x35;
+  x39 = makecons(&allocp[0]);
+  allocp[2] = (q)qp;
+  allocp[3] = (q)(&predicate_main_xnode_7);
+  allocp[4] = a0;
+  allocp[5] = a1;
+  allocp[6] = makeint(0L);
+  allocp[7] = x39;
+  allocp[8] = x40 = makeref(&allocp[8]);
+  allocp[9] = a11;
+  allocp[10] = a12;
+  allocp[11] = (q)(struct goalrec*)&allocp[2];
+  allocp[12] = (q)(&predicate_main_xroute_14);
+  allocp[13] = a15;
+  allocp[14] = x1;
+  allocp[15] = x6;
+  allocp[16] = x11;
+  allocp[17] = x16;
+  allocp[18] = x21;
+  allocp[19] = x26;
+  allocp[20] = x3;
+  allocp[21] = x8;
+  allocp[22] = x13;
+  allocp[23] = x18;
+  allocp[24] = x23;
+  allocp[25] = x38;
+  allocp[26] = x40;
+  a0 = x36;
+  a1 = a13;
+  a2 = a14;
+  qp = (struct goalrec*)&allocp[11];
+  allocp += 27;
+  execute(acknowledged_3_clear_reason);
+  goto acknowledged_3_ext_interrupt;
+ pt_16_105:
+  if (!isref(a1)) goto pt_16_108;
+  deref_and_jump(a1,pt_16_104);
+  *reasonp++ =  a1;
+  goto pt_16_108;
+ pt_16_106:
+  if (!isref(a3)) goto pt_16_108;
+  deref_and_jump(a3,pt_16_103);
+  *reasonp++ =  a3;
+  goto pt_16_108;
+ pt_16_107:
+  if (!isref(a0)) goto pt_16_108;
+  deref_and_jump(a0,pt_16_102);
+  *reasonp++ =  a0;
+  goto pt_16_108;
+ case VARREF:
+  deref_and_jump(a10,pt_16_99);
+  *reasonp++ =  a10;
+  goto pt_16_108;
+  };
+  goto pt_16_108;
+ case VARREF:
+  deref_and_jump(a9,pt_16_96);
+  *reasonp++ =  a9;
+  goto pt_16_108;
+  };
+  goto pt_16_108;
+ case VARREF:
+  deref_and_jump(a8,pt_16_93);
+  *reasonp++ =  a8;
+  goto pt_16_108;
+  };
+  goto pt_16_108;
+ case VARREF:
+  deref_and_jump(a7,pt_16_90);
+  *reasonp++ =  a7;
+  goto pt_16_108;
+  };
+  goto pt_16_108;
+ case VARREF:
+  deref_and_jump(a6,pt_16_87);
+  *reasonp++ =  a6;
+  goto pt_16_108;
+  };
+  goto pt_16_108;
+ case VARREF:
+  deref_and_jump(a5,pt_16_84);
+  *reasonp++ =  a5;
+  goto pt_16_108;
+  };
+  goto pt_16_108;
+ case VARREF:
+  deref_and_jump(a2,pt_16_82);
+  *reasonp++ =  a2;
+  goto pt_16_135;
+  };
+  goto pt_16_108;
+ pt_16_108:
+ pt_16_109:
+  if (isref(a2)) goto pt_16_134;
+  if_not_equal(a2, a4, pt_16_135);
+ pt_16_110:
+  switch (ptagof(a5)) {
+ case FUNCTOR:
+ pt_16_111:
+  if (!isgobj(a5)) goto pt_16_135;
+  if (!isclass(a5,vector)) goto pt_16_135;
+  gblt_size_of_vector(a5,x0,pt_16_135);
+ pt_16_112:
+  if (x0 != makeint(2L)) goto pt_16_135;
+  x2 = makeint(0L);
+  gblt_element_of_vector(a5,x2,x1,pt_16_135);
+  x4 = makeint(1L);
+  gblt_element_of_vector(a5,x4,x3,pt_16_135);
+ pt_16_113:
+  switch (ptagof(a6)) {
+ case FUNCTOR:
+ pt_16_114:
+  if (!isgobj(a6)) goto pt_16_135;
+  if (!isclass(a6,vector)) goto pt_16_135;
+  gblt_size_of_vector(a6,x5,pt_16_135);
+ pt_16_115:
+  if (x5 != makeint(2L)) goto pt_16_135;
+  x7 = makeint(0L);
+  gblt_element_of_vector(a6,x7,x6,pt_16_135);
+  x9 = makeint(1L);
+  gblt_element_of_vector(a6,x9,x8,pt_16_135);
+ pt_16_116:
+  switch (ptagof(a7)) {
+ case FUNCTOR:
+ pt_16_117:
+  if (!isgobj(a7)) goto pt_16_135;
+  if (!isclass(a7,vector)) goto pt_16_135;
+  gblt_size_of_vector(a7,x10,pt_16_135);
+ pt_16_118:
+  if (x10 != makeint(2L)) goto pt_16_135;
+  x12 = makeint(0L);
+  gblt_element_of_vector(a7,x12,x11,pt_16_135);
+  x14 = makeint(1L);
+  gblt_element_of_vector(a7,x14,x13,pt_16_135);
+ pt_16_119:
+  switch (ptagof(a8)) {
+ case FUNCTOR:
+ pt_16_120:
+  if (!isgobj(a8)) goto pt_16_135;
+  if (!isclass(a8,vector)) goto pt_16_135;
+  gblt_size_of_vector(a8,x15,pt_16_135);
+ pt_16_121:
+  if (x15 != makeint(2L)) goto pt_16_135;
+  x17 = makeint(0L);
+  gblt_element_of_vector(a8,x17,x16,pt_16_135);
+  x19 = makeint(1L);
+  gblt_element_of_vector(a8,x19,x18,pt_16_135);
+ pt_16_122:
+  switch (ptagof(a9)) {
+ case FUNCTOR:
+ pt_16_123:
+  if (!isgobj(a9)) goto pt_16_135;
+  if (!isclass(a9,vector)) goto pt_16_135;
+  gblt_size_of_vector(a9,x20,pt_16_135);
+ pt_16_124:
+  if (x20 != makeint(2L)) goto pt_16_135;
+  x22 = makeint(0L);
+  gblt_element_of_vector(a9,x22,x21,pt_16_135);
+  x24 = makeint(1L);
+  gblt_element_of_vector(a9,x24,x23,pt_16_135);
+ pt_16_125:
+  switch (ptagof(a10)) {
+ case FUNCTOR:
+ pt_16_126:
+  if (!isgobj(a10)) goto pt_16_135;
+  if (!isclass(a10,vector)) goto pt_16_135;
+  gblt_size_of_vector(a10,x25,pt_16_135);
+ pt_16_127:
+  if (x25 != makeint(2L)) goto pt_16_135;
+  x27 = makeint(0L);
+  gblt_element_of_vector(a10,x27,x26,pt_16_135);
+  x29 = makeint(1L);
+  gblt_element_of_vector(a10,x29,x28,pt_16_135);
+ pt_16_128:
+  if (!isint(a0)) goto pt_16_133;
+  x30 = makeint(1L);
+  gblt_less_or_eq(x30,a0,pt_16_135);
+ pt_16_129:
+  if (!isint(a3)) goto pt_16_132;
+  gblt_less_or_eq(a0,a3,pt_16_135);
+ pt_16_130:
+  if (!isint(a1)) goto pt_16_131;
+  x31 = makeint(1L);
+  gblt_less_or_eq(x31,a1,pt_16_135);
+  gblt_less_or_eq(a1,a3,pt_16_135);
+  x32 = makeint(2L);
+  bblt_sub_no_check(a3,x32,x33);
+  allocp[0] = makesym(functor_step_3);
+  allocp[1] = x33;
+  allocp[2] = x35 = makeref(&allocp[2]);
+  allocp[3] = x36 = makeref(&allocp[3]);
+  x34 = makefunctor(&allocp[0]);
+  allocp[4] = x38 = makeref(&allocp[4]);
+  allocp[5] = x34;
+  x37 = makecons(&allocp[4]);
+  allocp += 6;
+  unify_value(x23, x37);
+  allocp[0] = NILATOM;
+  allocp[1] = x35;
+  x39 = makecons(&allocp[0]);
+  allocp[2] = (q)qp;
+  allocp[3] = (q)(&predicate_main_xnode_7);
+  allocp[4] = a0;
+  allocp[5] = a1;
+  allocp[6] = a2;
+  allocp[7] = x39;
+  allocp[8] = x40 = makeref(&allocp[8]);
+  allocp[9] = a11;
+  allocp[10] = a12;
+  allocp[11] = (q)(struct goalrec*)&allocp[2];
+  allocp[12] = (q)(&predicate_main_xroute_14);
+  allocp[13] = a15;
+  allocp[14] = x1;
+  allocp[15] = x6;
+  allocp[16] = x11;
+  allocp[17] = x16;
+  allocp[18] = x21;
+  allocp[19] = x26;
+  allocp[20] = x3;
+  allocp[21] = x8;
+  allocp[22] = x13;
+  allocp[23] = x18;
+  allocp[24] = x38;
+  allocp[25] = x28;
+  allocp[26] = x40;
+  a0 = x36;
+  a1 = a13;
+  a2 = a14;
+  qp = (struct goalrec*)&allocp[11];
+  allocp += 27;
+  execute(acknowledged_3_clear_reason);
+  goto acknowledged_3_ext_interrupt;
+ pt_16_131:
+  if (!isref(a1)) goto pt_16_135;
+  deref_and_jump(a1,pt_16_130);
+  *reasonp++ =  a1;
+  goto pt_16_135;
+ pt_16_132:
+  if (!isref(a3)) goto pt_16_135;
+  deref_and_jump(a3,pt_16_129);
+  *reasonp++ =  a3;
+  goto pt_16_135;
+ pt_16_133:
+  if (!isref(a0)) goto pt_16_135;
+  deref_and_jump(a0,pt_16_128);
+  *reasonp++ =  a0;
+  goto pt_16_135;
+ case VARREF:
+  deref_and_jump(a10,pt_16_125);
+  *reasonp++ =  a10;
+  goto pt_16_135;
+  };
+  goto pt_16_135;
+ case VARREF:
+  deref_and_jump(a9,pt_16_122);
+  *reasonp++ =  a9;
+  goto pt_16_135;
+  };
+  goto pt_16_135;
+ case VARREF:
+  deref_and_jump(a8,pt_16_119);
+  *reasonp++ =  a8;
+  goto pt_16_135;
+  };
+  goto pt_16_135;
+ case VARREF:
+  deref_and_jump(a7,pt_16_116);
+  *reasonp++ =  a7;
+  goto pt_16_135;
+  };
+  goto pt_16_135;
+ case VARREF:
+  deref_and_jump(a6,pt_16_113);
+  *reasonp++ =  a6;
+  goto pt_16_135;
+  };
+  goto pt_16_135;
+ case VARREF:
+  deref_and_jump(a5,pt_16_110);
+  *reasonp++ =  a5;
+  goto pt_16_135;
+  };
+  goto pt_16_135;
+ pt_16_134:
+  deref_and_jump(a2,pt_16_109);
+  *reasonp++ =  a2;
+  goto pt_16_135;
+ pt_16_135:
+ pt_16_136:
+  switch (ptagof(a1)) {
+ case ATOMIC:
+ pt_16_137:
+  if (a1 != makeint(0L)) goto pt_16_164;
+ pt_16_138:
+  switch (ptagof(a5)) {
+ case FUNCTOR:
+ pt_16_139:
+  if (!isgobj(a5)) goto pt_16_164;
+  if (!isclass(a5,vector)) goto pt_16_164;
+  gblt_size_of_vector(a5,x0,pt_16_164);
+ pt_16_140:
+  if (x0 != makeint(2L)) goto pt_16_164;
+  x2 = makeint(0L);
+  gblt_element_of_vector(a5,x2,x1,pt_16_164);
+  x4 = makeint(1L);
+  gblt_element_of_vector(a5,x4,x3,pt_16_164);
+ pt_16_141:
+  switch (ptagof(a6)) {
+ case FUNCTOR:
+ pt_16_142:
+  if (!isgobj(a6)) goto pt_16_164;
+  if (!isclass(a6,vector)) goto pt_16_164;
+  gblt_size_of_vector(a6,x5,pt_16_164);
+ pt_16_143:
+  if (x5 != makeint(2L)) goto pt_16_164;
+  x7 = makeint(0L);
+  gblt_element_of_vector(a6,x7,x6,pt_16_164);
+  x9 = makeint(1L);
+  gblt_element_of_vector(a6,x9,x8,pt_16_164);
+ pt_16_144:
+  switch (ptagof(a7)) {
+ case FUNCTOR:
+ pt_16_145:
+  if (!isgobj(a7)) goto pt_16_164;
+  if (!isclass(a7,vector)) goto pt_16_164;
+  gblt_size_of_vector(a7,x10,pt_16_164);
+ pt_16_146:
+  if (x10 != makeint(2L)) goto pt_16_164;
+  x12 = makeint(0L);
+  gblt_element_of_vector(a7,x12,x11,pt_16_164);
+  x14 = makeint(1L);
+  gblt_element_of_vector(a7,x14,x13,pt_16_164);
+ pt_16_147:
+  switch (ptagof(a8)) {
+ case FUNCTOR:
+ pt_16_148:
+  if (!isgobj(a8)) goto pt_16_164;
+  if (!isclass(a8,vector)) goto pt_16_164;
+  gblt_size_of_vector(a8,x15,pt_16_164);
+ pt_16_149:
+  if (x15 != makeint(2L)) goto pt_16_164;
+  x17 = makeint(0L);
+  gblt_element_of_vector(a8,x17,x16,pt_16_164);
+  x19 = makeint(1L);
+  gblt_element_of_vector(a8,x19,x18,pt_16_164);
+ pt_16_150:
+  switch (ptagof(a9)) {
+ case FUNCTOR:
+ pt_16_151:
+  if (!isgobj(a9)) goto pt_16_164;
+  if (!isclass(a9,vector)) goto pt_16_164;
+  gblt_size_of_vector(a9,x20,pt_16_164);
+ pt_16_152:
+  if (x20 != makeint(2L)) goto pt_16_164;
+  x22 = makeint(0L);
+  gblt_element_of_vector(a9,x22,x21,pt_16_164);
+  x24 = makeint(1L);
+  gblt_element_of_vector(a9,x24,x23,pt_16_164);
+ pt_16_153:
+  switch (ptagof(a10)) {
+ case FUNCTOR:
+ pt_16_154:
+  if (!isgobj(a10)) goto pt_16_164;
+  if (!isclass(a10,vector)) goto pt_16_164;
+  gblt_size_of_vector(a10,x25,pt_16_164);
+ pt_16_155:
+  if (x25 != makeint(2L)) goto pt_16_164;
+  x27 = makeint(0L);
+  gblt_element_of_vector(a10,x27,x26,pt_16_164);
+  x29 = makeint(1L);
+  gblt_element_of_vector(a10,x29,x28,pt_16_164);
+ pt_16_156:
+  if (!isint(a0)) goto pt_16_163;
+  x30 = makeint(1L);
+  gblt_less_or_eq(x30,a0,pt_16_164);
+ pt_16_157:
+  if (!isint(a3)) goto pt_16_162;
+  gblt_less_or_eq(a0,a3,pt_16_164);
+ pt_16_158:
+  if (!isint(a2)) goto pt_16_161;
+  x31 = makeint(0L);
+  gblt_less_or_eq(x31,a2,pt_16_164);
+ pt_16_159:
+  if (!isint(a4)) goto pt_16_160;
+  gblt_less_or_eq(a2,a4,pt_16_164);
+  x32 = makeint(2L);
+  bblt_sub_no_check(a3,x32,x33);
+  allocp[0] = makesym(functor_step_3);
+  allocp[1] = x33;
+  allocp[2] = x35 = makeref(&allocp[2]);
+  allocp[3] = x36 = makeref(&allocp[3]);
+  x34 = makefunctor(&allocp[0]);
+  allocp[4] = x38 = makeref(&allocp[4]);
+  allocp[5] = x34;
+  x37 = makecons(&allocp[4]);
+  allocp += 6;
+  unify_value(x3, x37);
+  allocp[0] = NILATOM;
+  allocp[1] = x35;
+  x39 = makecons(&allocp[0]);
+  allocp[2] = (q)qp;
+  allocp[3] = (q)(&predicate_main_xnode_7);
+  allocp[4] = a0;
+  allocp[5] = makeint(0L);
+  allocp[6] = a2;
+  allocp[7] = x39;
+  allocp[8] = x40 = makeref(&allocp[8]);
+  allocp[9] = a11;
+  allocp[10] = a12;
+  allocp[11] = (q)(struct goalrec*)&allocp[2];
+  allocp[12] = (q)(&predicate_main_xroute_14);
+  allocp[13] = a15;
+  allocp[14] = x1;
+  allocp[15] = x6;
+  allocp[16] = x11;
+  allocp[17] = x16;
+  allocp[18] = x21;
+  allocp[19] = x26;
+  allocp[20] = x38;
+  allocp[21] = x8;
+  allocp[22] = x13;
+  allocp[23] = x18;
+  allocp[24] = x23;
+  allocp[25] = x28;
+  allocp[26] = x40;
+  a0 = x36;
+  a1 = a13;
+  a2 = a14;
+  qp = (struct goalrec*)&allocp[11];
+  allocp += 27;
+  execute(acknowledged_3_clear_reason);
+  goto acknowledged_3_ext_interrupt;
+ pt_16_160:
+  if (!isref(a4)) goto pt_16_164;
+  deref_and_jump(a4,pt_16_159);
+  *reasonp++ =  a4;
+  goto pt_16_164;
+ pt_16_161:
+  if (!isref(a2)) goto pt_16_164;
+  deref_and_jump(a2,pt_16_158);
+  *reasonp++ =  a2;
+  goto pt_16_164;
+ pt_16_162:
+  if (!isref(a3)) goto pt_16_164;
+  deref_and_jump(a3,pt_16_157);
+  *reasonp++ =  a3;
+  goto pt_16_164;
+ pt_16_163:
+  if (!isref(a0)) goto pt_16_164;
+  deref_and_jump(a0,pt_16_156);
+  *reasonp++ =  a0;
+  goto pt_16_164;
+ case VARREF:
+  deref_and_jump(a10,pt_16_153);
+  *reasonp++ =  a10;
+  goto pt_16_164;
+  };
+  goto pt_16_164;
+ case VARREF:
+  deref_and_jump(a9,pt_16_150);
+  *reasonp++ =  a9;
+  goto pt_16_164;
+  };
+  goto pt_16_164;
+ case VARREF:
+  deref_and_jump(a8,pt_16_147);
+  *reasonp++ =  a8;
+  goto pt_16_164;
+  };
+  goto pt_16_164;
+ case VARREF:
+  deref_and_jump(a7,pt_16_144);
+  *reasonp++ =  a7;
+  goto pt_16_164;
+  };
+  goto pt_16_164;
+ case VARREF:
+  deref_and_jump(a6,pt_16_141);
+  *reasonp++ =  a6;
+  goto pt_16_164;
+  };
+  goto pt_16_164;
+ case VARREF:
+  deref_and_jump(a5,pt_16_138);
+  *reasonp++ =  a5;
+  goto pt_16_164;
+  };
+  goto pt_16_164;
+ case VARREF:
+  deref_and_jump(a1,pt_16_136);
+  *reasonp++ =  a1;
+  goto pt_16_interrupt;
+  };
+  goto pt_16_164;
+ pt_16_164:
+ pt_16_165:
+  if (isref(a1)) goto pt_16_192;
+  if_not_equal(a1, a4, pt_16_interrupt);
+ pt_16_166:
+  switch (ptagof(a5)) {
+ case FUNCTOR:
+ pt_16_167:
+  if (!isgobj(a5)) goto pt_16_interrupt;
+  if (!isclass(a5,vector)) goto pt_16_interrupt;
+  gblt_size_of_vector(a5,x0,pt_16_interrupt);
+ pt_16_168:
+  if (x0 != makeint(2L)) goto pt_16_interrupt;
+  x2 = makeint(0L);
+  gblt_element_of_vector(a5,x2,x1,pt_16_interrupt);
+  x4 = makeint(1L);
+  gblt_element_of_vector(a5,x4,x3,pt_16_interrupt);
+ pt_16_169:
+  switch (ptagof(a6)) {
+ case FUNCTOR:
+ pt_16_170:
+  if (!isgobj(a6)) goto pt_16_interrupt;
+  if (!isclass(a6,vector)) goto pt_16_interrupt;
+  gblt_size_of_vector(a6,x5,pt_16_interrupt);
+ pt_16_171:
+  if (x5 != makeint(2L)) goto pt_16_interrupt;
+  x7 = makeint(0L);
+  gblt_element_of_vector(a6,x7,x6,pt_16_interrupt);
+  x9 = makeint(1L);
+  gblt_element_of_vector(a6,x9,x8,pt_16_interrupt);
+ pt_16_172:
+  switch (ptagof(a7)) {
+ case FUNCTOR:
+ pt_16_173:
+  if (!isgobj(a7)) goto pt_16_interrupt;
+  if (!isclass(a7,vector)) goto pt_16_interrupt;
+  gblt_size_of_vector(a7,x10,pt_16_interrupt);
+ pt_16_174:
+  if (x10 != makeint(2L)) goto pt_16_interrupt;
+  x12 = makeint(0L);
+  gblt_element_of_vector(a7,x12,x11,pt_16_interrupt);
+  x14 = makeint(1L);
+  gblt_element_of_vector(a7,x14,x13,pt_16_interrupt);
+ pt_16_175:
+  switch (ptagof(a8)) {
+ case FUNCTOR:
+ pt_16_176:
+  if (!isgobj(a8)) goto pt_16_interrupt;
+  if (!isclass(a8,vector)) goto pt_16_interrupt;
+  gblt_size_of_vector(a8,x15,pt_16_interrupt);
+ pt_16_177:
+  if (x15 != makeint(2L)) goto pt_16_interrupt;
+  x17 = makeint(0L);
+  gblt_element_of_vector(a8,x17,x16,pt_16_interrupt);
+  x19 = makeint(1L);
+  gblt_element_of_vector(a8,x19,x18,pt_16_interrupt);
+ pt_16_178:
+  switch (ptagof(a9)) {
+ case FUNCTOR:
+ pt_16_179:
+  if (!isgobj(a9)) goto pt_16_interrupt;
+  if (!isclass(a9,vector)) goto pt_16_interrupt;
+  gblt_size_of_vector(a9,x20,pt_16_interrupt);
+ pt_16_180:
+  if (x20 != makeint(2L)) goto pt_16_interrupt;
+  x22 = makeint(0L);
+  gblt_element_of_vector(a9,x22,x21,pt_16_interrupt);
+  x24 = makeint(1L);
+  gblt_element_of_vector(a9,x24,x23,pt_16_interrupt);
+ pt_16_181:
+  switch (ptagof(a10)) {
+ case FUNCTOR:
+ pt_16_182:
+  if (!isgobj(a10)) goto pt_16_interrupt;
+  if (!isclass(a10,vector)) goto pt_16_interrupt;
+  gblt_size_of_vector(a10,x25,pt_16_interrupt);
+ pt_16_183:
+  if (x25 != makeint(2L)) goto pt_16_interrupt;
+  x27 = makeint(0L);
+  gblt_element_of_vector(a10,x27,x26,pt_16_interrupt);
+  x29 = makeint(1L);
+  gblt_element_of_vector(a10,x29,x28,pt_16_interrupt);
+ pt_16_184:
+  if (!isint(a0)) goto pt_16_191;
+  x30 = makeint(1L);
+  gblt_less_or_eq(x30,a0,pt_16_interrupt);
+ pt_16_185:
+  if (!isint(a3)) goto pt_16_190;
+  gblt_less_or_eq(a0,a3,pt_16_interrupt);
+ pt_16_186:
+  if (!isint(a2)) goto pt_16_189;
+  x31 = makeint(0L);
+  gblt_less_or_eq(x31,a2,pt_16_interrupt);
+ pt_16_187:
+  if (!isint(a1)) goto pt_16_188;
+  gblt_less_or_eq(a2,a1,pt_16_interrupt);
+  x32 = makeint(2L);
+  bblt_sub_no_check(a3,x32,x33);
+  allocp[0] = makesym(functor_step_3);
+  allocp[1] = x33;
+  allocp[2] = x35 = makeref(&allocp[2]);
+  allocp[3] = x36 = makeref(&allocp[3]);
+  x34 = makefunctor(&allocp[0]);
+  allocp[4] = x38 = makeref(&allocp[4]);
+  allocp[5] = x34;
+  x37 = makecons(&allocp[4]);
+  allocp += 6;
+  unify_value(x13, x37);
+  allocp[0] = NILATOM;
+  allocp[1] = x35;
+  x39 = makecons(&allocp[0]);
+  allocp[2] = (q)qp;
+  allocp[3] = (q)(&predicate_main_xnode_7);
+  allocp[4] = a0;
+  allocp[5] = a1;
+  allocp[6] = a2;
+  allocp[7] = x39;
+  allocp[8] = x40 = makeref(&allocp[8]);
+  allocp[9] = a11;
+  allocp[10] = a12;
+  allocp[11] = (q)(struct goalrec*)&allocp[2];
+  allocp[12] = (q)(&predicate_main_xroute_14);
+  allocp[13] = a15;
+  allocp[14] = x1;
+  allocp[15] = x6;
+  allocp[16] = x11;
+  allocp[17] = x16;
+  allocp[18] = x21;
+  allocp[19] = x26;
+  allocp[20] = x3;
+  allocp[21] = x8;
+  allocp[22] = x38;
+  allocp[23] = x18;
+  allocp[24] = x23;
+  allocp[25] = x28;
+  allocp[26] = x40;
+  a0 = x36;
+  a1 = a13;
+  a2 = a14;
+  qp = (struct goalrec*)&allocp[11];
+  allocp += 27;
+  execute(acknowledged_3_clear_reason);
+  goto acknowledged_3_ext_interrupt;
+ pt_16_188:
+  if (!isref(a1)) goto pt_16_interrupt;
+  deref_and_jump(a1,pt_16_187);
+  *reasonp++ =  a1;
+  goto pt_16_interrupt;
+ pt_16_189:
+  if (!isref(a2)) goto pt_16_interrupt;
+  deref_and_jump(a2,pt_16_186);
+  *reasonp++ =  a2;
+  goto pt_16_interrupt;
+ pt_16_190:
+  if (!isref(a3)) goto pt_16_interrupt;
+  deref_and_jump(a3,pt_16_185);
+  *reasonp++ =  a3;
+  goto pt_16_interrupt;
+ pt_16_191:
+  if (!isref(a0)) goto pt_16_interrupt;
+  deref_and_jump(a0,pt_16_184);
+  *reasonp++ =  a0;
+  goto pt_16_interrupt;
+ case VARREF:
+  deref_and_jump(a10,pt_16_181);
+  *reasonp++ =  a10;
+  goto pt_16_interrupt;
+  };
+  goto pt_16_interrupt;
+ case VARREF:
+  deref_and_jump(a9,pt_16_178);
+  *reasonp++ =  a9;
+  goto pt_16_interrupt;
+  };
+  goto pt_16_interrupt;
+ case VARREF:
+  deref_and_jump(a8,pt_16_175);
+  *reasonp++ =  a8;
+  goto pt_16_interrupt;
+  };
+  goto pt_16_interrupt;
+ case VARREF:
+  deref_and_jump(a7,pt_16_172);
+  *reasonp++ =  a7;
+  goto pt_16_interrupt;
+  };
+  goto pt_16_interrupt;
+ case VARREF:
+  deref_and_jump(a6,pt_16_169);
+  *reasonp++ =  a6;
+  goto pt_16_interrupt;
+  };
+  goto pt_16_interrupt;
+ case VARREF:
+  deref_and_jump(a5,pt_16_166);
+  *reasonp++ =  a5;
+  goto pt_16_interrupt;
+  };
+  goto pt_16_interrupt;
+ pt_16_192:
+  deref_and_jump(a1,pt_16_165);
+  *reasonp++ =  a1;
+  goto pt_16_interrupt;
+ pt_16_ext_interrupt:
+  reasonp = 0l;
+ pt_16_interrupt:
+  toppred = &predicate_main_xpt_16;
+  goto interrupt_16;
+ }
+
+ filter_8_top: {
+  q x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  a3 = qp->args[3];
+  a4 = qp->args[4];
+  a5 = qp->args[5];
+  a6 = qp->args[6];
+  a7 = qp->args[7];
+  qp = qp->next;
+ filter_8_clear_reason:
+  reasonp = reasons;
+ filter_8_0:
+ filter_8_1:
+  switch (ptagof(a1)) {
+ case CONS:
+  x0 = car_of(a1);
+ filter_8_2:
+  switch (ptagof(x0)) {
+ case FUNCTOR:
+  if (functor_of(x0) != makesym(functor_step_3)) goto filter_8_6;
+  x1 = arg(x0, 0);
+ filter_8_3:
+  if (!isint(x1)) goto filter_8_5;
+  x2 = makeint(0L);
+  gblt_greater(x1,x2,filter_8_4);
+  x3 = makeint(1L);
+  bblt_sub_no_check(x1,x3,x4);
+  allocp[0] = makesym(functor_step_3);
+  allocp[1] = x4;
+  x6 = arg(x0, 1);
+  allocp[2] = x6;
+  x7 = arg(x0, 2);
+  allocp[3] = x7;
+  x5 = makefunctor(&allocp[0]);
+  allocp[4] = x9 = makeref(&allocp[4]);
+  allocp[5] = x5;
+  x8 = makecons(&allocp[4]);
+  allocp += 6;
+  unify_value(a2, x8);
+  a1 = cdr_of(a1);
+  a2 = x9;
+  execute(filter_8_0);
+  goto filter_8_ext_interrupt;
+ filter_8_4:
+  if (x1 != makeint(0L)) goto filter_8_6;
+  allocp[0] = x11 = makeref(&allocp[0]);
+  x12 = arg(x0, 1);
+  allocp[1] = x12;
+  x10 = makecons(&allocp[0]);
+  allocp += 2;
+  unify_value(a6, x10);
+  x13 = arg(x0, 2);
+  x14 = makesym(atom_ack);
+  unify_value(x13, x14);
+  a1 = cdr_of(a1);
+  a6 = x11;
+  execute(filter_8_0);
+  goto filter_8_ext_interrupt;
+ filter_8_5:
+  if (!isref(x1)) goto filter_8_6;
+  deref_and_jump(x1,filter_8_3);
+  *reasonp++ =  x1;
+  goto filter_8_6;
+ case VARREF:
+  deref_and_jump(x0,filter_8_2);
+  *reasonp++ =  x0;
+  goto filter_8_6;
+  };
+  goto filter_8_6;
+ case VARREF:
+  deref_and_jump(a1,filter_8_1);
+  *reasonp++ =  a1;
+  goto filter_8_6;
+  };
+  goto filter_8_6;
+ filter_8_6:
+ filter_8_7:
+  switch (ptagof(a0)) {
+ case ATOMIC:
+  if (a0 != makesym(atom_go)) goto filter_8_interrupt;
+ filter_8_8:
+  switch (ptagof(a3)) {
+ case ATOMIC:
+  if (a3 != makesym(atom_none)) goto filter_8_interrupt;
+  allocp[0] = a5;
+  allocp[1] = a1;
+  x0 = makecons(&allocp[0]);
+  allocp += 2;
+  unify_value(a4, x0);
+  allocp[0] = a7;
+  allocp[1] = a2;
+  x1 = makecons(&allocp[0]);
+  allocp += 2;
+  unify_value(a6, x1);
+  proceed();
+ case FUNCTOR:
+  if (functor_of(a3) != makesym(functor_send_1)) goto filter_8_interrupt;
+  allocp[0] = a5;
+  allocp[1] = a1;
+  x0 = makecons(&allocp[0]);
+  allocp += 2;
+  unify_value(a4, x0);
+  allocp[0] = x2 = makeref(&allocp[0]);
+  x3 = arg(a3, 0);
+  allocp[1] = x3;
+  x1 = makecons(&allocp[0]);
+  allocp += 2;
+  unify_value(a2, x1);
+  allocp[0] = a7;
+  allocp[1] = x2;
+  x4 = makecons(&allocp[0]);
+  allocp += 2;
+  unify_value(a6, x4);
+  proceed();
+ case VARREF:
+  deref_and_jump(a3,filter_8_8);
+  *reasonp++ =  a3;
+  goto filter_8_interrupt;
+  };
+  goto filter_8_interrupt;
+ case VARREF:
+  deref_and_jump(a0,filter_8_7);
+  *reasonp++ =  a0;
+  goto filter_8_interrupt;
+  };
+  goto filter_8_interrupt;
+ filter_8_ext_interrupt:
+  reasonp = 0l;
+ filter_8_interrupt:
+  toppred = &predicate_main_xfilter_8;
+  goto interrupt_8;
+ }
+
+ route_14_top: {
+  q x0, x1, x2, x3, x4;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  a3 = qp->args[3];
+  a4 = qp->args[4];
+  a5 = qp->args[5];
+  a6 = qp->args[6];
+  a7 = qp->args[7];
+  a8 = qp->args[8];
+  a9 = qp->args[9];
+  a10 = qp->args[10];
+  a11 = qp->args[11];
+  a12 = qp->args[12];
+  a13 = qp->args[13];
+  qp = qp->next;
+ route_14_clear_reason:
+  reasonp = reasons;
+ route_14_0:
+  allocp[0] = (q)qp;
+  allocp[1] = (q)(&predicate_main_xbfilter_5);
+  allocp[2] = a0;
+  allocp[3] = a6;
+  allocp[4] = a11;
+  allocp[5] = x0 = makeref(&allocp[5]);
+  allocp[6] = NILATOM;
+  allocp[7] = (q)(struct goalrec*)&allocp[0];
+  allocp[8] = (q)(&predicate_main_xbfilter_5);
+  allocp[9] = a0;
+  allocp[10] = a5;
+  allocp[11] = a12;
+  allocp[12] = x1 = makeref(&allocp[12]);
+  allocp[13] = x0;
+  allocp[14] = (q)(struct goalrec*)&allocp[7];
+  allocp[15] = (q)(&predicate_main_xbfilter_5);
+  allocp[16] = a0;
+  allocp[17] = a4;
+  allocp[18] = a8;
+  allocp[19] = x2 = makeref(&allocp[19]);
+  allocp[20] = x1;
+  allocp[21] = (q)(struct goalrec*)&allocp[14];
+  allocp[22] = (q)(&predicate_main_xbfilter_5);
+  allocp[23] = a0;
+  allocp[24] = a3;
+  allocp[25] = a7;
+  allocp[26] = x3 = makeref(&allocp[26]);
+  allocp[27] = x2;
+  allocp[28] = (q)(struct goalrec*)&allocp[21];
+  allocp[29] = (q)(&predicate_main_xbfilter_5);
+  allocp[30] = a0;
+  allocp[31] = a2;
+  allocp[32] = a10;
+  allocp[33] = x4 = makeref(&allocp[33]);
+  allocp[34] = x3;
+  a2 = a9;
+  a3 = a13;
+  a4 = x4;
+  qp = (struct goalrec*)&allocp[28];
+  allocp += 35;
+  execute(bfilter_5_0);
+  goto bfilter_5_ext_interrupt;
+ route_14_ext_interrupt:
+  reasonp = 0l;
+ route_14_interrupt:
+  goto interrupt_14;
+ }
+
+ bfilter_5_top: {
+  q x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  a3 = qp->args[3];
+  a4 = qp->args[4];
+  qp = qp->next;
+ bfilter_5_clear_reason:
+  reasonp = reasons;
+ bfilter_5_0:
+ bfilter_5_1:
+  switch (ptagof(a1)) {
+ case CONS:
+  x0 = car_of(a1);
+ bfilter_5_2:
+  switch (ptagof(x0)) {
+ case FUNCTOR:
+  if (functor_of(x0) != makesym(functor_step_3)) goto bfilter_5_6;
+  x1 = arg(x0, 0);
+ bfilter_5_3:
+  if (!isint(x1)) goto bfilter_5_5;
+  x2 = makeint(0L);
+  gblt_greater(x1,x2,bfilter_5_4);
+  x3 = makeint(1L);
+  bblt_sub_no_check(x1,x3,x4);
+  allocp[0] = makesym(functor_step_3);
+  allocp[1] = x4;
+  x6 = arg(x0, 1);
+  allocp[2] = x6;
+  x7 = arg(x0, 2);
+  allocp[3] = x7;
+  x5 = makefunctor(&allocp[0]);
+  allocp[4] = x9 = makeref(&allocp[4]);
+  allocp[5] = x5;
+  x8 = makecons(&allocp[4]);
+  allocp += 6;
+  unify_value(a2, x8);
+  a1 = cdr_of(a1);
+  a2 = x9;
+  execute(bfilter_5_0);
+  goto bfilter_5_ext_interrupt;
+ bfilter_5_4:
+  if (x1 != makeint(0L)) goto bfilter_5_6;
+  allocp[0] = x11 = makeref(&allocp[0]);
+  x12 = arg(x0, 1);
+  allocp[1] = x12;
+  x10 = makecons(&allocp[0]);
+  allocp += 2;
+  unify_value(a3, x10);
+  x13 = arg(x0, 2);
+  x14 = makesym(atom_ack);
+  unify_value(x13, x14);
+  a1 = cdr_of(a1);
+  a3 = x11;
+  execute(bfilter_5_0);
+  goto bfilter_5_ext_interrupt;
+ bfilter_5_5:
+  if (!isref(x1)) goto bfilter_5_6;
+  deref_and_jump(x1,bfilter_5_3);
+  *reasonp++ =  x1;
+  goto bfilter_5_6;
+ case VARREF:
+  deref_and_jump(x0,bfilter_5_2);
+  *reasonp++ =  x0;
+  goto bfilter_5_6;
+  };
+  goto bfilter_5_6;
+ case VARREF:
+  deref_and_jump(a1,bfilter_5_1);
+  *reasonp++ =  a1;
+  goto bfilter_5_6;
+  };
+  goto bfilter_5_6;
+ bfilter_5_6:
+ bfilter_5_7:
+  switch (ptagof(a0)) {
+ case ATOMIC:
+  if (a0 != makesym(atom_go)) goto bfilter_5_interrupt;
+  unify(a3, a4);
+  x0 = NILATOM;
+  unify_value(a2, x0);
+  proceed();
+ case VARREF:
+  deref_and_jump(a0,bfilter_5_7);
+  *reasonp++ =  a0;
+  goto bfilter_5_interrupt;
+  };
+  goto bfilter_5_interrupt;
+ bfilter_5_ext_interrupt:
+  reasonp = 0l;
+ bfilter_5_interrupt:
+  toppred = &predicate_main_xbfilter_5;
+  goto interrupt_5;
+ }
+
+ node_7_top: {
+  q x0, x1, x2, x3, x4, x5, x6;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  a3 = qp->args[3];
+  a4 = qp->args[4];
+  a5 = qp->args[5];
+  a6 = qp->args[6];
+  qp = qp->next;
+ node_7_clear_reason:
+  reasonp = reasons;
+ node_7_0:
+ node_7_1:
+  if (!isint(a6)) goto node_7_3;
+  x0 = makeint(0L);
+  gblt_greater(a6,x0,node_7_2);
+  x1 = makeint(1L);
+  bblt_sub_no_check(a6,x1,x2);
+  allocp[0] = (q)qp;
+  allocp[1] = (q)(&predicate_main_xnode_7);
+  allocp[2] = a0;
+  allocp[3] = a1;
+  allocp[4] = a2;
+  allocp[5] = x3 = makeref(&allocp[5]);
+  allocp[6] = x4 = makeref(&allocp[6]);
+  allocp[7] = x5 = makeref(&allocp[7]);
+  allocp[8] = x2;
+  allocp[9] = (q)(struct goalrec*)&allocp[0];
+  allocp[10] = (q)(&predicate_main_xputout_3);
+  allocp[11] = x5;
+  allocp[12] = a4;
+  allocp[13] = x4;
+  allocp[14] = (q)(struct goalrec*)&allocp[9];
+  allocp[15] = (q)(&predicate_main_xcompute_6);
+  allocp[16] = a0;
+  allocp[17] = a1;
+  allocp[18] = a2;
+  allocp[19] = x6 = makeref(&allocp[19]);
+  allocp[20] = a5;
+  allocp[21] = x5;
+  a0 = a3;
+  a1 = x6;
+  a2 = x3;
+  qp = (struct goalrec*)&allocp[14];
+  allocp += 22;
+  execute(getin_3_0);
+  goto getin_3_ext_interrupt;
+ node_7_2:
+  if (a6 != makeint(0L)) goto node_7_interrupt;
+  proceed();
+ node_7_3:
+  if (!isref(a6)) goto node_7_interrupt;
+  deref_and_jump(a6,node_7_1);
+  *reasonp++ =  a6;
+  goto node_7_interrupt;
+ node_7_ext_interrupt:
+  reasonp = 0l;
+ node_7_interrupt:
+  goto interrupt_7;
+ }
+
+ getin_3_top: {
+  q x0, x1, x2, x3, x4, x5, x6;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  qp = qp->next;
+ getin_3_clear_reason:
+  reasonp = reasons;
+ getin_3_0:
+ getin_3_1:
+  switch (ptagof(a0)) {
+ case CONS:
+  x0 = car_of(a0);
+ getin_3_2:
+  switch (ptagof(x0)) {
+ case CONS:
+  allocp[0] = x2 = makeref(&allocp[0]);
+  x3 = car_of(x0);
+  allocp[1] = x3;
+  x1 = makecons(&allocp[0]);
+  allocp += 2;
+  unify_value(a1, x1);
+  allocp[0] = x5 = makeref(&allocp[0]);
+  x6 = cdr_of(x0);
+  allocp[1] = x6;
+  x4 = makecons(&allocp[0]);
+  allocp += 2;
+  unify_value(a2, x4);
+  a0 = cdr_of(a0);
+  a1 = x2;
+  a2 = x5;
+  execute(getin_3_0);
+  goto getin_3_ext_interrupt;
+ case ATOMIC:
+  if (x0 != NILATOM) goto getin_3_interrupt;
+  a0 = cdr_of(a0);
+  execute(getin_3_0);
+  goto getin_3_ext_interrupt;
+ case VARREF:
+  deref_and_jump(x0,getin_3_2);
+  *reasonp++ =  x0;
+  goto getin_3_interrupt;
+  };
+  goto getin_3_interrupt;
+ case ATOMIC:
+  if (a0 != NILATOM) goto getin_3_interrupt;
+  x0 = NILATOM;
+  unify_value(a1, x0);
+  x1 = NILATOM;
+  unify_value(a2, x1);
+  proceed();
+ case VARREF:
+  deref_and_jump(a0,getin_3_1);
+  *reasonp++ =  a0;
+  goto getin_3_interrupt;
+  };
+  goto getin_3_interrupt;
+ getin_3_ext_interrupt:
+  reasonp = 0l;
+ getin_3_interrupt:
+  toppred = &predicate_main_xgetin_3;
+  goto interrupt_3;
+ }
+
+ compute_6_top: {
+  q x0;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  a3 = qp->args[3];
+  a4 = qp->args[4];
+  a5 = qp->args[5];
+  qp = qp->next;
+ compute_6_clear_reason:
+  reasonp = reasons;
+ compute_6_0:
+  allocp[0] = (q)qp;
+  allocp[1] = (q)(&predicate_main_xshow_7);
+  allocp[2] = x0 = makeref(&allocp[2]);
+  allocp[3] = a0;
+  allocp[4] = a1;
+  allocp[5] = a2;
+  allocp[6] = a3;
+  allocp[7] = a4;
+  allocp[8] = a5;
+  a0 = a3;
+  a1 = x0;
+  qp = (struct goalrec*)&allocp[0];
+  allocp += 9;
+  execute(checklist_2_0);
+  goto checklist_2_ext_interrupt;
+ compute_6_ext_interrupt:
+  reasonp = 0l;
+ compute_6_interrupt:
+  goto interrupt_6;
+ }
+
+ checklist_2_top: {
+  q x0;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  qp = qp->next;
+ checklist_2_clear_reason:
+  reasonp = reasons;
+ checklist_2_0:
+ checklist_2_1:
+  switch (ptagof(a0)) {
+ case CONS:
+  x0 = car_of(a0);
+ checklist_2_2:
+  if (!isint(x0)) goto checklist_2_3;
+  gblt_integer(x0,checklist_2_interrupt);
+  a0 = cdr_of(a0);
+  execute(checklist_2_0);
+  goto checklist_2_ext_interrupt;
+ checklist_2_3:
+  if (!isref(x0)) goto checklist_2_interrupt;
+  deref_and_jump(x0,checklist_2_2);
+  *reasonp++ =  x0;
+  goto checklist_2_interrupt;
+ case ATOMIC:
+  if (a0 != NILATOM) goto checklist_2_interrupt;
+  x0 = NILATOM;
+  unify_value(a1, x0);
+  proceed();
+ case VARREF:
+  deref_and_jump(a0,checklist_2_1);
+  *reasonp++ =  a0;
+  goto checklist_2_interrupt;
+  };
+  goto checklist_2_interrupt;
+ checklist_2_ext_interrupt:
+  reasonp = 0l;
+ checklist_2_interrupt:
+  toppred = &predicate_main_xchecklist_2;
+  goto interrupt_2;
+ }
+
+ show_7_top: {
+  q x0, x1;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  a3 = qp->args[3];
+  a4 = qp->args[4];
+  a5 = qp->args[5];
+  a6 = qp->args[6];
+  qp = qp->next;
+ show_7_clear_reason:
+  reasonp = reasons;
+ show_7_0:
+ show_7_1:
+  if (isref(a0)) goto show_7_2;
+  gblt_wait(a0,show_7_interrupt);
+  x0 = makeint(1L);
+  bblt_add_no_check_y(a5,x0,x1);
+  unify(a6, x1);
+  proceed();
+ show_7_2:
+  deref_and_jump(a0,show_7_1);
+  *reasonp++ =  a0;
+  goto show_7_interrupt;
+ show_7_ext_interrupt:
+  reasonp = 0l;
+ show_7_interrupt:
+  goto interrupt_7;
+ }
+
+ putout_3_top: {
+  q x0, x1, x2, x3, x4;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  qp = qp->next;
+ putout_3_clear_reason:
+  reasonp = reasons;
+ putout_3_0:
+ putout_3_1:
+  switch (ptagof(a1)) {
+ case CONS:
+  allocp[0] = x1 = makeref(&allocp[0]);
+  allocp[1] = a0;
+  x0 = makecons(&allocp[0]);
+  x2 = car_of(a1);
+  allocp += 2;
+  unify_value(x2, x0);
+  allocp[0] = x4 = makeref(&allocp[0]);
+  allocp[1] = x1;
+  x3 = makecons(&allocp[0]);
+  allocp += 2;
+  unify_value(a2, x3);
+  a1 = cdr_of(a1);
+  a2 = x4;
+  execute(putout_3_0);
+  goto putout_3_ext_interrupt;
+ case ATOMIC:
+  if (a1 != NILATOM) goto putout_3_interrupt;
+  x0 = NILATOM;
+  unify_value(a2, x0);
+  proceed();
+ case VARREF:
+  deref_and_jump(a1,putout_3_1);
+  *reasonp++ =  a1;
+  goto putout_3_interrupt;
+  };
+  goto putout_3_interrupt;
+ putout_3_ext_interrupt:
+  reasonp = 0l;
+ putout_3_interrupt:
+  goto interrupt_3;
+ }
+
+ start_2_top: {
+  q x0;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  qp = qp->next;
+ start_2_clear_reason:
+  reasonp = reasons;
+ start_2_0:
+ start_2_1:
+  switch (ptagof(a0)) {
+ case ATOMIC:
+  if (a0 != makesym(atom_done)) goto start_2_interrupt;
+  x0 = makesym(atom_go);
+  unify_value(a1, x0);
+  proceed();
+ case VARREF:
+  deref_and_jump(a0,start_2_1);
+  *reasonp++ =  a0;
+  goto start_2_interrupt;
+  };
+  goto start_2_interrupt;
+ start_2_ext_interrupt:
+  reasonp = 0l;
+ start_2_interrupt:
+  goto interrupt_2;
+ }
+
+ acknowledged_3_top: {
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  qp = qp->next;
+ acknowledged_3_clear_reason:
+  reasonp = reasons;
+ acknowledged_3_0:
+ acknowledged_3_1:
+  switch (ptagof(a0)) {
+ case ATOMIC:
+  if (a0 != makesym(atom_ack)) goto acknowledged_3_interrupt;
+  unify(a2, a1);
+  proceed();
+ case VARREF:
+  deref_and_jump(a0,acknowledged_3_1);
+  *reasonp++ =  a0;
+  goto acknowledged_3_interrupt;
+  };
+  goto acknowledged_3_interrupt;
+ acknowledged_3_ext_interrupt:
+  reasonp = 0l;
+ acknowledged_3_interrupt:
+  toppred = &predicate_main_xacknowledged_3;
+  goto interrupt_3;
+ }
+
+ acknowledged_4_top: {
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  a3 = qp->args[3];
+  qp = qp->next;
+ acknowledged_4_clear_reason:
+  reasonp = reasons;
+ acknowledged_4_0:
+ acknowledged_4_1:
+  switch (ptagof(a0)) {
+ case ATOMIC:
+  if (a0 != makesym(atom_ack)) goto acknowledged_4_interrupt;
+ acknowledged_4_2:
+  switch (ptagof(a1)) {
+ case ATOMIC:
+  if (a1 != makesym(atom_ack)) goto acknowledged_4_interrupt;
+  unify(a3, a2);
+  proceed();
+ case VARREF:
+  deref_and_jump(a1,acknowledged_4_2);
+  *reasonp++ =  a1;
+  goto acknowledged_4_interrupt;
+  };
+  goto acknowledged_4_interrupt;
+ case VARREF:
+  deref_and_jump(a0,acknowledged_4_1);
+  *reasonp++ =  a0;
+  goto acknowledged_4_interrupt;
+  };
+  goto acknowledged_4_interrupt;
+ acknowledged_4_ext_interrupt:
+  reasonp = 0l;
+ acknowledged_4_interrupt:
+  toppred = &predicate_main_xacknowledged_4;
+  goto interrupt_4;
+ }
+
+ gen_3_top: {
+  q x0, x1, x2, x3, x4, x5, x6;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  a2 = qp->args[2];
+  qp = qp->next;
+ gen_3_clear_reason:
+  reasonp = reasons;
+ gen_3_0:
+ gen_3_1:
+  if (!isint(a0)) goto gen_3_3;
+  x0 = makeint(0L);
+  gblt_greater(a0,x0,gen_3_2);
+  x1 = makeint(1L);
+  bblt_sub_no_check(a0,x1,x2);
+  allocp[0] = x4 = makeref(&allocp[0]);
+  allocp[1] = x5 = makeref(&allocp[1]);
+  x3 = makecons(&allocp[0]);
+  allocp += 2;
+  unify_value(a2, x3);
+  allocp[0] = (q)qp;
+  allocp[1] = (q)(&predicate_main_xgen_3);
+  allocp[2] = x2;
+  allocp[3] = a1;
+  allocp[4] = x4;
+  a0 = a1;
+  a1 = x5;
+  qp = (struct goalrec*)&allocp[0];
+  allocp += 5;
+  execute(gen1_2_0);
+  goto gen1_2_ext_interrupt;
+ gen_3_2:
+  if (a0 != makeint(0L)) goto gen_3_interrupt;
+  x6 = NILATOM;
+  unify_value(a2, x6);
+  proceed();
+ gen_3_3:
+  if (!isref(a0)) goto gen_3_interrupt;
+  deref_and_jump(a0,gen_3_1);
+  *reasonp++ =  a0;
+  goto gen_3_interrupt;
+ gen_3_ext_interrupt:
+  reasonp = 0l;
+ gen_3_interrupt:
+  goto interrupt_3;
+ }
+
+ gen1_2_top: {
+  q x0, x1, x2, x3, x4, x5, x6, x7;
+  a0 = qp->args[0];
+  a1 = qp->args[1];
+  qp = qp->next;
+ gen1_2_clear_reason:
+  reasonp = reasons;
+ gen1_2_0:
+ gen1_2_1:
+  if (!isint(a0)) goto gen1_2_3;
+  x0 = makeint(0L);
+  gblt_greater(a0,x0,gen1_2_2);
+  x1 = makeint(1L);
+  bblt_sub_no_check(a0,x1,x2);
+  allocp[0] = x3 = makeref(&allocp[0]);
+  allocp[1] = NILATOM;
+  allocp[2] = x3;
+  x4 = create_vector(&allocp[1], 2, allocp);
+  allocp[3] = x6 = makeref(&allocp[3]);
+  allocp[4] = x4;
+  x5 = makecons(&allocp[3]);
+  allocp += 5;
+  unify_value(a1, x5);
+  a0 = x2;
+  a1 = x6;
+  execute(gen1_2_0);
+  goto gen1_2_ext_interrupt;
+ gen1_2_2:
+  if (a0 != makeint(0L)) goto gen1_2_interrupt;
+  x7 = NILATOM;
+  unify_value(a1, x7);
+  proceed();
+ gen1_2_3:
+  if (!isref(a0)) goto gen1_2_interrupt;
+  deref_and_jump(a0,gen1_2_1);
+  *reasonp++ =  a0;
+  goto gen1_2_interrupt;
+ gen1_2_ext_interrupt:
+  reasonp = 0l;
+ gen1_2_interrupt:
+  toppred = &predicate_main_xgen1_2;
+  goto interrupt_2;
+ }
+
+ end_1_top: {
+  q x0;
+  a0 = qp->args[0];
+  qp = qp->next;
+ end_1_clear_reason:
+  reasonp = reasons;
+ end_1_0:
+ end_1_1:
+  switch (ptagof(a0)) {
+ case CONS:
+  allocp[0] = (q)qp;
+  allocp[1] = (q)(&predicate_main_xend_1);
+  x0 = cdr_of(a0);
+  allocp[2] = x0;
+  a0 = car_of(a0);
+  qp = (struct goalrec*)&allocp[0];
+  allocp += 3;
+  execute(end1_1_0);
+  goto end1_1_ext_interrupt;
+ case ATOMIC:
+  if (a0 != NILATOM) goto end_1_interrupt;
+  proceed();
+ case VARREF:
+  deref_and_jump(a0,end_1_1);
+  *reasonp++ =  a0;
+  goto end_1_interrupt;
+  };
+  goto end_1_interrupt;
+ end_1_ext_interrupt:
+  reasonp = 0l;
+ end_1_interrupt:
+  toppred = &predicate_main_xend_1;
+  goto interrupt_1;
+ }
+
+ end1_1_top: {
+  q x0, x1, x2, x3, x4, x5, x6;
+  a0 = qp->args[0];
+  qp = qp->next;
+ end1_1_clear_reason:
+  reasonp = reasons;
+ end1_1_0:
+ end1_1_1:
+  switch (ptagof(a0)) {
+ case CONS:
+  x0 = car_of(a0);
+ end1_1_2:
+  switch (ptagof(x0)) {
+ case FUNCTOR:
+ end1_1_3:
+  if (!isgobj(x0)) goto end1_1_interrupt;
+  if (!isclass(x0,vector)) goto end1_1_interrupt;
+  gblt_size_of_vector(x0,x1,end1_1_interrupt);
+ end1_1_4:
+  if (x1 != makeint(2L)) goto end1_1_interrupt;
+  x3 = makeint(0L);
+  gblt_element_of_vector(x0,x3,x2,end1_1_interrupt);
+  x5 = makeint(1L);
+  gblt_element_of_vector(x0,x5,x4,end1_1_interrupt);
+  x6 = NILATOM;
+  unify_value(x4, x6);
+  a0 = cdr_of(a0);
+  execute(end1_1_0);
+  goto end1_1_ext_interrupt;
+ case VARREF:
+  deref_and_jump(x0,end1_1_2);
+  *reasonp++ =  x0;
+  goto end1_1_interrupt;
+  };
+  goto end1_1_interrupt;
+ case ATOMIC:
+  if (a0 != NILATOM) goto end1_1_interrupt;
+  proceed();
+ case VARREF:
+  deref_and_jump(a0,end1_1_1);
+  *reasonp++ =  a0;
+  goto end1_1_interrupt;
+  };
+  goto end1_1_interrupt;
+ end1_1_ext_interrupt:
+  reasonp = 0l;
+ end1_1_interrupt:
+  toppred = &predicate_main_xend1_1;
+  goto interrupt_1;
+ }
+ interrupt_16:
+  allocp[17] = a15;
+ interrupt_15:
+  allocp[16] = a14;
+ interrupt_14:
+  allocp[15] = a13;
+ interrupt_13:
+  allocp[14] = a12;
+ interrupt_12:
+  allocp[13] = a11;
+ interrupt_11:
+  allocp[12] = a10;
+ interrupt_10:
+  allocp[11] = a9;
+ interrupt_9:
+  allocp[10] = a8;
+ interrupt_8:
+  allocp[9] = a7;
+ interrupt_7:
+  allocp[8] = a6;
+ interrupt_6:
+  allocp[7] = a5;
+ interrupt_5:
+  allocp[6] = a4;
+ interrupt_4:
+  allocp[5] = a3;
+ interrupt_3:
+  allocp[4] = a2;
+ interrupt_2:
+  allocp[3] = a1;
+ interrupt_1:
+  allocp[2] = a0;
+ interrupt_0:
+  allocp = interrupt_goal(allocp, toppred, reasonp);
+ proceed_label:
+  loop_within_module(module_main);
+}

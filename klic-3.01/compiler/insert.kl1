@@ -1,0 +1,270 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+/*
+  Clause Indexing Tree Structure
+
+  Value binding/type checking node
+    v(Position,			% value identifier
+      AtomicNode,
+      ListNode,
+      FunctNode,
+      BoundNode,		% Cases where only bound status is required
+      UncondNode)		% Unconditional cases
+  Node not specifically depending on one value
+    x(Cond,Node,Uncond)
+  Leaf node without any further condition
+    l(Body)
+  Empty node
+    e
+
+   AtomicNode:
+      a([Atom-Node,...],AtomNode,[Int-Node],IntNode,AtomicNode)
+      e
+
+   ListNode: = usual node
+
+   FunctNode:
+      f([F/A-Node,...],ObjNode,Node)
+      e
+
+   ObjNode
+      o([Class-Node],Uncond)
+      e
+
+   Cond:
+      gp(Name(Pos,...))			% guard builtin pred
+      gb(Name(Pos,...),Type)		% guard builtin with output
+      gg(gg(F/A,Obj,In),NumOuts)	% guard generic call
+      eq(Pos,Pos)			% guard unification
+      il(Format,Args,Info)		% inline expansion
+*/
+
+:- module klic_comp_insert.
+
+make_index_tree([],_V,T0,T,_):-  T = T0.
+make_index_tree([Cond-Body|CT],V0,T0,T,Info) :- 
+    ins_index(Cond,T0,V0,Body,T1,Ans),
+    make_index_tree_1(Ans,CT,V0,T0,T1,T,Info).
+make_index_tree([otherwise|CT],V0,T0,R,Info) :- 
+    R = other(T0,T),
+    make_index_tree(CT,V0,e,T,Info).
+make_index_tree([alternatively|CT],V0,T0,R,Info) :- 
+    R = alter(T0,T),
+    make_index_tree(CT,V0,e,T,Info).
+
+ make_index_tree_1(normal,CT,V0,T0,T1,T,Info) :-
+     make_index_tree(CT,V0,T1,T,Info).
+ make_index_tree_1(abnormal,CT,V0,T0,T1,T,Info) :- Info=Name/Arity |
+     klic_comp_message:warning("Clause deleted: ~w/~d", [Name,Arity]), 
+     make_index_tree(CT,V0,T0,T,Info).
+
+ins_index([],T0,_Vars,Body,T,Ans) :- T0=e |
+    Ans = normal, T = l(Body).
+ins_index([],T0,_Vars,Body,T,Ans) :- T0\=e |
+    ins_redundant(Ans), T = l(Body).
+ins_index([(X;Y)],T0,Vars,Body,T,Ans) :- 
+    ins_index(X,T0,Vars,Body,T1,Ans0), 
+    ins_index_check_and_stop(Y,T1,Vars,Body,T ,Ans0,Ans).
+ins_index([Position:Pattern|CondT],T0,Vars,Body,T,Ans) :-
+    subsumed(Pattern,Position,Vars,Ans0), 
+    ins_index_check_and_go([Position:Pattern|CondT],T0,Vars,Body,T,Ans0,Ans).
+otherwise.
+ins_index(Cond,T0,Vars,Body,T,Ans) :-
+    ins_index_1(Cond,T0,Vars,Body,T,Ans).
+
+ins_index_check_and_stop(X,T0,Vars,Body,T,Check,Ans) :- Check=normal |
+    ins_index(X,T0,Vars,Body,T,Ans).
+ins_index_check_and_stop(X,T0,Vars,Body,T,Check,Ans) :- Check=abnormal |
+    T=T0, Ans=Check.
+
+ins_index_check_and_go(L,T0,Vars,Body,T,Check,Ans) :- Check=normal, L=[_|X] |
+    ins_index(X,T0,Vars,Body,T,Ans).
+ins_index_check_and_go(X,T0,Vars,Body,T,Check,Ans) :- Check=abnormal |
+    ins_index_1(X,T0,Vars,Body,T,Ans).
+
+ins_index_1([Cond|CondT], T0,Vars,Body,T,Ans) :-
+	( Cond=gp(C); Cond=gg(C,K); Cond=il(F,A,I) ) |
+    ins_gb(T0,Cond,T,T1,T2,Ans0),
+    ins_index_check_and_stop(CondT,T1,Vars,Body,T2,Ans0,Ans).
+ins_index_1([Cond|CondT], T0,Vars,Body,T,Ans) :- Cond=gb(C,OT) |
+    ins_gb(T0,Cond,T,T1,T2,Ans0),
+    ins_index_check_and_stop(CondT,T1,[gb(C)=OT|Vars],Body,T2,Ans0,Ans).
+ins_index_1([Position:Pattern|CondT], T0,Vars0,Body,T,Ans) :- 
+    ins_pattern(T0,Pattern,Position,T,Vars0,Vars,T1,T2,Ans0),
+    ins_index_check_and_stop(CondT,T1,Vars,Body,T2,Ans0,Ans).
+
+/* Normal Pattern */
+
+ins_pattern(e,Pat,Pos,NewN,Vars0,Vars,T0,T,Ans) :-
+    Vars = [Pos=Pat|Vars0],
+    pattern_kind(Pat,Kind),
+    ins_value_node(Kind,Pat,Pos,e,e,e,e,e,NewN,T0,T,Ans).
+ins_pattern(v(Pos,A,L,F,B,U),Pat,Pos,NewN,Vars0,Vars,T0,T,Ans) :- 
+    Vars = [Pos=Pat|Vars0],
+    pattern_kind(Pat,Kind),
+    ins_value_node(Kind,Pat,Pos,A,L,F,B,U,NewN,T0,T,Ans).
+ins_pattern(v(Pos,A,L,F,B,U),Pos,Pat,NewN,Vars0,Vars,T0,T,Ans) :- 
+    Vars = [Pos=Pat|Vars0],
+    pattern_kind(Pat,Kind),
+    ins_value_node(Kind,Pat,Pos,A,L,F,B,U,NewN,T0,T,Ans).
+ins_pattern(x(Cond,Node,U0),Pat,Pos,NewN,Vars0,Vars,T0,T,Ans) :-
+    NewN = x(Cond,Node,U),
+    ins_pattern(U0,Pat,Pos,U,Vars0,Vars,T0,T,Ans).
+ins_pattern(l(_Body),_,_,_,_,_,_,_,Ans) :- ins_redundant(Ans).
+otherwise.
+ins_pattern(v(Pos0,A,L,F,B,U0),Pat,Pos,NewN,Vars0,Vars,T0,T,Ans) :-
+    NewN = v(Pos0,A,L,F,B,U),
+    ins_pattern(U0,Pat,Pos,U,Vars0,Vars,T0,T,Ans).
+
+ins_value_node(list,_,Pos,A,L0,F,B,U,NewN,T0,L,Ans) :- 
+    NewN = v(Pos,A,L,F,B,U), T0 = L0, Ans = normal.
+ins_value_node(bound,_,Pos,A,L,F,B0,U,NewN,T0,B,Ans) :-
+    NewN = v(Pos,A,L,F,B,U), T0 = B0, Ans = normal.
+ins_value_node(atomic,X,Pos,A0,L,F,B,U,NewN,T0,T,Ans) :-
+    NewN = v(Pos,A,L,F,B,U),
+    ins_atomic_node(A0,X,A,T0,T,Ans).
+ins_value_node(functor,X,Pos,A,L,F0,B,U,NewN,T0,T,Ans) :-
+    NewN = v(Pos,A,L,F,B,U),
+    ins_funct_node(F0,X,F,T0,T,Ans).
+ins_value_node(other,X,Pos,A,L,F,B0,U,NewN,T0,T,Ans) :-
+    NewN = v(Pos,A,L,F,B,U),
+    ins_eq(B0,Pos,X,B,T0,T,Ans).
+
+pattern_kind(list,   Kind) :- Kind = list.
+pattern_kind(bound,  Kind) :- Kind = bound.
+pattern_kind(atom(_),Kind) :- Kind = atomic.
+pattern_kind(int(_) ,Kind) :- Kind = atomic.
+pattern_kind(atom   ,Kind) :- Kind = atomic.
+pattern_kind(int    ,Kind) :- Kind = atomic.
+pattern_kind(atomic ,Kind) :- Kind = atomic.
+pattern_kind(functor,     Kind) :- Kind = functor.
+pattern_kind(functor(_,_),Kind) :- Kind = functor.
+pattern_kind(object,      Kind) :- Kind = functor.
+pattern_kind(object(_),   Kind) :- Kind = functor.
+otherwise.
+pattern_kind(_        ,   Kind) :- Kind = other.
+
+ins_eq(e,                 Pos1,Pos2,B1,T0, T,Ans) :-
+    B1 = v(Pos1,e,e,e,x(eq(Pos1,Pos2),T,e),e), T0 = e, Ans = normal.
+ins_eq(v(Pos,A,L,F,B0,U), Pos, Pos1,B1,T0,T,Ans) :- 
+    B1 = v(Pos,A,L,F,B,U),
+    ins_eq(B0,Pos,Pos1,B,T0,T,Ans).
+ins_eq(x(Cond,Node,U0),   Pos1,Pos2,B1,T0,T,Ans) :-
+    B1 = x(Cond,Node,U),
+    ins_eq(U0,Pos1,Pos2,U,T0,T,Ans).
+ins_eq(l(_Body),         _Pos1,_Pos2,_Node,_T0,_T,Ans) :- 
+    ins_redundant(Ans).
+otherwise.
+ins_eq(v(Pos0,A,L,F,B,U0),Pos1,Pos2,B1,T0,T,Ans) :-
+    B1 = v(Pos0,A,L,F,B,U),
+    ins_eq(U0,Pos1,Pos2,U,T0,T,Ans).
+
+/* Atomic and Functor Cases */
+
+ins_atomic_node(e,X,A,T0,T,Ans) :- 
+    ins_atomic_node(a([],e,[],e,e),X,A,T0,T,Ans).
+ins_atomic_node(a(AC,AN,IC,IN,EC0),atomic,A,T0,EC,Ans) :- 
+    A = a(AC,AN,IC,IN,EC), T0 = EC0, Ans = normal.
+ins_atomic_node(a(AC,AN0,IC,IN,EC),atom,A,T0,AN,Ans) :- 
+    A = a(AC,AN,IC,IN,EC), T0 = AN0, Ans = normal.
+ins_atomic_node(a(AC,AN,IC,IN0,EC),int,A,T0,IN,Ans) :- 
+    A = a(AC,AN,IC,IN,EC), T0 = IN0, Ans = normal.
+ins_atomic_node(a(AC0,AN,IC,IN,EC),atom(A),X,T0,T,Ans) :- 
+    X = a(AC,AN,IC,IN,EC), Ans = normal,
+    ins_merge_case(AC0,A,AC,T0,T).
+ins_atomic_node(a(AC,AN,IC0,IN,EC),int(N),A,T0,T,Ans) :- 
+    A = a(AC,AN,IC,IN,EC), Ans = normal,
+    ins_merge_case(IC0,N,IC,T0,T).
+otherwise.
+ins_atomic_node(_,_,_,_,_,Ans) :- Ans = abnormal.
+
+ins_funct_node(e,X,F,T0,T,Ans) :- 
+    ins_funct_node(f([],e,e),X,F,T0,T,Ans).
+ins_funct_node(f(FC,FO,FN0),functor,F,T0,FN,Ans) :- 
+    T0 = FN0, F = f(FC,FO,FN), Ans = normal.
+ins_funct_node(f(FC0,FO,FN),functor(F,A),X,T0,T,Ans) :-
+    X = f(FC,FO,FN), Ans = normal,
+    ins_merge_case(FC0,F/A,FC,T0,T).
+ins_funct_node(f(FC,e,FN),object,F,T0,FO,Ans) :-
+    T0 = e, F = f(FC,o([],FO),FN), Ans = normal.
+ins_funct_node(f(FC,e,FN),object(Class),F,FO0,FO,Ans) :-
+    F = f(FC,o(O,e),FN), Ans = normal,
+    ins_merge_case([],Class,O,FO0,FO).
+ins_funct_node(f(FC,o(O,FO0),FN),object,F,T0,FO,Ans) :- 
+    T0 = FO0, F = f(FC,o(O,FO),FN), Ans = normal.
+ins_funct_node(f(FC,o(O0,U),FN),object(Class),F,FO0,FO,Ans) :- 
+    F = f(FC,o(O,U),FN), Ans = normal,
+    ins_merge_case(O0,Class,O,FO0,FO).
+otherwise.
+ins_funct_node(_, _, _,_,_,Ans) :- Ans = abnormal.
+
+ins_merge_case([],         V,O,T0,T) :- O = [V-T],      T0 = e.
+ins_merge_case([V-T0|Rest],V,O,T1,T) :- O = [V-T|Rest], T1 = T0.
+otherwise.
+ins_merge_case([V0-X|Rest],V,O,T0,T) :- O = [V0-X|Tail],
+    ins_merge_case(Rest,V,Tail,T0,T).
+
+/* Guard Builtin */
+
+ins_gb(e,                GB,TT,T0,T,Ans) :- 
+    TT = x(GB,T,e), T0 =  e, Ans = normal.
+ins_gb(v(Pos,A,L,F,B,U0),GB,TT,T0,T,Ans) :- 
+    TT = v(Pos,A,L,F,B,U),
+    ins_gb(U0,GB,U,T0,T,Ans).
+ins_gb(x(GB,T00,U),       GB,TT,T0,T,Ans) :- 
+    T0 = T00, TT = x(GB,T,U), Ans = normal.
+ins_gb(l(_Body),        _GB,_T,_T1,_T2,Ans) :- 
+    ins_redundant(Ans).
+otherwise.
+ins_gb(x(Cond,Node,U0),  GB,TT,T0,T,Ans) :- 
+    TT = x(Cond,Node,U), 
+    ins_gb(U0,GB,U,T0,T,Ans).
+
+/* Type Information Handling */
+subsumed(Pattern,Pos,Vars,Ans) :- 
+    subsumed_type(Pos,Pattern,Ans0),
+    subsumed_1(Pattern,Pos,Vars,Ans0,Ans).
+
+subsumed_1(Pattern,Pos,Vars,normal,  Ans) :- Ans = normal.
+subsumed_1(Pattern,Pos,Vars,abnormal,Ans) :- 
+    klic_comp_util:assoc(Vars,Pos,Ans0),
+    subsumed_2(Ans0,Pattern,Ans).
+
+subsumed_2(yes(Position),Pattern,Ans) :-
+    subsumed_type(Position,Pattern,Ans).
+subsumed_2(no,_,Ans) :- Ans=abnormal.
+
+subsumed_type(Type,        Type,Ans) :- Ans = normal.
+subsumed_type(   _,        any ,Ans) :- Ans = normal.
+subsumed_type(atom(_),     X   ,Ans) :- subsumed_type(atom,X,Ans).
+subsumed_type(int(_),      X   ,Ans) :- subsumed_type(int, X,Ans).
+subsumed_type(float(_),    X   ,Ans) :- subsumed_type(float, X,Ans).
+subsumed_type(list(_),     X   ,Ans) :- subsumed_type(list,X,Ans).
+subsumed_type(functor(_),  X   ,Ans) :- subsumed_type(functor,X,Ans).
+subsumed_type(functor(_,_),X   ,Ans) :- subsumed_type(functor,X,Ans).
+subsumed_type(string(_),   X   ,Ans) :- subsumed_type(string,X,Ans).
+subsumed_type(vector(_),   X   ,Ans) :- subsumed_type(vector,X,Ans).
+subsumed_type(atom,      atomic,Ans) :- Ans = normal.
+subsumed_type(atom,      bound ,Ans) :- Ans = normal.
+subsumed_type(int,       atomic,Ans) :- Ans = normal.
+subsumed_type(int,       bound ,Ans) :- Ans = normal.
+subsumed_type(float,     bound ,Ans) :- Ans = normal.
+subsumed_type(atomic,    bound ,Ans) :- Ans = normal.
+subsumed_type(functor,   bound ,Ans) :- Ans = normal.
+subsumed_type(string,    bound ,Ans) :- Ans = normal.
+subsumed_type(vector,    bound ,Ans) :- Ans = normal.
+subsumed_type(float,     object,Ans) :- Ans = normal.
+subsumed_type(string,    object,Ans) :- Ans = normal.
+subsumed_type(vector,    object,Ans) :- Ans = normal.
+otherwise.
+subsumed_type(      _,        _,Ans) :- Ans = abnormal.
+
+/* Warning */
+ins_redundant(Ans) :-
+	klic_comp_message:warning("Redundant clause", []),
+	Ans=abnormal.

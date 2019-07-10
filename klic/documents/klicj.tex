@@ -1,0 +1,4535 @@
+\input texinfo  @c -*-texinfo-*-
+@comment %**start of header
+@setfilename KLICj.info
+@settitle KLIC: A Portable Implementation of KL1
+@iftex
+@setchapternewpage on
+@comment %** @kanjifiletype=20 @comment for NTT tex
+@end iftex
+@comment %**end of header
+
+@ifinfo
+このファイルは KLIC に関するドキュメントです。
+KLIC は KL1を移植実装するものです。
+このマニュアルは、 KLIC 3.002 版に相当します。
+
+Copyright 1994, 1995 Institute for New Generation Computer Technology\\
+(詳細は「 ICOT 無償公開ソフトウェアの利用条件」を参照して下さい。)\\
+(C)1996, 1997, 1998, 1999 Japan Information Processing Development Center\\
+(配布その他は COPYRIGHT-JIPDEC ファイルを参照してください)
+@end ifinfo
+
+@titlepage
+@title KLIC ユーザーズ　マニュアル
+@subtitle 1995 年 3 月
+@subtitle 改訂 1997 年 6 月
+@subtitle このマニュアルは、KLIC 3.1 版に相当します。
+@author 近山　隆(東京大学)
+@author 藤瀬 哲郎(三菱総合研究所)
+@author 関田 大吾(三菱総合研究所)
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1994, 1995 Institute for New Generation Computer Technology
+@end titlepage
+
+@node Top, Copying, (dir), (dir)
+@ifinfo
+@unnumbered KLIC
+
+KLIC とは、 KL1 を移植実装するものです。 KL1 は Guarded Horn Clauses 
+(略して GHC) に基づく、並行論理プログラミング言語です。KL1 の構文と意味は
+非常に単純で簡潔ですが、並行計算向けの非常に強力な機能を提供しています。
+@end ifinfo
+
+@menu
+* Copying::                     ICOT 無償公開ソフトウェアの利用条件
+* Copying of JIPDEC::           JIPDEC 無償公開ソフトウェアの利用条件
+* Introduction::                初めに
+* Language::                    KL1 とは
+* Builtin and Library::         組込み述語とライブラリ機能
+* Using KLIC::                  KLIC の使い方
+* Type Index::                  データ型索引
+* Predicate Index::             述語、メソッド、メッセージ名索引
+* Module Index::                モジュール名索引
+* Concepts::                    索引
+
+ --- The Detailed Node Listing ---
+
+初めに
+
+* Description::                 述語とメソッドの説明について
+* Reporting Bugs::              バグ報告とコメントの送付
+
+述語とメソッドの説明について
+
+* Predicates and Methods::      述語とメソッド
+* Messages::                    メッセージ
+* Argument Modes::              引数モード
+
+KL1 とは
+
+* Basics::                      基本的な実行の仕組み
+* Predicates::                  述語
+* Modules::                     モジュール
+* Goals::                       ゴール
+* Initial Goal::                初期ゴール
+* Generic Objects::             ジェネリック・オブジェクト
+* Priority::                    優先順位の指定
+* Alternatively::               節の優先関係
+* Argument Pair Notation::      引数対の簡略表記
+* Inline C Code::               C 言語コードのインライン挿入
+
+ジェネリック・オブジェクト
+
+* Creating Objects::            ジェネリック・オブジェクトの生成
+* Guard Methods::               ジェネリック・オブジェクトのガード・メソッド
+* Body Methods::                ジェネリック・オブジェクトのボディ・メソッド
+
+引数対の簡略表記
+
+* Paired Arguments::            引数対と引数対の展開
+* Macros for Paired Arguments:: 引数対のためのマクロ 
+* Usage of Paired Arguments::   引数対の使い方
+
+C 言語コードのインライン挿入
+
+* Top Insertion::               ファイル先頭でのインライン挿入
+* Guard Insertion::             ガード部でのインライン挿入
+* C-Level Rep::                 KL1 項の C レベル表現
+* Examples of Inline::          例
+* Hints of Inline::             インライン C コード機能を使う上でのヒント
+
+組込み述語とライブラリ機能
+
+* Common Operations::           共通操作
+* Atomic Data::                 アトム・データ
+* Structured Data::             構造型データ
+* Executable Code::             プログラム・コードのデータとしての扱い
+* Unix::                        Unix インタフェース
+* Input and Output::            入出力
+* System Control::              システム動作の制御
+* Timer::                       タイマ
+* Random Numbers::              乱数生成器
+
+共通操作
+
+* Unification::                 単一化
+* Synchronization::             同期
+* Comparison and Hashing::      比較とハッシュ
+* Execution Status::            実行ステータス
+* Debugging::                   デバッグ
+
+アトム・データ
+
+* Symbolic Atoms::              記号アトム
+* Integers::                    整数アトム
+* Floating Points::             浮動小数点数
+
+記号アトム
+
+* Notation of Atoms::           記号アトムの表記
+* Symbolic Atom Operation::     記号アトムの操作
+
+整数アトム
+
+* Notation of Integers::        整数アトムの表記
+* Integer Arith::               整数演算
+* Integer Comp::                整数比較
+
+浮動小数点数
+
+* Notation of Floats::          浮動小数点数の生成
+* Creating Floats::             新しい浮動小数点数の生成
+* Floating Arith::              浮動小数点演算
+* Floating Comp::               浮動小数点比較
+
+構造型データ
+
+* Functors::                    ファンクタ構造
+* Lists::                       リスト
+* Vectors::                     ベクタ
+* Strings::                     文字列
+
+ファンクタ構造
+
+* Notation of Functors::        ファンクタの表記
+* Functor Operation::           ファンクタの操作
+
+リスト
+
+* Notation of Lists::           リストの表記
+* Merging::                     メッセージストリームの操作
+
+ベクタ
+
+* Notation of Vectors::         ベクタの表記
+* Creating Vectors::            ベクタの生成
+* Predicates on Vectors::       ベクタの述語
+
+文字列
+
+* Notation of Strings::         文字列の表記
+* Creating Strings::            文字列の生成
+* Predicates on Strings::       文字列の述語
+
+プログラム・コードのデータとしての扱い
+
+* Module Type::                 モジュール
+* Predicate Type::              述語
+
+Unix インタフェース
+
+* Unix Stream::                 Unix インタフェース・ストリームの獲得
+* I/O Opening::                 入出力用ストリームのオープン
+* Sockets::                     ソケットの使い方
+* Files & Dirs::                ファイルとディレクトリ
+* Signals::                     シグナル割込みの処理
+* Misc Unix Messages::          Unix ストリームへのシュシュのメッセージ
+* Predicate Interface::         述語インタフェース
+
+入出力
+
+* C-like I/O::                  C 風のインタフェースを用いた入出力
+* Prolog I/O::                  Prolog 風のインタフェースを用いた入出力
+
+C 風のインタフェースを用いた入出力
+
+* Common Msgs (C style)::       C 風のインタフェースを用いた共通メッセージ
+* Input Msgs (C style)::        C 風のインタフェースを用いた入力メッセージ
+* Output Msgs (C style)::       C 風のインタフェースを用いた出力メッセージ
+
+Prolog 風のインタフェースを用いた入出力
+
+* Opening Prolog I/O::          Prolog 風の I/O ストリームのオープン
+* Common Msgs (Prolog style)::  Prolog 風のインタフェースを用いたメッセージ
+* Input Msgs (Prolog style)::   Prolog 風のインタフェースを用いたメッセージ
+* Output Msgs (Prolog style)::  Prolog 風のインタフェースを用いたメッセージ
+* Wrapped Terms::               ラップシタ項
+
+KLIC の使い方
+
+* Compiling::                   KLIC におけるプログラムのコンパイル
+* Running::                     KLIC におけるプログラムの実行
+* Tracing::                     プログラム実行のトレース
+* Install::                     インストール
+* Distributed KLIC::            分散 KLIC
+* Shared-Memory KLIC::          共有メモリ KLIC
+
+KLIC におけるプログラムのコンパイル
+
+* Command for Compilation::     コンパイル用コマンド
+* Compiler Options::            コンパイラ・オプション
+* Mechanism of Compilation::    KLIC コンパイラの動作内容
+
+KLIC におけるプログラムの実行
+
+* Runtime Switches::            実行時オプション
+
+プログラム実行のトレース
+
+* Preparing for Trace::         トレース実行の準備
+* Trace Ports::                 トレース・ポート
+* Output of Tracer::            トレース表示のフォーマット
+* Controlling Trace::           トレース制御コマンド
+* Spying::                      スパイ
+* Port Control::                トレース・ポートのコマンド
+* Display Control::             表示を制御するコマンド
+* Dumping Goals::               ゴールのダンプ
+* Misc Trace Commands::         その他のコマンド
+* Perpetual Suspension::        永久中断の探索
+
+トレース制御コマンド
+
+* Goal Control::                トレース対象ゴールのトレース制御
+* Subgoal Control::             新しく生成されたサブゴールのトレース制御
+* Predicate Control::           述語毎のトレース・スイッチのデフォルト値の変更
+
+インストール
+
+* Configuration::               コンフィギュレーション
+* Make All::                    KLIC システムのコンパイル
+* Make Tests::                  コンパイル結果のテスト
+* Make Install::                オブジェクトのインストール
+* Make Distclean::              インストールディレクトリのクリーン・アップ
+* Troubles::                    うまく行かない場合
+
+分散 KLIC
+
+* Installation of Distributed KLIC::        分散 KLIC のインストール
+* Compiling Programs for Distributed KLIC:: 分散 KLIC 向けプログラムのコンパイル
+* Running Programs of Distributed KLIC::    分散 KLIC のプログラム実行
+
+分散 KLIC のプログラム実行
+
+* Setting Up PVM::                          PVM のセット・アップ
+* Runtime Options for Distributed KLIC::    分散 KLIC の実行時オプション
+* Known Bugs of Distributed KLIC::          分散 KLIC の既知のバグ
+
+共有メモリ KLIC 
+
+* Installation of Shared-Memory KLIC::      共有メモリ KLIC のインストール
+* Compiling Programs for Shared-Memory KLIC::   共有メモリ KLIC 向けプログラムのコンパイル
+* Running Programs of Shared-Memory KLIC::  共有メモリ KLIC のプログラム実行
+
+共有メモリ KLIC のプログラム実行
+
+* Runtime Options for Shared-Memory KLIC::  共有メモリ KLIC の実行時オプション
+* Known Bugs of Shared-Memory KLIC::        共有メモリ KLIC の既知のバグ
+@end menu
+
+@node Copying, Copying Of JIPDEC, Top, Top
+@unnumbered ICOT 無償公開ソフトウェアの利用条件
+@cindex コピーライト[こぴーらいと]
+@cindex 配布[はいふ]
+@cindex ICOT 無償公開ソフトウェア[ICOT むしょうこうかいそふとうえあ]
+
+@noindent
+@strong{1. ICOT無償公開ソフトウェアの目的}
+
+財団法人新世代コンピュータ技術開発機構 (以下、@dfn{ICOT}という) は、
+日本国通商産業省より委託され、第五世代コンピュータ・プロジェクトを
+推進してきた。また、平成５年度からは、このプロジェクトの後継プロジェクト
+として、第五世代コンピュータの研究基盤化プロジェクトを推進している。
+第五世代コンピュータ・プロジェクトおよびその後継プロジェクト(以下、
+これらの一連のプロジェクトを@dfn{本プロジェクトという})は、並列推論処理を中核
+メカニズムとする新しいコンピュータの基礎技術を創出し、その知見と技術を
+世界の研究者と共有することによって、コンピュータ科学の発展に貢献することを
+目的としている。
+
+本プロジェクトによって、並列推論マシン、並列推論ソフトウェア技術といっ
+た新しい技術が開発され、また、こうした技術開発に伴い、多くの先進的なソ
+フトウェアが試作されている。これらのソフトウェアは、基礎的な研究開発段
+階にあるため、多くの研究者に広め発展させていくべきものである。
+
+そこで、 ICOT は、本プロジェクトの国際貢献の目的に鑑み、著作権が国ではな
+く ICOT に帰属することとなるこれらの研究開発段階のソフトウェアを、「 ICOT 
+無償公開ソフトウェア」として公開してきた。これらのソフトウェアについて
+は、研究開発のための障害となるいっさいの制約をはずすことによって、多く
+の研究者の方々に自由に利用してもらい、新しいコンピュータ科学への貢献を
+実践したいと考えている。
+
+本プログラム及びドキュメント(以下、@dfn{本プログラム}という)は、@dfn{ ICOT 
+無償公開ソフトウェア}の 1 つとして、 ICOT において無償で配布しているものである。
+
+@noindent
+@strong{2. 使用、変更、複製、配布の自由}
+
+本プログラムの@dfn{利用者}は、その使用、変更、複製を自由に行うことができる。
+ここでいう変更には、本プログラムの機能、性能、品質を向上させるために改
+良、拡張を行うこと、もしくは自ら開発したプログラムやドキュメントを本プ
+ログラムに追加することが含まれるが、それだけには限定されない。
+
+本プログラムの利用者は、本「 ICOT 無償公開ソフトウェアの利用条件」第3項
+(@strong{無保証})が記されていることを@strong{条件として}、関連法令に
+違反しない限り、本プログラムそのもの、または本プログラムの変更版を第三者へ
+自由に配布することが@strong{できる}。
+
+@noindent
+@strong{3. 無保証}
+
+本プログラムは、本プロジェクトの研究開発の試作物を『あるがまま』の状態
+で提供するものである。このため、明示的であるか黙示的であるか、または法
+令の規定により生ずるものであるか否かを問わず、一切の保証をつけないで提
+供されるものである。ここでいう保証とは、プログラムの品質、性能、市場性、
+特定目的適合性、および他の第三者の権利への無侵害についての保証を含むが、
+それに限定されるものではない。
+
+本プログラムの利用者は、本プログラムが無保証であることを承諾し、本プロ
+グラムが無保証であることによるすべてのリスクを利用者自身で負うものとす
+る。
+
+従って、利用者が本プログラムを利用したこと、または利用できないこと、も
+しくは本プログラムを利用して得られた結果に起因する一切の損害について、
+著作権者である ICOT および本プログラムの開発に関与した関連機関並びにそれ
+らの役職員及び従業員は、そのような損害の発生する可能性について、知って
+いたか否かにかかわらず、何らの責任も負わない。本プログラムの利用者は、
+本プログラムの利用を開始したことによりこれを承諾しているものとみなされ
+る。ここでいう利用とは、本プログラムの使用、変更、複製、配布、二次的著
+作物の作成を含むがこれらに限定されない。
+
+利用者が本プログラムそのもの、または本プログラムの変更版を、 ICOT 以外の
+第三者から配布を受けた場合においても、配布を行った第三者が独自に特別な
+保証を文書で行わない限り、配布を行った第三者は、その利用者に対して、本
+プログラムに関係する限りにおいて同様に何らの責任を負わないものとする。
+
+@node Copying Of JIPDEC, Copying, Top, Top
+@unnumbered JIPDEC 無償公開ソフトウェアの利用条件
+
+ICOTで開発されてきたKLICは、その後JIPDECのAITECにより開発が
+引き継がれ、配布されています。よって、1996年以降の著作権は
+JIPDECにある旨記載しています。
+
+JIPDECのコピーライトが附属されている部分についての改変、配布
+等の条件は「ICOT無償公開ソフトウェア」のそれと同じとします。
+つまり、「ICOT無償公開ソフトウェアの利用条件」の``ICOT''とあ
+る部分をJIPDECとして読み替え適用するようにしてください。
+
+なお、JIPDECの著作ではないソースコードも存在しますが、それら
+についても同様に「ICOT無償公開ソフトウェアの利用条件」の著作
+者、配布者を読み替え適用してください。
+
+@node Introduction, Language, Copying Of JIPDEC, Top
+@chapter はじめに
+
+このマニュアルでは、第五世代コンピュータの日本における国家プロジェクトに関与した新世代コンピュータ開発機構と、その後継プロジェクトにおいて開発された KLIC と呼ばれる移植性の高い KL1 の処理系について説明します。
+
+KL1 は Garded Horn Clauses(略して GHC )に基づく、並行論理型プログラミング言語です。
+ KL1 の構文と意味は非常に単純で簡潔ですが、並行計算向けの非常に強力な機能を提供しています。
+
+KLIC は KL1 プログラムを C プログラムにコンパイルします。
+その後、ホスト・システムの C コンパイラが、 C プログラムを再配置可能なオブジェクトにコンパイルします。
+続いて、再配置可能なオブジェクトは、 KLIC の実行時ライブラリとともに一括してリンクされます
+(@pxref{Mechanism of Compilation, , KLIC コンパイラの動作内容})。
+したがって、システムはホスト・システムのハードウェア・アーキテクチャに依存しません。
+さらに、移植性を確保するため、システムは Unix の最小機能だけを使用するように書かれています。
+
+@menu
+* Description::                 述語とメソッドの説明について
+* Reporting Bugs::              バグ報告とコメントの送付
+@end menu
+
+@node Description, Reporting Bugs, Introduction, Introduction
+@section 述語とメソッドの説明について
+
+@menu
+* Predicates and Methods::      述語とメソッド
+* Messages::                    メッセージ
+* Argument Modes::              引数モード
+@end menu
+
+@node Predicates and Methods, Messages, Description, Description
+@subsection 述語とメソッド
+@cindex 述語[じゅつご]
+@cindex メソッド[めそっど]
+
+他の論理型プログラミング言語システムと異なり、KLIC は述語とジェネリック・メソッドの 2 種類の手続きを提供します。
+述語はそれらの引数の関係を定義し、意味は固定です。
+ジェネリック・メソッド(または、単にメソッド)は、適用する@emph{オブジェクト}が定義します。
+したがって、意味は適用されるオブジェクトに依存します。
+
+述語とメソッドの両方で同じ操作を提供するものがあります。
+例えば、文字列の要素は、次の 2 つのどちらかで操作できます。
+
+@defop {ボディ述語} {builtin} string_element +String +Index @t{-}Element
+@defopx {ボディ・メソッド} string element +String +Index @t{-}Element
+@end defop
+
+@noindent
+前者は、システムの組込み述語で、述語の呼出しは次のように書きます。
+
+@example
+@var{ModuleName}:@var{PredicateName}(@var{Arguments}, @dots{})
+@end example
+
+@noindent
+上記の述語 @code{string_element} の場合は、組込み述語として定義されているので、呼出しにモジュール名は必要ありません。
+したがって、呼出しは次のように書きます。
+
+@example
+string_element(@var{String}, @var{Index}, @var{Element})
+@end example
+
+@noindent
+一般には、モジュール名がコロン (:) とともに先に書かれ、その後に述語名が書かれます。
+述語によっては引数を全く持たないものもあります。
+そのような場合、引数を囲む括弧も省略します。
+
+@cindex クラス[くらす]
+@cindex ジェネリック・メソッド[じぇねりっくめそっど]
+後者は、@code{文字列}クラスのオブジェクトに対して定義されるジェネリック・メソッドで、メソッドの呼出しは、次のように書きます。
+
+@example
+@comment % CIJ generic:@var{MethodName}(@var{Object}, @var{OtherArguments, @dots{}})
+generic:@var{MethodName}(@var{Object}, @var{OtherArguments}, @dots{})
+@end example
+
+@noindent
+上記のメソッド @code{element} の呼出しは次のように書きます。
+
+@example
+generic:element(@var{String}, @var{Index}, @var{Element})
+@end example
+
+述語とメソッドのどちらでも同じ操作が行えます。
+例えば、文字列 @var{S} の 3 番目の要素(要素番号 2 )を @var{E} にとる場合、次に示すどちらの呼出しでもできます。
+
+@example
+string_element(S, 2, E)
+generic:element(S, 2, E)
+@end example
+
+@noindent
+述語 @code{string_element} は、文字列の要素をとることだけのものですが、一方、ジェネリック・メソッドの呼出しは、@emph{類似の}オブジェクトの要素をとるためにも使えますので注意してください。
+例えば、ベクタ( 1 次元配列)の要素も、同じ呼出しでとることができます。
+
+@node Messages, Argument Modes, Predicates and Methods, Description
+@subsection メッセージ
+@cindex メッセージ[めっせーじ]
+@cindex プロセス間通信[ぷろせすかんつうしん]
+
+KL1 プログラムは、多数の@emph{プロセス}で構成することがよくあります。
+プロセスは、頻繁に@emph{ストリーム}を使ってお互いに交信することがあります。
+ストリームは、実際には@emph{メッセージ}のリストです。
+リストは、 Lisp や類似の言語のように、 @emph{car} と @emph{cdr} の 2 個のフィールドを持つ@emph{コンス}・セルと呼ばれるセルからなっています。
+したがって、メッセージ・ストリームとして使う場合、コンス・セルの car にはメッセージが、cdr にはストリームの残りが入っています。
+
+KLIC システムのいくつかの標準機能も、メッセージ・ストリームの
+インタフェースを持つプロセスとして提供されます。
+このマニュアルで説明するそのようなメッセージの例を次に示します。
+
+@defop {メッセージ} {C 風の入出力} putc +C
+@end defop
+
+@noindent
+これは、 @code{putc} という名前のメッセージが、C 風の I/O プロセスのインタフェース・ストリームへのメッセージであることを意味します。
+この場合、メッセージは @var{C} という名前の引数を 1 個持ちます。
+
+メッセージ・ストリームにメッセージを送るために、メッセージ・ストリームを参照する変数を、コンス・セルで具体化します。
+例えば、 @code{S} が C 風の I/O へのストリームで、コード 10を持つ文字を出力する場合、次のような単一化を行います。
+
+@example
+S = [putc(10)|T]
+@end example
+
+@noindent
+ここで、変数 @code{T} にはストリームの残りが入るので、これ以後のストリームに対するメッセージはすべて、この変数に送ることになります。
+
+@node Argument Modes,  , Messages, Description
+@subsection 引数モード
+@cindex 引数モード[ひきすうもーど]
+@cindex 入力引数[にゅうりょくひきすう]
+@cindex 出力引数[しゅつりょくひきすう]
+述語、メソッドまたはメッセージの引数は、特定の入出力モードを持つことがあります。
+入力引数は、述語やメソッドの呼出しで読み込まれるので、入力引数に未定義のものがあれば中断されます。出力引数には呼出しによって値が与えられます。
+
+述語とメソッドの説明では、入力引数には @code{+} を、出力引数には @code{-} を付けてあります。
+引数の中には、読み込まれないものや値が与えられないものがあります。
+そのような引数には @code{?} が付いています。
+
+@node Reporting Bugs,  , Description, Introduction
+@section バグ報告とコメントの送付
+@cindex バグ報告[ばぐほうこく]
+@cindex メイル・リスト[めいるりすと]
+@cindex 新たなリリース[あらたなりりーす]
+
+KLIC システムとこのドキュメントに関する、バグやコメントは、
+次のメイル・アドレスに報告してください。
+
+@example
+@code{klic-bugs@@icot.or.jp}.
+@end example
+
+KLIC のユーザのためのメイル・リストがあります。
+このメイル・リストは、既知のバグ、バグ改修、新しいリリースなどについて、開発者からのアナウンスに使います。同じメイル・リストをユーザ間のコミュニケーションにも使うことができます。
+メイル・リストへの申込みは、次のアドレスに送ってください。
+
+@example
+@code{klic-requests@@icot.or.jp}
+@end example
+
+
+@node Language, Builtin and Library, Introduction, Top
+@chapter  KL1 とは
+@cindex KL1
+@cindex GHC
+@cindex 並行論理プログラム言語[へいこうろんりぷろぐらむげんご]
+
+KL1 とは、 Guarded Horn Clauses(GHC) に基づいた、並行計算を記述するためのプログラミング言語です。
+GHC は、並行論理プログラミング言語、またはコミッティッド・チョイス言語と呼ばれる言語の系統に属しています。
+
+他にこの系統に属する言語としては、例えば、 Concurrent Prolog、Parlog、
+Fleng、Strand、Janus 等があります。
+これらの言語は、単純で簡潔な構文と意味を持ちながら、並行計算向けに非常に強力な機能を提供しています。
+
+ここでは、 KL1 言語の概略を紹介します。
+将来(できれば)、より正確で詳細な記述を補う予定です。
+
+@menu
+* Basics::                      基本的な実行の仕組み
+* Predicates::                  述語
+* Modules::                     モジュール
+* Goals::                       ゴール
+* Initial Goal::                初期ゴール
+* Generic Objects::             ジェネリック・オブジェクト
+* Priority::                    優先順位の指定
+* Alternatively::               節の優先関係
+* Argument Pair Notation::      引数対の簡略表記
+* Inline C Code::               C 言語コードのインライン挿入
+@end menu
+
+@node Basics, Predicates, Language, Language
+@section 基本的な実行の仕組み
+@cindex execution
+@cindex guard
+@cindex body
+@cindex clause
+
+
+次に、クイックソート・プログラムの一部を記述した、
+小さな KL1 プログラムの例を示します。
+
+例1:クイックソート
+
+@example
+:- module quicksort.
+
+sort(X, Y) :- sort(X, Y, []).
+
+sort([], Y, Z) :- Y = Z.
+sort([P|X], Y, Z) :-
+    partition(P, X, X1, X2),
+    sort(X1, Y, [P|Y1]),
+    sort(X2, Y1, Z).
+
+partition(_, [], S, L) :-
+    S = [],
+    L = [].
+partition(P, [W|X], S, L) :- W =< P |
+    S = [W|S1],
+    partition(P, X, S1, L).
+partition(P, [W|X], S, L) :- W >= P |
+    L = [W|L1],
+    partition(P, X, S, L1).
+@end example
+
+最初の行 @code{:- module quicksort.} は、このプログラムモジュールが @code{quicksort} というモジュールであることを宣言しています
+(@pxref{Modules, ,モジュール}) 。
+
+KL1 プログラムの実行とは、(可能ならば並列に行われる)リダクションの繰返しによって、与えられた@dfn{ゴール}がプログラム@dfn{節}で繰り返され、リダクションして行くことです。各節は次のような形をしています。
+
+@example
+@var{PredicateName}(@var{Argument pattern} @dots{}) :- @var{Guard} | @var{Body}.
+@end example
+
+ゴールがリダクションされるときには、ゴール中の述語に対応するプログラム中の節が調べられ、引数パターンに一致する節が見つかると、そのガード部が調べられます。
+引数が一致し、ガード部の条件が満たされるような節は、リダクションに使用される候補となります。
+それらの候補のうちの任意の  1 つが、リダクションに用いられ、元のゴールは、今@emph{選ばれた候補}のボディ部の( 0 個以上の)ゴールによって置き換えられます。
+
+ガード部のテストが必要ない場合、ガード部は、縦棒(|)と共に省略可能です。
+
+@node Predicates, Modules, Basics, Language
+@section 述語
+@cindex 述語[じゅつご]
+@cindex 節[せつ]
+
+KL1 の@dfn{述語}は、 Fortran のサブルーチンや、 C の関数に相当します。
+述語は、ヘッドが同じ述語名で同じ引数個数であるような節の集まりとして定義できます。
+他のいくつかの言語と異なり、述語は名前だけでなく、
+@dfn{アリティ(引数個数)}によっても区別されます。
+同じ述語名でアリティが異なる述語を区別するために、このマニュアルでは、@code{@var{述語名}/@var{アリティ}}という表記法を使用します。
+
+先ほどのクイックソートのプログラムでは、@code{sort} という名前の 2 引数と 3 引数の 2 つの述語が定義されていました
+(@pxref{Basics, , 基本的な実行の仕組み})。
+このような述語を、 @code{sort/2} や @code{sort/3} と表します。
+
+述語を定義する節の順序は、プログラムの意味には関係ありません。
+例えば、 2 つの整数の大きい方の値を出力する述語は、次のように定義できます。
+@example
+max(X, Y, M) :- X >= Y | M = X.
+max(X, Y, M) :- X =< Y | M = Y.
+@end example
+@noindent
+
+また、同じ述語を次のように節の順序を逆にして定義することもできます。
+@example
+max(X, Y, M) :- X =< Y | M = Y.
+max(X, Y, M) :- X >= Y | M = X.
+@end example
+
+@cindex otherwize
+@cindex 否定[ひてい]
+ある節の集まりが適用できない@code{ときに限り}、他の節の集合を適用したいという場合には、 otherwise というキーワードを 2 つの節の集合の間に書く必要があります。
+例えば、上記の述語 @samp{max} を次のように定義することもできます。
+
+@example
+max(X, Y, M) :- X >= Y | M = X.
+otherwise.
+max(X, Y, M) :- M = Y.
+@end example
+
+@noindent
+この述語の意味は、先ほどの例とほぼ同じですが、 @samp{X} や @samp{Y} が整数でない場合には、先ほどの 2 つの例では、実行が失敗するのに対し、この述語では、 @samp{M} を @samp{Y} と単一化するという点が異なっています。
+
+@code{otherwise} 指示より後ろにある節は、それより前のすべての節が適用@emph{できない}ことが分かるまでは調べられません。
+このことは、後で何らかの情報(変数の束縛)が追加された場合でも変わりません。
+ otherwise 指示と alternatively 指示を混同しないようにしてください。
+@code{alternatively} 指示は、その指示よりも前にある節が、
+後ろにある節に比べて優先的に扱われることを示すものです
+(@pxref{Alternatively, ,節の優先関係})。
+
+@node Modules, Goals, Predicates, Language
+@section モジュール
+@cindex モジュール[もじゅーる]
+
+KL1 には、大きなプログラムをいくつかのモジュールに分割するためのモジュール構造があります。
+ 1 つのモジュールは、 1 つ以上の述語から構成されます。
+モジュールは、 @code{:- module @var{モジュール名}.} の形のモジュール宣言で始まり、その後に述語定義の節が続きます。
+ 1 つのモジュール定義は、ファイルの終わり、または別のモジュール宣言で終了します。
+先ほどのクイックソートの例で、次に示す最初の行
+@example
+:- module quicksort.
+@end example
+
+@noindent
+は、このプログラムモジュールが quicksort であることを宣言しています
+(@pxref{Basics, ,基本的な実行の仕組み})。
+
+同じ名前、同じ引数個数でも、異なったモジュールで定義された述語は、異なる述語とみなされます。
+したがって、モジュール名を明示することが必要な場合は、@code{@var{モジュール}:@var{述語}/@var{アリティ}}という表記法が用いられます。
+
+@node Goals, Initial Goal, Modules, Language
+@section ゴール
+@cindex ゴール[ごーる]
+
+ゴールは、KL1 の実行の単位です。
+ゴールは述語と結び付けられています。
+ゴールは、述語を定義する節の 1 つを用いて、0 個以上のより単純なゴールにリダクションされます。
+
+ゴールは以下のように記述されます。
+
+@example
+@var{Predicate}(@var{Arguments}, @dots{})
+@end example
+
+@noindent
+または、引数を持たない場合には、さらに簡単に
+
+@example
+@var{Predicate}
+@end example
+
+@noindent
+のように記述できます。
+
+述語が同じモジュール内にない場合には、
+
+@example
+@var{Module}:@var{Predicate}(@var{Arguments}, @dots{})
+@end example
+
+@noindent
+または
+
+@example
+@var{Module}:@var{Predicate}
+@end example
+
+@noindent
+という構文になります。
+
+quicksort モジュールを使う @code{main} モジュールは、
+例えば、次のようになります
+(@pxref{Basics, ,基本的な実行の仕組み})。
+
+例 2 : @code{quicksort} モジュールを使用
+
+@example
+:- module main.
+
+main :-
+    X = [9,2,8,3,6,7,4,1,5],
+    builtin:print(X),
+    quicksort:sort(X, Y),
+    builtin:print(Y).
+@end example
+
+@noindent
+上の例の @code{quicksort:sort(X, Y)} というボディ・ゴールは、 @code{quicksort} モジュールの @code{sort/2} という述語を参照しています。
+
+@node Initial Goal, Generic Objects, Goals, Language
+@section 初期ゴール
+@cindex メイン[めいん]
+@cindex 初期ゴール[しょきごーる]
+
+すべての KLIC プログラムは、 @code{main:main} という初期ゴールから実行されます。
+つまり、 @code{main} モジュールで定義された、引数を持たない @code{main} という述語です。
+モジュール @code{main} の例(@pxref{Goals, ,ゴール})は、
+メイン・プログラムの例です。
+コマンド行の引数は、初期ゴールには渡されません。
+コマンド行引数を得るための述語は、別途用意されています
+(@pxref{Predicate Interface, ,述語インタフェース})。
+
+@node Generic Objects, Priority, Initial Goal, Language
+@section ジェネリック・オブジェクト
+@cindex ジェネリック・オブジェクト[じぇねりっくおぶじぇくと]
+@cindex ジェネリック・メソッド[じぇねりっくめそっど]
+@cindex メソッド[めそっど]
+@pindex @code{ジェネリック} (pseudo module)
+
+@dfn{ジェネリック・オブジェクト}は、 KL1 に新しいデータ型やそれらの操作を追加するための枠組みを提供します。
+ジェネリック・オブジェクトには、@dfn{データ・オブジェクト}、@dfn{コンシューマ・オブジェクト}、@dfn{ジェネレータ・オブジェクト}という 3 種類があります。
+
+ジェネリック・オブジェクトは、疑似述語 @code{generic:new} によって作成されます。
+ジェネリック・データ・オブジェクトは、通常の KL1 のデータと似ています。
+データ・オブジェクトに対する操作は、それらに対する@dfn{ジェネリック・メソッド}という形で定義できます。
+メソッドは、疑似述語 @code{generic: @var{メソッド}}によって呼び出されます。
+コンシューマ・オブジェクトやジェネレータ・オブジェクトは、通常の KL1 プログラムの変数と同じように見えるものであり、それらに対する操作は、単一化によって暗黙のうちに行われます。
+
+KLIC が提供する標準データ型のいくつか、例えば、ベクタや文字列等は、実際にはジェネリック・データ・オブジェクトとして実装されています。
+これらに関するジェネリック・メソッドは、組込み述語としても呼び出せるようになっています。
+例えば、 @code{set_vector_element(@var{Original},@var{Index},@var{NewElement},@var{New})} は、 @code{generic:set_element(@var{Original},@var{Index}, @var{NewElement}, @var{New})} と同じことを意味します。
+
+@menu
+* Creating Objects::            ジェネリック・オブジェクトの生成
+* Guard Methods::               ジェネリック・オブジェクトのガード・メソッド
+* Body Methods::                ジェネリック・オブジェクトのボディ・メソッド
+@end menu
+
+@node Creating Objects, Guard Methods, Generic Objects, Generic Objects
+@subsection ジェネリック・オブジェクトの生成
+@cindex ジェネリック・オブジェクトの生成[じぇねりっくおぶじぇくとのせいせい]
+@cindex オブジェクト生成[おぶじぇくとせいせい]
+
+ジェネリック・オブジェクトは、次に示す疑似述語によって生成されます。
+
+@example
+generic:new(@var{ClassName}, @var{Object}, @var{Args}, @dots{})
+@end example
+
+@noindent
+@var{ClassName} は、オブジェクトのクラス名を示す記号アトムです。
+この疑似述語の呼出しによって、新しくジェネリック・オブジェクトが生成され、 @var{Object} で指定された変数に結び付けられます。
+ジェネリック・オブジェクト生成時に必要なパラメタは、 @var{Args} で与えます。
+@var{Args} の意味は、それぞれのオブジェクト・クラスに依存します。
+
+@node Guard Methods, Body Methods, Creating Objects, Generic Objects
+@subsection ジェネリック・データ・オブジェクトのガード・メソッド
+@cindex ガード・メソッド[がーどめそっど]
+
+ガード・メソッドを呼ぶことで、ジェネリック・データ・オブジェクトに依存して節が選択できます。
+ガード・メソッドは、以下の形式を持っています。
+
+@example
+generic:@var{Method}(@var{Object}, @var{Input}, @dots{}):@var{Output}:@dots{}
+@end example
+
+@code{@var{Input}, @dots{}} では、入力引数を指定します。
+もし、入力引数のどれかが未定義のままである場合には、この呼出しは中断されます。
+@code{@var{Output}:@dots{}} では、出力引数を指定し、このメソッドからの返却値がここに入れられます。
+もし、 @var{Output} が既に何らかの具体値を持っていた場合には、その値と返却値との間のガード・ユニフィケーションが行われます。
+ガード・メソッドが返却値を持たない場合には、コロン(:)とそれに続く @var{Output} は省略されます。
+
+@node Body Methods,  , Guard Methods, Generic Objects
+@subsection ジェネリック・データ・オブジェクトのボディ・メソッド
+@cindex ボディ・メソッド[ぼでぃめそっど]
+
+ジェネリック・データ・オブジェクトに対する操作は、次に示すボディ・メソッドの呼出し形式で行います。
+
+@example
+generic:@var{Method}(@var{Object}, @var{Args}, @dots{})
+@end example
+
+@noindent
+ガード・メソッドとは異なり、入力引数と出力引数は構文的には区別されません。
+また、実行時に動的に呼び出されるメソッドを決めることもできます。
+その場合は、次の呼出し形式を用います。
+
+@example
+generic:generic(@var{Object}, @var{Functor})
+@end example
+
+@noindent
+この呼出し形式では、 @var{Functor} は(コンパイル時、または実行時に) @code{@var{Method}(@var{Args},@dots{})} という@var{ファンクタ}構造でなければなりません。
+@var{Functor} が未定義の場合、具体化されるまで呼出は中断します。
+
+@node Priority, Alternatively, Generic Objects, Language
+@section 優先順位の指定
+@cindex priority
+
+ゴールには、実行優先度 (Execution Priority) が付いています。
+実行優先度には、正の整数を指定します。
+大きな優先度を持つゴールは、(通常)小さな優先度を持つゴールよりも先に実行されます。
+しかし、優先度の指定は単なる示唆にすぎず、実装方式によっては、優先度が厳密に守られないこともあります。
+
+ボディ・ゴールの実行優先度は、次の形式で指定されます。
+
+@quotation
+        @code{@var{Goal}@@priority(@var{AbsPrio})}@*
+        @code{@var{Goal}@@lower_priority}@*
+        @code{@var{Goal}@@lower_priority(@var{RelPrio})}@*
+@end quotation
+
+@noindent
+上記の @var{AbsPrio} と @var{RelPrio} は、負以外の整数定数、または実行時に
+負以外の整数になるような変数でなければなりません。
+現在の実装方式では、優先度に負が指定された場合には 0 が指定されたものとして
+扱われます。
+
+priority による絶対優先度指定によって、
+ゴールには @var{AbsPrio} で指定された優先度が与えられます。
+@@lower_priority(RelPrio) による相対優先度指定では、ゴールは親のゴールの
+優先度より RelPrio だけ小さい優先度を持ちます。
+@code{@var{Goal}@@lower_priority} という指定は、 @code{@var{Goal}@@lower_priority(1)} と同じ効果を持ちます。
+優先度指定のないゴールは、親のゴールと同じ優先度を持ちます。
+
+優先度の最大値は整数の最大値であり、ホスト・システムに依存します
+(@pxref{Integers, ,整数アトム})。
+初期ゴール @code{main:main} は、ホストシステムにおいて最大の優先度を持ちます
+(@pxref{Initial Goal, ,初期ゴール})。
+
+@node Alternatively, Argument Pair Notation, Priority, Language
+@section 節の優先関係
+@cindex alternatively
+@cindex preference of clauses
+@cindex clause preference
+
+KL1 の述語では、 2 つ以上の節が適用可能なために非決定性を持つことがあります。
+その場合、節同士の優先関係を @code{alternatively} 指示によって指定できます。
+
+@code{alternatively} というキーワードを 2 つの節の集合の間に書いた場合、 @code{alternatively} より前の節が、後ろの節よりも@emph{優先的に}選ばれます。
+もし、 @code{alternatively} 指示より前の節が情報不足(変数値の具体化が足りず)のため、選択不可能な場合、この指示よりも後の節が選択の対象となります。
+この機能は、実行状況に依存した投機的実行 (speculative execution) の制御に利用できます。
+
+alternatively と @code{otherwise} を混同しないでください
+(@pxref{Predicates, ,述語})。
+例えば、次の 2 つの述語を考えてみます。
+
+@example
+p(1, Y, R) :- R = a.
+alternatively.
+p(X, 2, R) :- R = b.
+
+q(1, Y, R) :- R = a.
+otherwise.
+q(X, 2, R) :- R = b.
+@end example
+
+@noindent
+第 1 引数が未定義で、第 2 引数が @code{2} の場合、述語 @code{p} は 2 番目の節の実行によって第 3 引数に @code{b} を返しますが、述語 @code{q} は第 1 引数が束縛されるまで待ちます。
+つまり、第 1 引数が最終的に @code{1} になるならば、述語 @code{q} では @code{a} が返されることが保証されますが、述語 @code{p} では @code{a} か @code{b} のどちらかが返されることになります。
+
+@node Argument Pair Notation, Inline C Code, Alternatively, Language
+@section 引数対の簡略表記
+@cindex 引数対[ひきすうつい]
+
+KL1 のプログラムでは、述語に対して 1 つを入力、 1 つを出力というように
+ 2 つの引数を対として与えることがよくあります。
+KLIC では、このような場合のために簡略表現を用意しています。
+
+@menu
+* Paired Arguments::            引数対と引数対の展開
+* Macros for Paired Arguments:: 引数対のためのマクロ 
+* Usage of Paired Arguments::   引数対の使い方
+@end menu
+
+@node Paired Arguments, Macros for Paired Arguments, Argument Pair Notation, Argument Pair Notation
+@subsection 引数対と引数対の展開
+@cindex 引数対[ひきすうつい]
+@cindex 展開対[てんかいつい]
+
+述語のヘッドや、ガード部やボディ部にあるゴールに対して、 1 つの変数名を
+マイナス符号で続けることで、
+引数対を与えることができます。
+この疑似変数名は、マクロ展開のために用いられる変数名であり、通常の KL1 の変数と区別するために@dfn{引数対名}と呼びます。
+次に例を示します。
+
+@example
+p(X,Y)-Pair :- q(X)-Pair, s(Z)-Pair, r(Pair,Y), t(Z)-Pair.
+@end example
+
+@noindent
+この場合、疑似変数 @code{Pair} が引数対名です。
+この節は、次の節と同じであると解釈されます。
+
+@example
+p(X,Y,P0,P) :- q(X,P0,P1), s(Z,P1,P2), r(P2,Y), t(Z,P2,P).
+@end example
+
+@noindent
+ヘッドやゴールに付いているマイナス符号に続く引数対名は、引数列の最後に追加された 2 つの異なった変数の対と解釈されます。
+これ以後、この 2 つの変数を、引数対から生成された@dfn{展開対}と呼びます。
+
+あるゴールの中の展開対の 2 番目の変数は、次の同じ引数対名を持つゴールの展開対の 1 番目の変数と同じです。
+上の例では、 @code{P1} はゴール @code{q/3} の第 3 引数に現れ、また @code{s/3} の第 2 引数にも現れています。
+これらは、元々同じ引数対名 @code{Pair} だったものです。
+
+ヘッドにある展開対の 1 番目の変数は、節内で同じ引数対名を持つ最初のゴールの展開対の 1 番目の変数と同じです。
+またヘッドにある展開対の 2 番目の変数は、節内で同じ引数対名を持つ最後のゴールの展開対の 2 番目の変数と同じです。
+
+上の例では、ヘッドにある展開対の 1 番目の変数 @code{P0} が、最初のゴール 
+@code{q/3} の第 2 引数にも現れており、ヘッドにある展開対の 2 番目の変数 
+@code{P} は、最後のゴール @code{t/3} の第 3 引数にも現れています。
+
+引数対名がヘッドにしか現れていない場合には、展開対の 2 つの変数がボディにおいて単一化されるコードが生成されます。
+例えば、
+
+@example
+p(X)-Y :- q(X).
+@end example
+
+@noindent
+は、次のように展開されます。
+
+@example
+p(X,Y0,Y) :- Y0=Y, q(X).
+@end example
+
+先ほどの例では、ゴール @code{r/2} の 1 番目の引数に見られるように、引数対名は、ヘッドやボディにマイナス符号を付けて指定されるだけでなく、通常の引数位置に置かれることもあります。
+この場合、引数対名は、単一の変数に展開されます。
+この変数は、直前の展開対の 2 番目の変数と同じで、直後の展開対の 1 番目の変数とも同じです。
+したがって、この例では、 @code{r/2} の第 1 引数 @code{Pair} は @code{P2} に展開され、これは @code{s/3} の第 3 引数および @code{t/3} の第 2 引数と同じになります。
+
+ゴールやヘッドには、任意の数の引数対名が書けます。
+例えば、次の例で、
+
+@example
+p-X-Y :- q-X, r-Y, s-Y-X.
+@end example
+
+@noindent
+は、次のように解釈されます。
+
+@example
+p(X0,X,Y0,Y) :- q(X0,X1), r(Y0,Y1), s(Y1,Y,X1,X).
+@end example
+
+時には、通常の引数を引数対名の後に指定したくなる場合もあるでしょう。
+その場合には、プラス符号 @code{+} の後ろに通常の引数を付けることで指定できます。
+例えば、
+
+@example
+p-X+Y :- q-X+35, r(Y), s+Y-X.
+@end example
+
+@noindent
+は、次のように解釈されます。
+
+@example
+p(X0,X,Y) :- q(X0,X1,35), r(Y), s(Y,X1,X).
+@end example
+
+以上、述べた引数対の展開規則は、ゴールの位置に依存することに注意してください。
+しかし、これによってボディ・ゴールの実行順序が何らかの制約を受けることを意味するものでは全く@emph{ありません}。
+
+引数対の記法は、節のマクロ展開にすぎないということも覚えておいてください。
+ 1 つの述語のいくつかの節を引数対の記法を用いて書き、他の節は通常の記法で書くことも可能です。
+
+@node Macros for Paired Arguments, Usage of Paired Arguments, Paired Arguments, Argument Pair Notation
+@subsection 引数対のためのマクロ
+@cindex 改訂[かいてい]
+@cindex インクリメント[いんでんと]
+@cindex デクリメント[でくりめんと]
+@cindex メッセージ送り[めっせーじおくり]
+
+KLIC では、引数対をより多くの場面で利用するため、次のようなマクロを用意しています。
+
+@table @t
+@item @var{S} <= @var{M}
+@code{@var{S0} = [@var{M}|@var{S1}]} に展開されます。 
+@var{S0} と @var{S1} は引数対名 @var{S} を展開した展開対です。
+
+@item @var{M} => @var{S}
+@code{[@var{M}|@var{S0}] = @var{S1}} に展開されます。 
+@var{S0} と @var{S1} は引数対名 @var{S} を展開した展開対です。
+
+@item @var{S} += @var{E}
+@item @var{S} -= @var{E}
+@item @var{S} *= @var{E}
+@item @var{S} /= @var{E}
+ @code{@var{S1} := @var{S0} + @var{E0}} 等に展開されます。 
+@var{S0} と @var{S1} は引数対名 @var{S} を展開した展開対です。
+
+@item @var{S} <== @var{X}
+@code{@var{S1} = @var{X}} に展開されます。 
+@var{S0} と @var{S1} は引数対名 @var{S} を展開した展開対です。 
+@var{S0} は展開型には現れません。
+つまり、元々の引数対 @var{S} の値は失われます。
+その代わり、次から現れる @var{S} は @var{X} を意味することになります。
+このマクロは、通常、引数対が対にならずに出現する場合に用いられます。
+例えば、
+
+@example
+@dots{}, p-S, q(S), S <== X, r-S, @dots{}
+@end example
+
+@noindent
+は、次のことを意味します。
+
+@example
+@dots{}, p(S0,S1), q(S1), S2 = X, r(S2,S3), @dots{}
+@end example
+@end table
+
+@node Usage of Paired Arguments,  , Macros for Paired Arguments, Argument Pair Notation
+@subsection 引数対の使い方
+
+ここでは、引数対の標準的な使用例をいくつか示します。
+
+@cindex accumulator
+次のプログラムは、整数リストの各要素を加え合わせるプログラムです。
+
+@example
+sum(List,Sum) :- sum(List)+0+Sum.
+
+sum([])-Acc.
+sum([H|T])-Acc :- Acc += H, sum(T)-Acc.
+@end example
+
+@noindent
+ここでは、引数対 @code{Acc} はアキュムレータの役割を果たします。
+
+@cindex difference list
+次のプログラムは、整数リストの各要素の符号を反転します。
+
+@example
+inv(List,Inv) :- inv(List)+Inv-[].
+
+inv([])-Inv.
+inv([H|T])-Inv :- MH := -H, Inv <= MH, inv(T)-Inv.
+@end example
+
+@node Inline C Code,  , Argument Pair Notation, Language
+@section  C 言語コードのインライン挿入
+@cindex C
+@cindex インライン[いんらいん]
+
+インライン C コード機能によって、 KL1 プログラム中にオブジェクト・コードの中に埋め込む C プログラムが記述できます。
+この機能は、 C における @code{asm} 文に多少似ています。
+
+挿入された C コードが適切なものであるか否かは、 KLIC システムの内部実装方法に完全に依存します。
+そして、これは将来変わるかもしれません。
+したがって、@strong{一般ユーザがこの機能を使うことは勧められません。}
+
+@menu
+* Top Insertion::               ファイル先頭でのインライン挿入
+* Guard Insertion::             ガード部でのインライン挿入
+* C-Level Rep::                 KL1 項の C レベル表現
+* Examples of Inline::          例
+* Hints of Inline::             インライン C コード機能を使う上でのヒント
+@end menu
+
+@node Top Insertion, Guard Insertion, Inline C Code, Inline C Code
+@subsection ファイル先頭でのインライン挿入
+@cindex ヘッダ・ファイル[へっだふぁいる]
+
+ソース・ファイルの先頭では、以下の方法によって C プログラムに挿入される文字列が指定できます。
+
+@example
+:- inline:"@var{挿入されるべきCプログラム・テキスト}".
+@end example
+
+オブジェクトの C プログラム中では、ここで指定したテキストは、標準的な宣言の後で、かつユーザが定義したモジュールの前に挿入されます。
+
+インライン指定は、いくつも書くことができます。
+標準的な例を次に示します。
+
+@example
+:- inline:"#include <stdio.h>"
+@end example
+
+挿入される C プログラムは、 KLIC の文字列定数として書く必要があるので、
+C 中の二重引用符文字は、バックスラッシュ (\) によってエスケープする必要があります。
+典型的な例は次のとおりです。
+
+@example
+:- inline:"#include \"myheader.h\""
+@end example
+
+この部分で、節のガード部に書くインライン・コードで使用するマクロや関数を定義しておくのは、良い考えかもしれません。
+
+@node Guard Insertion, C-Level Rep, Top Insertion, Inline C Code
+@subsection ガード部でのインライン挿入
+
+次に示す形式のどちらかを使って、ガード・ゴールでもインライン挿入が指定できます。
+
+@example
+inline:"@var{Cプログラム・テキスト}"
+inline:"@var{Cプログラム・テキスト}":[@var{ArgSpec}, @dots{}]
+@end example
+
+どちらの形式でも、プログラム・テキスト文字列中のパーセント記号 (@code{%}) が特別なフォーマットを指定することの他は、 C プログラムのテキストは指定したとおり、ガード部に対応するオブジェクト・コード中に挿入されます。
+次の表に、パーセント記号の後ろに指定される特殊なフォーマット文字とその意味を列挙します。
+
+@table @t
+@item @key{数字}
+@key{数字}番目(ゼロから始まる)の @var{ArgSpec} に対応する C 変数の名前。
+10 個までの引数しか許されないので注意してください。
+
+@item f
+この節が失敗や中断した場合に、分岐する @code{goto} の分岐先ラベルの名前
+
+@item %
+パーセント文字自身
+@end table 
+
+@noindent
+@var{ArgSpec}は、次のいずれかの形式です
+
+@table @t
+@item @var{変数}+@var{型}
+挿入されたプログラム・テキストが、変数の値を使用することを指示します。
+オブジェクト・コードには、コンパイラによって、同期と型チェックのために必要なコードが生成されます。
+
+@item @var{変数}-@var{型}
+挿入されたプログラム・テキストによって変数に値が与えられることを意味します。
+この変数は、ここで最初に出現するものでなければなりません。
+コンパイラは挿入されたコードを実行した後は、変数が@var{型}の値を持つと、仮定されます。
+@end table
+
+@noindent
+型フィールドは、以下のいずれかでなければなりません。
+
+@table @t
+@item any
+未束縛の変数を含む任意のもの
+@item bound
+任意の束縛されているもの
+@item atomic
+アトム値(アトムまたは整数)
+@item int
+整数
+@item atom
+記号アトム
+@item list
+リスト構造
+@item functor
+ファンクタ構造(ジェネリック・オブジェクトを含む)
+@item object
+ジェネリック・データ・オブジェクト
+@item object(Class)
+クラスが @var{Class} であるようなジェネリック・データ・オブジェクト
+@end table
+
+@code{any} 以外の型では、間接表現は取りません。
+入力モード (@code{+}) 引数では、コンパイラが出力するコードによって、挿入されたプログラム・テキストが実行される時点では、引数は間接参照ではなく、指定した型の値そのものであることが保証されています。
+逆に、出力モード (@code{-}) 引数では、挿入されたプログラム・テキストの実行後は、その変数の値は間接参照ではなく、指定した型の値そのものであるとコンパイラは仮定しており、この情報を最適化のために利用します。
+もし、出力変数に関するこの仮定に確信が持てない場合には、効率は悪いが安全な型として @code{any} を指定してください。
+
+@node C-Level Rep, Examples of Inline, Guard Insertion, Inline C Code
+@subsection KL1 項の C レベル表現
+
+KL1 変数に対応する C の変数の型は、 KL1 のデータ型から推測される C の型とは違うことに注意してください。
+
+KL1 変数に対応する C の変数はすべて、 1 ワードを占めるという以外の意味を持たない @code{q} という型を持ちます。
+また、 KL1 の値は(タグが付加される等によって)エンコードされています。
+例えば、 KL1 における整数 3 は、 C の整数 3 とは@emph{異なった}ビットパターンを持ちます。
+
+このドキュメントは、 KLIC におけるデータ表現形式の詳細を表すことを目的としたものではありませんし、そのような記述や、それに依存するプログラムは、将来の KLIC の版では、使えなくなるでしょう。
+しかしながら、インライン機能を用いて書かれるほとんどの C のプログラムにおいて、整数値の操作は最も簡単で役に立つものなので、整数のためのデータ変換用マクロを以下に説明します。
+これらは将来のバージョンにおいても変更されることはないでしょう。
+
+C の変数から KL1 の整数値に対応する整数値を得るには、@code{intval(@var{X})} というマクロを用います。
+C の整数を KL1 表現にするには、@code{makeint(@var{N})} を用います。
+
+@node Examples of Inline, Hints of Inline, C-Level Rep, Inline C Code
+@subsection 例
+
+@noindent
+@strong{例1: 2 つの整数の加算}
+
+ 2 つの整数は、次の節によって加算できます。
+
+@example
+    p(X,Y,Z) :- W := X+Y | Z = W.
+@end example
+
+同じ機能は、次のようにインライン機能を用いて実現できます。
+
+@example
+p(X,Y,Z) :-
+  inline:"%2 = makeint(intval(%0)+intval(%1));":
+    [X+int, Y+int, W-int] | Z=W.
+@end example
+
+挿入されるテキストは、次のようになります。
+
+@example
+x0 = makeint(intval(a0)+intval(a1));
+@end example
+
+変数 @code{a0} と @code{a1} は KL1 プログラムの @code{X} と @code{Y} に対応し、 @code{x0} は @code{W} に対応します。
+
+@noindent
+@strong{例 2: 2 つの整数の比較}
+
+ 2 つの整数は、次の節によって比較できます。
+
+@example
+p(X,Y) :- X > Y | @dots{}
+@end example
+
+同じことは、インライン機能を用いて次のように実現できます。
+
+@example
+p(X,Y) :-
+  inline:"if (intval(%0) <= intval(%1)) goto %f;":
+    [X+int, Y+int] | @dots{}
+@end example
+
+挿入されるテキストは、次のようになります。
+
+@example
+if (intval(a0) <= intval(a1)) goto p_2_interrupt;
+@end example
+
+変数 @code{a0} と @code{a1} は、 KL1 プログラムの @code{X} と @code{Y} に対応し、 @code{p_2_interrupt} はコンパイラによって自動的に生成されたラベルです。
+
+@node Hints of Inline,  , Examples of Inline, Inline C Code
+@subsection インライン C コード機能を使う上でのヒント
+
+@itemize @bullet
+@item
+できる限りインライン機能を使うのは避けてください。 
+KL1 の版によっては、コードが使えなくなるかもしれません。
+
+@item 
+複数の行を連続して挿入する場合には、 1 回のインライン記述にそれらすべてを書いてください。
+そうでないと、コードの間にガードのための他のコードが割り込むかもしれません。
+挿入するプログラム・テキストには改行を入れることが許されています。
+
+@item 
+二重引用符やバックスラッシュの前にはバックスラッシュを付けることを忘れないでください。
+Hello, world と出力したいならば、次のように書く必要があります。
+
+@example
+hello :-
+    inline:"printf(\"Hello, world\\n\");" |
+    @dots{}
+@end example
+
+二重引用符の前のバックスラッシュと @code{n} の前の 2 つのバックスラッシュに
+注意してください。
+もし @code{n} の前にバックスラッシュを 1 つしか付けないと、インライン展開の結果、
+これは改行コードとなってしまいます。
+この改行コードは展開された C プログラムの中で文字定数内に入り、途中で改行された
+文字列となります。
+幸運にもこの場合は、バックスラッシュを 2 つ入れた場合と同じように動きますが、 C コンパイラによっては警告メッセージが出力されるかもしれません。
+
+@item 
+もし、インライン・コードを含むプログラムが期待どおりに動かない場合には、生成された C コードを調べることが、問題を見つける最良の方法かもしれません。
+@end itemize
+
+
+@node Builtin and Library, Using KLIC, Language, Top
+@chapter 組込み述語とライブラリ機能
+
+この章では、 KLIC の組込み述語とライブラリ機能について説明します。
+
+@menu
+* Common Operations::           共通操作
+* Atomic Data::                 アトム・データ
+* Structured Data::             構造型データ
+* Executable Code::             プログラム・コードのデータとしての扱い
+* Unix::                        Unix インタフェース
+* Input and Output::            入出力
+* System Control::              システム動作の制御
+* Timer::                       タイマ
+* Random Numbers::              乱数生成器
+@end menu
+
+@node Common Operations, Atomic Data, Builtin and Library, Builtin and Library
+@section 共通操作
+
+述語には、すべてのデータ型に共通するものや依存しないものなどがあります。
+
+@menu
+* Unification::                 単一化
+* Synchronization::             同期
+* Comparison and Hashing::      比較とハッシュ
+* Execution Status::            実行ステータス
+* Debugging::                   デバッグ
+@end menu
+
+@node Unification, Synchronization, Common Operations, Common Operations
+@subsection 単一化
+@cindex 単一化[たんいつか]
+@defop {ガード述語} {builtin} = ?X ?Y
+ @var{X} と @var{Y} が単一化可能か否かをチェックします。
+この述語の結果は、他の節で説明する変数には影響しません。
+@end defop
+
+@defop {ボディ述語} {builtin} = ?X ?Y
+ @var{X} と @var{Y} を単一化します。
+ @var{X} が未定義で、かつ @var{Y} が具体値である場合、
+ @var{X} を @var{Y} と同じ値にします。
+ @var{Y} が未定義で、かつ @var{X} が具体値である場合、
+ @var{Y} を @var{X} と同じ値にします。
+両方が未定義の場合、2 つの変数は、同じ変数を意味するようになります。
+両方が具体値の場合、マッチング処理を行います。
+両方が同じ種類のデータ構造の場合、この単一化操作を、2 つの構造の対応する要素に対して再帰的に行います。
+@end defop
+
+@node Synchronization, Comparison and Hashing, Unification, Common Operations
+@subsection 同期
+@defop {ガード述語} {builtin} wait +X
+ @var{X} が具体化されるまで待ちます。
+@end defop
+
+@node Comparison and Hashing, Execution Status, Synchronization, Common Operations
+@subsection 比較とハッシュ
+@cindex 標準順序[ひょうじゅんじゅんじょ]
+@cindex 比較[ひかく]
+@cindex ハッシング[はっしんんぐ]
+@defop {ガード述語} {builtin} compare +X +Y @t{-}R
+ @var{X} と @var{Y} を比較し、@var{R} へ結果を返します。
+ @var{X} < @var{Y} の場合、@var{R} < 0 の整数値にします。
+ @var{X} = @var{Y} の場合、@var{R} = 0 にします。
+ @var{X} > @var{Y} の場合、@var{R} > 0 の整数値にします。
+
+比較は、以下に示した標準順序に従って行います。
+この述語では、色々な型のデータが比較できます。
+ @var{X} と @var{Y} の両方が同じ数値型の場合、通常の数値比較を行います。
+ただし、整数と浮動小数点数は、同じ型ではないので注意してください。
+このような比較を行なっても意味が@emph{ありません}。
+文字列の場合は、(いわゆる)辞書式順序で比較します。
+
+型の異なる任意の 2 つのデータの順序は、システムによって定義されます。
+ただし、この順序付けは、単独の実行可能プログラム内でしか保証しません。
+この述語が提供する順序付けを使用して、データ列をファイルに保存しても、プログラムを、再コンパイルしたり、他のプログラムとリンクしたりすると、そのプログラムには、データ列を順序どおりに認識するという保証がなくなってしまいます。
+プログラムが異なると当然、順序付けも異なってきます。
+
+比較を行うためには、@var{X} と @var{Y} がともに、十分具体化されていなければなりません。例えば、@samp{f(V) @@< f(W)} は、@samp{V} と @samp{W} の両方が具体化されない限り、比較の処理を中断します。
+これに対し、@samp{f(1,V) @@< f(2,W)} は、@samp{V} や @samp{W} の値を調べるまでもなく、順序が決定できるので成功します。
+
+データ型によっては、結果 @var{R} の絶対値が意味を持つ場合があります。
+2 つの文字列の比較の場合、結果 @var{R} の絶対値は、最初に異なる要素位置を示す(Cの@code{strcmp}の)インデックスよりも 1 つ大きな値になります。
+
+ジェネリック・オブジェクトは、比較メソッドを実装しない場合があります。
+このような場合、その比較は、重大エラーを引き起こすことになります。
+@end defop
+
+@defop {ガード述語} {builtin} @@< +X +Y
+@defopx {ガード述語} {builtin} @@=< +X +Y
+@defopx {ガード述語} {builtin} @@>= +X +Y
+@defopx {ガード述語} {builtin} @@> +X +Y
+標準順序で @var{X} と @var{Y} を比較します。
+条件を満たさない場合、述語の呼出しは失敗します。
+@end defop
+
+@defop {ガード述語} {builtin} \= +X +Y
+@cindex 主ファンクタ[しゅふぁんくた]
+ @var{X} と @var{Y} を比較し、主ファンクタが異なる場合だけ成功します。
+アトム値の場合、それらが異なるアトムであることを意味します。
+ファンクタ構造の場合、それらが異なるファンクタ名を持つか、または異なる引数個数を持つか、のどちらかであることを意味します。
+ジェネリック・オブジェクトの場合、2 つのオブジェクトが異なるクラスのときに成功します。
+
+@samp{f(a) \= f(b)} は、2 つの項が同じ主ファンクタを持つ場合、失敗するので注意してください。
+浮動小数点数はジェネリック・オブジェクトなので、任意の 2 つの浮動小数点数が同じクラスのオブジェクトの場合、@samp{X \= Y} は失敗するのでこの場合にも注意してください。
+@end defop
+
+@defop {ガード述語} {builtin} hash +X @t{-}H
+ @var{X} のハッシュ値を計算し、その結果を @var{H} へ返します。
+ハッシュ値は、負以外の整数値です。                
+
+ハッシュ機能は、構造型データの要素を再帰的に調べます。
+ハッシュ値を計算するには、@var{X} は、十分に具体化されていなければなりません。
+ジェネリック・オブジェクトは、ハッシュ・メソッドを実装しない場合があります。
+このような場合、そのハッシュ値は定数値となります。
+@end defop
+
+@node Execution Status, Debugging, Comparison and Hashing, Common Operations
+@subsection 実行ステータス
+@cindex 優先度[ゆうせんど]
+
+@defop {ガード述語} {builtin} current_priority @t{-}P
+リダクションしたゴールの優先順位の値を @var{P} へ返します。
+優先順位の仕組みについての詳細は、@xref{Priority, ,優先順位の指定}。
+@end defop
+
+@defop {ボディ述語} {builtin} current_node @t{-}Node @t{-}NumNodes
+並列実装では、述語を実行するノード番号を @var{Node} へ、使用可能な実行ノード総数を @var{NumNodes} へ返します。
+初期ノード番号は、0 です。
+このため、@var{Node} へ返す最大値は、@var{NumNodes} へ返す値より小さくなります。
+逐次実装では、@var{Node} へ 0 を、@var{NumNodes} へ 1 を返します。
+@end defop
+
+@node Debugging,  , Execution Status, Common Operations
+@subsection デバッグ
+@cindex 未束縛[みそくばく]
+
+@defop {ボディ述語} {builtin} unbound ?X @t{-}Result
+ @var{X} が、未定義変数か否かをチェックし、その結果を @var{Result} へ返します。
+
+@var{X} が未定義変数でない場合、@var{Result} には、形式 @{@var{X}@} の単一要素のベクタを単一化します。
+ @var{X} が構造体の場合、その要素が未定義変数でない、という保証はありません。
+
+@var{X} が未定義変数の場合、@var{Result} には、形式 @{@var{Addr1}, @var{Addr2}, @var{X}@} の 3 つの要素ベクタを単一化します。
+@var{Addr1} と @var{Addr2} は、変数 X の現在のアドレスを示す整数となります。
+変数のアドレスは、ガーベージ・コレクション、並列実装における自動データ移動、または低レベル実装などによって、変化するので注意してください。
+これらは、デバッグする上では、ヒント以上の情報にはなり得ません。
+
+@strong{通常のアプリケーション・プログラムでは、この述語を使用してはなりません。}  
+逐次 Prolog の @code{var/1} 機能とは異なり、並列実装では、未定義であると判断された直後に、未定義でなくなる可能性があります。
+したがって、この述語の使用は、システム実装の低レベルを詳細に調べる、デバッグツールのようなプログラムに限定されます。
+@end defop
+
+
+@node Atomic Data, Structured Data, Common Operations, Builtin and Library
+@section アトム・データ
+@cindex アトム・データ[あとむでーた]
+
+KLIC は、数値と記号の 2 種類のアトム・データ型を提供します。
+
+KLIC は、数値データに対し、整数と浮動小数点数のデータ型、およびそれらを操作する演算を提供します。
+浮動小数点数は、ジェネリック・オブジェクトとして実装されているため、実際にはアトムではありません。
+
+整数データと浮動小数点データ間では、暗黙の型変換は行わないので注意してください。
+整数と浮動小数点数は、完全に別個のものとして扱います。
+
+データがアトムか否かは、次のガード述語でテストします。
+
+@defop {ガード述語} {builtin} atomic +X
+ @var{X} がアトムか否かをテストします。
+この述語では、浮動小数点数は、アトムとして判定@emph{しません}。
+@end defop
+
+@menu
+* Symbolic Atoms::              記号アトム
+* Integers::                    整数アトム
+* Floating Points::             浮動小数点数
+@end menu
+
+@node Symbolic Atoms, Integers, Atomic Data, Atomic Data
+@subsection 記号アトム
+@tindex アトム[あとむ]
+@cindex 記号[きごう]
+@cindex 記号アトム[きごうあとむ]
+@cindex アトム[あとむ]
+
+@dfn{記号アトム}(symbolic atoms)は、概念に名前を与えるアトム・データです。
+同じ名前を持つ記号アトムは同じものであり、異なる名前を持つ記号アトムは異なるものとなります。
+
+@menu
+* Notation of Atoms::           記号アトムの表記
+* Symbolic Atom Operation::     記号アトムの操作
+@end menu
+
+@node Notation of Atoms, Symbolic Atom Operation, Symbolic Atoms, Symbolic Atoms
+@subsubsection 記号アトムの表記
+
+記号アトムの表記は、次に示すように Edinburgh Prolog に似ています。
+
+@itemize @bullet
+@item
+先頭がアルファベットの小文字で、そのあとに任意個(ゼロ個を含む)の文字、数字 、または下線の並びが続きます。
+
+例:
+@example
+icot   kl1   a_symbolic_atom_with_a_long_name
+@end example
+
+@item
+特殊文字の並び(@code{~},@code{+},@code{-},@code{*},@code{/},
+ @code{\},@code{^},@code{<},@code{>},@code{=},@code{`}(backquote),
+ @code{:},@code{.},@code{?},@code{@@},@code{#},@code{$},@code{&}).
+
+例 :
+@example
++   >=   :-   =:=
+@end example
+
+@item
+単一引用符で囲まれた任意の文字の並び
+単一引用符が文字の並びに含まれる場合は、 2 個続けるか、またはバックスラッシュ (\) を前に付けてエスケープします。
+
+例 :
+@example
+'Hello world'    'an atom with \'singlequotes\' in it'
+@end example
+
+@item
+ 1 文字の特殊アトムには @code{!}、@code{|}、および @code{;} の 3 種類があります。
+なお、@code{|} はリスト表記では、特別な意味を持っています
+( @pxref{Notation of Lists, ,リストの表記})。
+
+@item 
+特殊アトムの @code{[]} は通常、リストの終端を表わすために使用します
+( @pxref{Lists, ,リスト} )。
+ @code{[} と @code{]} の間には、空白を許しています。
+@end itemize
+
+Edinburgh Prolog の構文と異なる点のうち、重要なものを以下に示します。
+
+@itemize @bullet
+@item
+縦棒(@code{|})は、 1 文字アトムを表します。
+演算子として使用する場合でも、セミコロン(@code{;})と同じ扱いは@emph{せず}、異なるアトムとして扱います。
+
+@item 
+ 1 対の中括弧(@code{@{@}})は、記号アトムではありません。
+要素のないベクタを表します
+(@pxref{Notation of Vectors, ,ベクタの表記})。
+@end itemize
+
+@node Symbolic Atom Operation,  , Notation of Atoms, Symbolic Atoms
+@subsubsection 記号アトムの操作
+
+データが記号アトムか否かは、次のガード述語でテストします。
+
+@defop{ガード述語} {builtin} atom +X 
+@var{X} が記号アトムか否かをテストします。
+@end defop  
+
+記号アトムの一意性を保持するために、処理系では、各記号アトムに一意な番号を付けて、記号アトムの名前文字列と記号アトム番号との関係を保持しています。
+記号アトムと名前の関係は、@code{atom_table} モジュールで定義した次の述語によって調べることができます。
+@pindex @code{atom_table}
+
+@defop {述語} {atom_table} make_atom +String @t{-}Atom
+@var{String} が与えられたとき、その名前を持つ @var{Atom} を返します。
+そのような記号アトムが存在しない場合、新しい記号アトムを登録します。
+@end defop 
+
+@defop {述語} {atom_table} atom_number +Atom @t{-}Number
+@var{Atom} の内部表現で利用している通し番号を、整数で @var{Number} へ返します。
+@end defop 
+
+@defop {述語} {atom_table} get_atom_string +Atom @t{-}String
+@var{Atom} の名前文字列を @var{String} へ返します。
+@end defop  
+
+@defop {述語} {atom_table} intern +String @t{-}Result
+返却値が @code{normal(@var{Atom})} 形式のファンクタ構造である他は、atom_table:make_atom と同じです。
+@end defop
+
+@defop {述語} {atom_table} get_atom_name +Atom @t{-}Result
+返却値が @code{normal(@var{String})} 形式のファンクタ構造である他は、atom_table:get_atom_string と同じです。
+@end defop  
+
+記号アトムは名前文字列を持っていますが、それらの名前文字列を、文字列操作のために使用すべきでは@emph{ありません}。
+文字列データは、より豊富な機能性と、より良い性能を提供しています
+(@pxref{Strings, ,文字列})。
+
+@node Integers, Floating Points, Symbolic Atoms, Atomic Data
+@subsection 整数アトム
+@cindex 整数[せいすう]
+@tindex 整数[せいすう]
+
+KLIC は、基本的な標準機能として、通常、28 ビットか 60 ビットの整数データを提供します。
+そのビット長は、使用する C コンパイラに依存します。 
+整数データは、 @code{long int} 型のビット長に比べ、4 ビット短くなります。
+
+@defop {ガード述語} {builtin} integer +X
+@var{X} が整数アトムか否かをテストします。
+@end defop  
+
+@menu
+* Notation of Integers::        整数アトムの表記
+* Integer Arith::               整数演算
+* Integer Comp::                整数比較
+@end menu
+
+@node Notation of Integers, Integer Arith, Integers, Integers
+@subsubsection 整数の表記
+
+KLIC は、整数定数を表す方法を提供します。
+@itemize @bullet
+@item
+通常の 10 進表記:
+任意指定のマイナス符号のあとに、10 進数字の並びを続けます。
+例:@samp{123},@samp{-35} 。
+@item
+基数表記:
+任意指定のマイナス符号のあとに、基数を規定する 10 進数字の並び (1〜36) 、アポストロフィ、そして、数字とアルファベット(大文字、小文字の区別なし)からなる基数の数字列を続けます。
+例 : @samp{2'1010}、@samp{16'0D0a} 。
+基数 1 の整数の値は、数字列中の 1 の数です。
+例えば、@samp{1'10110} は 3 を表します。
+
+@item
+@cindex 文字コード[もじこーど]
+文字コード表記:
+任意指定のマイナス符号のあとに、数字の 0、アポストロフィと文字を続けます。
+例:@samp{0'a} は、アルファベットの小文字の @kbd{a} の文字コードを表します。
+@end itemize
+上記の定数表記は、KL1 プログラムと、Prolog 風の入出力インタフェースで読み込まれる KL1 データの双方で使用できます
+(@pxref{Prolog I/O, ,Prolog 風のインタフェースを用いた入出力})。
+
+以下に示す内容も PIM マシン上の PIMOS システムとの互換性のために、 KL1 プログラムは許しています。
+@itemize @bullet
+@item
+基数表記:
+任意指定のマイナス符号のあとに、基数を規定する 10 進数字の並び (1〜36) 、シャープ記号 (#) 、そして、数字とアルファベット(大文字、小文字の区別なし)からなる基数の数字列を二重引用符で囲んで続けます。
+例:@samp{2#"1010"}、@samp{16#" 0D0a"} 。
+@item
+@cindex 文字コード[もじこーど]
+文字コード表記:
+任意指定のマイナス符号のあとに、シャープ記号(#)と、二重引用符で囲んだ 1 個の文字を続けます。
+例:@samp{#"a"} は、アルファベットの小文字の @kbd{a} の文字コードを表します。
+@end itemize
+
+@node Integer Arith, Integer Comp, Notation of Integers, Integers
+@subsubsection 整数演算
+@cindex 整数の演算[せいすうのえんざん]
+@cindex 整数演算[せいすうえんざん]
+
+@defop {ガード述語} {builtin} := @t{-}Var +Expr
+@defopx {ボディ述語} {builtin} := @t{-}Var +Expr
+整数式 @var{Expr} の値を計算し、@var{Var} と単一化します。
+次の演算子が利用可能です。
+
+@table @t
+@item @var{X} + @var{Y}
+加算
+@item + @var{X}
+演算せず  
+@var{X} が結果となります
+@item @var{X} - @var{Y}
+減算
+@item - @var{X}
+符号の反転
+@item @var{X} * @var{Y}
+乗算
+@item @var{X} / @var{Y}
+整数除算
+@item @var{X} mod @var{Y}
+モジュロ
+@item \(@var{X})
+ビットごとの補数
+@item @var{X} /\ @var{Y}
+ビットごとの論理積
+@item @var{X} \/ @var{Y}
+ビットごとの論理和
+@item @var{X} xor @var{Y}
+ビットごとの排他的論理和
+@item @var{X} << @var{Y}
+左論理シフト
+@item @var{X} >> @var{Y}
+右論理シフト
+@item int(@var{X})
+浮動小数点から整数への変換 　
+ @var{X} は浮動小数点式で、その値を整数値に丸めます
+(@pxref{Floating Arith, ,浮動小数点演算})。
+@end table
+
+算術オーバフローは無視します。
+つまり、すべての演算は、使用する Cコンパイラに依存して、
+モジュロ 
+@iftex  
+2^{28} か モジュロ 2^{60} 
+@end iftex 
+@ifinfo 
+2**28 か モジュロ 2**60 
+@end ifinfo 
+を行います。
+32ビットの @code{long int} を持つ Cコンパイラは、28ビットの KLIC 整数を提供し、64ビットの @code{long int} を持つ Cコンパイラは、60ビットの KLIC 整数を提供します。
+
+この述語は、節のガードとボディの両方で利用可能です。
+
+式中に、具体化されていないオペランドがある場合、すべてのオペランドが具体化されるまで計算は中断します。
+
+式中のいくつかのオペランドに対して、再帰的に式を指定できます。
+ただし、プログラム中に変数として書くオペランドは、 @samp{3+5} のような合成項に具体化しては @emph{なりません}。
+具体化するのは整数だけにしてください。
+整数以外に具体化すると、型不一致のエラーが発生します。
+@end defop
+
+@node Integer Comp,  , Integer Arith, Integers
+@subsubsection 整数比較
+@cindex 整数の比較[せいすうのひかく]
+@cindex 整数比較[せいすうひかく]
+
+整数データの比較は、ここで説明する述語を用いて行うことができます。
+より一般的な比較述語も提供しています
+(@pxref{Comparison and Hashing, ,比較とハッシュ})。
+ただし、ここで説明する述語とメソッドは、オペランドが整数であることが明らかな場合に使用すると、より効率的です。
+
+@defop {ガード述語} {builtin} > +X +Y
+@defopx {ガード述語} {builtin} >= +X +Y
+@defopx {ガード術語} {builtin} =:= +X +Y
+@defopx {ガード述語} {builtin} =\= +X +Y
+@defopx {ガード述語} {builtin} =< +X +Y
+@defopx {ガード述語} {builtin} < +X +Y
+
+これらは 2 つの整数引数の比較演算を行います。
+値の同値関係のチェックには @code{=:=} と @code{=\=} を使用してください。
+比較の両側には算術式が指定できます。
+@code{:=} で用いたものと同じ演算子群が使えます。
+@end defop 
+
+@node Floating Points,  , Integers, Atomic Data
+@subsection 浮動小数点数
+@cindex 浮動小数点数[ふどうしょうすうてんすう]
+@cindex 実数[じっすう]
+@tindex 浮動小数点数[ふどうしょうすうてんすう]
+
+64 ビット精度の浮動小数点数を、ジェネリック・オブジェクトとして提供します。
+次のメソッドと述語は、与えられたデータが浮動小数点数か否かを判定します。
+
+@defop {ガード・メソッド} {float} float +X
+@defopx {ガード述語} {builtin} float +X
+@var{X} が浮動小数点数か否かをテストします。
+@end defop
+
+@menu
+* Notation of Floats::          浮動小数点数の生成
+* Creating Floats::             新しい浮動小数点数の生成
+* Floating Arith::              浮動小数点演算
+* Floating Comp::               浮動小数点比較
+@end menu
+
+@node Notation of Floats, Creating Floats, Floating Points, Floating Points
+@subsubsection 浮動小数点数の表記
+@cindex 浮動小数点表記[ふどうしょうすうてんひょうき]
+
+浮動小数点数は、次のような定数表記の構文を持っています。
+
+@display
+@var{符号} @var{整数} @code{.} @var{小数} @code{e} @var{符号} @var{指数}
+@end display
+
+@noindent
+ここで、@var{整数}、@var{小数}、および@var{指数}は、10進数の並びです。
+@var{符号}は、 @code{+} 、 @code{-} または 指定なし(この場合、 @code{+} を仮定する)となります。
+指数部は、文字の @code{e}、@var{符号}、および@var{指数}で構成し、すべてを省略することも可能です。
+
+浮動小数点定数の例を以下に示します。
+
+@example
+3.14159 -6.02e23  1234.5678e-25
+@end example
+@node Creating Floats, Floating Arith, Notation of Floats, Floating Points
+@subsubsection 新しい浮動小数点数の生成
+@cindex 浮動小数点数の生成[ふどうしょうすうてんすうのせいせい]
+@cindex 整数の浮動小数点への変換[せいすうのふどうしょうすうてんへのへんかん]
+@cindex 整数の浮動小数点への変換[せいすうのふどうしょうすうてんへのへんかん]
+@cindex 整数からの浮動小数点変換[せいすうからのふどうしょうすうてんへんかん]
+
+新しい浮動小数点数は、次のように生成できます。
+@ref{Floating Arith, ,浮動小数点演算}で説明する浮動小数点の演算用述語も、算術演算の結果として浮動小数点数を生成します。
+
+@defop {float} {オブジェクト生成} new @t{-}Float +Init
+新しい浮動小数点数を生成し、 @var{Float} で単一化します。
+引数の @var{Init} には、浮動小数点数の値として整数を指定する必要があります。
+例えば、  @samp{generic:new(float, F, 3)} では @code{F} を @code{3.0} で単一化します。
+@end defop
+
+@node Floating Arith, Floating Comp, Creating Floats, Floating Points
+@subsubsection 浮動小数点演算
+@cindex 浮動小数点の演算[ふどうしょうすうてんのえんざん]
+@cindex 浮動小数点演算[ふどうしょうすうてんえんざん]
+
+@defop{ボディ述語} {builtin} $:= @t{-}Var +Expr
+浮動小数点式の値 @var{Expr} を計算して @var{Var} で単一化します。
+次の演算子が利用可能です。
+
+@table @t
+@item @var{X} + @var{Y}
+加算
+@item @var{X} - @var{Y}
+減算
+@item @var{X} * @var{Y}
+乗算
+@item @var{X} / @var{Y}
+除算
+@item pow(@var{X}, @var{Y})
+@var{X} の @var{Y} 乗
+@item sin(@var{X}), cos(@var{X}), tan(@var{X})
+@cindex 三角関数[さんかくかんすう]
+@cindex 正弦[せいげん]
+@cindex 余弦[よげん]
+@cindex 正接[せいせつ]
+@var{X} の三角関数
+@item asin(@var{X}), acos(@var{X}), atan(@var{X})
+@var{X} の逆三角関数
+@item sinh(@var{X}), cosh(@var{X}), tanh(@var{X})
+@cindex 双曲線関数[そうきょくせんかんすう]
+@var{X} の双曲線関数
+@item exp(@var{X})
+@cindex 指数[しすう]
+指数関数
+@item log(@var{X})
+@cindex 対数[たいすう]
+自然対数
+@item sqrt(@var{X})
+@cindex 平方根[へいほうこん]
+平方根
+@item ceil(@var{X})
+@cindex 丸め[まるめ]
+@cindex 切り上げ[きりあげ]
+切り上げ関数(正の無限方向への切り上げ)
+@item floor(@var{X})
+@cindex 切り捨て[きりすて]
+切り捨て関数(負の無限方向への切り捨て)
+@item float(@var{X})
+整数の浮動小数点数への変換
+@var{X} は整数式で、結果は浮動小数点数に変換します
+(@pxref{Integer Arith, ,整数演算})。
+@item +@var{X}
+@var{X} が結果となります。
+@item -@var{X}
+符号の反転
+@end table
+
+この述語は、節のガードとボディの両方で利用可能です。
+
+式中に、具体化されていないオペランドがある場合、すべてのオペランドが具体化されるまで計算は中断します。
+
+式中のいくつかのオペランドに対して、再帰的な式を指定できます。
+ただし、プログラム中で変数として書くオペランドは、@samp{3.0 + 5.0} のような合成項に具体化しては @emph{なりません}。
+具体化するのは浮動小数点数だけにしてください。
+浮動小数点数以外に具体化すると、型不一致のエラーが発生します。
+@end defop
+
+上記の演算は、浮動小数点数のジェネリック・メソッドとしても提供しています。
+
+@defop {ボディ・メソッド} {float} add +X +Y @t{-}R
+@defopx {ボディ・メソッド} {float} subtract +X +Y @t{-}R
+@defopx {ボディ・メソッド} {float} multiply +X +Y @t{-}R
+@defopx {ボディ・メソッド} {float} divide +X +Y @t{-}R
+@defopx {ボディ・メソッド} {float} pow +X +Y @t{-}R
+@defopx {ボディ・メソッド} {float} sin +X @t{-}R
+@defopx {ボディ・メソッド} {float} cos +X @t{-}R
+@defopx {ボディ・メソッド} {float} tan +X @t{-}R
+@defopx {ボディ・メソッド} {float} asin +X @t{-}R
+@defopx {ボディ・メソッド} {float} acos +X @t{-}R
+@defopx {ボディ・メソッド} {float} atan +X @t{-}R
+@defopx {ボディ・メソッド} {float} sinh +X @t{-}R
+@defopx {ボディ・メソッド} {float} cosn +X @t{-}R
+@defopx {ボディ・メソッド} {float} tanh +X @t{-}R
+@defopx {ボディ・メソッド} {float} exp +X @t{-}R
+@defopx {ボディ・メソッド} {float} log +X @t{-}R
+@defopx {ボディ・メソッド} {float} sqrt +X @t{-}R
+@defopx {ボディ・メソッド} {float} ceil +X @t{-}R
+@defopx {ボディ・メソッド} {float} floor +X @t{-}R
+これらのメソッドは、メソッド名で規定した算術演算を実行します。
+オペランドを指定すると、その結果を @var{R} へ返します。
+@end defop
+
+@node Floating Comp,  , Floating Arith, Floating Points
+@subsubsection 浮動小数点比較
+@cindex 浮動小数点の比較[ふどうしょうすうてんのひかく]
+@cindex 浮動小数点比較[ふどうしょうすうてんひかく]
+
+浮動小数点データの比較は、ここで説明する述語を用いて行えます。
+より一般的な比較述語も提供しています
+(@pxref{Comparison and Hashing, ,比較とハッシュ})。
+ただし、ここで説明する述語とメソッドは、オペランドが浮動小数点数であることが明らかな場合に使用すると、より効率的です。
+
+@defop {ガード述語} {builtin} $> +X +Y
+@defopx {ガード述語} {builtin} $>= +X +Y
+@defopx {ガード述語} {builtin} $=:= +X +Y
+@defopx {ガード述語} {builtin} $=\= +X +Y
+@defopx {ガード述語} {builtin} $=< +X +Y
+@defopx {ガード述語} {builtin} $< +X +Y
+
+これらの述語は、2 つの浮動小数点引数の比較演算を行います。
+値の同値関係のチェックには(浮動小数点数の場合は、たいして意味のあることではありませんが)、 @code{=:=} と @code{=\=} を使用してください。
+比較の両側には浮動小数点式を指定できます。
+ @code{$:=} で用いたものと同じ演算子群が使えます。
+
+@strong{バグに注意}@code{ }
+現在の版 (2.001) では、これらの述語に対して演算子付き式の使用は避けてください。
+単純な変数と定数だけを使用してください。
+@end defop 
+
+浮動小数点数の比較は、次のメソッドでも行えます。
+
+@defop {ガード・メソッド} {float} less_than +X +Y
+@defopx {ガード・メソッド} {float} not_greater_than +X +Y
+@defopx {ガード・メソッド} {float} not_less_than +X +Y
+@defopx {ガード・メソッド} {float} greater_than +X +Y
+@defopx {ガード・メソッド} {float} equal +X +Y
+@defopx {ガード・メソッド} {float} not_equal +X +Y
+
+これらの方法では、@var{X} が @var{Y} より小さいか否か等をテストします。
+@end defop
+
+@node Structured Data, Executable Code, Atomic Data, Builtin and Library
+@section 構造型データ
+@cindex 構造[こうぞう]
+
+構造型データ・オブジェクトは、0 個以上の要素で構成します。
+
+@menu
+* Functors::                    ファンクタ構造
+* Lists::                       リスト
+* Vectors::                     ベクタ
+* Strings::                     文字列
+character codes
+@end menu
+
+@node Functors, Lists, Structured Data, Structured Data
+@subsection ファンクタ構造
+@tindex ファンクタ[ふぁんくた]
+@cindex ファンクタ[ふぁんくた]
+@cindex 主ファンクタ[しゅふぁんくた]
+@cindex レコード構造[れこーどこうぞう]
+
+ファンクタ構造は、与えられた名前と 1 個以上の任意の型の要素を持つ構造です。
+ファンクタは、あらかじめ大きさが分かっているデータ構造を表すのに向いています。
+ファンクタは、C 風言語のレコード構造に対応します。
+
+@menu
+* Notation of Functors::        ファンクタの表記
+* Functor Operation::           ファンクタの操作
+@end menu
+
+@node Notation of Functors,functor Operation, Functors, Functors
+@subsubsection ファンクタの表記
+@cindex ファンクタ表記[ふぁんくたひょうき]
+
+ファンクタ定数は、主ファンクタ名、左括弧、コンマで区切られた要素、および最後の右括弧で書くことができます。
+ファンクタ名は記号アトムと同じ構文です。
+主ファンクタ名とそれに続く左括弧を、空白文字や区切り記号等で分けては@emph{なりません}。
+要素には、変数やファンクタ自身を含む任意の型が指定できます。
+
+例 :
+@example
+f(a, 3)   'a recursive functor structure'(X, 'child functor'(Y))
+@end example
+
+@node Functor Operation,  , Notation of Functors, Functors
+@subsubsection ファンクタの操作
+@cindex ファンクタの操作[ふぁんくたのそうさ]
+
+ファンクタ構造を操作する述語は、以下に示すように組込み述語として提供したり、@code{functor_table} モジュール中に提供したりしています。
+@pindex @code{functor_table}
+
+現在の実装では、次に示すボディ組込み述語のすべてが、@code{functor_table} モジュールの述語に展開したマクロ形式で実装しています。
+この実装方法は、将来のリリースで変更する可能性があります。
+
+@defop {ガード述語} {builtin} functor +X @t{-}Functor @t{-}Arity
+@defopx {ボディ述語} {builtin} functor +X @t{-}Functor @t{-}Arity
+ @var{X} は、主ファンクタ名が @var{Functor} で、引数個数が @var{Arity} のファンクタです。
+上記の述語は、主ファンクタ名とその引数個数、またはそれらのどちらか一方を得るために使用します。
+ガード述語として呼び出された場合には、@var{X} が名前 @var{Functor} と引数個数 @var{Arity} を持つこと、またはそれらのどちらか一方を持つこと、のテストにも使用できます。
+アトム・データ、文字列、ベクタなどの、ファンクタ構造でない具体化データは、引数個数が 0 となり、自分自身が主ファンクタ名になります。
+リスト構造は、ファンクタ @code{./2} で構成しているので注意してください。
+
+この述語では、新しいファンクタは生成できません。 
+@end defop
+
+@defop {ガード述語} {builtin} arg +Pos +Term @t{-}Arg
+@defopx {ボディ述語} {builtin} arg +Pos +Term @t{-}Arg
+ @var{Term} の @var{Pos} 番目の引数は @var{Arg} です。
+引数は 1 から番号付けしています。
+ガード述語として呼び出された場合、 @var{Pos} が範囲外なら単に失敗するだけです。
+この述語をファンクタ構造以外のデータ構造に使用すると、それらのデータ構造は引数を持たないので、常に失敗します。
+@end defop
+
+@defop {ボディ述語} {builtin} new_functor @t{-}Functor +Atom +Arity
+主ファンクタ名が @var{Atom} で引数個数が @var{Arity} のファンクタ構造を、 @var{Functor} へ返します。
+生成したファンクタの引数は、整数 @code{0} で初期化しています。
+@end defop
+
+@defop {ボディ述語} {builtin}  setarg +Pos +Fnct ?NewE @t{-}NewFnct
+@defopx {ボディ述語} {builtin}  setarg +Pos +Fnct ?OldE ?NewE @t{-}NewFnct
+@var{Pos}番目の引数だけが @var{Fnct} と異なる新しいファンクタ構造を生成して、 @var{NewFnct} へ返します。 
+@var{NewFnct} の @var{Pos} 番目の要素は @var{NewE}になります。
+ 5 個の引数を持つ述語の場合、@var{Fnct} の @var{Pos} 番目の引数を、 @var{OldE} へ返します。
+@end defop
+
+@defop {functor_table} {述語} =.. @t{-}NewFnct +List
+新しいファンクタを生成して、@var{NewFnct} へ返します。
+主ファンクタ名は、@var{List} の最初の要素に記号アトムで指定しなければなりません。
+引数は、@var{List} の残りの部分に指定します。
+@var{List} の要素が 1 個だけの場合、その要素を @var{NewFnct} へ返します。
+
+この述語は、ファンクタ構造をリストに分解するためには使え@emph{ません}。
+@end defop
+
+@node Lists, Vectors, Functors, Structured Data
+@subsection リスト
+@tindex リスト[りすと]
+@cindex リスト[りすと]
+@cindex コンス・セル[こんすせる]
+@cindex car
+@cindex cdr
+
+リストは、任意の長さのデータ・オブジェクトの並びです。
+KL1 では、リスト構造は、名前 @code{.} と 2 個の引数を持つファンクタ構造、 @code{./2} で構成します。
+リスト構造は、これら@code{コンス・セル}とも呼ばれるファンクタ構造で構成します。
+
+コンス・セルの 1 番目の要素は、時にはセルの @dfn{car} とも呼ばれますが、リストの 1 番目の要素を表します。
+セルの @dfn{cdr} である 2番目の要素は、リストの残りの部分を表します。
+リストの終端は、その cdr が記号アトム @code{[]} であることで示します。
+
+与えられた引数がリストか否かは、次のガード述語でテストできます。
+
+@defop {ガード述語} {builtin} list +X
+@var{X} がコンス・セルか否かをテストします。
+この述語は、X が空リスト @code{[]} であると、X の名前とは関係なく、失敗するので注意してください。 
+@end defop
+
+徐々に具体化されるリスト構造は、メッセージ・ストリームとして使用すると便利です。
+
+@menu
+* Notation of Lists::           リストの表記
+* Merging::                     メッセージストリームの操作
+@end menu
+
+@node Notation of Lists, Merging, Lists, Lists
+@subsubsection リストの表記
+@cindex リストの表記[りすとのひょうき]
+
+KL1 のリストは、Lisp のように@emph{コンス}のデータ構造を用いて構築します。
+コンスのデータ構造は、実際にはファンクタ構造 @code{./2} です。
+
+リストの基本的な表記は、@code{[@var{Car}|@var{Cdr}]} です。
+すなわち、リストの最初の要素が @var{Car} で、末尾が @var{Cdr} で構成します。
+これは、@code{.(@var{Car}, @var{Cdr})} とまったく同じ意味になります。
+空リストは、アトム @code{[]} で表します。
+
+@var{Cdr} が空の場合、つまり、リストが 1 個の要素 @var{Car} だけで構成する場合、リストは @code{.(@var{Car}, [])} 、または @code{[@var{Car}|[]]} と表記します。
+後者の場合、 リストの末尾の @code{|[]} は省略できるので、 @code{[@var{Car}]} と書くこともできます。
+つまり、car が @var{Car} で、cdr が @code{[@var{Cadr}, @dots{}]} であるリストは、@code{[@var{Car}|[@var{Cadr}, @dots{}]]} と書けます。
+これは、@code{[@var{Car}, @var{Cadr}, @dots{}]} のように省略形でも書けます。
+例えば、4個の要素、@code{first}、@code{second}、@code{third}、@code{fourth} からなるリストは、@code{[first, second, third, fourth]} と書けます。
+
+4個以上の要素からなるリストで、最初の 4個の要素が @code{first}、@code{second}、@code{third}、@code{fourth} の場合、@code{[first, second, third, fourth | Rest]} と書けます。
+ここで、変数 @code{Rest} は、5番目の要素で始まるリストに対応します。
+リスト全体が 4個の要素だけの場合には、@code{Rest} は空リストに対応します。
+
+Edinburgh Prolog とは異なり、文字の並びの@code{,..}は @code{|}の代わりには使用できないので注意してください。
+
+@node Merging,  , Notation of Lists, Lists
+@subsubsection メッセージ・ストリームの操作
+@cindex ストリーム[すとりーむ]
+@cindex メッセージ・ストリーム[めっせーじすとりーむ]
+@cindex マージング[まーじんぐ]
+
+ストリーム・マージャは、メッセージのリストとして表現される複数のメッセージ・ストリームを入力として受け取り、それらすべての入力ストリームのメッセージを、リストとして表現する単一の出力ストリームに渡すプロセスです。
+
+出力は、入力中のすべてのメッセージを複製したものから成り立ちます。
+2 つのメッセージに対して、どれか 1 つの入力ストリームで順序付けを行うと、それらのメッセージの順序は出力中でも変わることはありません。
+出力中のメッセージが複数の入力ストリームから渡される場合、メッセージの出力順序は予測できません。
+その出力順序は、同じプログラムでも実行ごとに異なる可能性があります。
+このように、マージャは非決定的な動作をします。
+
+例えば、2つの入力ストリーム、@code{[1, 2, 3]} と @code{[a, b, c]} が存在する場合、出力は、@code{[1, 2, a, b, 3, c]} や @code{[1, a, 2, b, c, 3]} にはなりますが、決して @code{[1, a, 3, b, c, 2]} になることはありません。
+
+KL1 では、2 入力のストリーム・マージャを、次のように定義できます。
+
+@example
+merge([M|In1], In2, Out) :- Out=[M|OutT],  merge(In1, In2, OutT).
+merge(In1, [M|In2], Out) :- Out=[M|OutT],  merge(In1, In2, OutT).
+merge([], In2, Out) :- Out=In2.
+merge(In1, [], Out) :- Out=In1.
+@end example
+
+@itemize @bullet
+@item
+上記のマージャの定義において、
+ 1 番目の節（clause）は、最初の入力ストリームから、1 つのメッセージを出力ストリームに転送します。
+最初の入力ストリームは最初の引数であり、出力ストリームは述語の 3番目の引数です。
+続いて、繰返し実行のために再帰的に述語 @code{merge/3} を呼び出します。
+
+@item 
+2 番目の節は、2番目の入力ストリームに対して、同じ処理を行います。
+
+@item 
+3 番目の節は、最初の入力ストリーム中にメッセージが存在しない場合に使用します。
+この場合、2番目の入力ストリームを直接、出力に接続します。
+最初の入力ストリームから転送するメッセージはないので、マージの結果は 2番目の入力ストリームと同じになります。
+
+@item 
+4 番目の節は、2番目の入力ストリーム中にメッセージが存在しない場合に使用します。
+@end itemize
+
+メッセージを同時に両方の入力ストリームから受け取る場合、1 番目か 2 番目のどちらか一方の節が任意に選ばれます。
+このことがマージャの非決定性の原因です。
+
+2 入力のマージャは、KL1 では容易に定義できますが、任意の多入力ストリームのマージャを定義することは、容易ではありません。
+新しい入力ストリームを動的に追加することも望まれますが、さらに難しくなります。
+また、マージャは KL1 プログラムで非常によく使用されるので、効率的である必要があります。
+したがって、KLIC システムでは、マージャを標準的な機能として提供します。
+
+新しいマージャは、以下に示す疑似述語によって生成します。
+
+@defop {オブジェクト生成} {merge} new ?Input ?Output
+@tindex マージャ[まーじゃ]
+単一の入力ストリームを持つ新しいマージャを生成します。
+入力ストリームは @var{Input} で、出力ストリームは @var{Output} になります。
+@end defop
+
+上記の疑似述語で生成したマージャ・プロセスは、実際には、生成直後はマージを開始しません。
+単に @var{Input} からのメッセージを @var{Output} に、順序を変えずに転送するだけです。
+
+新しい入力ストリームをマージャに追加するには、入力をベクタで単一化してください。
+そのベクタの要素が新たな入力ストリームになります。
+例えば、バイナリのマージャが必要な場合、次のようにしてください。
+
+@example
+generic:new(merge, @var{Input}, @var{Output}),
+@var{Input} = @{@var{In1}, @var{In2}@}
+@end example
+
+これは、次の処理と同じ意味になります。
+
+@example
+generic:new(merge, @{@var{In1}, @var{In2}@}, @var{Output})
+@end example
+
+上記処理後、マージャは 2 個の入力ストリーム @var{In1} と @var{In2} からのメッセージを、出力ストリーム @var{Output} へマージします。
+
+マージャへの入力ストリームの追加は、生成直後だけでなく、要求に応じて任意に行えます。
+例えば、2 個以上の入力ストリームを追加する例を、次に示します。
+
+@example
+@var{In2} = @{@var{In2A}, @var{In2B}, @var{In2C}@}
+@end example
+
+この結果、マージャは 4 個の入力ストリーム @var{In1}、@var{In2A}、@var{In2B}、@var{In2C}を持つことになります。
+
+入力ストリームの 1 つが必要なくなった場合、その入力ストリームをアトム @code{[]} で単一化するだけで、簡単に閉じることができます。
+
+入力ストリームに単一化されるベクタのサイズは、任意に変更できます。
+ベクタが 1 個の要素しか持っていない場合、入力ストリームの数は変更されません。
+ベクタが要素を持っていない場合、ベクタを単一化すると、ストリームを閉じることになります。
+
+すべての入力ストリームを閉じたとき、出力リストの末尾を @code{[]}と単一化するので、出力ストリームも閉じます。
+
+マージャを使用する際のヒントを、次に示します。
+
+@itemize @bullet
+@item
+マージするメッセージには、未束縛変数を含むデータ構造を許します。
+そのようなメッセージは、@dfn{不完全メッセージ} とも呼びます。
+不完全メッセージは、
+クライアント/サーバのプロセス構造を構築する場合に向いています。
+メッセージ中の変数に値を与えると、サーバからクライアントへの返信に使用できます。
+
+@item 
+逐次実装におけるマージは、決定的に見えるかも知れません。
+しかし、並列実装におけるマージは、非決定的になりますので、決して頼らないでください。
+@end itemize
+
+@node Vectors, Strings, Lists, Structured Data
+@subsection ベクタ
+@cindex ベクタ[べくた]
+@cindex 配列[はいれつ]
+@tindex ベクタ[べくた]
+
+ベクタは、固定長の 1 次元配列の KL1 データです。
+ベクタの長さは、生成の際に決定します。
+要素には、任意の KL1 データを許し、データ構造を生成した時点で、未定義の状態でいることも許します。
+
+要素は 0 から始まる整数によって、インデックス付けします。
+例えば、3 個の要素を持つベクタは、0、1、2 と番号が付いた要素になります。
+
+@menu
+* Notation of Vectors::         ベクタの表記
+* Creating Vectors::            ベクタの生成
+* Predicates on Vectors::       ベクタの述語
+@end menu
+
+@node Notation of Vectors, Creating Vectors, Vectors, Vectors
+@subsubsection ベクタの表記
+
+ベクタは、1 対の中括弧 (@code{@{@}}) の中で、要素の並びをコンマで区切ることで表します。
+
+@example
+@{ 1, a, f(b), X @}
+@end example
+
+@noindent
+空ベクタ(要素のないベクタ)は 1 対の中括弧だけで表します。
+
+@example
+@{@}
+@end example
+
+中括弧は、Edinburgh Prolog とは完全に異なった意味で使用するので、注意してください。
+Edinburgh Prolog では、@code{@{@}}はアトムを意味し、@code{@{@dots{}@}} はファンクタ構造 @code{@{@}((@dots{}))}を意味します。
+
+@node Creating Vectors, Predicates on Vectors, Notation of Vectors, Vectors
+@subsubsection ベクタの生成
+@cindex ベクタの生成[べくたのせいせい]
+
+前項で示した表記に加えて、ベクタをプログラムの実行中に動的に生成できます。
+次に示す述語は、新しいベクタを生成するために使えます。
+
+@defop {オブジェクト生成} {vector} new @t{-}Vector +Init
+@defopx {ボディ述語} {builtin} new_vector @t{-}Vector +Init
+新しいベクタを生成して、@var{Vector} へ返します。
+
+引数 @var{Init} が整数の場合、要素数を指定したことになります。
+この場合、要素を整数 @code{0} で初期化します。
+例えば、@samp{generic: new(vector, V, 2)} はベクタ @samp{@{0, 0@}} を生成して、@code{V} へ単一化します。
+
+引数 @var{Init} がリストの場合、新しく生成したベクタを、リストの要素によって初期化します。
+当然、ベクタの要素数はリストの長さと同じになります。
+例えば、@samp{generic:new(vector, V, [a, b, c])} は ベクタ @code{@{a, b, c @}}を生成して、@code{V} へ単一化します。
+@end defop 
+
+@node Predicates on Vectors,  , Creating Vectors, Vectors
+@subsubsection ベクタの述語
+
+@defop {ガード・メソッド} {vector} vector +Vector @t{-}Length
+@defopx {ボディ・メソッド} {vector} size +Vector @t{-}Length
+@defopx {ガード述語} {builtin} vector +Vector @t{-}Length
+(ガード述語で呼び出された場合、)@var{Vector} がベクタ・オブジェクトか否かをテストします。
+要素数を @var{Length} へ返します。
+@end defop
+
+@defop {ガード・メソッド} {vector} element +Vector +Index @t{-}Element
+@defopx {ボディ・メソッド} {vector} element +Vector +Index @t{-}Element
+@defopx {ガード述語} {builtin} vector_element +Vector +Index @t{-}Element
+@defopx {ボディ述語} {builtin} vector_element +Vector +Index @t{-}Element
+ベクタ @var{Vector} の @var{Index} 番目の要素を、@var{Element}と単一化します。
+インデックスは、ゼロから始まります。 
+@end defop
+
+@defop {ボディ・メソッド} {vector} set_element +Original +Index ?NewElement @t{-}New
+@defopx {ボディ述語} {builtin} set_vector_element +Original +Index ?NewElement @t{-}New
+新しいベクタを @var{New} と単一化します。
+ @var{Index} 番目の要素を更新して、@var{NewElement} にする他は、 @var{Original} と同じ要素になります。
+オリジナルのベクタには影響しません。
+インデックスは、ゼロから始まります。
+@end defop
+
+@defop {ボディ・メソッド} {vector} set_element +Original +Index ?Element ?NewElement @t{-}New
+@defopx {ボディ述語} {builtin} set_vector_element +Original +Index ?Element ?NewElement @t{-}New
+新しいベクタを @var{New} と単一化します。
+ @var{Index} 番目の要素を更新して、 @var{NewElement} にする他は、 @var{Original} と同じ要素になります。
+オリジナルのベクタには影響しません。
+インデックスは、ゼロから始まります。
+ @var{Index} 番目のオリジナルの要素を @var{Element} へ返します。
+@end defop
+
+@defop {ボディ・メソッド} {vector} split +Original +At @t{-}Lower @t{-}Upper
+ベクタ @var{Original} を @var{At} 番目で分割し、2 つのベクタを @var{Lower} と @var{Upper} に単一化します。
+@var{At} は、オリジナルのベクタのサイズ以下で、かつゼロ以上の整数です。
+@var{Lower} は、0番目以上 @code{@var{At}-1}番目以下の要素で構成します。
+@var{Upper} は、@var{At} 番目以上の要素で構成します。
+@end defop
+
+@defop {ボディ・メソッド} {vector} join +Lower +Upper @t{-}Joined
+@var{Lower} と @var{Upper} の 2 つのベクタを結合して、新しいベクタ @var{Joined} にします。
+@end defop
+
+KLIC では、既存のベクタと 1 要素だけが異なる新たなベクタの生成は、ベクタのサイズとは関係なく、時間と領域がともに一定のオーバヘッドで済むマルチバージョン配列表現を用いて実装しています。
+
+@node Strings,  , Vectors, Structured Data
+@subsection 文字列
+@tindex 文字列[もじれつ]
+@cindex 文字列[もじれつ]
+
+文字列は、限定された範囲の整数の 1 次元配列です。
+現在の版では、0 〜 255 個の要素を持つ 8 ビット要素の文字列だけを提供しています。
+それらは、文字の列を表す場合に向いています。
+異なるサイズの要素からなる文字列を、将来計画しています。
+
+Edinburgh Prolog とは異なり、文字列は、文字コードのリスト用の表記規約では@emph{ありません}。
+文字列は、それ自身のデータ型を持ちます。
+
+@menu
+* Notation of Strings::         文字列の表記
+* Creating Strings::            文字列の生成
+* Predicates on Strings::       文字列の述語
+@end menu
+
+@node Notation of Strings, Creating Strings, Strings, Strings
+@subsubsection 文字列の表記
+
+文字列定数は次のように、 1 対の二重引用符(")で囲まれた文字の並びで表します。
+
+@example
+"A string of the characters written here"
+@end example
+
+次のエスケープ・シーケンスは、(ANSI C のように)二重引用符、バックスラッシュ、制御コードなどを文字列の要素として指定するために使います。
+
+@table @code
+@item \a
+ビープ音
+@item \b
+バックスペース
+@item \t
+タブ
+@item \n
+改行
+@item \v
+垂直タブ
+@item \f
+改ページ
+@item \r
+復帰
+@item \'
+単一引用符
+@item \"
+二重引用符
+@item \?
+疑問符
+@item \\
+バックスラッシュ　
+ 2 個の連続するバックスラッシュで文字列中の 1 個のバックスラッシュを指定する
+@item \@i{ooo}
+ 8 進数 @i{ooo} で指定するコード
+最大 3 桁の 8 進数が指定できる
+@item \x@i{hh}
+ 16 進数 @i{hh} で指定するコード
+任意桁の 16 進数が指定できる
+@item \@key{NEWLINE}
+直後に改行コードの付いたバックスラッシュを無視する
+文字列中では、この並びには文字が無くなる
+@end table
+
+@noindent
+例:
+
+@example
+"The character \'\"\' (doublequote)"
+@end example
+
+@noindent
+上記の例では、次の文字を含む文字列として解釈します。
+
+@example
+The character '"' (doublequote)
+@end example
+
+文字列には、改行や二重引用符を直接含んではなりません。
+文字列内に改行を含む標準的な方法は、行を @samp{\n\} で終了させることです。
+この方法では、改行コードを、@samp{\n} で挿入し、2 番目の @samp{\}に続くソース・コード中の実際の改行を、無視します。
+
+Edinburgh Prolog とは異なり、文字列は文字コードのリストでは@emph{ありません}。
+
+@node Creating Strings, Predicates on Strings, Notation of Strings, Strings
+@subsubsection 文字列の生成
+
+上記の文字列定数に加えて、文字列を実行中に動的に生成できます。
+次の述語が新しい文字列を生成するために使えます。
+
+@defop {オブジェクト生成} {string} new @t{-}String +Init +ElemSize
+@defopx {ボディ述語} {builtin} new_string @t{-}String +Init +ElemSize
+新しい文字列を生成して、@var{String} と単一化します。
+最後の引数 @var{ElemSize} には要素のビット幅を指定します。
+現在の版では、8 ビット文字列しか利用できないので、これは 8 になります。
+
+引数 @var{Init} が整数の場合、要素数が指定されたことになります。
+この場合、要素を整数 @code{0}(ヌル・コード)で初期化します。
+例えば、@samp{generic:new(string, S, 3, 8)} は @samp{"\0\0\0"} を生成します。
+
+引数 @var{Init} が整数のリストの場合、新しく生成された文字列を、リストの要素によって初期化します。
+当然、文字列の要素数はリストの長さと同じになります。
+この場合、リストの要素は、与えられたビット幅に適合する値、つまり 8 ビット文字列で構成する場合、0 〜 255 の値になります。
+例えば、@samp{generic:new(string, S, [0'a, 0'b, 0'c], 8)} は @samp{"abc"} を生成します。
+@end defop
+
+@node Predicates on Strings,  , Creating Strings, Strings
+@subsubsection 文字列の述語
+@cindex 文字列の比較[もじれつのひかく]
+@cindex 辞書式順序[じしょしきじゅんじょ]
+
+@defop {ガード・メソッド} {string} string +String @t{-}Length @t{-}ElemSize
+@defopx {ボディ・メソッド} {string} string +String @t{-}Length @t{-}ElemSize
+@defopx {ガード述語} {builtin} string +String @t{-}Length @t{-}ElemSize
+(ガード述語で呼び出された場合)、@var{String} が文字列オブジェクトか否かをテストします。
+@var{String} の要素数を @var{Length} へ、要素サイズ(現在の版では常に8)を @var{ElemSize} へ返します。
+@end defop
+
+@defop {ボディ・メソッド} {string} size +String @t{-}Length
+@var{String} の要素数を @var{Length} へ返します。
+@end defop
+
+@defop {ボディ・メソッド} {string} element_size +String @t{-}ElemSize
+@var{String} の要素サイズを @var{ElemSize} へ返します。
+@end defop
+
+@defop {ガード・メソッド} {string} element +String +Index @t{-}Element
+@defopx {ボディ・メソッド} {string} element +String +Index @t{-}Element
+@defopx {ガード述語} {builtin} string_element +String +Index @t{-}Element
+@defopx {ボディ述語} {builtin} string_element +String +Index @t{-}Element
+文字列 @var{String} の @var{Index} 番目の要素を @var{Element} と単一化します。
+インデックスは、ゼロから始まります。
+@end defop
+
+@defop {ガード・メソッド} {string} less_than +String1 +String2
+@defopx {ガード述語} {builtin} string_less_than +String1 +String2
+辞書式順序で、@var{String1} が@var{String2} より小さい場合だけ成功します。
+@end defop
+
+@defop {ガード・メソッド} {string} not_less_than +String1 +String2
+@defopx {ガード述語} {builtin} string_not_less_than +String1 +String2
+辞書式順序で、@var{String1} が @var{String2} 以上の場合だけ成功します。
+@end defop
+
+@defop {ガード・メソッド} {string} string +String @t{-}Length @t{-}ElemSize
+@defopx {ガード述語} {builtin} string +String @t{-}Length @t{-}ElemSize
+@var{String} の要素数を @var{Length} へ返し、要素サイズ(常に8)を @var{ElemSize}へ返します。
+@end defop
+
+@defop {ボディ・メソッド} {string} set_element +Original +Index ?Element +New
+@defopx {ボディ述語} {builtin} set_string_element +Original +Index ?Element +New
+新しい文字列を @var{New} で単一化します。
+新しい文字列の、@var{Index} 番目の要素を更新して、 @var{Element} にする他は、@var{Original} と同じ要素になります。
+オリジナルの文字列には影響しません。
+インデックスは、ゼロから始まります。
+@end defop
+
+@defop {ボディ・メソッド} {string} split +Original +At @t{-}Lower @t{-}Upper
+文字列 @var{Original} を、 @var{At} 番目で分割し、 2 個の文字列を @var{Lower} と @var{Upper} に単一化します。
+@var{At} は、オリジナルの文字列のサイズ以下で、かつゼロ以上の整数です。
+@var{Lower} は、0 番目以上 @code{@var{At}-1} 番目以下の要素で構成します。
+@var{Upper} は、@var{At} 番目以上の要素で構成します。
+@end defop
+
+@defop {ボディ・メソッド} {string} join +Lower +Upper @t{-}Joined
+@var{Lower} と @var{Upper} の 2 つの文字列を結合して、新しい文字列 @var{Joined} にします。
+@end defop
+
+@defop {ボディ・メソッド} {string} search_character +String +Start +End +Char @t{-}Where
+@defopx {ボディ述語} {builtin} search_character +String +Start +End +Char @t{-}Where
+文字 @var{Char} を @var{String} 中で探索します。
+探索は、位置 @var{Start} から開始し、@var{End} の前で終わります。
+探索する文字が見つかった場合、そのインデックスを、@var{Where} と単一化します。
+見つからなかった場合、@var{Where} を @code{-1} と単一化します。
+インデックスは、ゼロから始まります。
+@end defop
+
+KLIC では、既存の文字列と 1 要素だけが異なる新たな文字列の生成は、文字列のサイズとは関係なく、時間と領域がともに一定のオーバヘッドで済むマルチバージョン配列表現を用いて実装しています。
+
+
+@node Executable Code, Unix, Structured Data, Builtin and Library
+@section プログラム・コードのデータとしての扱い
+@cindex プログラム[ぷろぐらむ]
+@cindex 高次[こうじ]
+
+KLIC では、データ・オブジェクトとして、実行コードの高次な操作が可能です。
+プログラム・モジュールは、@dfn{モジュール}・データ・オブジェクトとして扱い、個々の述語は、@dfn{述語}データ・オブジェクトとして扱います。
+
+@menu
+* Module Type::                 モジュール
+* Predicate Type::              述語
+@end menu
+
+@node Module Type, Predicate Type, Executable Code, Executable Code
+@subsection モジュール
+@tindex モジュール[もじゅーる]
+
+プログラム・モジュールは、@code{module} 型のジェネリック・データ・オブジェクトによってデータとして扱います。
+
+@defop {オブジェクト生成} {module} new @t{-}Module +ModuleName
+記号アトムの @var{ModuleName} で指定されたプログラム・モジュールに対応する、新しいオブジェクト @var{Module} を生成します。
+指定されたモジュールが定義されていない場合、記号アトム自身を @var{Module} へ返します。
+オブジェクト生成ゴールのフォーマットについては、
+@xref{Creating Objects, ,ジェネリック・オブジェクトの生成}。
+@end defop
+
+@defop {ガード・メソッド} {module} module +Module
+@var{Module} がモジュール・オブジェクトか否かをテストします。
+@end defop
+
+@defop {ボディ・メソッド} {module} name +Module @t{-}ModuleName
+@var{Module} のモジュール名を、記号アトムとして @var{ModuleName} へ返します。
+@end defop
+
+@node Predicate Type,  , Module Type, Executable Code
+@subsection 述語
+@tindex 述語[じゅつご]
+
+プログラムの述語は、述語(@code{predicate}) 型のジェネリック・データ・オブジェクトに
+よってデータとして扱います。
+
+述語型データは、定数として表わすか、実行時に動的に生成するかのどちらかです。
+ホスト・システムの機能の制約のため、ホスト・システムによっては、動的な生成をサポートしない場合があります。
+
+述語定数の構文は次のとおりです。
+
+@display
+@code{predicate}@code{#}@code{(}@var{module}@code{:}@var{predicate}@code{/}@var{arity}@code{)}
+@end display
+
+@noindent
+ここで、@var{module} と @var{predicate} がモジュールと述語の名前アトムであり、@var{arity} が整数(述語の引数個数)になります。
+例えば、
+
+@example
+predicate#(main:main/0)  predicate#(quicksort:partition/4)
+@end example
+
+@noindent
+これらは、プログラムで有効な述語定数です。
+
+述語定数は、KLIC のパーサでなく、KLIC のコンパイラが認識するので
+注意してください
+(@pxref{Prolog I/O, ,Prolog 風のインタフェースを用いた入出力})。
+したがって、Prolog 風の I/O ストリームを用いて単に読み込むだけの場合、
+上記の表記は、通常のデータ構造を意味します。
+
+@defop {オブジェクト生成} {predicate} new @t{-}Predicate +Module +PredName +Arity
+@var{Module}(モジュール・オブジェクト)、@var{PredName}(記号アトム)、
+@var{Arity}(整数)で指定する述語に対応する
+新しいオブジェクト @var{Predicate} を生成します。
+オブジェクト生成ゴールのフォーマットについては、
+@xref{Creating Objects, ,ジェネリック・オブジェクトの生成}。
+@end defop
+
+@defop {ガード・メソッド} {predicate} predicate +Predicate
+@var{Predicate} が述語オブジェクトか否かをテストします。
+@end defop
+
+@defop {ガード・メソッド} {predicate} arity +Predicate @t{-}Arity
+@defopx {ボディ・メソッド} {predicate} arity +Predicate @t{-}Arity
+述語@var{Predicate} の引数個数を @var{Arity} へ返します。
+@end defop
+
+@defop {ボディ・メソッド} {predicate} apply +Predicate +ArgVec
+述語オブジェクトの @var{Predicate} で指定した述語を @var{ArgVec} で指定した引数で呼び出します。
+@var{ArgVec} は、@var{Predicate} に渡す引数のベクタです。
+したがって、ベクタのサイズは、述語の引数個数と一致させる必要があります。
+@end defop
+
+@defop {ボディ・メソッド} {predicate} call +Predicate +Args@dots{}
+述語オブジェクトの @var{Predicate} で指定した述語を @code{@var{Args}@dots{}} で指定した引数で呼び出します。
+引数の数は、述語の引数個数と一致させる必要があります。
+@end defop
+
+@defop {ボディ・メソッド} {predicate} module +Predicate @t{-}Module
+@var{Predicate} が属するプログラム・モジュールを、モジュール・データ・オブジェクトとして @var{Module} へ返します。
+@end defop
+
+@defop {ボディ・メソッド} {predicate} name +Predicate @t{-}Name
+述語 @var{Predicate} の名前を、記号アトムとして @var{Name} へ返します。
+@end defop
+
+@node Unix, Input and Output, Executable Code, Builtin and Library
+@section Unix インタフェース
+@cindex Unix インタフェース[Unix いんたふぇーす]
+@cindex オペレーティング・システム[おぺれーてぃんぐしすてむ]
+@pindex @code{unix}
+
+@code{unix} という名前のモジュールによって、ホスト・オペレーティング・システム(代表例として @code{Unix})の機能を KL1 プログラムから利用できるようになります。
+
+機能のほとんどは、 @code{unix} モジュールが提供する述語 @code{unix/1} で獲得したストリームに対するメッセージとして利用可能です。
+いくつかの機能は、述語として提供しています。
+
+@menu
+* Unix Stream::                 Unix インタフェース・ストリームの獲得
+* I/O Opening::                 入出力用ストリームのオープン
+* Sockets::                     ソケットの使い方
+* Files & Dirs::                ファイルとディレクトリ
+* Signals::                     シグナル割込みの処理
+* Misc Unix Messages::          Unix ストリームへのシュシュのメッセージ
+* Predicate Interface::         述語インタフェース
+@end menu
+
+@node Unix Stream, I/O Opening, Unix, Unix
+@subsection Unix インタフェース・ストリームの獲得
+
+ユーザは、unix モジュールをメッセージ・ストリームを介して利用します。
+そのストリームは、次の述語を呼び出すことによって得られます。
+
+@defop {predicate} {unix} unix ?Stream
+Unix インタフェースに対応するメッセージ・ストリームを @var{Stream} へ返します。
+@end defop
+
+述語の呼出し順序は、保証できないため、Unix インタフェース機能のほとんどは、述語として提供@emph{しません}。
+仮に、Unix インタフェースが述語として提供されるとしたら、次に示す例の @code{ls} の結果は、実行順序に依存することになります。
+@example
+unix:cd("a", 0),
+unix:cd("b", 0),
+unix:system("ls", 0)
+@end example
+
+@noindent
+つまり、実行順序によっては、ディレクトリ @code{a} を表示したり、 @code{b} を表示したり、または、2 つの @code{cd} を実行する前にどこかのディレクトリを表示したりするかもしれません。一方、次に示す例の場合は、実行順序によってではなく、リスト中に並んだ要素の順序に従って、2 つの @code{cd} と、@code{ls} を実行します。
+
+@example
+unix:unix([cd("a", 0),
+           cd("b", 0),
+           system("ls", 0)])
+@end example
+
+@noindent
+
+並列実装では、KLIC は複数プロセスを構成します。
+すべてのメッセージは、unix ストリームを獲得するプロセスで処理します。
+例えば、@code{cd(Path)} メッセージは、単一プロセスのワーク・ディレクトリと、他に何も存在しないワーク・ディレクトリを変更します。
+
+複数のメッセージ・ストリームを獲得した場合、異なるストリームへ送られたメッセージ間の同期はとりません。
+
+@node I/O Opening, Sockets, Unix Stream, Unix
+@subsection 入出力用ストリームのオープン
+
+Unix ストリームに、次のメッセージを送って、Unix I/O ストリームをオープンします。
+入出力を実行するために(Unix ストリーム自身ではなく) Unix I/O ストリームに
+送るメッセージについては、別の場所で説明します
+(@xref{C-like I/O, ,C 風のインタフェースを用いた入出力},
+@ref{Prolog I/O, ,Prolog 風のインタフェースを用いた入出力})。
+
+次に示す例は、「hello world」と出力する KLIC プログラムです。
+
+@example
+main :- unix:unix([stdout(R)]), check_and_write(R).
+
+check_and_write(normal(R)) :- R = [fwrite("hello world\n")].
+@end example
+
+@defop {メッセージ} {unix ストリーム} stdin @t{-}Result
+@defopx {メッセージ} {unix ストリーム} stdout @t{-}Result
+@defopx {メッセージ} {unix ストリーム} stderr @t{-}Result
+@cindex 標準入力[ひょうじゅんにゅうりょく]
+@cindex 標準出力[ひょうじゅんしゅつりょく]
+@cindex 標準入出力[ひょうじゅんにゅうしゅつりょく]
+
+これらのメッセージによって、プロセスの標準入力、標準出力、および標準エラー・ファイルと関連する個々のストリームをオープンし、@var{Result} へ@code{normal(@var{String})}を返します。
+@end defop
+
+@defop {メッセージ} {unix ストリーム} read_open +Path @t{-}Result
+@defopx {メッセージ} {unix ストリーム} write_open +Path @t{-}Result
+@defopx {メッセージ} {unix ストリーム} append_open +Path @t{-}Result
+@defopx {メッセージ} {unix ストリーム} update_open +Path @t{-}Result
+@cindex オープン[おーぷん]
+これらのメッセージによって、文字列の @var{Path} に指定したファイルをオープンし、@var{Result} へ @code{normal(@var{String})}を返します。
+オープン・モードは、入力、出力、追加、および入力/出力の各モードです。
+ファイルのオープンに失敗した場合、 @code{abnormal} を返します。
+@end defop
+
+@node Sockets, Files & Dirs, I/O Opening, Unix
+@subsection ソケットの使い方
+
+Unix ストリームに以下のメッセージを送って、Unix とインターネットのプロトコルのソケットを獲得します。
+SOCK_STREAM 型のソケットだけを提供しています。
+
+@defop {メッセージ} {unix ストリーム} connect +Spec @t{-}Result
+ソケットを生成し、Spec で指定されたソケット・アドレスと接続し、@var{Result} へ @code{normal(@var{String}) }を返します。
+@var{Spec}は、以下に示す形式のいずれかです。
+
+@table @t
+@item unix(@var{Path})
+パス名 @var{Path} を持つ Unix ドメインのソケットをオープンします。
+@item inet(@var{HostName}, @var{Port})
+ホスト名 @var{HostName} とポート番号 @var{Port} で指定したホストの
+インターネット・ドメインのソケットをオープンします。
+@item inet(@{@var{B1}, @var{B2}, @var{B3}, @var{B4}@}, @var{Port})
+インターネット・ドメインのソケットをオープンし、インターネット・アドレスの @var{B1} から @var{B4} で指定したホストをオープンします。
+@end table
+獲得したストリームで、入力と出力の両方のメッセージを処理します。
+@end defop
+
+@defop {メッセージ} {unix ストリーム} bind +Spec @t{-}Result
+ソケットを生成し、@var{Spec} で指定したソケット・アドレスへバインドします。
+@var{Spec} の形式は、インターネット・ドメインのソケットに対する @var{HostName} を省略している他は、 @code{connect} の場合と同じです。
+@code{normal(@var{Stream})} を @var{Result} へ返します。
+この @var{Stream} はバインドされたソケット・ストリームであるため、直接 I/O メッセージを処理しません。
+I/O メッセージ・ストリームを得るためには、さらに @code{accept} メッセージを使用します。
+ソケットが @code{unix} ドメインの場合、バインドされたソケット・ストリームを閉じ、@var{Spec} 中の @var{Path} で指定された名前付きソケットをアンリンクします。
+@end defop
+
+@defop {メッセージ} {バウンド・ソケット} accept @t{-}Result
+ソケットへの接続を受け入れ、@var{Result} へ @code{normal(@var{Stream})} を返します。
+ここで、@var{Stream} は入力と出力の両メッセージ用のI/O メッセージ・ストリームです。
+@end defop
+
+@cindex 非同期 I/O[ひどうきI/O]
+ソケットは、非同期 I/O を提供します。
+すなわち、KLIC システムでは、接続待ちや接続の受け入れ時に他のプロセスを中断することはありません。
+ソケットに対して、空のバッファから読み込んだり、満杯のバッファに書き出したりしても全体の演算実行は中断しません。
+そのような入出力操作は、操作が可能になるまで延期します。
+
+@strong{制限事項}:
+ソケットへの操作を延期した場合、ソケットに対する残りの操作のすべても、延期した操作が完了するまで延期します。
+このことは、入力と出力の双方をポーリングする必要がある場合に問題です。
+この問題は、将来のリリースで解決する予定です。
+
+@cindex Linux
+@strong{Linux に関する制限事項}:
+現在の版では、非同期 I/O は(少なくとも Slackware 1.2.0 の)Linuxに対しては機能しません。
+
+@node Files & Dirs, Signals, Sockets, Unix
+@subsection ファイルとディレクトリ
+@cindex ファイル[ふぁいる]
+@cindex ディレクトリ[でぃれくとり]
+
+unix ストリームに次のメッセージを送り、ファイルとディレクトリを処理します。
+
+@defop {メッセージ} {unix ストリーム} cd +Path @t{-}Result
+@cindex chdir
+ワーク・ディレクトリを @var{Path} に変更します。
+変更が成功した場合、@var{Result} へ @code{0} を返し、それ以外の場合、@code{-1} を返します。
+これは、システム・コールの @code{chdir} に相当します。
+@end defop
+
+@defop {メッセージ} {unix ストリーム}  unlink +Path @t{-}Result
+@cindex アンリンク
+@var{Path} で指定されたディレクトリの登録を削除します。
+削除が成功した場合、@var{Result} へ @code{0} を返し、それ以外の場合、@code{-1} を返します。
+これは、システム・コールの @code{unlink} に相当します。
+@end defop
+
+@defop {メッセージ} {unix ストリーム}  mktemp +Template @t{-}Filename
+指定された @var{Template} からユニークなファイル名を生成し、@var{Filename} へ返します。
+これは、C ライブラリ・ルーチンの @code{mktemp} に相当します。
+ただし、ライブラリ・ルーチンとは異なり、テンプレートは 6 個の終了文字 X を持つ必要がありません。
+何らかの理由で、ユニークなファイル名が作成できない場合、@var{Filename} へ空文字列を返します。
+@end defop  
+
+@defop {メッセージ}  {unix ストリーム}  access +Path +Mode @t{-}Result
+パス名 @var{Path} のファイルに、
+モード @var{Mode} でアクセス可能か否かをチェックします。
+その結果を @var{Result} へ返します。
+これは、C ライブラリ・ルーチンの @code{access} に相当します。
+ファイルがアクセス可能な場合、@code{0} を返し、それ以外の場合、@code{-1} を返します。
+
+@var{Mode} は、各ビットが以下に示す意味を持つ整数です。
+@var{Mode} に 0 を指定した時は、ファイルが存在するか否かだけを調べます。
+@table @t
+@item 4
+読み込み可
+@item 2
+書き出し可
+@item 1
+実行可
+@end table
+@end defop
+
+@defop {メッセージ} {unix ストリーム}  chmod +Path +Mode @t{-}Result
+パス名 @var{Path} を持つファイルの許可モードを @var{Mode} に変更します。
+これは、システム・コールの @code{chmod} に相当します。
+モードの変更が成功した場合、@var{Result} へ @code{0} を返し、それ以外の場合、@code{-1} を返します。
+@var{Mode}は、標準的な Unix の許可ビットを持つ整数です。
+@end defop 
+
+@defop {メッセージ} {unix ストリーム}  umask @t{-}OldMask
+@defopx {メッセージ} {unix ストリーム}  umask @t{-}OldMask +NewMask
+現在のファイルの生成マスクを @var{OldMask} へ返します。
+引数が 2 個の場合、ファイル作成マスクに @var{NewMask} を設定します。
+これは、システム・コールの @code{umask} に相当します。
+@end defop 
+
+@node Signals, Misc Unix Messages, Files & Dirs, Unix
+@subsection シグナル割込みの処理
+@cindex シグナル[しぐなる]
+@cindex 割り込み[わりこみ]
+Unixシグナルは、 unix ストリームに対して次のようなメッセージを使用して、整数のリストに変更します。
+
+@defop {メッセージ} {unix ストリーム}  signal_stream +Signal @t{-}Result
+@var{Signal}(整数値)で指定された unixシグナルを捕捉して報告します。
+引数 @var{Result} は @code{normal(@var{Stream})}になり、指定された種類のシグナルが到着したとき、そのシグナル番号を Stream に送ります。
+例えば、シグナル 2( BSD と SVR4 での SIGINT )が見つかると、Stream は@code{[2|@var{Rest}]} になります。
+その後、到着したシグナルは、@var{Rest} に報告されます。
+@end defop
+
+@noindent
+@strong{制限事項}:
+Unix の制限によって、シグナルを捕捉する前に同じシグナルの発生が 2 回を超えると、シグナルは無視することがあります。
+
+@node Misc Unix Messages, Predicate Interface, Signals, Unix
+@subsection Unix ストリームへの種々のメッセージ
+@cindex シェル・コマンド[しぇるこまんど]
+@cindex 環境変数[かんきょうへんすう]
+@cindex シグナルを送る[しぐなるをおくる]
+@cindex プロセスのフォーク[ぷろせすのふぉーく]
+@cindex フォークプロセス[ふぉーくぷろせす]
+
+Unix ストリームに次のメッセージを送り、Unix の種々の機能を利用します。
+
+@defop {メッセージ} {unix ストリーム}  system +Command @t{-}Result
+新たに生成したサブシェルで、 @var{Command}(文字列)を実行し、
+終了コードを @var{Result} へ返します。
+これは、システム・コールの @code{system} に相当します。
+@end defop
+
+@defop {メッセージ} {unix ストリーム}  getenv +Name @t{-}Value
+名前 @var{Name} の環境変数の値を @var{Value} へ返します。
+これは、ライブラリ・ルーチンの @code{getenv} に相当します。
+そのような環境変数が存在しない場合、整数 @code{0} を @var{Value} へ返します。
+@end defop  
+
+@defop {メッセージ} {unix ストリーム}  putenv +String @t{-}Result
+最初の引数 @var{String} は、@code{@var{Name} = @var{Value}} の形式にしてください。
+環境変数 @var{Name} を @var{Value} で追加または更新します。
+これは、ライブラリ・ルーチンの @code{putenv} に相当します。
+追加または更新が成功した場合、@var{Result} へ @code{0} を返し、それ以外の場合、0 以外の整数値を返します。
+@end defop  
+
+@defop {メッセージ} {unix ストリーム}  kill +Pid +Sig @t{-}Result
+@var{Pid} で指定した 1 つのプロセスまたはプロセス・グループへシグナル @var{Sig} を送り、送信が成功した場合、@var{Result} へ @code{0} を返し、失敗した場合、@code{-1} を返します。
+@end defop  
+
+@defop {メッセージ} {unix ストリーム}  fork @t{-}Pid
+現行プロセスのコピーである新しいプロセスを、フォークします。
+これは、システム・コールの @code{fork} に相当します。
+子プロセスの生成が成功した場合、親プロセスの @var{Pid} へ子プロセスのプロセス ID を返し、子プロセスへ @code{0} を返します。
+@end defop  
+
+@defop {メッセージ} {unix ストリーム}  fork_with_pipes @t{-}Result
+パイプを生成して、新しいプロセスをフォークします。
+新しいプロセスは、現行プロセスのコピーです。
+親プロセスでは、@var{Result} を @code{parent(@var{Pid},@var{In},@var{Out})} で単一化します。
+ここで、@var{Pid} は新たに作成されたプロセスのプロセス ID です。
+新たに生成した子プロセスでは、@var{Result} を @code{child(@var{In},@var{Out})} で単一化します。
+
+@var{In} と @var{Out} は パイプへの Unix I/O ストリームです。
+ここで、親の @var{Out} は出力ストリームであり、子の入力ストリーム @var{In} に接続し、子の @var{Out} は親の @var{In}に接続しています。
+@end defop
+
+@node Predicate Interface,  , Misc Unix Messages, Unix
+@subsection 述語インタフェース
+@cindex コマンド行引数[こまんどぎょうひきすう]
+@cindex 終了コード[しゅうりょうこーど]
+@cindex 中止[ちゅうし]
+
+いくつかの unix インタフェースを、 @code{unix} モジュール中で定義した述語として提供しています。
+
+@defop {unix} {predicate} argc @t{-}Argc
+KLIC で使用しないコマンド行引数の数を @var{Argc} へ返します。
+そのような引数は、@code{-}で始まらない最初の引数や、コマンド行の@code{--}の後から始まる引数です。
+@end defop
+
+@defop {predicate} {unix} argv @t{-}ArgList
+KLIC で使用しないコマンド行引数を、文字列のリストとして @var{ArgList} へ返します。
+@end defop
+
+@defop {predicate} {unix} exit +ExitCode
+直ちに、終了コードの @var{ExitCode} でプロセスを終了します。
+@end defop
+
+@defop {predicate} {unix} times @t{-}Utime @t{-}Stime @t{-}CUtime @t{-}CStime
+ミリ秒単位でプロセス・タイムを返します。
+@var{Utime} はユーザ・タイムであり、@var{Stime} はシステム・タイムです。
+@var{CUtime} と @var{CStime} は、それぞれ子プロセス用のものです。
+
+@code{HZ}(秒当たりのクロック数) が標準的な場所で定義されていない場合、システムは 60 を仮定します。
+@end defop
+
+@node Input and Output, System Control, Unix, Builtin and Library
+@section 入出力
+@cindex 入力[にゅうりょく]
+@cindex 出力[しゅつりょく]
+KLIC は 2 種類の入出力操作群を提供しています。
+1 つは C 風のインタフェース、もう 1 つは Prolog 風のインタフェースです。
+
+C 風の機能は低レベルであり、速度とコード・サイズの両面で高性能です。
+しかし、プロトタイプとデバッグのフェーズでは、Prolog 風の高レベルなインタフェースの方が、データ構造の入出力が直接可能なので有利になります。
+
+@menu
+* C-like I/O::                  C 風のインタフェースを用いた入出力
+* Prolog I/O::                  Prolog 風のインタフェースを用いた入出力
+@end menu
+
+@node C-like I/O, Prolog I/O, Input and Output, Input and Output
+@subsection C 風のインタフェースを用いた入出力
+@cindex I/O
+@cindex C
+
+この節では、C 風のインタフェースを用いた入出力操作を説明します。
+
+このインタフェースは、ファイル、ソケット、パイプなどへのストリームに対するメッセージとして提供しています。
+これらのストリームは、Unix ストリームへメッセージを送って獲得します
+(@pxref{I/O Opening, ,入出力用ストリームのオープン})。
+
+@menu
+* Common Msgs (C style)::       C 風のインタフェースを用いた共通メッセージ
+* Input Msgs (C style)::        C 風のインタフェースを用いた入力メッセージ
+* Output Msgs (C style)::       C 風のインタフェースを用いた出力メッセージ
+@end menu
+
+@node Common Msgs (C style), Input Msgs (C style), C-like I/O, C-like I/O
+@subsubsection C 風のインタフェースを用いた共通メッセージ
+@cindex ファイルの終端[ふぁいるのしゅうたん]
+@cindex シーク[しーく]
+@cindex 出力のフラッシュ[しゅつりょくのふらっしゅ]
+@cindex ファイルのクローズ[ふぁいるのくろーず]
+@cindex 同期[どうき]
+
+次に示すメッセージは、C 風の入出力用の入力ストリームと出力ストリームの両方に利用できます。
+
+@defop {メッセージ} {C 風の I/O }  feof @t{-}Result
+ストリームがファイルの終端の場合、@var{Result}へ @code{1} を返し、それ以外の場合、@code{0}を返します。
+これは、ライブラリ・ルーチンの @code{feof} に相当します。
+@end defop  
+
+@defop {メッセージ} {C 風の I/O }  fseek +Offset +Ptrname @t{-}Result
+オフセットとポインタ名を、それぞれ @var{Offset} と @var{Ptrname} に指定してストリームの位置を変更します。
+@var{Ptrname} が0のときファイルの先頭からの、
+1のとき現在位置からの、
+2のときファイルの末尾からのオフセットを、符合付き整数で指定します。
+変更が成功した場合、@var{Result}へ @code{0} を返し、それ以外の場合、@code{-1} を返します。
+
+あまり大きなファイル(long int が32ビットのシステムでは128MBより大)
+を対象とした場合、整数型の値の範囲による制限のため、
+このメッセージでは任意位置への移動はできない場合があることに注意して下さい。
+@end defop
+
+@defop {メッセージ} {C 風の I/O }  ftell @t{-}Result
+現在の位置(バイト単位)のオフセットを、 @var{Result} へ返します。
+
+あまり大きなファイル(long int が32ビットのシステムでは128MBより大)
+を対象とした場合、整数型の値の範囲による制限のため、
+得られた位置が誤っている場合があることに注意して下さい。
+@end defop
+
+@defop {メッセージ} {C 風の I/O }  fclose @t{-}Result
+ストリームをクローズします。
+クローズが成功した場合、@var{Result}へ @code{0} を返し、それ以外の場合、@code{-1} を返します。
+クローズの後、@code{sync/1} の他はストリームにメッセージを送ってはなりません。
+@end defop
+
+@defop {メッセージ} {C 風の I/O }  sync @t{-}Result
+@var{Result} へ @code{0} を返します。
+先行するすべてのメッセージが、既に処理済みであることを確認するのに有効です。
+@end defop
+
+@node Input Msgs (C style), Output Msgs (C style), Common Msgs (C style), C-like I/O
+@subsubsection C 風のインタフェースを用いた入力メッセージ
+@cindex 読み込み[よみこみ]
+@cindex 入力[にゅうりょく]
+@cindex 文字入力[もじにゅうりょく]
+@cindex 文字列入力[もじれつにゅうりょく]
+次のメッセージが C 風の入出力用の入力ストリームに利用できます。
+
+@defop {メッセージ} {C 風の I/O }  getc @t{-}C
+ストリームから 1 バイトを読み込み、@var{C} へ返します。
+ファイルの終端の場合、@code{-1} を返します。
+@end defop
+
+@defop {メッセージ} {C 風の I/O }  ungetc +C
+ 1 バイトの @var{C} を、ストリームにプッシュ・バックします。
+@end defop
+
+@defop {メッセージ} {C 風の I/O }  fread +Max @t{-}String
+ストリームから最大 @var{Max} バイトを読み込み、そのデータを、バイト文字列として @var{String} へ返します。
+現在の実装では、4,096 バイトまでしか処理できません。
+読み込んだ文字列の長さが、指定した最大値 @var{Max} より小さい場合がありますので、注意してください。
+この現象は、標準ファイルではファイルの終端で発生し、パイプやソケットではいつでも発生する可能性があります。
+@end defop  
+
+@defop {メッセージ} {C 風の I/O }  linecount @t{-}Count
+これまでに検出した改行文字の数を、@var{Count} へ返します。
+ファイルの第 1 行では、まだ改行文字を検出していないので @code{0} を返します。
+行数のカウントが 1 で始まる場合(通常)は、改行文字の数に 1 を加えることで行数が計算できます。
+
+ただし、@code{fseek/2} メッセージを使用する場合、この行数は正しく計算されません。
+@end defop 
+
+@node Output Msgs (C style),  , Input Msgs (C style), C-like I/O
+@subsubsection C 風のインタフェースを用いた出力メッセージ
+@cindex 書き出し[かきだし]
+@cindex 文字出力[もじしゅつりょく]
+@cindex 文字列出力[もじれつしつりょく]
+次のメッセージが C 風の入出力用の出力ストリームに利用できます。
+
+@defop {メッセージ} {C 風の I/O }  putc +C
+ 1 バイトの @var{C} をストリームに書き出します。
+@end defop
+
+@defop {メッセージ} {C 風の I/O }  @var{Number}
+ 1 バイトの @var{Number} をストリームに書き出します。
+これは、@code{putc(@var{Number})} に相当します。
+@end defop
+
+@defop {メッセージ} {C 風の I/O }  fwrite +String @t{-}Result
+バイト文字列 @var{String} の内容をストリームに書き出します。
+実際に書き出したバイト数を @var{Result} へ返します。
+実際に書き出したバイト数は、@var{String} の長さより短くなる場合があります。
+@end defop
+
+@defop {メッセージ} {C 風の I/O }  fwrite +String
+バイト文字列の @var{String} の内容をストリームに書き出します。
+引数 @var{Result} を持つ @code{fwrite} のメッセージと違って、@var{String} 中のすべてのバイトが出力されるまで待ちます。
+これは、インターネットのソケットやパイプのような、出力に予測できない時間を必要とするストリーム用には望ましくありません。
+@end defop
+
+@defop {メッセージ} {C 風の I/O }  fflush @t{-}Result
+ストリームに残っている出力をフラッシュします。
+フラッシュが成功した場合、@var{Result} へ @code{0} を返し、それ以外の場合、@code{-1} を返します。
+@end defop
+
+@node Prolog I/O,  , C-like I/O, Input and Output
+@subsection Prolog 風のインタフェースを用いた入出力
+@cindex 演算子順位文法[えんざんしじゅんいぶんぽう]
+
+演算子順位文法に基づく Prolog 風の項の処理機能を持つ Unix インタフェースのストリームは、以下に示すモジュールの @code{klicio} 述語によって獲得できます。
+
+KLIC の項の構文は、Edinburgh Prolog によく似ていますが、細かい点で異なっています。
+詳細については、
+@ref{Notation of Atoms, ,記号アトムの表記}、
+@ref{Notation of Integers, ,整数の表記}、
+@ref{Notation of Floats, ,浮動小数点数の表記}、
+@ref{Notation of Functors, ,ファンクタの表記}、
+@ref{Notation of Lists, ,リストの表記}、
+@ref{Notation of Vectors, ,ベクタの表記}、
+@ref{Notation of Strings, ,文字列の表記}
+などを参照してください。
+
+@menu
+* Opening Prolog I/O::          Prolog 風の I/O ストリームのオープン
+* Common Msgs (Prolog style)::  Prolog 風のインタフェースを用いたメッセージ
+* Input Msgs (Prolog style)::   Prolog 風のインタフェースを用いたメッセージ
+* Output Msgs (Prolog style)::  Prolog 風のインタフェースを用いたメッセージ
+* Wrapped Terms::               ラップした項
+@end menu
+
+@node Opening Prolog I/O, Common Msgs (Prolog style), Prolog I/O, Prolog I/O
+@subsubsection Prolog 風の I/O ストリームのオープン
+@pindex @code{klicio}
+
+@defop {klicio } {predicate} klicio ?Stream
+Prolog 風の項のインタフェースに対応するメッセージ・ストリームを @var{Stream} へ返します。
+獲得したストリームは、 Unix のインタフェース・ストリームのように機能します。
+つまり、このストリームは、実際に入出力を行うメッセージ・ストリームを獲得するために使用します。
+このストリームを介して獲得した I/O ストリームは、通常の C 風の I/O メッセージに加えて、この節で説明する Prolog 風の項の 入出力に対するメッセージも受け取ります。
+
+パーシングやアンパーシング用のモジュールは、無視できない大きさなので、Prolog 風の項の入出力を必要としないプログラムに対して、そのモジュール@emph{なし}で実行できるように、別モジュールとして提供します。
+@end defop
+
+@defop {メッセージ} {klicio ストリーム} stdin @t{-}Result
+@defopx {メッセージ} {klicio ストリーム} stdout @t{-}Result
+@defopx {メッセージ} {klicio ストリーム} stderr @t{-}Result
+@defopx {メッセージ} {klicio ストリーム} read_open +Path @t{-}Result
+@defopx {メッセージ} {klicio ストリーム} write_open +Path @t{-}Result
+@defopx {メッセージ} {klicio ストリーム} append_open +Path @t{-}Result
+@defopx {メッセージ} {klicio ストリーム} update_open +Path @t{-}Result
+@cindex 標準入力[ひょうじゅんにゅうりょく]
+@cindex 標準出力[ひょうじゅんしゅつりょく]
+@cindex オープン[おーぷん]
+
+これらのメッセージは、Prolog 風の I/O ストリームをオープンします。
+実際に入出力を実行するために、(@code{klicio} ストリーム自身では@emph{ない}) Prolog 風の I/O ストリームに送るメッセージについては、次に述べます。
+
+これらのメッセージは、返された I/O ストリームが C 風の I/O ストリーム用メッセージに@emph{加えて}、Prolog 風の項の入出力用メッセージも解釈する他は、 @code{Unix} ストリームに対するメッセージと全く同じように機能します。
+
+Prolog 風の I/O ストリームは、演算子定義を持ちます。
+さらに、各ストリームは異なる演算子定義を持つことができます。
+したがって、演算子をあるストリームに追加したり、あるストリームから取り除いたりしても、他のストリームで使用する演算子には、影響@emph{しません}。
+各ストリームは、生成後すぐにデフォルトの演算子の集合を持ちます。
+@end defop
+
+@node Common Msgs (Prolog style), Input Msgs (Prolog style), Opening Prolog I/O, Prolog I/O
+@subsubsection Prolog 風のインタフェースを用いた共通メッセージ
+
+以下に示す、C 風の I/O ストリーム用メッセージは、Prolog 風の I/O ストリームに使用できます。
+
+@defop {メッセージ} {Prolog 風の I/O }  feof @t{-}Result
+@defopx {メッセージ} {Prolog 風の I/O }  fseek +Offset +Ptrname @t{-}Result
+@defopx {メッセージ} {Prolog 風の I/O }  ftell @t{-}Result
+@defopx {メッセージ} {Prolog 風の I/O }  fclose @t{-}Result
+@defopx {メッセージ} {Prolog 風の I/O }  sync @t{-}Result
+詳細については、@xref{Common Msgs (C style), ,
+C 風のインタフェースを用いた共通メッセージ}。
+@end defop
+
+@defop {メッセージ} {Prolog 風の I/O }  addop +Op +Type +Prec
+優先順位 @var{Prec} を持つ型 @var{Type} の演算子 @var{Op} を追加します。
+@end defop
+
+@defop {メッセージ} {Prolog 風の I/O }  rmop +Op +Type
+型 @var{Type} の演算子 @var{Op} を取り除きます。
+@end defop
+
+@node Input Msgs (Prolog style), Output Msgs (Prolog style), Common Msgs (Prolog style), Prolog I/O
+@subsubsection Prolog 風のインタフェースを用いた入力メッセージ
+
+@defop {メッセージ} {Prolog 風の I/O }  gett @t{-}Term
+関連する入力ストリームから KLIC の構文項の形で @var{Term} へ読み込みます。
+構文解析に失敗した場合、メッセージを @code{stderr} に出力した後、別の項を読み込みます。
+ファイルの終了時には、アトム @code{end_of_file} を返します。
+@end defop
+
+@defop {メッセージ} {Prolog 風の I/O }  getwt @t{-}Result
+関連する入力ストリームから KLIC の構文項の形で @var{Term} へ読み込み、結果を@var{Result} へ返します。
+構文解析が成功した場合、@var{Result} は、@code{normal(@var{WrappedTerm}) }の形式になります。
+ここで、@var{WrappedTerm} とは、読み込んだ項の基底項表現のことです。
+変数は、変数名の情報を持つ基底項として表現します。
+構文解析が失敗した場合、メッセージを @code{stderr} に出力した後、別の項を読み込みます。
+ファイルの終了時には、@code{normal(end_of_file) }を返します。
+
+ラップした項の操作については、@xref{Wrapped Terms, ,ラップした項}。
+@end defop
+
+以下に示す、C 風の I/O ストリーム用メッセージは、Prolog 風の I/O ストリームに使用できます。
+
+@defop {メッセージ} {Prolog 風の I/O }  getc @t{-}C
+@defopx {メッセージ} {Prolog 風の I/O }  ungetc +C
+@defopx {メッセージ} {Prolog 風の I/O }  fread +Max @t{-}String
+@defopx {メッセージ} {Prolog 風の I/O }  linecount @t{-}Count
+詳細については、@xref{Input Msgs (C style), ,
+C 風のインタフェースを用いた入力メッセージ}。
+@end defop
+
+@node Output Msgs (Prolog style), Wrapped Terms, Input Msgs (Prolog style), Prolog I/O
+@subsubsection Prolog 風のインタフェースを用いた出力メッセージ
+
+@defop  {メッセージ} {Prolog 風の I/O }  putt +Term
+@defopx {メッセージ} {Prolog 風の I/O }  puttq +Term
+@defopx {メッセージ} {Prolog 風の I/O }  putwt +WrappedTerm
+@defopx {メッセージ} {Prolog 風の I/O }  putwtq +WrappedTerm
+
+項 @var{Term} やラップした項 @var{WrappedTerm}を、関連する出力ストリームへ書き出します。
+
+文字 @code{q} の付いて@emph{いない}メッセージは、再び、読み込みをする必要がある場合でも、記号アトムを 2 つの引用符で囲みません。
+しかし、現在のところでは @code{q} の付いたメッセージと全く同じように機能します。
+
+現在の版の出力フォーマットは、マシンが読めるだけで、人間が読める形式ではありません。
+つまり、演算子を全く使用しないですべてのアトムを括弧で囲んでいます。
+
+ラップした項の操作については、@xref{Wrapped Terms, ,ラップした項}。
+@end defop
+
+以下に示す、C 風の I/O ストリーム用メッセージは、Prolog 風の I/O ストリームに使用できます。
+
+@defop {メッセージ} {Prolog 風の I/O }  putc +C
+@defopx {メッセージ} {Prolog 風の I/O }  @var{Number}
+@defopx {メッセージ} {Prolog 風の I/O }  fwrite +String @t{-}Result
+@defopx {メッセージ} {Prolog 風の I/O }  fwrite +String
+@defopx {メッセージ} {Prolog 風の I/O }  fflush @t{-}Result
+詳細については、@xref{Output Msgs (C style), ,
+C 風のインタフェースを用いた出力メッセージ}。
+@end defop
+
+項を終了させるピリオドは、これらのメッセージでは書き出せないので注意してください。
+ピリオドと空白や改行文字は通常、再び、読み込みをするために書き出す必要があります。
+以下に示すゴール列は、@code{/tmp/foo.bar}という名前のファイルをオープンして、変数@var{X} の完全な具体化を待ち、後にピリオドと改行が続く Prolog 風の形式で出力します。
+
+@example
+klicio:klicio([write_open("/tmp/foo.bar", normal(S))]),
+S = [putt(X), putc(0'.), nl].
+@end example
+
+@defop {メッセージ} {Prolog 風の I/O }  nl
+改行コードを出力します。
+メッセージの @code{putc(10)} を同じストリームに送ることと、同じ意味になります。
+@end defop
+
+Prolog 風のI/Oストリームも、@code{putc/1} や @code{getc/1} といった C 風の入出力が受け取るメッセージのすべてを受け取るので注意してください
+(@pxref{C-like I/O, ,C 風のインタフェースを用いた入出力})。
+
+@node Wrapped Terms,  , Output Msgs (Prolog style), Prolog I/O
+@subsubsection ラップした項
+@cindex ラップした項[らっぷしたこう]
+
+変数を含む項のメタレベルの操作を可能にするため、KLIC では @dfn{ラップした項(wrapped term)} と呼ばれるデータ表現を提供しています。
+ラップした項は、その中に変数を含まない基底項です。
+ラップした項は、以下に示す形式を持っています。
+
+@table @t
+@item variable(@var{VarName})
+@var{VarName} という名前文字列を持つ変数
+@item atom(@var{Atom})
+記号アトム @var{Atom}
+@item integer(@var{Int})
+整数 @var{Int}
+@item floating_point(@var{Float})
+浮動小数点数 @var{Float}
+@item list([@var{Car}|@var{Cdr}])
+@var{Car} と @var{Cdr} で構成される コンス・セル；@var{Car} と @var{Cdr} は自己再帰的なラップした項
+@item functor(@var{Functor}(@var{Arg}, @dots{})
+ファンクタの構造；その引数の(@var{Arg}, ...)は自己再帰的なラップした項
+@item vector(@{@var{Elem}, @dots{}@})
+ベクタ；その要素の(@var{Elem}, ...)は自己再帰的なラップした項
+@item string(@var{Str})
+文字列 @var{Str}
+@item unknown(@var{Term})
+不明データ；この場合ラッピングが不正確になることがあります
+@end table
+
+例えば、以下の項
+
+@example
+f(a, X, {3, ["abc"|X]}, 3.14)  を
+@end example
+
+@noindent
+ラップした表現は、以下のようになります。
+
+@example
+functor(f(atom(a),
+        variable("X"),
+        vector({integer(3), list([string("abc")|variable("X")])}),
+        floating_point(3.14))).
+@end example
+
+次の述語は、ラップした項を通常の項に変換します。
+
+@defop {predicate} {変換} unwrap -Wrapped ?Term
+ラップした項 @var{Wrapped} を通常の項 @var{Term} に変換します。
+@end defop
+
+ラップした項は、通常、入力操作の結果として獲得します
+(@pxref{Input Msgs (Prolog style), ,
+Prolog 風のインタフェースを用いた入力メッセージ})。
+
+ラップした項も、通常の KL1 の項と変わりがないので、通常のユーザ・プログラムで作成できます。
+通常の項を、ラップした項に変換する次の述語も、ある場合には有効です。
+
+@defop {predicate} {variable} wrap ?Term -Wrapped
+通常の項 @var{Term} を、ラップした項 @var{Wrapped} に変換します。
+
+現在の版では、すべての変数に同じ名前の @code{_} を与えています。
+したがって、ある項をラップし、その結果をアンラップすると、元の項の中のすべての変数が、同じ名前で参照できるようになってしまいます。
+これはバグですので、将来のバージョンでは修復する予定です。
+
+@var{Term} が同じ変数を複数個含んでいるとき、並行して演算を続けていると、変数を具体化することがあります。
+このような場合、同じ変数を 2 つ含む項は、1 つは変数のまま、もう 1 つは変数でない項を含む形でラップした項に変換されるかもしれません。
+このことは、この述語の仕様が内包する特有の問題ですので、おそらく修復は無理でしょう。
+したがって、この述語を非基底項 (non-ground terms) に適用する場合、デバッギング・ユーティリティといった、メタレベルのプログラムに限定すべきです。
+@end defop
+
+@node System Control,  , Input and Output, Builtin and Library
+@section システム動作の制御
+@cindex ガーベージ・コレクション[がーべじこれくしょん]
+@cindex ポストモーテム処理[ぽすともーてむしょり] 
+
+以下に示す述語は、@code{system_control} モジュール中に提供しています。
+
+@pindex @code{system_control}
+@defop {predicate} {system_control} postmortem +Module +Goal @t{-}Result
+メイン・プログラムの正常終了や異常終了の後に実行する後処理を、登録します。
+@var{Goal} は、ゴールの後処理の述語と引数を指定するファンクタ構造にする必要があります。 
+@var{Module} は、後処理を行う述語のモジュールを指定する記号アトムにする必要があります。
+1 つのゴールだけを指定できます。
+この場合、コンマで区切られたゴールの並びは許していません。
+
+登録が終了したら @var{Result} を @code{[]} で単一化します。
+登録の完了まで待ち状態になるので、他の処理は実行しません。
+
+この述語が何度も呼び出された場合、最後の登録が有効となります。
+@end defop
+
+@defop {predicate} {system_control} gc @t{-}Before @t{-}After
+ガーベージ・コレクションを要求し、ガーベージ・コレクションの前後のヒープ・サイズを、それぞれワード単位で、@var{Before} と @var{After} へ返します。
+ワードのサイズは、インストールで使用した C 言語システムの @code{long} 型のサイズと同じです。
+
+並列実装では、局所的な記憶域に対するガーベージ・コレクションだけが要求されます。
+大域的なガーベージ・コレクションの要求はできません。
+@end defop
+
+@node Timer, Random Numbers, System Control, Builtin and Library
+@section タイマ
+@cindex 時間[じかん]
+@cindex タイマ[たいま]
+@cindex インターバルタイマ[いんたーばるたいま]
+
+KLIC では実時間タイマを提供しています。
+Unix では 1 プロセスにつき 1 タイマしか提供されていませんが、
+KLIC ではこの機構を仮想化して必要な個数のタイマを使用できます。
+
+実時間タイマが利用できないホストシステム上の実装では、
+この機能は提供していません。
+
+時間の値は(時刻、時間間隔ともに) @code{time(@var{Day}, @var{Sec}, @var{Usec})} 
+の形式の項で表現します。
+ここで、 @var{Day}, @var{Sec} and @var{Usec} はそれぞれ日、秒、マイクロ秒を
+表す負でない整数です。
+また、@var{Sec} は 86,000 ( 1 日)未満、 @var{Usec} は 1,000,000 (1 秒)
+未満でなければなりません。
+
+次の述語は、モジュール @code{timer} 中に提供しています。
+
+@defop {述語} {timer} get_time_of_day @t{-}Time
+1970 年 1 月 1 日の真夜中を起点とし、
+秒とマイクロ秒で表現した現在の時刻を、 @var{Time} に返します。
+
+得られる時刻は、この述語が実際に実行されたときの時刻です。
+ゴールの実行順序は KLIC のシステムによることに注意して下さい。
+報告される時間は、
+このゴールの親ゴールがリダクションされてから、@var{Time} の値が
+検査されるまでの間であることのみ、保証されています。
+
+また、報告される時間は、この述語を実行するタスクが動作している OS が、
+返すものであることに注意して下さい。
+分散システムにおいては、各システム構成要素の時刻は完全に一致しているとは
+限りません。
+@end defop
+
+@defop {述語} {timer} add Time1 Time2 @t{-}Time
+@defopx {述語} {timer} sub Time1 Time2 @t{-}Time
+それぞれ、二つの時間値の加算および減算を行います。
+@end defop
+
+@defop {述語} {timer} compare Time1 Time2 @t{-}Result
+二つの時間値 @var{Time1} および @var{Time2} を比較し、
+結果を @var{Result} に返します。
+結果は、@var{Time1} が @var{Time2} より小さい(早い)場合は @code{<}、
+等しい場合は @code{=}、
+@var{Time1} が @var{Time2} より大きい(遅い)場合は @code{>} になります。
+@end defop
+
+@defop {述語} {timer} instantiate_at Time @t{-}Var
+@defopx {述語} {timer} instantiate_after Interval @t{-}Var
+指定された時間に、@var{Var} を記号アトム @code{[]} と単一化します。
+前者の述語は指定された@emph{時刻に}この動作を行いますが、
+後者は指定された@emph{時間間隔後に}この動作を行います。
+指定時間をすでに過ぎていた場合は、変数はただちに単一化される場合が
+あります。
+
+単一化操作には、任意時間の遅れが生じる可能性があることに注意して下さい。
+合理的な実装では、この遅れは短いはずです。
+@end defop
+
+@defop {述語} {timer} instantiate_every Interval Stop @t{-}Var
+@var{Var} を記号アトム @code{[]} のリストで順に単一化していきます。
+リストの最初の要素は指定した時間間隔後に単一化され、
+第二要素はさらに同じ時間間隔を経て単一化されます。
+この操作は引数 @var{Stop} が単一化されるまで繰り返され、
+リストの終端を生成して終了します。
+
+単一化操作には、任意時間の遅れが生じる可能性があることに注意して下さい。
+合理的な実装では、この遅れは短いはずです。
+@end defop
+
+@node Random Numbers,  , Timer, Builtin and Library
+@section 乱数生成器
+@cindex 乱数[らんすう]
+
+オブジェクトクラス @code{random_numbers} により、
+疑似乱数を生成することができます。
+この乱数生成器は @code{nrand48} によるものであり、
+ホストシステムに @code{nrand48} がない場合はこの機能は利用できません。
+
+@defop {オブジェクト生成} random_numbers new @t{-}Randoms Range
+@defopx {オブジェクト生成} random_numbers new @t{-}Randoms Range Seed
+0 から @var{Range} @t{-} 1 を含んだ範囲をとる整数の疑似乱数からなる、
+無限長のリストを @var{Randoms} に返します。 
+@var{Range} は正の整数です。
+
+任意指定の引数 @var{Seed} には乱数生成の種を指定します。
+同じ種を与えた場合、リストの要素は同じになることが保証されています。
+
+リストは仮想的に無限ですが、リスト要素はプログラムでその値を
+検査することによって、遅延的に計算されることに注意して下さい。
+@end defop
+
+@node Using KLIC, Type Index, Builtin and Library, Top
+@chapter KLIC の使い方
+
+この章では、KLIC システムの使い方について説明します。
+
+@menu
+* Compiling::                   KLIC におけるプログラムのコンパイル
+* Running::                     KLIC におけるプログラムの実行
+* Tracing::                     プログラム実行のトレース
+* Install::                     インストール
+* Distributed KLIC::            分散 KLIC
+* Shared-Memory KLIC::          共有メモリ KLIC
+@end menu
+
+@node Compiling, Running, Using KLIC, Using KLIC
+@section KLIC におけるプログラムのコンパイル
+@cindex コンパイル[こんぱいる]
+@cindex リンケージ[りんけーじ]
+
+インストールが完了すると、@code{klic} コマンドで
+KL1 プログラムを C 言語プログラムへコンパイルし、実行可能コードを生成
+することが可能になります。
+ @code{klic} というプログラムは、
+様々なオプションが可能なコンパイラ・ドライバです。
+
+@menu
+* Command for Compilation::     コンパイル用コマンド
+* Compiler Options::            コンパイラ・オプション
+* Mechanism of Compilation::    KLIC コンパイラの動作内容
+@end menu
+
+@node Command for Compilation, Compiler Options, Compiling, Compiling
+@subsection コンパイル用コマンド
+
+引数に、拡張子 @code{.kl1} が付いた KL1 ソース・プログラム・ファイル名を指定して、@code{klic} コマンドを実行すると、 KL1 プログラムは C 言語にコンパイルされ、実行可能コードが生成されます。
+
+例えば、 XXX.kl1 をコンパイルしてコードを生成する場合、次のように入力します:
+
+@example
+% klic @var{XXX}.kl1
+@end example
+
+実行結果は @code{a.out} となります。
+実行結果の名前を @code{@var{YYY}} としたい場合、次のように入力します。
+
+@example
+% klic -o @var{YYY} @var{XXX}.kl1
+@end example
+
+例えば、プログラムが @code{XXX.kl1} 、@code{YYY.kl1} 、@code{ZZZ.kl1} のように複数個のソース・ファイルに分割されている場合、次のように入力すると、一括してコンパイルとリンクができます。
+
+@example
+% klic @var{XXX}.kl1 @var{YYY}.kl1 @var{ZZZ}.kl1
+@end example
+
+複数個の KL1 ソース・ファイルを別個にコンパイルして、後でリンクすることもできます。
+リンケージ・エラーを避けるために、次のように @code{-c} オプションを指定して、リンク前にコンパイル・コマンドの実行を終わらせる必要があります。
+
+@example
+% klic -c @var{XXX}.kl1
+% klic -c @var{YYY}.kl1
+% klic -c @var{ZZZ}.kl1
+@end example
+
+最後に、次のように入力して、複数のコンパイル結果をリンクすることができます。
+
+@example
+% klic @var{XXX}.o @var{YYY}.o @var{ZZZ}.o
+@end example
+
+コンパイラ・オプションの詳細については、@xref{Compiler Options, ,コンパイラ・オプション}。
+
+直接 C でかかれたプログラム
+(例えば @code{@var{CCC}.c} と @code{@var{DDD}.c})を
+ KL1 で書かれたプログラム
+(例えば @code{@var{XXX}.kl1} と @code{@var{YYY}.kl1})
+のリンクは、次のように入力するだけで実行できます。
+
+@example
+% klic @var{CCC}.c @var{DDD}.c @var{XXX}.kl1 @var{YYY}.kl1
+@end example
+
+ファイル指定の順番は影響しません。
+ C の関数は KL1 のインライン展開コード
+(@pxref{Inline C Code, ,C 言語コードのインライン挿入})
+から呼び出すことが出来ます。
+
+@node Compiler Options, Mechanism of Compilation, Command for Compilation, Compiling
+@subsection コンパイラ・オプション
+
+コンパイル・コマンド klic のオプションの利用方法を、以下に示します。
+
+@table @t
+@item -c
+再配置可能オブジェクトを生成し、klic コマンドを終了します。
+リンクは行ないません。
+
+@item -C
+ C 言語への変換を終了し、klic コマンドを終了します。
+
+@item -d
+実際に実行するコマンド列を表示します。
+表示するだけで実行はしません。 @code{-v} を仮定します。
+
+@item -D @var{database_manager}
+指定されたデータベース管理プログラムを使用します。
+
+@item -g
+ dbx 、 gdb などのデバッガ用の情報を含んだ実行可能コードを生成します。
+
+@item -I @var{directory}
+指定されたインクルード・パスを C コンパイル時に使用します。
+
+@item -K @var{klic_compiler}
+指定された変換プログラムを KL1 から C への変換時に使用します。
+
+@item -l @var{library}
+指定されたライブラリをリンク時に使用します。
+
+@item -L @var{directory}
+指定されたライブラリ・パスをリンク時に使用します。
+
+@item -o @var{file}
+指定された実行可能コードファイルの名前を生成します。
+
+@item -O
+@itemx -O@var{level}
+指定された最適化レベルで、コンパイルします。
+ゼロ以外の最適化レベルが指定されたとき、いくつかの付加的な最適化フラグも C コンパイラに渡します。
+そのような付加的な最適化フラグは、システムに依存するため、 KLIC システムのインストール手続きの際に決定されます。
+
+このオプションでは、 @code{-O} と @var{level} の間に空白があってはなりません。
+
+@item -P @var{parallel}
+サブタスク( C コンパイラなど)を並列で実行します。
+最大時には、並列のサブタスクを同時にフォークします。
+
+@item -R
+ファイルの日付とは無関係に、再コンパイルをします。
+
+@item -S
+アセンブリ・コードを生成し、klic コマンドを終了します。
+
+@item -n
+デバッグなし実行時ライブラリをリンクします。
+このオプションが省略された場合、デバッグあり実行時ライブラリをリンクします。
+
+@item -v
+実際に実行したすべてのコマンドを、標準エラー出力に出力します。
+
+@item -x@var{directory}
+指定されたディレクトリ中のデータベース・ファイル @code{klic.db} を使用します。
+また、 @code{atom.c} 、 @code{funct.c} 、 @code{predicates.c} や対応するオブジェクトも指定されたディレクトリに置きます。
+このオプションは、リンクするプログラムが複数のディレクトリに分散している場合に便利です。
+
+@item -X@var{directory}
+データベース・ファイル @code{klic.db} が存在しない場合、指定されたディレクトリ下のデータベース初期化ファイル @code{klicdb.init} から @code{klic.db} を作成します。
+このオプションが省略された場合、デフォルトのライブラリ・ディレクトリを仮定します。
+@end table
+
+次に示す環境変数によって、コンパイラのデフォルトの動作を変えることができます。
+コンパイル時に指定されたオプションの方は、環境変数の値よりも優先します。
+
+@table @t
+@item KLIC_LIBRARY
+実行時ライブラリ用のディレクトリです。
+ @code{-X} オプションの方を優先します。
+
+@item KLIC_DBINIT
+初期データベース用のディレクトリです。
+デフォルトは実行時ライブラリ用のディレクトリです。
+
+@item KLIC_COMPILER
+ KL1 から C への変換プログラムです。
+ @code{-K} オプションの方を優先します。
+
+@item KLIC_DBMAKER
+データベース管理プログラムです。
+ @code{-D} オプションの方を優先します。
+
+@item KLIC_INCLUDE
+コンパイル時のインクルード・パスです。
+ @code{-I} オプションの方を優先します。
+
+@item KLIC_CC
+使用する C コンパイラです。
+
+@item KLIC_CC_OPTIONS
+コンパイラ・オプションです。
+
+@item KLIC_LD
+使用するリンカです。
+
+@item KLIC_LD_OPTIONS
+リンカ・オプションです。
+@end table
+
+@node Mechanism of Compilation,  , Compiler Options, Compiling
+@subsection KLIC コンパイラの動作内容
+
+KL1 プログラムのコンパイル過程や実行可能コードの生成過程を知ることによって、 KLIC の使い方の理解を深めることができます。
+
+KLIC システムは、以下のように 3 個のモジュールで構成されます。
+
+@itemize @bullet
+@item
+ KLIC コンパイラ
+@item
+ KLIC データベース管理プログラム
+@item
+ KLIC 実行時ライブラリ
+@end itemize
+
+KLIC コンパイラは、KL1 プログラムを C 言語プログラムにコンパイルします。
+KLIC コンパイラは同時に、@code{.ext@var{ファイル}} も生成します。
+このファイルは、プログラムで使用しているアトムとファンクタの情報などを持ちます 。
+リンクする個々のプログラムの @code{.ext} ファイル中にある情報は、後でデータベース管理プログラムによってマージされ、 @code{atom.h} 、 @code{funct.h} 、 @code{atom.c} 、 @code{funct.c} 、 @code{predicates.c} になります。
+
+ C コンパイラは、KLIC コンパイラが生成した C プログラムをコンパイルします。
+その際、ヘッダ・ファイル @code{atom.h} 、 @code{funct.h} を使用します。
+ @code{atom.c} 、 @code{funct.c} 、@code{predicates.c} もコンパイルして、実行時ライブラリとリンクします( @code{predicates.c} は、デバッグあり実行時ライブラリを使用するときだけリンクします)。
+
+コンパイル、データベース管理、およびリンクは、コンパイラ・ドライバ・プログラム @code{klic} が制御します。
+この klic プログラムは、 @code{cc} と @code{make} を組み合わせた機能に類似した機能を持っています。
+ @code{cc} は、 C プリプロセッサ、 C コンパイラ・カーネル、およびリンカを制御します。
+同様に、 @code{klic} は、 KL1 から C へのコンパイラ、 C コンパイラ、 KL1 プログラムのデータベース管理プログラム、およびリンカを制御します。
+ @code{make} は、ファイルの日付をチェックし、コンパイルが必要なファイルだけをコンパイルします。
+ @code{klic} も @code{make} と同様の処理を行います。
+
+@node Running, Tracing, Compiling, Using KLIC
+@section  KLIC におけるプログラムの実行
+@cindex 実行[じっこう]
+
+生成された実行可能コードは、簡単に動かせます。
+ KL1 プログラムをコンパイルして、実行可能コードを @code{a.out} に出力した場合、ファイル名 @code{./a.out} を使用中のシェルに渡すだけで実行できます。
+
+@code{main} モジュール中の引数なし述語 @code{main} が、最初に実行されるゴールになります(@pxref{Initial Goal, ,初期ゴール})。
+
+@menu
+* Runtime Switches::            実行時オプション
+@end menu
+
+@node Runtime Switches,  , Running, Running
+@subsection 実行時オプション
+
+実行可能コードを動かす際、以下に示すオプションが利用できます。
+
+@table @t
+@item -h size
+ワード単位のヒープの初期サイズです。
+コピー方式のガーベージ・コレクションを採用しているので、実際に使用するヒープ・サイズは、この 2 倍になります。
+ヒープ・サイズは、(例えば、@code{2097152} のように)数値を直接指定したり、
+ 2^10 単位や 2^20 単位で @code{k} や @code{m} を数字の後ろに付けて(@code{2048k} や @code{2m} のように)指定したりできます。
+このオプションが省略された場合、初期サイズはマクロの @code{HEAPSIZE} によって決定します。
+配布版では、 HEAPSIZE は 24k になっています。
+ 1 ワードの長さは、C の@code{long int}型と同じです。
+実際の長さは、使用するハードウェアや C コンパイラに依存します。
+ヒープ・サイズは、 @code{-H} や @code{-a} オプションに従って自動的に増加します。
+
+@item -H @var{size}
+ワード単位の最大のヒープ・サイズです。
+ヒープは、指定されたサイズまでは自動的に拡張します。
+このオプションが省略された場合、無限大を仮定します。
+
+@item -a @var{ratio}
+ヒープ領域中でアクティブ・セル(ゴミでないセル)が占める割合の上限です。浮動小数点数で指定してください。
+アクティブ・セルの占有する割合が、指定された上限値を超えると、 @code{-H} オプションで指定された最大サイズを超えない限り、ヒープ・サイズを、次回のガーベージ・コレクションで 2 倍にします。
+このオプションが省略された場合、0.5 を仮定します。
+
+@item -g
+ガーベージ・コレクションに要した時間を計測します。
+ヒープが小さいとガーベージ・コレクションは非常に短い時間で行うので、計測オーバヘッドの方が大きくなってしまう可能性が高くなります。
+このオプションが省略された場合、ガーベージ・コレクションの計測は行いません。
+
+@item -s
+中断情報を計測します。
+プログラムの実行が終了すると、中断した述語とその中断回数を報告します。
+このオプションは、デバッグあり実行時ライブラリをリンクした場合にだけ有効です。
+このオプションを省略しても、デバッグあり実行時ライブラリがリンクされるので、中断情報を計測します
+(@pxref{Compiler Options, ,コンパイラ・オプション})。
+
+@item -t
+トレース状態で、プログラムの実行を開始します
+(@pxref{Tracing, ,プログラム実行のトレース})。
+このオプションは、デバッグあり実行時ライブラリをリンクした場合にだけ有効です。
+このオプションを省略しても、デバッグあり実行時ライブラリがリンクされるので、トレース状態になります。
+デバッグなし実行時ライブラリをリンクさせる場合には、コンパイル時のオプションで指定します(@pxref{Compiler Options, ,コンパイラ・オプション})。
+@end table
+
+すべての実行可能ゴールが実行を終了すると、プログラムは停止します。
+デバッグあり実行時ライブラリがリンクされている場合、(実行可能ゴールは存在しないが)、入力データを待って中断しているゴールが存在した場合、中断の原因となっているゴールが探索されて報告されます。
+デバッグなし実行時ライブラリがリンクされている場合は、中断しているゴールの数だけが報告されます。
+
+
+@node Tracing, Install, Running, Using KLIC
+@section プログラム実行のトレース
+@cindex トレース[とれーす]
+@cindex デバッグ[でばっぐ]
+
+KLIC では、@dfn{スパイ}(ブレーク・ポイント)機能を持つデバッグ・トレーサを提供します。
+
+@menu
+* Preparing for Trace::         トレース実行の準備
+* Trace Ports::                 トレース・ポート
+* Output of Tracer::            トレース表示のフォーマット
+* Controlling Trace::           トレース制御コマンド
+* Spying::                      スパイ
+* Port Control::                トレース・ポートのコマンド
+* Display Control::             表示を制御するコマンド
+* Dumping Goals::               ゴールのダンプ
+* Misc Trace Commands::         その他のコマンド
+* Perpetual Suspension::        永久中断の探索
+@end menu
+
+@node Preparing for Trace, Trace Ports, Tracing, Tracing
+@subsection トレース実行の準備
+
+トレース機能を使うには、プログラムをデバッグありの実行時ライブラリでリンクする必要があります。
+特に指定がなければ、デバッグありの実行時ライブラリがリンクされますが、コンパイル・コマンドの @code{klic} に @code{-n} オプションを指定すれば、トレースは行われません。
+
+トレース対象のプログラムを、既に、@code{-n} オプションでコンパイル・リンクしている場合でも、プログラムを、初めから再コンパイルする必要はありません。
+このような場合、 @code{-n} オプションなしで再度 @code{klic} コマンドを実行すると、オブジェクトをデバッグありの実行時ライブラリとリンクするだけなので、短時間の操作で済みます。
+
+プログラムの実行をトレースするには、@code{-t} オプションを付けてプログラムを実行するだけです(@pxref{Runtime Switches, ,実行時オプション})。
+
+@node Trace Ports, Output of Tracer, Preparing for Trace, Tracing
+@subsection トレース・ポート
+@cindex ポート[ぽーと]
+
+ KL1 プログラムの実行の様子を以下に示します。
+
+@enumerate
+@item
+初期ゴールの @code{main：main} は、実行するゴールを貯めておくためのゴール・プールに入れられます。
+
+@item
+1 つのゴールがゴール・プールから取り出されます( @code{CALL} ポート)。
+
+@item
+ゴールは、プログラム節とマッチングされます。
+
+@item
+ゴールと一致する節があれば、ゴールはサブゴールにリダクションし、それらのサブゴールはゴール・プールに戻されます( @code{REDUCE} ポート)。
+
+@item
+ゴールと一致する節がない場合は、計算全体が放棄されます
+( @code{FAIL} ポート)。
+
+@item
+ゴール引数の値やそれらの構造が確定していないため、ゴールと一致する節があるか否かを決定できない場合、ゴールは必要な値が揃うまで、ゴールを貯めておくための別のゴール・プールに入れられます( @code{SUSPEND} ポート)。
+
+@item
+ゴール・プールにゴールが残っていれば、ステップ 2 にループします。
+@end enumerate
+
+ゴールの実行は、上記した 4 つのポイント、すなわち 2 、 4 、 5 、 6 番がトレースされます。
+このような対象ポイントは @dfn{トレース・ポート}と呼ばれ、それぞれ @code{CALL} 、 @code{REDUCE} 、 @code{FAIL} 、@code{SUSPEND} ポートと呼びます。
+
+Prolog の 4 ポート・トレース・モデルに慣れ親しんでいれば、 Prolog の他の 2 つのポートの @code{EXIT} と @code{REDO} がないことを疑問に思うかもしれません。
+ KL1 プログラムは、バックトラックをしないので @code{REDO} ポートは存在しません。
+ @code{EXIT} ポートは、次の 2 つの理由によってトレースされません。
+1 つは、ゴール - サブゴール階層のすべてについて、実行履歴を維持することは、 Prolog のような逐次処理言語に比べて、 KL1 のような並列処理言語の方が負担が重くなるからです。
+これは、階層における多くの異なるサブツリーが、
+データフローの同期機能のために、互いにインタリーブで動くためです。
+他の 1 つは、 KL1 プログラムがしばしば、同じ述語を末尾再帰呼出しの形式で呼び出すゴールとして各々が定義された、通信プロセスの集合として書かれているためです。
+そのようなプロセス(@dfn{永久プロセス}: perpetual processes と呼ばれる場合がある)は、ほとんど終了することがないので、終了を探索することはProlog の場合に比べ、意味がないためです。
+
+@node Output of Tracer, Controlling Trace, Trace Ports, Tracing
+@subsection トレース表示のフォーマット
+
+以下に、サンプル・プログラムを示します。
+
+@example
+:- module main.
+
+main :- nrev([1,2],X), builtin:print(X).
+
+nrev([], R) :- R = [].
+nrev([W｜X], R) :- nrev(X, XR), append(XR, [W], R).
+
+append([], Y, Z)  :- Z = Y.
+append([W｜X], Y, WZ)  :- WZ = [W｜Z], append(X, Y, Z).
+@end example
+
+@noindent
+以下に、サンプル・プログラムの実行をすべてトレースした出力結果を示します。
+
+@example
+1 CALL:main:main?
+1 REDU:main:main :-
+2   0:+nrev([1,2],_4)
+3   1:+builtin:print(_4)?
+2 CALL:main:nrev([1,2],_4)?
+2 REDU:main:nrev([1,2],_4) :-
+4   0:+nrev([2],_D)
+5   1:+append(_D,[1],_4)?
+4 CALL:main:nrev([2],_D)?
+4 REDU:main:nrev([2],_D) :-
+6    0:+nrev([],_18)
+7    1:+append(_18,[2],_D)?
+6 CALL:main:nrev([],_18)?
+6 REDU:main:nrev([],[])?
+7 CALL:main:append([],[],_D)?
+7 REDU:main:append([],[2],[2])?
+5 CALL:main:append([2],[1],_4)?
+5 REDU:main:append([2],[1],[2｜_1F]) :-
+8   0:+append([],[1],_1F)?
+8 CALL:main:append([],[1],_1F)?
+8 REDU:main:append([],[1],[1])?
+3 CALL:builtin:print([2,1])?
+[2,1]
+3 REDU:builtin:print([2,1])?
+@end example
+
+このプログラムでは、中断や失敗がないので、すべてのトレース出力は、 CALL ポートか REDUCE ポート( トレース例では、@code{REDU} と出力されている)のどちらかになります。
+上記の 1 行目は、初期ゴール @code{main:main} の CALL ポートのトレースです。
+
+@example
+1 CALL:main:main?
+@end example
+
+@noindent
+トレースされたすべてのゴールには、ゴール間で区別するために、一意な
+識別子（整数値）が与えられています。
+ 1 カラム目の番号 @code{1} は、初期ゴールの識別子です。
+
+初期ゴールは、プログラムで定義した最初の節と一致するので、
+プログラム節中で定義しているように、サブゴールにリダクションします。
+このリダクションは、以下のようにトレースされます。
+
+@example
+1 REDU:main:main :-
+2   0:+nrev([1,2],_4)
+3   1:+builtin:print(_4)?
+@end example
+
+@noindent
+これは、識別子 1 を持つオリジナル・ゴール @code{main:main} が、2 つの
+新しいゴールにリダクションしていることを示しています。
+この 2 つの新しいゴールは、 @code{main:nrev([1,2],_4)} と @code{builtin:print(_4)} で、それぞれ識別子 2 と 3 を持ちます。
+
+新しいゴールの識別子 2 と 3 に続く、番号の 0 と 1 は、リダクションに
+よって生成されたサブゴールのシーケンス番号です。
+これらのシーケンス番号は、コマンドを適用するサブゴールを識別するために、トレーサ・コマンドによって使用されます。
+グローバルな意味を持つ一意なゴール識別子と違って、これらのサブゴール番号は、この特定のポートでしか意味を持ちません。
+
+次に続く @code{:} は、サブゴールが、親ゴールの通常のサブゴールであることを意味しています。
+@code{:} 以外にも、次に示すものがトレース表示されます。
+ @code{*} の場合は、 @code{*} に続くゴールもサブゴールですが、親とは異なる優先順位が与えられていることを意味します。
+優先順位は疑似プラグマ形式で表示されます。
+ @code{!} の場合は、 @code{!} に続くゴールは、実際に親からリダクションしたサブゴールではなく、このリダクションによって、具体的な値が変数に与えられたことで、実行可能となったゴールであることを意味します。
+
+次に @code{+} か @code{-} のどちらかが続きます。
+ただ実行を継続するだけの場合、 @code{+} は、サブゴールをトレースし、 @code{-} は、トレースしないことを意味します。
+これは、あとの項で述べるトレース・コマンドを指定することで変更できます。
+上記の例では、すべてのサブゴールに @code{+} が付いているので、すべてのサブゴールがトレースされます。
+
+続いて、モジュール名、コロン（:） 、そしてサブゴールの述語名が表示されます。
+サブゴールの述語のモジュール名は、その述語が親ゴールの述語と同じモジュールに定義されている場合は、（:）とともに省略されます。
+上記の例では、サブゴール @code{nrev} (モジュール名 @code{main} )は、親ゴールの @code{main:main} と同じモジュール名なので、モジュール名は表示されません。
+
+最後には、括弧の中にコンマ（,）で区切られた引数リストが続きます。
+ nrev の第 2 引数と print の引数は @code{_4} です。
+これは、ソース・プログラム中の @code{X} と対応する変数に相当します。
+変数は、述語節の適用ごとに新しく割り当てられ、また、2 つ以上の変数は単一化できるので、ソース・プログラム中のオリジナルな名前を表示することは意味がありません。
+このような理由で、@code{_4} のような一意な名前が与えられています。
+
+実際、この番号 @code{4} は、変数の物理メモリ・アドレスと関連します。
+そのため、この番号は、ガーベージ・コレクションによって変更されます。
+しかし、ガーベージ・コレクションは、それほど頻繁には行われないので、アドレス情報は、デバッグでは有効です。
+
+トレースは、すべてのサブゴールと疑問符（?）を表示したあと、停止します。
+ここで、次に示すトレース・コマンドを入力できます。
+
+@node Controlling Trace, Spying, Output of Tracer, Tracing
+@subsection トレース制御コマンド
+
+トレースは、 @emph{leashed} された各ポートで制御します
+(@pxref{Port Control, ,トレース・ポートの制御})。
+トレースは、トレース対象のゴール全体や、リダクション・ポートにおいて新しく生成された各サブゴールを制御します。
+各述語ごとに、ゴールをトレースするか否かのデフォルト値を設定することもできます。
+
+@menu
+* Goal Control::                トレース対象ゴールのトレース制御
+* Subgoal Control::             新しく生成されたサブゴールのトレース制御
+* Predicate Control::           述語毎のトレース・スイッチのデフォルト値の変更
+@end menu
+
+@node Goal Control, Subgoal Control, Controlling Trace, Controlling Trace
+@subsubsection トレース対象ゴールのトレース制御
+
+以下に示すコマンドは、プログラムの実行を制御するために利用します。
+
+@table @asis
+@item  Continue : @code{c} または単に@kbd{@key{リターン}}
+ステップ実行します。
+ @code{-} が付いたサブゴールは、ステップ・モードでもトレースしません。
+
+@item Leap : @code{l}
+スパイ・ポイントに達するまで、トレースしないで実行を継続します。
+詳細については、@xref{Spying, ,スパイ}。
+
+@item Skip : @code{s}
+トレース対象のゴールとすべてのサブゴールを、トレースしないで実行します。
+スパイ・ポイントがあっても無視します。
+
+@item Abort : @code{a}
+プログラム全体の実行を放棄します。
+@end table
+
+これらのコマンドには、引数はありません。
+
+@node Subgoal Control, Predicate Control, Goal Control, Controlling Trace
+@subsubsection 新しく生成されたサブゴールのトレース制御
+
+各サブゴール( @code{+} や @code{-} で表示されている)のトレースは、以下に示すコマンドで変更できます。
+
+@table @asis
+@item Trace : @code{+} @var{subgoal_number} @dots{}
+指定したサブゴールのトレースのスイッチをオンにします。
+複数のサブゴール番号を指定する場合、空白で区切ります。
+サブゴール番号を指定しない場合、すべてのサブゴールがトレースされます。
+
+@item No Trace : @code{-} @var{subgoal_number} @dots{}
+指定したサブゴールのトレースのスイッチをオフにします。
+複数のサブゴール番号を指定する場合、空白で区切ります。
+サブゴール番号を指定しない場合、すべてのサブゴールはトレースされません。
+
+@item Toggle Trace : @var{subgoal_number} @dots{}
+指定したサブゴールのトレース・スイッチを切り替えます。
+トレースのスイッチがオンならオフに、オフならオンになります。
+複数のサブゴール番号を指定する場合、空白で区切ります。
+@end table
+
+@node Predicate Control,  , Subgoal Control, Controlling Trace
+@subsubsection 述語ごとのトレース・スイッチのデフォルト値の変更
+
+デフォルトでは、ゴールのすべてのサブゴールに対して、トレース・スイッチは、最初の reduce ポートではオン( @code{+} )の状態です。
+このデフォルトの設定は、この項で説明するコマンドを使えば述語ごとに変更できます。
+変更の結果、トレース・スイッチがオフ( @code{-} )となった述語は、デフォルトではトレースされません。
+
+コマンドの引数 <述語> は、以下の形式のいずれかになります。
+
+@table @t
+@item @var{Module}:@var{Predicate}/@var{Arity}
+明示的に、1 つの述語を指定します。
+例えば、 @code{main:nrev/2} のように指定します。
+
+@item @var{Module}:@var{Predicate}
+引数個数に関係なく、モジュール 内のすべての述語を指定します。
+
+@item @var{Module}:
+モジュールで定義されたすべての述語を指定します。
+述語名と区別するため、モジュール名のあとにはコロン（:）が必要です。
+
+@item @var{Predicate}/@var{Arity}
+与えられた名前と引数個数を持つ現在トレース対象であるゴールの述語と同じモジュールで定義された述語を指定します。
+
+@item @var{Predicate}
+与えられた名前を持つ現在トレース対象であるゴールの述語と同じモジュールで定義された述語を指定します。
+@end table
+
+与えられた述語のトレース・スイッチのデフォルトを変更するコマンドを、以下に示します。
+
+@table @asis
+@item No Trace Default: @code{n} @code{Predicate} @dots{}
+述語のトレース・スイッチのデフォルトをオフに設定します。
+引数に述語を指定しない場合、トレース対象ゴールの述語が指定されたものと仮定されます。
+
+@item Trace Default: @code{t} @code{Predicate} @dots{}
+述語のトレース・スイッチのデフォルトをオンに設定します。
+引数に述語を指定しない場合、トレース対象ゴールの述語が指定されたものと仮定されます。
+@end table
+
+@node Spying, Port Control, Controlling Trace, Tracing
+@subsection スパイ
+@cindex スパイ[すぱい]
+@cindex ブレーク・ポイント[ぶれーくぽいんと]
+
+特定の述語だけをデバッグ対象にすることはよくあることです。
+そのような場合、その述語のポートを @dfn{スパイ・ポイント} として指定できます。
+ leap (@code{l}) コマンドを使って、任意のスパイ・ポイントに達するまで、プログラムをトレースせずに実行させることができます。
+詳細については、@xref{Goal Control, ,トレース対象ゴールのトレース制御}。
+
+この項で説明するコマンドは、スパイ・ポイントの設定や解除を行います。
+
+@table @asis
+@item Spy: @code{S} @var{Predicate} @dots{}
+述語をスパイします。
+引数に述語が指定されない場合、トレース対象ゴールの述語をスパイします。
+
+@item No Spy: @code{N} @var{Predicate} @dots{}
+述語に設定されているスパイ・ポイントを解除します。
+引数に述語が指定されない場合、トレース対象ゴールの述語のスパイ・ポイントを解除します。
+@end table
+
+@node Port Control, Display Control, Spying, Tracing
+@subsection トレース・ポートの制御
+@cindex ポート[ぽーと]
+
+4 つのトレース・ポートを使用可能状態( enabled )にしたり、使用禁止状態( disabled )にしたりできます。
+使用禁止状態になったポートはトレースされません。
+
+さらに各ポートに対して、停止状態になってコマンド入力を待つか否かを指定できます。
+実行を停止して、コマンドを待つポートのことを @dfn{leashed} と呼びます。
+使用可能状態で leashed されていないポートの場合、トレース結果の出力表示後すぐに continue コマンド(キャリッジ・リターン)が入力されたように、実行が継続されます。
+スパイ対象の述語の場合、 unleashed なポートも leashed になります。
+
+この項で説明するコマンドは、そのようなポートの属性を制御するために使用されます。
+これらのコマンドでは、以下に示す方法で引数にポート名を指定します。
+
+@table @asis
+@item Call:
+@code{c}, @code{call}
+@item Reduce:
+@code{r}, @code{redu}, @code{reduce}
+@item Suspend:
+@code{s}, @code{susp}, @code{suspend}
+@item Fail:
+@code{f}, @code{fail}
+@item All ports:
+@code{a}, @code{all}
+@end table
+
+ポートを制御するコマンドを以下に示します。
+
+@table @asis
+@item Enable Port: @code{E} @var{port} @dots{}
+指定されたポート(群)を使用可能状態にします。
+
+@item Disable Port: @code{D} @var{port} @dots{}
+指定されたポート(群)を使用禁止状態にします。
+
+@item Leash Port: @code{L} @var{port} @dots{}
+指定されたポート(群)を leashed にします。
+
+@item Unleash Port: @code{U} @var{port} @dots{}
+指定されたポート(群)を unleashed にします。
+@end table
+
+@node Display Control, Dumping Goals, Port Control, Tracing
+@subsection 表示を制御するコマンド
+@cindex トレース表示[とれーすひょうじ]
+
+トレース対象ゴールの完全情報が常に必要であるとは限りません。
+逆にそういった過剰な完全情報がプログラム動作の理解を妨げる場合さえあります。
+そういった場合のために、トレース・ポートで表示される情報量を制御するコマンドが、提供されています。
+
+表示量は、以下に示すオプションの組合せで制御されます。
+
+@itemize
+@item 表示の深さ制限：深さ制限以下の引数構造は、次に示す省略形で表示します。
+
+@example
+f(a,b,c,d,e)    @expansion{}    f(..)
+[a,b,c,d,e]     @expansion{}    [..]
+@end example
+
+@item 表示の長さ制限：長さ制限を超えた引数リストの構造や文字列は、次に示す省略形で表示します。
+
+@example
+f(a,b,c,d,e)    @expansion{}    f(a,b,c,..)
+[a,b,c,d,e]     @expansion{}    [a,b,c,..]
+"abcde"         @expansion{}    "abc.."
+@end example
+
+@item サブタームの表示指定 : 指定されたトレース対象ゴールの特定の部分だけを表示します。
+@end itemize
+
+以下に示すコマンドは、オプション制御のために使用できます。
+
+@table @asis
+@item Set Print Depth: @code{pd} @var{depth}
+@cindex トレース表示の深さ制限[とれーすひょうじのふかさせいげん]
+データ構造の表示の深さ制限に @var{depth} を設定します。
+引数なしの場合、現在の深さ制限値で表示します。
+
+@item Set Print Length: @code{pl} @var{length}
+@cindex トレース表示の長さ制限[とれーすひょうじのながさせいげん]
+データ構造の表示の長さ制限に @var{length} を設定します。
+引数なしの場合、現在の長さ制限値で表示します。
+
+@item Toggle Verbose Print: @code{pv}
+@cindex 詳細表示[しょうさいひょうじ]
+詳細表示モードのスイッチを切り替えます。
+詳細表示モードでは、ゴールの実行を中断している変数を表示する際に、そのゴールも一緒に表示します。
+
+@item Set Subterm: @code{^} @var{N}
+@item Reset Subterm:@code{^}
+@cindex サブターム[さぶたーむ]
+
+トレース対象ゴールの @var{N} 番目のサブタームを表示します。
+ @var{N} に 0 が指定された場合、サブタームは 1 レベル上がります。
+ @var{N} が省略された場合、サブタームの表示を解除します。
+リスト構造の場合、 1 は car 、 2 は cdr を意味します。
+
+このコマンド実行中は、トレース対象ゴールのサブタームだけが表示されます。表示されているサブタームの前には、タームのどの部分が表示されているのかを示す位置情報が表示されます。
+以下に例を示します。
+
+@example
+  10 CALL: foo:bar(f(a,g(..),[..]))? ^1
+  10 CALL: ^1 f(a,g(b,c),[d,e])? ^2
+  10 CALL: ^1^2 g(b,c)? ^0
+  10 CALL: ^1 f(a,g(b,c),[d,e])? ^3
+  10 CALL: ^1^3 [d,e]? ^2
+  10 CALL: ^1^3^2 [e]? ^
+  10 CALL: foo:bar(f(a,g(..),[..]))?
+@end example
+REDUCE ポートでは、サブタームを指定していると、リダクションで生成されたサブゴールは、表示されません。
+指定した親ゴールのサブタームだけが表示されます。
+現在の版では、ベクタ要素はサブタームとして指定できません。
+@end table
+
+深さ制限と長さ制限の初期設定値は、それぞれ 3 と 7 です。
+詳細表示モードのスイッチは、最初はオフに設定されています。
+
+@node Dumping Goals, Misc Trace Commands, Display Control, Tracing
+@subsection ゴールのダンプ
+@cindex ダンプ[だんぷ]
+@cindex レディー・キュー[れでぃきゅー]
+@cindex ゴール・プール[ごーるぷーる]
+@cindex 中断ゴール[ちゅうだんごーる]
+
+最後の手段として、システム中のすべてのゴールをダンプすることが望ましい場合があります。
+ダンプする場合のコマンドを以下に示します。
+
+@table @asis
+@item レディ・キューのダンプ : @code{Q}
+レディ・キュー(ゴール・プール)中のすべてのゴールを、優先順位とともに表示します。
+
+@item 中断(待ち状態)ゴールのダンプ : @code{W}
+システム中のすべての中断ゴールを、優先順位とともに表示します。
+@end table
+
+@node Misc Trace Commands, Perpetual Suspension, Dumping Goals, Tracing
+@subsection その他のコマンド
+
+@table @asis
+@item  ステータスの問合せ : @code{=}
+トレーサのステータス情報を、以下のように表示します。
+@example
+   port: Call Susp Redu Fail
+enabled:  +    +    +    +
+leashed:  +    +    +    +
+print terse; depth = 3; length = 7
+@end example
+
+@item モジュール表示 : @code{lm}
+現在実行しているプログラムの、すべてのモジュールを表示します。
+
+@item 述語表示 : @code{lp}
+現在実行しているプログラムの、すべての述語とデフォルトのトレース状態を表示します。
+
+@item キュー表示 : @code{Q}
+レディ・キュー(ゴール・プール)の内容を表示します。
+
+@item ヘルプ : @code{?}または@code{h}
+現在のポートで利用できる、すべてのコマンドとその簡略説明を表示します。
+@end table
+
+@node Perpetual Suspension,  , Misc Trace Commands, Tracing
+@subsection 永久中断の探索
+
+あるゴールが、他のどのゴールからも具体化されない変数の具体化を待ち続ける場合、そのゴールは永久に先に進めなくなります。
+このような状態を、@dfn{永久中断}( perpetual suspention )と呼びます。
+永久中断は、 KLIC のガーベージ・コレクタが見つけ出すので、プログラム実行中に、ガーベージ・コレクションが発生すると、永久中断が見つけ出されることがあります。
+
+システムは中断ゴールの数を管理しています。
+実行できるゴールが全くない状態で中断ゴールが残っている場合、システムは永久中断を見つけ出すためにガーベージ・コレクションを試みます。
+
+永久中断は、以下のように報告されます。
+
+@example
+!!! Perpetual Suspention Detected !!!
+   3 PSUS: @var{Module}:@var{Predicate}(@var{Args}@dots{})? 
+@end example
+
+@noindent
+ここでは、 FAIL ポートと同じコマンド群が利用できます。
+
+@node Install, Distributed KLIC, Tracing, Using KLIC
+@section インストール
+@cindex インストール[いんすとーる]
+
+KLIC のインストールは、比較的簡単に行えます。
+
+ホスト依存とユーザの選択に基づくカスタマイズは、配布された構成スクリプトを実行させて行います。
+その後、 @code{make all} でシステム全体をコンパイルしてください。
+次に、 @code{make tests} の実行によって、システムが問題なくコンパイルされたことが確認できます。
+続いて、 @code{make install} でシステムのインストールができます。
+
+@menu
+* Configuration::               コンフィギュレーション
+* Make All::                    KLIC システムのコンパイル
+* Make Tests::                  コンパイル結果のテスト
+* Make Install::                オブジェクトのインストール
+* Make Distclean::              インストールディレクトリのクリーン・アップ
+* Troubles::                    うまく行かない場合
+@end menu
+
+@node Configuration, Make All, Install, Install
+@subsection コンフィギュレーション
+@cindex コンフィギュレーション[こんふぃぐれーしょん]
+@cindex PVM
+
+KLIC のインストールで最初に行うことは、ホスト・コンピュータ・システムと、ユーザの選択に依存した KLIC システムを構成することです。
+
+配布物のルート・ディレクトリ(以下、 @var{ROOT} と呼びます)に進んでください。その後、 @file{./Configure} コマンドで構成スクリプトを実行してください。
+スクリプトが、利用できるソフトウェア・ツールを、システムから探索して、選択の問合せをしてきます。
+
+一部の BSD 4.2 をベースとする Unix システムでは、
+この構成スクリプトの構文の一部が、デフォルトで用意されたシェルでは
+実行できないことがあります。
+その場合は、新しいシェル(GNU @code{bash} など)を入手して、
+次のようにスクリプトを実行して下さい。
+
+@example
+% bash Configure
+@end example
+
+KLIC システムを前に構成したことがあり、同じディレクトリで再構成を行う
+場合は、前回指定した値をデフォルト値にするかどうか、問い合わせてきます。
+
+次の(初めてシステムを構成する場合は最初の)問い合わせは、KLIC の並列版を
+構成するか否かというものです。
+逐次システムだけをインストールしたい場合は、 @code{no} と答えてください。
+並列版システムの構成の詳細については、
+@xref{Distributed KLIC, ,分散 KLIC} ,
+@ref{Shared-Memory KLIC, ,共有メモリ KLIC}。
+
+構成スクリプトは、以下の 3 個のファイルを作成します。
+
+@example
+@file{@var{ROOT}/Makefile}
+@file{@var{ROOT}/include/klic/config.h}
+@file{@var{ROOT}/config.sh}
+@end example
+
+最後のファイルは、システム再構成に備えて今回指定したオプションを保存します。
+
+構成スクリプトは、
+インストール手続きで使用される並列機能(parallelism)について問い合わせてきます。
+このとき、システムを負荷の軽いマルチプロセッサ・システムに
+インストール中であれば、ここでゼロ以外の並列機能を指定できます。
+ @code{make} の並列実行機能を使用しては@emph{なりません}。
+
+@node Make All, Make Tests, Configuration, Install
+@subsection KLIC システムのコンパイル
+
+システムの構成後は、 @code{make all} と入力して、 KL1 から C へのコンパイラと、実行時ライブラリを含む KLIC システム全体をコンパイルしてください。
+
+@node Make Tests, Make Install, Make All, Install
+@subsection コンパイル結果のテスト
+
+システム全体のコンパイルが終了した後は、コンパイルが問題なく終了したか否かをテストすることをお勧めします。
+テストする場合には、提供されたルート・ディレクトリ内(そのサブディレクトリ @code{test} ではありません)で @code{make test} と入力してください。
+何本かの KL1 テスト・プログラムがコンパイル・実行されて、出力結果と予想結果が比較されます。
+
+@node Make Install, Make Distclean, Make Tests, Install
+@subsection オブジェクトのインストール
+
+コンパイルが終了したあと、 @code{make install} と入力すると、コンパイラ、ヘッダ・ファイル、および実行時ライブラリが、コンフィギュレーションで指定したディレクトリにインストールされます
+(@pxref{Configuration, ,コンフィギュレーション})。
+
+@node Make Distclean, Troubles, Make Install, Install
+@subsection インストール・ディレクトリのクリーン・アップ
+
+インストールが終了したあと、 @code{make distclean} と入力すると、配布物中に含まれて @emph{いない} すべてのファイルが削除されます。
+
+一般ユーザは、@code{make realclean} を試しては @strong{なりません}。
+このコマンドは、 KL1 から生成された C プログラムのソース・ファイルを削除します。
+削除した C プログラムのソース・ファイルを再生成するには、既に動いている KL1 から C へのコンパイラが必要です。
+
+@node Troubles,  , Make Distclean, Install
+@subsection うまく行かない場合
+
+構成ミスのために、インストール手続きがうまく行かない場合は、コンフィギュレーションからやり直した方がよいでしょう
+(@pxref{Configuration, ,コンフィギュレーション})。
+構成スクリプトは、コンフィギュレーションのやり直しのために、システムをクリーン・アップするか否かを問い合わせてきます。
+そのときには yes と答えてください。
+
+Makefile に書かれる依存ルールは、@code{make} のいくつかのバージョンで提供される make の並列機能を使用する場合には適切ではありません。
+アトムとファンクタのデータベースが単調に増大しているという事実に依存しているので、それらのデータベースに依存するようには書けません。
+代わりに、コンパイラ・ドライバ @code{klic} の並列実行機能を使用してください。
+使用する並列機能は、コンフィギュレーションの段階で
+指定します(@pxref{Configuration, ,コンフィギュレーション})。
+
+配布されたコードに問題があると思われる場合は、以下に示すアドレスまでご報告ください。
+
+@example
+@code{klic-bugs@@icot.or.jp}
+@end example
+
+その際、ホスト・システム(ハードウェアとオペレーティング・システム)と構成(トップレベルの @file{Makefile} と @file{include/klic/config.h} ファイル)に関する情報があると、問題分析に役立ちます。
+
+@node Distributed KLIC, Shared-Memory KLIC, Install, Using KLIC
+@section 分散 KLIC
+@cindex 分散 KLIC[ぶんさん KLIC]
+@cindex 並列処理[へいれつしょり]
+@cindex PVM
+
+KLIC の分散並列実装版も、配布される KLIC に含まれています。
+この分散実装は PVM3.3 に基づいています。
+ MPI 等の並列処理ライブラリや、システム固有のプロセス間通信ライブラリに基づく
+実装も行われていますが、この配布版にはまだ統合されていません。
+
+PVM に基づいていますが、現在の版では異種構成をサポートしていません。
+複数のアーキテクチャを持つプロセッサで構成されるシステムや、異なるオペレーティング・システムを動かすシステムでは機能しません。
+現時点では、異種システムをサポートする計画は全くありません。
+
+@menu
+* Installation of Distributed KLIC::        分散 KLIC のインストール
+* Compiling Programs for Distributed KLIC:: 分散 KLIC 向けプログラムのコンパイル
+* Running Programs of Distributed KLIC::    分散 KLIC のプログラム実行
+@end menu
+
+@node Installation of Distributed KLIC, Compiling Programs for Distributed KLIC, Distributed KLIC, Distributed KLIC
+@subsection 分散 KLIC のインストール
+@cindex コンフィギュレーション[こんふぃぎゅれーしょん]
+
+分散 KLIC の PVM 版をインストールする場合、
+まず並列版を構成するか否かを構成スクリプトが最初に問い合わせてくるので、
+ yes と答えてください。
+次に分散 KLIC を構成するか否かを、問い合わせてくるので、
+これにも yes と答えてください。
+そのあと、 PVM が利用できる場合は、 PVM システムのインストール先の
+ディレクトリや、使用する PVM ライブラリなどについて、問い合わせてきます。
+
+問合せの内容を、以下に示します。
+
+@itemize
+@item
+ PVM システムのルート・ディレクトリ
+@item
+システムのアーキテクチャのキーワード(例えば、 @code{SUNMP} など)
+@item
+PVM ライブラリの名前(例えば、 @code{pvm3} など)
+@end itemize
+
+現在の版では、デーモンプロセスを使用しない PVM の実装には、問題があります。
+例えば、 Solaris2 が動いている共有メモリ・マルチプロセッサの Sparc システムの
+場合、ライブラリの @code{pvm3} が機能しません。
+プロセス間通信には、共有メモリの代わりにソケットを使う @code{pvm3s} を
+使用してください。
+
+インストール手続きの残りの部分は、分散 KLIC をインストールしない場合の手続きと同じです。
+
+分散処理のオプション( @code{-dp} )が、コンパイル時に指定されていない場合、
+分散 KLIC システムは、逐次版と全く同じように動作します。
+
+@node Compiling Programs for Distributed KLIC, Running Programs of Distributed KLIC, Installation of Distributed KLIC, Distributed KLIC
+@subsection 分散 KLIC 向けプログラムのコンパイル
+
+コンパイル手続きは、以下に示すオプションが利用できる他は、逐次版とほぼ同じです。
+
+@table @t
+@item -dp
+分散 KLIC システムを用いたコンパイルを指定します。
+このオプションの指定がない場合、コンパイルされるオブジェクト・コードは、逐次処理でしか動きません。
+@end table
+
+@node Running Programs of Distributed KLIC,  , Compiling Programs for Distributed KLIC, Distributed KLIC
+@subsection 分散 KLIC のプログラム実行
+
+@menu
+* Setting Up PVM::                          PVM のセット・アップ
+* Runtime Options for Distributed KLIC::    分散 KLIC の実行時オプション
+* Known Bugs of Distributed KLIC::          分散 KLIC の既知のバグ
+@end menu
+
+@node Setting Up PVM, Runtime Options for Distributed KLIC, Running Programs of Distributed KLIC, Running Programs of Distributed KLIC
+@subsubsection PVM のセット・アップ
+
+分散実行用にコンパイルされたプログラムを実行する前に、 PVM システムがシステム上で稼働している必要があります。
+以下に示すセット・アップが必要です。
+
+@itemize
+@item
+次の環境変数を設定してください。
+
+@table @t
+@item PVM_ROOT
+システムにインストールした PVM システムのルート・ディレクトリ
+
+@item PVM_ARCH
+システムのアーキテクチャを指定するキーワード
+
+@end table
+
+これらは、分散 KLIC システムをインストールした時に指定したものと同じものを指定してください。
+
+@item
+ PVM のデーモンを開始してください。
+デーモンは、 PVM コンソールを起動することで開始できます。
+ PVM コンソールは、 @code{$PVM_ROOT/lib/$PVM_ARCH/pvm} に存在します。
+このコンソール用のウィンドウがあると便利です。
+@end itemize
+
+他のパラメタの設定と PVM コンソールの操作の詳細については、専用のマニュアルをご覧ください。
+
+@node Runtime Options for Distributed KLIC, Known Bugs of Distributed KLIC, Setting Up PVM, Running Programs of Distributed KLIC
+@subsubsection 分散 KLIC の実行時オプション
+
+分散 KLIC システムでプログラムを動かす場合、逐次版で利用できるオプションに加えて、以下のオプションが利用できます。
+
+@table @t
+@item -p @var{N}
+プログラムを動かすための疑似プロセッサ( Unix プロセス)の数を指定します。
+ klic 2.0 版ではパラメータが -dp から -p に変更になっています.
+
+@item -e
+バッチ転送モードに切り替えます。
+通常、 KLIC は要求時にプロセッサ間でデータ構造を転送します。
+ネストしたデータ構造は通常、1 度に 1 レベルずつ転送します。
+バッチ転送では、ネストしたデータ構造を 1 度に転送します。
+これは、いくつかのプログラムに対して、より効率的に実行します。
+しかし、他のプログラムの性能を劣化させることもあります。
+
+@item -E @var{Level}
+ネストしたデータ構造について、何レベルまで一度に送信するかを指定します。
+
+@item -I @var{MicroSec}
+プロセッサ間通信のポーリング間隔を指定します。
+このポーリングが必要かどうか、またどのような値が適切であるかは、
+ホストシステムと物理通信層の実装に依存します。
+多くの場合は、デフォルト値である 10000 が適切です。
+
+@item -n
+実行時の統計情報を表示します。
+
+@item -notimer
+タイマ駆動の通信ポーリングを行いません。
+このポーリングが必須かどうかは、物理通信層の実装に依存します。
+
+@item -relsp
+疑似プロセッサプロセスを生成する時の実行ファイルを、
+相対パスで探します。
+
+@item -S
+通信パケットの受信側プロセスに対し、シグナル送信による通知を行いません。
+実装によっては、この指定によりシグナル送信のオーバヘッドが減るため、
+実行速度が向上する場合があります。
+@end table
+
+@node Known Bugs of Distributed KLIC,  , Runtime Options for Distributed KLIC, Running Programs of Distributed KLIC
+@subsubsection 分散 KLIC の既知のバグ
+
+@itemize
+@item
+
+新しく登録されたアトムとファンクタは、プログラムの実行中に、正常に処理されないことがあります。
+
+@item
+スパイの指定(@pxref{Spying, ,スパイ})は、
+指定した計算ノードの内部だけに効果があります。
+@end itemize
+
+@node Shared-Memory KLIC,  , Distributed KLIC, Using KLIC
+@section 共有メモリ KLIC
+@cindex 共有メモリ KLIC[きょうゆうめもり KLIC]
+@cindex 並列処理[へいれつしょり]
+
+KLIC の共有メモリ並列実装版も、配布される KLIC に含まれています。
+この実装は、ハードウェア、 OS 、 C コンパイラの各々に依存する
+部分から成ります。
+このバージョンでは、SunOS 5.3 が動作している Sparc ベースのシステム、
+および DEC OSF/1 が動作している Alpha ベースのシステムに対応しています。
+コンパイルには、 Gnu CC が必要です。
+
+@menu
+* Installation of Shared-Memory KLIC::          共有メモリ KLIC のインストール
+* Compiling Programs for Shared-Memory KLIC::   共有メモリ KLIC 向けプログラムのコンパイル
+* Running Programs of Shared-Memory KLIC::      共有メモリ KLIC のプログラム実行
+@end menu
+
+@node Installation of Shared-Memory KLIC, Compiling Programs for Shared-Memory KLIC, Shared-Memory KLIC, Shared-Memory KLIC
+@subsection 共有メモリ KLIC のインストール
+@cindex コンフィギュレーション[こんふぃぎゅれーしょん]
+
+共有メモリ版の KLIC をインストールする場合、
+まず共有メモリ KLIC を構成するか否かを問い合わせてくるので、
+ yes と答えてください
+
+インストール手続きの残りの部分は、共有メモリ KLIC をインストールしない場合の
+手続きと同じです。
+
+共有メモリ並列処理のオプション( @code{-shm} )が、
+コンパイル時に指定されていない場合、
+共有メモリ KLIC システムは、逐次版と全く同じように動作します。
+
+@node Compiling Programs for Shared-Memory KLIC, Running Programs of Shared-Memory KLIC, Installation of Shared-Memory KLIC, Shared-Memory KLIC
+@subsection 共有メモリ KLIC 向けプログラムのコンパイル
+
+コンパイル手続きは、以下に示すオプションが利用できる他は、
+逐次版とほぼ同じです。
+
+@table @t
+@item -shm
+共有メモリ KLIC システムを用いたコンパイルを指定します。
+このオプションの指定がない場合、コンパイルされるオブジェクト・コードは、
+逐次処理でしか動きません。
+@end table
+
+@node Running Programs of Shared-Memory KLIC,  , Compiling Programs for Shared-Memory KLIC, Shared-Memory KLIC
+@subsection 共有メモリ KLIC のプログラム実行
+
+@menu
+* Runtime Options for Shared-Memory KLIC::  共有メモリ KLIC の実行時オプション
+* Known Bugs of Shared-Memory KLIC::        共有メモリ KLIC の既知のバグ
+@end menu
+
+@node Runtime Options for Shared-Memory KLIC, Known Bugs of Shared-Memory KLIC, Running Programs of Shared-Memory KLIC, Running Programs of Shared-Memory KLIC
+@subsubsection 共有メモリ KLIC の実行時オプション
+
+共有メモリ KLIC システムでプログラムを動かす場合、
+逐次版で利用できるオプションに加えて、以下のオプションが利用できます。
+
+@table @t
+@item -p @var{N}
+プログラムを動かすための疑似プロセッサ( Unix プロセス)の数を指定します。
+
+@item -D
+子である疑似プロセッサのプロセス番号を報告します。低レベルのデバッグで
+便利かもしれません。
+
+@item -S @var{Size}
+共有ヒープ領域の大きさを指定します。
+現在の実装では、共有ヒープ領域は初期化の際に確保され、以後拡張されることは
+ありません。
+@end table
+
+@node Known Bugs of Shared-Memory KLIC,  , Runtime Options for Shared-Memory KLIC, Running Programs of Shared-Memory KLIC
+@subsubsection 共有メモリ KLIC の既知のバグ
+
+@itemize
+@item
+トレーサが正しく動かないことがあります。
+@end itemize
+
+@node Type Index, Predicate Index, Using KLIC, Top
+@unnumbered データ型索引
+@printindex tp
+@comment % CIJ @printindex tp
+
+@node Predicate Index, Module Index, Type Index, Top
+@unnumbered 述語、メソッド、メッセージ名索引
+@printindex fn
+
+@node Module Index, Concepts, Predicate Index, Top
+@unnumbered モジュール名索引
+@printindex pg
+@comment % CIJ @printindex pg
+
+@node Concepts,  , Module Index, Top
+@unnumbered 索引
+@printindex cp
+@comment % CIJ @printindex cp
+
+@contents
+
+@bye

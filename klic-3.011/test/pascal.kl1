@@ -1,0 +1,82 @@
+/*-----------------------------------------------------------------------------
+Program:  Pascal's Triangle 
+Author:   E. Tick
+Date:     July 25 1989
+
+Notes:
+1. To run:
+    ?- go(N,R).
+where input N is the number of rows to calculate and output R is the Nth row.
+-----------------------------------------------------------------------------*/
+
+:- module main.
+main :-
+	klicio:klicio([stdout(Res)]),
+	check_stream(Res).
+
+check_stream(normal(S)) :-
+	go(100, L),
+	S = [putt(L),nl].
+check_stream(abnormal).
+
+go(N,Row) :- N>1 | makeRows(1,N,[],Row).
+
+makeRows(N,N,HalfRow,Row) :- 
+    Odd := N mod 2 |
+    fillout(Odd,[[1,0]|HalfRow],Row).
+otherwise.
+makeRows(K,N,HalfRowK,Row) :- 
+    K1 := K+1,
+    Odd := K mod 2 |
+    makeRow([[1,0]|HalfRowK],Odd,HalfRowK1),
+    makeRows(K1,N,HalfRowK1,Row).
+
+
+makeRow([_],0,A) :- A=[].
+makeRow([X],1,A) :- A=[S],bigPlus(S,X,X).
+makeRow([X1,X2|Xs],Odd,A) :-
+    A=[S|Ss],
+    bigPlus(S,X1,X2),
+    makeRow([X2|Xs],Odd,Ss).
+
+fillout(0,HalfRow,Row) :- 
+    rev(HalfRow,[_|Rev]),
+    concat(HalfRow,Rev,Row).
+fillout(1,HalfRow,Row) :- 
+    rev(HalfRow,Rev),
+    concat(HalfRow,Rev,Row).
+
+bigPlus(A,X,Y) :-  bigp(X,Y,A,0).
+
+bigp([X|Xs],[Y|Ys],A,C) :- 
+    add(X, Y, XY),
+    add(XY, C, T)
+    |	setc(T,A1,C1),
+    	A=[A1|As],
+    	bigp(Xs,Ys,As,C1).
+bigp([],[Y|Ys],A,C) :- 
+    add(Y, C, T)
+    |   A=[A1|As],
+    	setc(T,A1,C1),
+    	bigp([],Ys,As,C1).
+bigp([X|Xs],[],A,C) :-
+    add(X, C, T)
+    |   setc(T,A1,C1),
+    	A=[A1|As],
+    	bigp([],Xs,As,C1).
+bigp([],[],A,0) :-
+	A=[].
+bigp([],[],A,C) :-
+    C > 0
+    |	A=[C].
+
+setc(T,A,C) :- T < 100000 | C=0,A=T.
+setc(T,A,C) :- T >= 100000, subtract(T, 100000, R) | C=1,A=R.
+
+concat([], Y, Z) :- Z = Y.
+concat([W|X], Y, WZ) :- WZ = [W|Z], concat(X, Y, Z).
+
+rev(X,Y) :- rev(X,[],Y).
+
+rev([A|X],Y,Z) :- rev(X,[A|Y],Z).
+rev([],  Y,Z) :- Y=Z. 

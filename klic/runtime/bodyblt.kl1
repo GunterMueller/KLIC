@@ -1,0 +1,100 @@
+/* ---------------------------------------------------------- 
+%   (C)1993 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- inline:"
+#include <stdio.h>
+#include <stdlib.h>
+#include <klic/timing.h>
+
+extern print();
+timerstruct before, after;
+static long gctimes_before;
+".
+
+:- module builtin.
+
+print(X) :- inline:"print(%0); klic_putc('\\n', stdout);":[X+any] | true.
+
+print(X,OK) :- inline:"print(%0);":[X+any] | OK=[].
+
+putc(C,OK) :- inline:"klic_putc(intval(%0),stdout);":[C+int] | OK=[].
+
+readint(X) :- inline:"{
+    int n;
+    int c;
+    char buf[1024];
+    char *bufp = buf;
+    klic_fprintf(stderr,\"> \");
+    do {
+      c = klic_getc(stdin);
+      *bufp++ = c;
+    } while (c != '\\n' && c != -1);
+    %0 = makeint(atol(buf));
+  }":[X0-int] | X=X0.
+    
+start_measure :- inline:"{
+    measure(before);
+    gctimes_before = gctimes;
+  }":[] | true.
+report_measure(X) :- inline:"
+    measure(after);
+    klic_fprintf(stdout, \"heap size = %%d words\\n\", heapsize);
+    {
+#ifdef GETRUSAGE
+      long u_usec = diff_usec(ru_utime);
+      long s_usec = diff_usec(ru_stime);
+      long t_usec = u_usec + s_usec;
+      long swaps = field_diff(ru_nswap);
+      long minflt = field_diff(ru_minflt);
+      long majflt = field_diff(ru_majflt);
+      long inblock = field_diff(ru_inblock);
+      long outblock = field_diff(ru_oublock);
+      long nvcsw = field_diff(ru_nvcsw);
+      long nivcsw = field_diff(ru_nivcsw);
+      %0 = makeint(t_usec/1000);
+      klic_fprintf(stdout,
+      		   \"%%ld ms total; %%ld user; %%ld system\\n\",
+	   	   t_usec/1000, u_usec/1000, s_usec/1000);
+      klic_fprintf(stdout,
+      		   \"  %%ld swaps; %%ld minor page faults; %%ld major page faults\\n\",
+		   swaps, minflt, majflt);
+      klic_fprintf(stdout,
+      		   \"  %%ld block inputs; %%ld block outputs\\n\",
+		  inblock, outblock);
+      klic_fprintf(stdout,
+      		   \"  %%ld context switches (%%ld voluntary)\\n\",
+		   nvcsw+nivcsw, nvcsw);
+#else
+      long u_msec = (int) tick2msec(field_diff(tms_utime));
+      long s_msec = (int) tick2msec(field_diff(tms_stime));
+      long t_msec =
+	(int) (tick2msec(field_diff(tms_utime)) +
+	       tick2msec(field_diff(tms_stime)));
+      %0 = makeint(t_msec);
+      klic_fprintf(stdout,
+		   \"%%ld ms total; %%ld user; %%ld system\\n\",
+		   t_msec, u_msec, s_msec);
+#endif
+      klic_fprintf(stdout, \"  \");
+      if (measure_gc) {
+	klic_fprintf(stdout,
+		     \"%%ld ms utime & %%ld ms stime in \",
+		     gcums, gcsms);
+      }
+      klic_fprintf(stdout, \"%%ld GC\\n\", gctimes-gctimes_before);
+      klic_fprintf(stdout, \"  %%ld suspensions; %%ld resumptions\\n\",
+		   suspensions, resumes);
+      if (cum_susps != 0 || cum_resumps != 0) {
+	klic_fprintf(stdout,
+		     \"  %%ld total suspensions; %%ld total resumptions\\n\",
+		     cum_susps+suspensions, cum_resumps+resumes);
+      }
+  }":[X0-int] | X=X0.
+
+current_node(X,Y) :- current_node(X,Y).
+
+idle :- true | true.

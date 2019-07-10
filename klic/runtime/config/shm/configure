@@ -1,0 +1,66 @@
+# ---------------------------------------------------------- 
+#   (C) 1995 Institute for New Generation Computer Technology 
+#	(Read COPYRIGHT for detailed information.) 
+#   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+#       (Read COPYRIGHT-JIPDEC for detailed information.)
+# ----------------------------------------------------------
+DIST_SHM_SYSTEM_DEF="#define"
+SHARED_LOCKSRC="lock.s"
+SHARED_LOCKOBJ="lock.o"
+
+# decide tr is BSD or SYSV
+
+TESTSTRING=`echo ABC | tr 'A-Z' 'a-z'`
+if [ $TESTSTRING = 'aBC' ]; then
+# SYSV
+   FROMPAT='[A-Z]'
+   TOPAT='[a-z]'
+else
+   FROMPAT=A-Z
+   TOPAT=a-z
+fi
+
+    set_var=DEF_CPU_TYPE;
+    do_ask=true;
+    if [ -n "$set_var" ]; then eval "default=\$$set_var"; do_ask=$def_ask;
+    else default=""; fi
+    if [ -z "$default" ]; then
+       guess_arch
+       default=`echo $CPU | tr $FROMPAT $TOPAT`
+       do_ask=true
+    fi
+    if [ "$set_var" = USE_DEFAULT ]; then set_var=''; do_ask=$def_ask; fi
+    echo $n "CPU type (sparc or mips or parisc or intel)?"$c
+    while true ; do
+	echo $n " [$default] "$c
+	if $do_ask ; then read ans; else echo $default; ans=$default; fi
+	if test -z "$ans" ; then ans=$default; fi
+	if [ -n "$set_var" ]; then echo "$set_var='$ans'" >> config.tmp; fi
+	case $ans in
+	sparc)  CPU_TYPE="SPARC"; break;;
+	mips)   CPU_TYPE="MIPS"; break;;
+	parisc) CPU_TYPE="PARISC"; break;;
+	intel)  CPU_TYPE="INTEL"; break;;
+	*) echo $n "Please input sparc or mips or parisc or intel"$c;;
+	esac
+	do_ask=true
+    done
+    echo "CPU type: " $CPU_TYPE 
+
+    if [ $CPU_TYPE = "SPARC" ]; then
+       OS_TYPE=`uname -s | tr $FROMPAT $TOPAT`
+       if [ $OS_TYPE = "sunos" ]; then
+          OS_VERSION=`uname -r`
+          case $OS_VERSION in
+            4*) LOCKPROG=lock.s-sunos4.x;;
+            *) LOCKPROG=lock.s-solaris2.x;;
+          esac
+          (cd $PWD/runtime/config/shm/SPARC; \
+           /bin/rm -f lock.s; \
+           ln -s $LOCKPROG lock.s)
+       fi
+    fi
+
+    /bin/rm -f $PWD/runtime/config/shm/lock.s
+    /bin/ln -s $PWD/runtime/config/shm/$CPU_TYPE/lock.s $PWD/runtime/config/shm
+

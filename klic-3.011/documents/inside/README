@@ -1,0 +1,45 @@
+(2016-05-14)
+Inside KLIC の原稿と図を日本語 pLaTeX および GPL GhostScript にかかるよう
+に調整した master2.tex（および関連する *.tex, *.eps ファイル群）を作りました．
+
+整形済みの master.PDF を同梱していますが，
+
+  platex -kanji=euc master2
+  platex -kanji=euc master2 
+  platex -kanji=euc master2 
+  mendex -E master2
+  platex -kanji=euc master2
+  platex -kanji=euc master2
+  dvipdfm master2
+
+で PDF が作成できるはずです．
+
+文書整形上の問題が発見された場合には ueda@ueda.info.waseda.ac.jp に連絡
+してくださるようお願いいたします。
+
+========================================================================
+(C) copyright 1998 AITEC -- JIPDEC
+
+このディレクトリにはInside KLICの原稿がはいっています。
+
+Top levelのファイルは、master.tex なるもので、それをLaTeXにかければ良い
+ようになっています。また、索引のためにmakeindexをかけてください。
+
+なお、この文書は、NTT版、ASCII版どちらの日本語対応LaTeXでも処理できる筈
+です。また、図として主にEPSを利用していますが、その処理については、
+epsf.sty + dvi2ps を利用することを前提としていますが、epsbox.sty +
+jdvi2kps でも出力できる筈です。後者の組み合わせでご利用になる場合には先
+頭の
+
+\documentstyle[a4,epsf,makeidx]{jreport}
+
+を
+
+\documentstyle[a4,epsbox,makeidx]{jreport}
+
+に変更してください。
+
+問題が発見された場合にはsekita@mri.co.jp に連絡してくださるようお願いい
+たします。
+
+

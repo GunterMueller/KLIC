@@ -1,0 +1,143 @@
+Thu Feb 13 17:11:01 2003  Yusuke KANEKI  <lang@ueda.info.waseda.ac.jp>
+
+	* Configure, version.sed, Makefile.tail
+	* runtime/Makefile.tail, Compiler/Makefile
+	* runtime/gunix.kl1, runtime/asyncio.c
+	support cygwin and gcc 3.xx .
+	
+Fri Jan 31 15:12:09 2003  Yusuke KANEKI  <lang@ueda.info.waseda.ac.jp>
+
+	* include/klic/control.h, include/klic/gg_macro.h, runtime/debug.c
+	fix the bug in control.h REDCTION_COUNT -> REDUCTION_COUNT
+	fix the bug in gg_macro.h GG_ERROR_IN_IN -> GG_ERROR_IN_NEW
+	fix the bug in debug.c sys_errlist[] -> strerror()
+	
+Thu Jan 30 14:44:50 2003  Ryo MATSUMURA  <lang@ueda.info.waseda.ac.jp>
+
+	* runtime/alloc.c, runtime/gc.c, include/klic/struct.h:
+	add functions for DKLIC.
+	
+Thu Jan 30 14:34:33 2003  Ryo MATSUMURA  <lang@ueda.info.waseda.ac.jp>
+
+	* runtime/termio.kl1:
+	fix the bug in full-duplex IO for socket stream.
+
+Thu Jan 30 12:24:19 2003  Ryo MATSUMURA  <lang@ueda.info.waseda.ac.jp>
+
+	* runtime/asyncio.c, runtime/gunix.kl1:
+	support ip multi cast.
+
+Sun Dec 28 18:56:12 2002  Yusuke KANEKI  <lang@ueda.info.waseda.ac.jp>
+
+	* runtime/gunix.kl1:
+	fix the bug in ungetc.
+
+Sun Nov 18 12:22:34 2001  Xiobi WEI   <lang@ueda.info.waseda.ac.jp>
+
+	* runtime/gunix.kl1:
+	fix the bug in mktemp.
+	
+Thu Nov  1 20:07:47 2001  Yusuke KANEKI  <lang@ueda.info.waseda.ac.jp>
+
+	* runtime/termio.kl1, runtime/gunix.kl1:
+	fix the bug in fork_with_pipes.
+
+Wed Oct 11 16:33:41 2000  Yusuke TAKAGI  <takagi@ueda.info.waseda.ac.jp>
+
+	* runtime/termio.kl1: support prolog-like IO for socket stream.
+
+Wed Oct 11 16:31:13 2000  Hiroshi IGARASHI  <iga@ruby-lang.org>
+
+	* runtime/asyncio.c, runtime/gunix.kl1, runtime/signal.c:
+	support full-duplex IO for socket stream.
+
+Thu May  3 23:06:39 2001  Hiroshi IGARASHI  <iga@ruby-lang.org>
+
+	* Makefile.tail, compiler/Makefile: specify -L../runtime via
+	LD_LIBRARY_OPTIONS when compiler is compiled.
+
+Thu Oct 12 18:16:32 2000  Hiroshi IGARASHI  <iga@ruby-lang.org>
+
+	* Configure, Makefile.tail: specify runpath by ld option `-R'
+	for Solaris.
+
+Thu Oct 12 14:54:17 2000  Hiroshi IGARASHI  <iga@ruby-lang.org>
+
+	* Makefile.tail (clean): pass value of variable DLLIBS.
+
+Thu Oct 12 14:50:34 2000  Hiroshi IGARASHI  <iga@ruby-lang.org>
+
+	* runtime/trace.c (get_mte): should be independent of dynamic location
+	of functions.
+
+Mon Jul 31 05:04:10 2000  Hiroshi IGARASHI  <iga@ruby-lang.org>
+
+	* Configure, Makefile.tail, compiler/Makefile, disttest/Makefile,
+	runtime/Makefile.head, runtime/Makefile.tail, shmtest/Makefile,
+	test/Makefile: add shared library support(Linux/Solaris only).
+
+Sat Mar 27 11:14:18 1999  Sekita Daigo  <sekita@mri.co.jp>
+
+	* macro.kl1: fix the bug in replaceClase for the :- Dec form clause.
+
+	* Configure: Added processes around shared libraries.
+
+Sat Mar 27 11:10:19 1999  Sekita Daigo  <sekita@mri.co.jp>
+
+	* struct.h: Change the macro definitions. (char *) -> (unsigned int)
+	
+1998-08-04  Sekita Daigo  <sekita@mri.co.jp>
+
+	* Configure: remove const declaraion from the testing of sys_errlist.
+
+1998-07-31  Sekita Daigo  <sekita@mri.co.jp>
+
+	* ``polling mechanism'' may be used now in the PVM version. This
+ 	version of KLIC wait the message by polling in spite of the
+ 	normally by the interval timer. This mechanism is introduced
+ 	automatically for the platforms which does not equip setitmer()
+ 	function. This function was developped by fujise@{icot.or.jp,
+ 	mri.co.jp}. 
+	
+	* klic.c: klic command now supports fortran code.
+
+1997-12-18  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/unify.c (allocp): missing break was inserted.
+	(resume_goals): makecons(1) -> makecons(0)
+
+	* documents/klicj.tex (Timer): subtract -> sub
+
+	* documents/klic.tex (Timer): subtract -> sub
+
+1997-11-25  Sekita Daigo  <sekita@mri.co.jp>
+
+	* compiler/cmacro.kl1: Fixed the type of replaceClauase/1 ->
+ 	replaceClauase/2.
+
+1997-11-07  Sekita Daigo  <sekita@mri.co.jp>
+
+	* documents/klicj.tex (Compiler Options): KLIC_DBINET -> KLIC_DBINIT
+
+1997-10-17  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/gio.c (GCDEF_UNIFY): CheckInput -> CheckOutput for
+	functor_fwrite_2
+
+Thu Oct  2 15:31:06 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* Configure: fix the bug in libsocket checking.
+
+	* runtime/config/shm/configure: support SYSV 'tr' command.
+
+Wed Sep  3 11:15:56 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* Released as klic-3.002
+
+	* Added disttest/trace.{kl1,exp}
+
+Fri Aug 29 20:28:33 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/config/pvm-tcp/distpkt.h (MAXHOSTNAMELEN): change to 256
+
+	* runtime/config/pvm-tcp/distpkt.c: change structure of port_table

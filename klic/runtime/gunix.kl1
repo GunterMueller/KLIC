@@ -1,0 +1,1525 @@
+/* ---------------------------------------------------------- 
+%   (C)1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- inline:"
+#include <string.h>
+#include <unistd.h>
+#include <sys/param.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/socket.h>
+#ifdef USESELECT
+#include <sys/select.h>
+#endif
+#include <netinet/in.h>
+#include <netdb.h>
+#include <stdio.h>
+#include <errno.h>
+#include <sys/time.h>
+#include <sys/times.h>
+#include <klic/gobj.h>
+#include <klic/g_pointer.h>
+#include <klic/gd_macro.h>
+
+#ifdef USESIG
+#include <signal.h>
+#endif
+
+#ifdef ASYNCIO
+#ifndef FASYNC
+#include <fcntl.h>
+#ifndef USESTREAMINCLUDEDIR
+#include <stropts.h>
+#endif
+#endif
+#endif
+
+#ifndef O_NONBLOCK
+#define O_NONBLOCK FNDELAY
+#endif
+
+extern char *malloc_check();
+GD_USE_CLASS(pointer);
+q *register_streamed_signal();
+
+extern char *generic_string_body();
+extern char *convert_klic_string_to_c_string();
+extern q convert_c_string_to_klic_string();
+extern q convert_binary_c_string_to_klic_string();
+
+#define KLIC2C convert_klic_string_to_c_string
+#define C2KLIC convert_c_string_to_klic_string
+#define BC2KLIC convert_binary_c_string_to_klic_string
+
+extern q gd_new_pointer();
+#define FilePointer(x) \\
+  ((FILE*)((struct pointer_object *)(data_objectp(x)))->pointer)
+
+#define MakeFilePointer(klicvar,file) \\
+{ \\
+  klicvar = gd_new_pointer((q)file, allocp); \\
+  allocp = heapp; \\
+}
+
+#define Fopen(P,F,L,M) \\
+{ \\
+  char *path = KLIC2C(P); \\
+  FILE *file = fopen(path, M); \\
+  free(path); \\
+  if (file==NULL) goto L; \\
+  MakeFilePointer(F, file); \\
+}
+
+#define Fdopen(Fd,F,L,M) \\
+{ \\
+  FILE *file = fdopen(Fd, M); \\
+  if (file==NULL) goto L; \\
+  MakeFilePointer(F, file); \\
+}
+
+struct iobuf {
+  unsigned char *ptr, *lim, *buf;
+  int fd;
+  int bufsize;
+};
+
+static struct iobuf *make_iobuf(fd, size, isout)
+     int fd, size, isout;
+{
+  struct iobuf *iob = (struct iobuf *)malloc_check(sizeof(struct iobuf));
+  iob->fd = fd;
+  iob->bufsize = size;
+  iob->buf = (unsigned char *)malloc_check(iob->bufsize);
+  iob->ptr = iob->buf;
+  if (isout) {
+    iob->lim = iob->buf+size;
+  } else {
+    iob->lim = iob->buf;
+  }
+  return iob;
+}
+
+struct biobuf {
+  struct iobuf ibuf;
+  struct iobuf obuf;
+};
+
+static struct biobuf *make_biobuf(ifd, ofd, size)
+     int ifd, ofd, size;
+{
+  struct biobuf *biob = (struct biobuf *)malloc_check(sizeof(struct biobuf));
+  struct iobuf *ibuf = &(biob->ibuf);
+  struct iobuf *obuf = &(biob->obuf);
+
+  ibuf->fd = ifd;
+  ibuf->bufsize = size;
+  ibuf->buf = (unsigned char *)malloc_check(ibuf->bufsize);
+  ibuf->ptr = ibuf->buf;
+  ibuf->lim = ibuf->buf;
+
+  obuf->fd = ofd;
+  obuf->bufsize = size;
+  obuf->buf = (unsigned char *)malloc_check(obuf->bufsize);
+  obuf->ptr = obuf->buf;
+  obuf->lim = obuf->buf+size;
+
+  return biob;
+}
+
+#define MakeInBuf(klicvar, fd, size) \\
+{ \\
+  klicvar = gd_new_pointer((q)make_iobuf(fd,size,0), allocp); \\
+  allocp = heapp; \\
+}
+
+#define MakeOutBuf(klicvar, fd, size) \\
+{ \\
+  klicvar = gd_new_pointer((q)make_iobuf(fd,size,1), allocp); \\
+  allocp = heapp; \\
+}
+
+#define IOBuf(x) \\
+  ((struct iobuf*)((struct pointer_object *)(data_objectp(x)))->pointer)
+
+#define MakeBIOBuf(klicvar, ifd, ofd, size) \\
+{ \\
+  klicvar = gd_new_pointer((q)make_biobuf(ifd,ofd,size), allocp); \\
+  allocp = heapp; \\
+}
+
+#define BIOBuf(x) \\
+  ((struct biobuf*)((struct pointer_object *)(data_objectp(x)))->pointer)
+
+static int fill_buf(iob)
+     struct iobuf *iob;
+{
+  while (1) {
+    int result = read(iob->fd, iob->buf, iob->bufsize);
+    if (result < 0) {
+      switch (errno) {
+      case EINTR: continue;
+#ifdef EPIPE
+      case EPIPE:
+        return -2;
+#endif /* EPIPE */
+#ifdef ASYNCIO
+      case EAGAIN:
+#ifdef EWOULDBLOCK
+#if EWOULDBLOCK != EAGAIN
+      case EWOULDBLOCK:
+#endif
+#endif
+	return -1;
+#endif
+      default:
+	fatalp(\"read\", \"Error in asynchronous input\");
+      }
+    } else if (result == 0) {
+      return 0;			/* end of file */
+    } else {
+      iob->lim = iob->buf+result;
+      iob->ptr = iob->buf;
+      return 1;
+    }
+  }
+}
+
+static int write_buf(iob)
+     struct iobuf *iob;
+{
+  unsigned char *wp = iob->buf;
+  while (1) {
+    int result = write(iob->fd, wp, (iob->ptr - wp));
+    if (result < 0) {
+      switch (errno) {
+      case EINTR: continue;
+#ifdef EPIPE
+      case EPIPE:
+        return -2;
+#endif /* EPIPE */
+#ifdef ASYNCIO
+      case EAGAIN:
+#ifdef EWOULDBLOCK
+#if EWOULDBLOCK != EAGAIN
+      case EWOULDBLOCK:
+#endif
+#endif
+
+/*
+  Patch to detour a suspected bug of SunOS 4.1.3
+	(1994/12/02 Takashi Chikayama)
+
+  As SIGIO signal is not raised during sigpause for socket output,
+  we will use polling instead of signal-based I/O.
+
+  The original code was the following.
+
+	return -1;
+*/
+
+/* Begin Patch */
+	{
+	  fd_set fdsw;
+	  int fd_setsize;
+#ifdef USEGETDTABLESIZE
+	  fd_setsize = getdtablesize();
+#else
+#ifdef USEULIMIT
+	  fd_setsize = ulimit(4, 0);
+	  if (fd_setsize < 0) {
+	    fatal(\"Can't obtain file descriptor table size\");
+	  }
+#else
+	  fatal(\"Don't know how to obtaine file descriptor table size\");
+#endif
+#endif
+	  FD_ZERO(&fdsw);
+	  FD_SET(iob->fd, &fdsw);
+	  select(fd_setsize, 0, &fdsw, 0, 0);
+	}
+	continue;
+/* End of Patch */
+#endif
+      default:
+	fatalp(\"write\", \"Error in asynchronous output\");
+      }
+    } else {
+      wp += result;
+      if (wp != iob->ptr) {
+	continue;
+      } else {
+	iob->lim = iob->buf + iob->bufsize;
+	iob->ptr = iob->buf;
+	return 1;
+      }
+    }
+  }
+}
+
+static void setasync(sock, msg)
+     int sock;
+     char *msg;
+{
+#ifdef ASYNCIO
+  if (fcntl(sock, F_SETOWN, getpid()) < -1) {
+    fatalp(\"fcntl\", \"Setting error for %%s\", msg);
+  }
+#ifdef FASYNC
+  if (fcntl(sock, F_SETFL, FASYNC|O_NONBLOCK) < -1) {
+    fatalp(\"fcntl\", \"Setting error for %%s\", msg);
+  }
+#else
+  if (fcntl(sock, F_SETFL, O_NONBLOCK) < -1) {
+    fatalp(\"fcntl\", \"Setting error for %%s\", msg);
+  }
+  if (ioctl(sock, I_SETSIG, S_INPUT|S_OUTPUT) != 0) {
+    fatalp(\"ioctl\", \"Setting error for %%s\", msg);
+  }
+#endif
+#endif
+}
+".
+
+:- module unix.
+
+exit(Stat) :- inline:"
+klic_exit((intval(%0)));
+":[Stat+int] | true.
+
+unix([]).
+unix([stdin(R)|Cmnds])		:- stdin(R0),	cont(R0,R,Cmnds).
+unix([stdout(R)|Cmnds])		:- stdout(R0),	cont(R0,R,Cmnds).
+unix([stderr(R)|Cmnds])		:- stderr(R0),	cont(R0,R,Cmnds).
+unix([stdio(R)|Cmnds])		:- stdio(R0),	cont(R0,R,Cmnds).
+unix([read_open(P,R)|Cmnds])	:- read_open(P,R0), cont(R0,R,Cmnds).
+unix([write_open(P,R)|Cmnds])	:- write_open(P,R0), cont(R0,R,Cmnds).
+unix([append_open(P,R)|Cmnds])	:- append_open(P,R0), cont(R0,R,Cmnds).
+unix([update_open(P,R)|Cmnds])	:- update_open(P,R0), cont(R0,R,Cmnds).
+unix([signal_stream(S,R)|Cmnds]):- signal_stream(S,R0), cont(R0,R,Cmnds).
+unix([connect(A,R)|Cmnds])	:- connect(A,R0), cont(R0,R,Cmnds).
+unix([connect2(A,R)|Cmnds])	:- connect2(A,R0), cont(R0,R,Cmnds).
+unix([bind(A,R)|Cmnds])		:- bind(A,R0), cont(R0,R,Cmnds).
+unix([pipe(R)|Cmnds])		:- pipe(R0),	cont(R0,R,Cmnds).
+unix([system(S,R)|Cmnds])	:- system(S,R0), cont(R0,R,Cmnds).
+unix([cd(Dir,R)|Cmnds])		:- cd(Dir,R0),	cont(R0,R,Cmnds).
+unix([unlink(F,R)|Cmnds])	:- unlink(F,R0), cont(R0,R,Cmnds).
+unix([mktemp(T,R)|Cmnds])	:- mktemp(T,R0), cont(R0,R,Cmnds).
+unix([access(P,M,R)|Cmnds])	:- access(P,M,R0), cont(R0,R,Cmnds).
+unix([chmod(P,N,R)|Cmnds])	:- chmod(P,N,R0), cont(R0,R,Cmnds).
+unix([umask(R)|Cmnds])		:- umask(R0),	cont(R0,R,Cmnds).
+unix([umask(O,R)|Cmnds])	:- umask(O,R0),	cont(R0,R,Cmnds).
+unix([getenv(N,R)|Cmnds])	:- getenv(N,R0), cont(R0,R,Cmnds).
+unix([putenv(S,R)|Cmnds])	:- putenv(S,R0), cont(R0,R,Cmnds).
+unix([kill(P,S,R)|Cmnds])	:- kill(P,S,R0), cont(R0,R,Cmnds).
+unix([fork(R)|Cmnds])		:- fork(R0), cont(R0,R,Cmnds).
+unix([fork_with_pipes(R)|Cmnds]) :- fork_with_pipes(R0), cont(R0,R,Cmnds).
+unix([sync(R)|Cmnds])		:- R=0,	unix(Cmnds).
+unix([bind_mcast(A,R)|Cmnds])	:- bind_mcast(A,R0), cont(R0,R,Cmnds).
+unix([send_mcast(A,R)|Cmnds])	:- send_mcast(A,R0), cont(R0,R,Cmnds).
+
+cont(R0,R,Cmnds) :- wait(R0) | R=R0, unix(Cmnds).
+
+/****************************************
+	STRTEAM I/O
+****************************************/
+
+/* Opening streams */
+
+stdin(R) :- inline:"MakeFilePointer(%0, stdin);":[F-object] |
+	generic:new(file_io,S,F,"stdin",[],""), R=normal(S).
+
+stdout(R) :- inline:"MakeFilePointer(%0, stdout);":[F-object] |
+	generic:new(file_io,S,[],"",F,"stdout"), R=normal(S).
+
+stderr(R) :- inline:"MakeFilePointer(%0, stderr);":[F-object] |
+	generic:new(file_io,S,[],"",F,"stdout"), R=normal(S).
+
+stdio(R) :- inline:"
+{
+  MakeFilePointer(%0, stdin);
+  MakeFilePointer(%1, stdout);
+}":[FI-object, FO-object] |
+	generic:new(file_io,S,FI,"stdin",FO,"stdout"), R=normal(S).
+
+read_open(P,R) :-
+    inline:"Fopen(%0,%1,%f,\"r\");":[P+object(byte_string),F-object] |
+	generic:new(file_io,S,F,P,[],""), R=normal(S).
+otherwise.
+read_open(_,R) :- R=abnormal.
+
+write_open(P,R) :-
+    inline:"Fopen(%0,%1,%f,\"w\");":[P+object(byte_string),F-object] |
+	generic:new(file_io,S,[],"",F,P), R=normal(S).
+otherwise.
+write_open(_,R) :- R=abnormal.
+
+append_open(P,R) :-
+	inline:"Fopen(%0,%1,%f,\"a\");":[P+object(byte_string),F-object] |
+    generic:new(file_io,S,[],"",F,P), R=normal(S).
+otherwise.
+append_open(_,R) :- R=abnormal.
+
+update_open(P,R) :-
+	inline:"Fopen(%0,%1,%f,\"r+\");":[P+object(byte_string),F-object] |
+    generic:new(file_io,S,F,P,F,P), R=normal(S).
+otherwise.
+update_open(_,R) :- R=abnormal.
+
+signal_stream(S,R) :- signal_stream(S,R,_).
+
+signal_stream(S,R,X) :- inline:"
+{
+#ifdef USESIG
+  allocp = register_streamed_signal(allocp, intval(%0), %1);
+#else
+  goto %f;
+#endif
+}":[S+int,X+any] |
+	R = normal(X).
+
+net_convert(unix(Path),Fam,Addr) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int family = PF_UNIX;
+  struct sockaddr *addr;
+  char *path = KLIC2C(%0);
+
+  addr =
+    (struct sockaddr *)malloc_check(sizeof(struct sockaddr)+strlen(path));
+  addr->sa_family = family;
+  strcpy(addr->sa_data, path);
+  free(path);
+  %1 = makeint(family);
+  %2 = gd_new_pointer((q)addr, allocp);
+  allocp = heapp;
+#else
+  goto %f;
+#endif
+}":[Path+object(byte_string),Fam0-int,Addr0-object(pointer)] |
+    Fam=Fam0, Addr=Addr0.
+net_convert(inet(HostName,Port),Fam,Addr) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int family = PF_INET;
+  struct sockaddr_in *addr;
+  char *host = KLIC2C(%0);
+  struct hostent *ent = gethostbyname(host);
+
+  if (ent == NULL) { fatalf(\"Unknown host %%s\", host); };
+  free(host);
+  addr = (struct sockaddr_in *)
+    malloc_check(sizeof(struct sockaddr_in));
+  addr->sin_family = family;
+  BCOPY((char*)*ent->h_addr_list, (char*)&addr->sin_addr,
+	sizeof(struct in_addr));
+/*
+  The following is not used as some systems don't understand it.
+
+  addr->sin_addr.S_un.S_addr = *(int*)*ent->h_addr_list;
+*/
+  addr->sin_port = htons(intval(%1));
+  %2 = makeint(family);
+  %3 = gd_new_pointer((q)addr, allocp);
+  allocp = heapp;
+#else
+  goto %f;
+#endif
+}":[HostName+object(byte_string),Port+int,
+    Fam0-int,Addr0-object(pointer)] |
+    Fam=Fam0, Addr=Addr0.
+net_convert(inet({B1,B2,B3,B4},Port),Fam,Addr) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int family = PF_INET;
+  struct sockaddr_in *addr;
+  int b1, b2, b3, b4;
+  unsigned long laddr;
+  char buf[100];
+
+  addr = (struct sockaddr_in *)
+    malloc_check(sizeof(struct sockaddr_in));
+  addr->sin_family = family;
+  b1 = intval(%0); b2 = intval(%1); b3 = intval(%2); b4 = intval(%3);
+  (void)sprintf(buf, \"%%d.%%d.%%d.%%d\", b1, b2, b3, b4);
+  laddr = inet_addr(buf);
+  if (laddr == -1) goto %f;
+  BCOPY((char*)&laddr, (char*)&addr->sin_addr, sizeof(struct in_addr));
+/*
+  The following is not used as some systems don't understand it.
+
+  addr->sin_addr.S_un.S_un_b.s_b1 = intval(%0);
+  addr->sin_addr.S_un.S_un_b.s_b2 = intval(%1);
+  addr->sin_addr.S_un.S_un_b.s_b3 = intval(%2);
+  addr->sin_addr.S_un.S_un_b.s_b4 = intval(%3);
+*/
+  addr->sin_port = htons(intval(%4));
+  %5 = makeint(family);
+  %6 = gd_new_pointer((q)addr, allocp);
+  allocp = heapp;
+#else
+  goto %f;
+#endif
+}":[B1+int,B2+int,B3+int,B4+int,Port+int,
+    Fam0-int,Addr0-object(pointer)] |
+    Fam=Fam0, Addr=Addr0.
+
+connect(Spec,R) :-
+    net_convert(Spec,Fam,Addr),
+    connect(Fam,Addr,_Async,R).
+
+connect(Fam,Addr,Async,R) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int family = intval(%0);
+  int sock = socket(family, SOCK_STREAM, 0);
+
+  if (sock < 0) { fatalp(\"socket\", \"Socket creation error\"); }
+#ifdef ASYNCIO
+  init_asynchronous_io();
+  setasync(sock, \"connection\");
+  register_asynchronous_io_stream(sock, %1);
+#endif
+  %2 = makeint(sock);
+#else
+  goto %f;
+#endif
+}":[Fam+int,Async+any,FD-int] |
+    connect_sub(FD,Addr,Async,R).
+
+connect_sub(FD,Addr,Async,R) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int sock = intval(%0);
+  struct sockaddr *addr = (struct sockaddr*)
+    ((struct pointer_object *)(data_objectp(%1)))->pointer;
+
+ again:
+  if (connect(sock, addr, sizeof(struct sockaddr)) < 0) {
+#ifdef ASYNCIO
+    if (errno == EINTR) goto again;
+    if (errno != EISCONN) {
+      if (errno == EINPROGRESS || errno == EALREADY) goto %f;
+#endif
+      fatalp(\"connect\", \"Socket connection error\");
+#ifdef ASYNCIO
+    }
+#endif
+  }
+  free(addr);
+  MakeInBuf(%2, sock, 4096);
+  MakeOutBuf(%3, sock, 4096);
+#else
+  goto %f;
+#endif
+}":[FD+int,Addr+object(pointer),InB-object(pointer),OutB-object(pointer)] |
+    R=normal(S),
+    async_io(S,Async,InB,OutB,0).
+alternatively.
+connect_sub(FD,Addr,Async,R) :- inline:"{
+#ifdef NO_USE_SOCKET
+  goto %f;
+#endif
+}":[] |
+    timer:instantiate_after(time(0,3,0), Timer),
+    connect_sub(FD, Addr, Async, Timer, R).
+
+connect_sub(FD,Addr,[_|Async],_,R) :-
+    connect_sub(FD,Addr,Async,R).
+alternatively.
+connect_sub(FD,Addr,Async,[],R) :-
+    connect_sub(FD,Addr,Async,R).
+
+connect2(Spec,R) :-
+    net_convert(Spec,Fam,Addr),
+    connect2(Fam,Addr,_Async,R).
+
+connect2(Fam,Addr,Async,R) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int family = intval(%0);
+  int sock = socket(family, SOCK_STREAM, 0);
+
+  if (sock < 0) { fatalp(\"socket\", \"Socket creation error\"); }
+#ifdef ASYNCIO
+  init_asynchronous_io();
+  setasync(sock, \"connection\");
+  register_asynchronous_io_stream(sock, %1);
+#endif
+  %2 = makeint(sock);
+#else
+  goto %f;
+#endif
+}":[Fam+int,Async+any,FD-int] |
+    connect2_sub(FD,Addr,Async,R).
+
+connect2_sub(FD,Addr,Async,R) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int sock = intval(%0);
+  struct sockaddr *addr = (struct sockaddr*)
+    ((struct pointer_object *)(data_objectp(%1)))->pointer;
+
+ again2:
+  if (connect(sock, addr, sizeof(struct sockaddr)) < 0) {
+#ifdef ASYNCIO
+    if (errno == EINTR) goto again2;
+    if (errno != EISCONN) {
+      if (errno == EINPROGRESS || errno == EALREADY) goto %f;
+#endif
+      fatalp(\"connect\", \"Socket connection error\");
+#ifdef ASYNCIO
+    }
+#endif
+  }
+  free(addr);
+  MakeBIOBuf(%2, sock, sock, 4096);
+#else
+  goto %f;
+#endif
+}":[FD+int,Addr+object(pointer),IOB-object(pointer)] |
+    R=normal(SIn,SOut),
+    async_input(SIn,Async,IOB,0),
+    async_output(SOut,Async,IOB,0).
+otherwise.
+connect2_sub(FD,Addr,Async,R) :- inline:"{
+#ifdef NO_USE_SOCKET
+  goto %f;
+#endif
+}":[] |
+    timer:instantiate_after(time(0,3,0), Timer),
+    connect2_sub(FD, Addr, Async, Timer, R).
+
+connect2_sub(FD,Addr,[_|Async],_,R) :-
+    connect2_sub(FD,Addr,Async,R).
+otherwise.
+connect2_sub(FD,Addr,Async,[],R) :-
+    connect2_sub(FD,Addr,Async,R).
+
+bind(unix(Path),R) :-
+    net_convert(unix(Path),Fam,Addr),
+    bind(Fam,Addr,_Async,R).
+bind(inet(Port),R) :-
+    net_convert(inet({0,0,0,0},Port),Fam,Addr),
+    bind(Fam,Addr,_Async,R).
+
+bind(Fam,Addr,Async,R) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int family = intval(%0);
+  int reuse = 1;
+  struct sockaddr *addr = (struct sockaddr*)
+    ((struct pointer_object *)(data_objectp(%1)))->pointer;
+  int sock = socket(family, SOCK_STREAM, 0);
+
+  if (sock < 0) { fatalp(\"socket\", \"Socket creation error\"); }
+#ifdef ASYNCIO
+  init_asynchronous_io();
+#endif
+
+  if (addr->sa_family == PF_INET) {
+    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR,
+		   (char *)&reuse, sizeof(reuse))) {
+      fatalp(\"setsockopt\", \"Socket reuse setting error for binding\");
+    }
+  }
+  if (bind(sock, addr, sizeof(struct sockaddr)) < 0) {
+    fatalp(\"bind\", \"Socket binding error\");
+  }
+  free(addr);
+#ifdef ASYNCIO
+  setasync(sock, \"bound socket\");
+#endif
+  if (listen(sock, 5) < 0) {
+    fatalp(\"listen\", \"Socket listen error\");
+  }
+#ifdef ASYNCIO
+  register_asynchronous_io_stream(sock, %2);
+#endif
+  %3 = makeint(sock);
+#else
+  goto %f;
+#endif
+}":[Fam+int,Addr+object(pointer),Async+any,FD-int] |
+    R=normal(S),
+    bound_sock(S,FD,Async,_).
+
+bound_sock([],FD,_Async,_Async1) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int fd = intval(%0);
+  int namelen = 1000;
+  struct sockaddr *name = (struct sockaddr *)malloc_check(namelen);
+  getsockname(fd, name, &namelen);
+  if (close(fd) != 0) {
+    fatalp(\"close\", \"Error in closing bound socket\");
+  }
+#ifdef ASYNCIO
+  close_asynchronous_io_stream(fd);
+#endif
+  if (name->sa_family == PF_UNIX) {
+    if (unlink(name->sa_data)) {
+      fatalp(\"unlink\", \"Error in unlinking socket: %%s\", name->sa_data);
+    }
+  }
+  free(name);
+#else
+  goto %f;
+#endif
+}":[FD+int] | true.
+bound_sock([accept(R)|S],FD,Async,Async1) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int sock;
+  struct sockaddr addr;
+  int socklen = sizeof(addr);
+#ifdef ASYNCIO
+  if (!poll_read_available(intval(%0))) goto %f;
+#endif
+  while (1) {
+    if ((sock = accept(intval(%0), &addr, &socklen)) > 0) break;
+    if (errno != EINTR) {
+      fatalp(\"accept\", \"Error in accept\");
+    }
+  }
+#ifdef ASYNCIO
+  setasync(sock, \"accepted socket\");
+  register_asynchronous_io_stream(sock,%1);
+#endif
+  MakeInBuf(%2, sock, 4096);
+  MakeOutBuf(%3, sock, 4096);
+#else
+  goto %f;
+#endif
+}":[FD+int,Async1+any,InB-object(pointer),OutB-object(pointer)] |
+    R=normal(In),
+    async_io(In,Async1,InB,OutB,0),
+    bound_sock(S,FD,Async,_).
+bound_sock(S,FD,[_|Async],Async1) :-
+    bound_sock(S,FD,Async,Async1).
+
+bound_sock([accept2(R)|S],FD,Async,Async1) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int sock;
+  struct sockaddr addr;
+  int socklen = sizeof(addr);
+#ifdef ASYNCIO
+  if (!poll_read_available(intval(%0))) goto %f;
+#endif
+  while (1) {
+    if ((sock = accept(intval(%0), &addr, &socklen)) > 0) break;
+    if (errno != EINTR) {
+      fatalp(\"accept\", \"Error in accept\");
+    }
+  }
+#ifdef ASYNCIO
+  setasync(sock, \"accepted socket\");
+  register_asynchronous_io_stream(sock,%1);
+#endif
+  MakeBIOBuf(%2, sock, sock, 4096);
+#else
+  goto %f;
+#endif
+}":[FD+int,Async1+any,IOB-object(pointer)] |
+    R=normal(SIn,SOut),
+    async_input(SIn,Async1,IOB,0),
+    async_output(SOut,Async1,IOB,0),
+    bound_sock(S,FD,Async,_).
+bound_sock(S,FD,[_|Async],Async1) :-
+    bound_sock(S,FD,Async,Async1).
+
+pipe(R) :- inline:"
+{
+  int fd[2];
+  if (pipe(fd)!=0) goto %f;
+  Fdopen(fd[0],%0,%f,\"r\");
+  Fdopen(fd[1],%1,%f,\"w\");
+}":[Fin-object,Fout-object] |
+    generic:new(file_io,Sin,Fin,"pipe-input",[],""),
+    generic:new(file_io,Sout,[],"",Fout,"pipe-output"),
+    R=normal(Sin,Sout).
+otherwise.
+pipe(R) :- R=abnormal.
+
+/* Asynchronous Input/Output */
+
+async_io([],_Async,InB,OutB,_LC) :- inline:"
+{
+#ifdef ASYNCIO
+  struct iobuf *outb = IOBuf(%0);
+  struct iobuf *inb = IOBuf(%1);
+  if (outb->ptr != outb->buf) {
+    switch (write_buf(outb)) {
+    case -1: goto %f;
+    case 1: break;
+    }
+  }
+  if (close(outb->fd) != 0) {
+    fatalp(\"close\", \"Error in closing asynchronous I/O\");
+  }
+  close_asynchronous_io_stream(outb->fd);
+  free(outb->buf);
+  free(inb->buf);
+#else
+  goto %f;
+#endif
+}":[OutB+object(pointer), InB+object(pointer)] | true.
+async_io([C|S],Async,InB,OutB,LC) :- integer(C), inline:"
+{
+#ifdef ASYNCIO
+  struct iobuf *iob = IOBuf(%0);
+  if (iob->ptr == iob->lim) {
+    switch (write_buf(iob)) {
+    case -1: goto %f;
+    case 1: break;
+    }
+  }
+  *iob->ptr++ = intval(%1);
+#else
+  goto %f;
+#endif
+}":[OutB+object(pointer),C+int] |
+    async_io(S,Async,InB,OutB,LC).
+async_io([ungetc(C)|S],Async,InB,OutB,LC0) :- inline:"
+{
+#ifdef ASYNCIO
+  struct iobuf *iob = IOBuf(%0);
+  int c;
+  if (iob->ptr > iob->buf) c = --*iob->ptr;
+  else c = -1;
+  if (c == -1)
+    %3 = makeint(intval(%2));
+  else
+    %3 = makeint(intval(%2) - ( c=='\\n' ? 1 : 0 ));
+  %1 = makeint(c);
+#else
+  goto %f;
+#endif
+}":[InB+object(pointer),C0-int,LC0+int,LC-int] |
+    C=C0,
+    async_io(S,Async,InB,OutB,LC).
+async_io([getc(C)|S],Async,InB,OutB,LC0) :- inline:"
+{
+#ifdef ASYNCIO
+  struct iobuf *iob = IOBuf(%0);
+  int c;
+  if (iob->ptr == iob->lim) {
+    switch (fill_buf(iob)) {
+    case -1: goto %f;
+    case -2: goto %f;
+    case 0: c = -1; break;
+    case 1: c = *iob->ptr++; break;
+    }
+  } else {
+    c = *iob->ptr++;
+  }
+  %3 = makeint(intval(%2) + ( c=='\\n' ? 1 : 0 ));
+  %1 = makeint(c);
+#else
+  goto %f;
+#endif
+}":[InB+object(pointer),C0-int,LC0+int,LC-int] |
+    C=C0,
+    async_io(S,Async,InB,OutB,LC).
+async_io([fread(N,R)|S],Async,InB,OutB,LC0) :- inline:"
+{
+#ifdef ASYNCIO
+  struct iobuf *iob = IOBuf(%0);
+  int toread = intval(%1);
+  int k, nnl;
+  int ready_bytes = iob->lim - iob->ptr;
+  q str;
+  if (ready_bytes==0) {
+    switch (fill_buf(iob)) {
+    case -1: goto %f;
+    case -2: goto %f;
+    case 0: goto %f;
+    case 1: break;
+    }
+  }
+  if (toread > iob->lim - iob->ptr) toread = iob->lim - iob->ptr;
+  if ((char *)allocp+
+      sizeof(struct byte_string_object)+toread+sizeof(long) >=
+      (char *)real_heaplimit) {
+    allocp = real_heaplimit;
+    goto async__io_5_ext_interrupt;
+  }
+  for (k=0, nnl=0; k<toread; k++) {
+    if (iob->ptr[k] == '\\n') nnl++;
+  }
+  str = BC2KLIC(iob->ptr, toread, allocp);
+  if (isref(str)) {
+    fatal(\"internal error: string allocation failure for fread\");
+  }
+  %2 = str;
+  allocp = heapp;
+  iob->ptr += toread;
+  %4 = makeint(intval(%3)+nnl);
+#else
+  goto %f;
+#endif
+}":[InB+object(pointer),N+int,R0-object(byte_string),LC0+int,LC-int] |
+    R=R0,
+    async_io(S,Async,InB,OutB,LC).
+async_io([linecount(N)|S],Async,InB,OutB,LC) :-
+    N=LC,
+    async_io(S,Async,InB,OutB,LC).
+async_io([feof(R)|S],Async,InB,OutB,LC) :- inline:"
+{
+#ifdef ASYNCIO
+  struct iobuf *iob = IOBuf(%0);
+  if (iob->ptr == iob->lim) {
+    switch (fill_buf(iob)) {
+    case -1: goto %f;
+    case -2: goto %f;
+    case 0: %1 = makeint(1); break;
+    case 1: %1 = makeint(0); break;
+    }
+  } else {
+    %1 = makeint(0);
+  }
+#else
+  goto %f;
+#endif
+}":[InB+object(pointer),R0-int] |
+    R=R0,
+    async_io(S,Async,InB,OutB,LC).
+async_io([putc(C)|S],Async,InB,OutB,LC) :- inline:"
+#ifndef ASYNCIO
+#endif
+":[] |
+    async_io([C|S],Async,InB,OutB,LC).
+async_io([fwrite(X,R)|S],Async,InB,OutB,LC) :- string(X,L,8), inline:"
+{
+#ifdef ASYNCIO
+  struct iobuf *iob = IOBuf(%0);
+  char *str = KLIC2C(%1);
+  int len =intval(%2);
+  int room = iob->lim - iob->ptr;
+  while (iob->ptr + len >= iob->lim) {
+    BCOPY(str, iob->ptr, room);
+    len -= room;
+    str += room;
+    iob->ptr += room;
+    switch (write_buf(iob)) {
+    case -1: goto %f;
+    case 1: break;
+    }
+  }
+  BCOPY(str, iob->ptr, len);
+  iob->ptr += len;
+#else
+  goto %f;
+#endif
+}":[OutB+object(pointer),X+object(byte_string),L+int] |
+    R=L,
+    async_io(S,Async,InB,OutB,LC).
+async_io([fwrite(X)|S],Async,InB,OutB,LC) :-
+    async_io([fwrite(X,_)|S],Async,InB,OutB,LC).
+async_io([fflush(R)|S],Async,InB,OutB,LC) :- inline:"
+{
+#ifdef ASYNCIO
+  struct iobuf *iob = IOBuf(%0);
+  if (iob->ptr != iob->buf) {
+    switch (write_buf(iob)) {
+    case -1: goto %f;
+    case 1: break;
+    }
+  }
+#else
+  goto %f;
+#endif
+}":[OutB+object(pointer)] |
+    R=0,
+    async_io(S,Async,InB,OutB,LC).
+async_io([sync(R)|S],Async,InB,OutB,LC) :- inline:"
+#ifdef ASYNCIO
+{
+  struct iobuf *iob = IOBuf(%0);
+  switch (write_buf(iob)) {
+  case -1: goto %f;
+  case 1: break;
+  }
+}
+#endif
+":[OutB+object(pointer)] |
+    R=0,
+    async_io(S,Async,InB,OutB,LC).
+alternatively.
+async_io(S,[_|Async],InB,OutB,LC) :-
+    async_io(S,Async,InB,OutB,LC).
+
+async_input([],_Async,IOB,_LC) :- inline:"
+{
+#ifdef ASYNCIO
+  struct biobuf *biob = BIOBuf(%0);
+  struct iobuf *inb = &(biob->ibuf);
+  struct iobuf *outb = &(biob->obuf);
+  if (inb->fd != outb->fd) {
+    if (close(inb->fd) != 0) {
+      fatalp(\"close\", \"Error in closing asynchronous input\");
+    }
+    close_asynchronous_io_stream(inb->fd);
+  }
+  if (outb->fd == -1) {
+    free(inb->buf);
+    free(outb->buf);
+  }
+  inb->fd = -1;
+#else
+  goto %f;
+#endif
+}":[IOB+object(pointer)] | true.
+async_input([getc(C)|S],Async,IOB,LC0) :- inline:"
+{
+#ifdef ASYNCIO
+  struct biobuf *biob = BIOBuf(%0);
+  struct iobuf *iob = &(biob->ibuf);
+  int c;
+  if (iob->ptr == iob->lim) {
+    switch (fill_buf(iob)) {
+    case -1: goto %f;
+    case -2: goto %f;
+    case 0: c = -1; break;
+    case 1: c = *iob->ptr++; break;
+    }
+  } else {
+    c = *iob->ptr++;
+  }
+  %3 = makeint(intval(%2) + ( c=='\\n' ? 1 : 0 ));
+  %1 = makeint(c);
+#else
+  goto %f;
+#endif
+}":[IOB+object(pointer),C0-int,LC0+int,LC-int] |
+    C=C0,
+    async_input(S,Async,IOB,LC).
+async_input([fread(N,R)|S],Async,IOB,LC0) :- inline:"
+{
+#ifdef ASYNCIO
+  struct biobuf *biob = BIOBuf(%0);
+  struct iobuf *iob = &(biob->ibuf);
+  int toread = intval(%1);
+  int k, nnl;
+  int ready_bytes = iob->lim - iob->ptr;
+  q str;
+  if (ready_bytes==0) {
+    switch (fill_buf(iob)) {
+    case -1: goto %f;
+    case -2: goto %f;
+    case 0: goto %f;
+    case 1: break;
+    }
+  }
+  if (toread > iob->lim - iob->ptr) toread = iob->lim - iob->ptr;
+  if ((char *)allocp+
+      sizeof(struct byte_string_object)+toread+sizeof(long) >=
+      (char *)real_heaplimit) {
+    allocp = real_heaplimit;
+    goto async__input_4_ext_interrupt;
+  }
+  for (k=0, nnl=0; k<toread; k++) {
+    if (iob->ptr[k] == '\\n') nnl++;
+  }
+  str = BC2KLIC(iob->ptr, toread, allocp);
+  if (isref(str)) {
+    fatal(\"internal error: string allocation failure for fread\");
+  }
+  %2 = str;
+  allocp = heapp;
+  iob->ptr += toread;
+  %4 = makeint(intval(%3)+nnl);
+#else
+  goto %f;
+#endif
+}":[IOB+object(pointer),N+int,R0-object(byte_string),LC0+int,LC-int] |
+    R=R0,
+    async_input(S,Async,IOB,LC).
+async_input([linecount(N)|S],Async,IOB,LC) :-
+    N=LC,
+    async_input(S,Async,IOB,LC).
+async_input([feof(R)|S],Async,IOB,LC) :- inline:"
+{
+#ifdef ASYNCIO
+  struct biobuf *biob = BIOBuf(%0);
+  struct iobuf *iob = &(biob->ibuf);
+  if (iob->ptr == iob->lim) {
+    switch (fill_buf(iob)) {
+    case -1: goto %f;
+    case -2: goto %f;
+    case 0: %1 = makeint(1); break;
+    case 1: %1 = makeint(0); break;
+    }
+  } else {
+    %1 = makeint(0);
+  }
+#else
+  goto %f;
+#endif
+}":[IOB+object(pointer),R0-int] |
+    R=R0,
+    async_input(S,Async,IOB,LC).
+alternatively.
+async_input(S,[_|Async],IOB,LC) :-
+    async_input(S,Async,IOB,LC).
+
+async_output([],_Async,IOB,_LC) :- inline:"
+{
+#ifdef ASYNCIO
+  struct biobuf *biob = BIOBuf(%0);
+  struct iobuf *inb = &(biob->ibuf);
+  struct iobuf *outb = &(biob->obuf);
+  if (outb->ptr != outb->buf) {
+    switch (write_buf(outb)) {
+    case -1: goto %f;
+    case -2: break;
+    case 1: break;
+    }
+  }
+  if (inb->fd != outb->fd) {
+    if (close(outb->fd) != 0) {
+      fatalp(\"close\", \"Error in closing asynchronous output\");
+    }
+    close_asynchronous_io_stream(outb->fd);
+  }
+  if (inb->fd == -1) {
+    free(inb->buf);
+    free(outb->buf);
+  }
+  outb->fd = -1;
+#else
+  goto %f;
+#endif
+}":[IOB+object(pointer)] | true.
+async_output([C|S],Async,IOB,LC) :- integer(C), inline:"
+{
+#ifdef ASYNCIO
+  struct biobuf *biob = BIOBuf(%0);
+  struct iobuf *iob = &(biob->obuf);
+  if (iob->ptr == iob->lim) {
+    switch (write_buf(iob)) {
+    case -1: goto %f;
+    case -2: goto %f;
+    case 1: break;
+    }
+  }
+  *iob->ptr++ = intval(%1);
+#else
+  goto %f;
+#endif
+}":[IOB+object(pointer),C+int] |
+    async_output(S,Async,IOB,LC).
+async_output([linecount(N)|S],Async,IOB,LC) :-
+    N=LC,
+    async_output(S,Async,IOB,LC).
+async_output([putc(C)|S],Async,IOB,LC) :- inline:"
+#ifndef ASYNCIO
+#endif
+":[] |
+    async_output([C|S],Async,IOB,LC).
+async_output([fwrite(X,R)|S],Async,IOB,LC) :- string(X,L,8), inline:"
+{
+#ifdef ASYNCIO
+  struct biobuf *biob = BIOBuf(%0);
+  struct iobuf *iob = &(biob->obuf);
+  char *str = KLIC2C(%1);
+  int len =intval(%2);
+  int room = iob->lim - iob->ptr;
+  while (iob->ptr + len >= iob->lim) {
+    BCOPY(str, iob->ptr, room);
+    len -= room;
+    str += room;
+    iob->ptr += room;
+    switch (write_buf(iob)) {
+    case -1: goto %f;
+    case -2: goto %f;
+    case 1: break;
+    }
+  }
+  BCOPY(str, iob->ptr, len);
+  iob->ptr += len;
+#else
+  goto %f;
+#endif
+}":[IOB+object(pointer),X+object(byte_string),L+int] |
+    R=L,
+    async_output(S,Async,IOB,LC).
+otherwise.
+async_output([fwrite(X,R)|S],Async,IOB,LC) :- true |
+    R = -1,
+    async_output(S,Async,IOB,LC).
+async_output([fwrite(X)|S],Async,IOB,LC) :-
+    async_output([fwrite(X,_)|S],Async,IOB,LC).
+async_output([fflush(R)|S],Async,IOB,LC) :- inline:"
+{
+#ifdef ASYNCIO
+  struct biobuf *biob = BIOBuf(%0);
+  struct iobuf *iob = &(biob->obuf);
+  if (iob->ptr != iob->buf) {
+    switch (write_buf(iob)) {
+    case -1: goto %f;
+    case -2: goto %f;
+    case 1: break;
+    }
+  }
+#else
+  goto %f;
+#endif
+}":[IOB+object(pointer)] |
+    R = 0,
+    async_output(S,Async,IOB,LC).
+otherwise.
+async_output([fflush(R)|S],Async,IOB,LC) :- true |
+    R = -1,
+    async_output(S,Async,IOB,LC).
+async_output([sync(R)|S],Async,IOB,LC) :- inline:"
+#ifdef ASYNCIO
+{
+  struct biobuf *biob = BIOBuf(%0);
+  struct iobuf *outb = &(biob->obuf);
+  switch (write_buf(outb)) {
+  case -1: goto %f;
+  case -2: goto %f;
+  case 1: break;
+  }
+}
+#endif
+":[IOB+object(pointer)] |
+    R=0,
+    async_output(S,Async,IOB,LC).
+otherwise.
+async_output([sync(R)|S],Async,IOB,LC) :- true |
+    R = -1,
+    async_output(S,Async,IOB,LC).
+alternatively.
+async_output(S,[_|Async],IOB,LC) :-
+    async_output(S,Async,IOB,LC).
+
+
+send_mcast(inet(Group,Port),R) :-
+      ready_mcast(Group,Port,Async,R,0).
+bind_mcast(inet(Group,Port),R) :-
+      ready_mcast(Group,Port,Async,R,1).
+
+ready_mcast(Group,Port,Async,R,F) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int family = PF_INET;
+  int reuse  = 1;
+  int sock   = socket(family, SOCK_DGRAM, 0);
+  char *group = KLIC2C(%0);
+  struct hostent *ent = gethostbyname(group);
+  struct ip_mreq *imr;
+  struct sockaddr_in *addr = (struct sockaddr_in *)malloc_check(sizeof(struct sockaddr_in));
+
+  addr->sin_family = PF_INET;
+  addr->sin_port = htons(intval(%1));
+#ifndef __CYGWIN__  
+  inet_pton(AF_INET,ent->h_name,&addr->sin_addr.s_addr);
+#endif
+
+  if (sock < 0) { fatalp(\"socket\", \"Socket creation error\"); }
+#ifdef ASYNCIO
+  init_asynchronous_io();
+#endif
+  if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR,
+                  (char *)&reuse, sizeof(reuse))){
+      fatalp(\"setsockopt\", \"Socket reuse setting error for binding\");
+  }
+
+  if(NULL == ent){ fatalf(\"Unknown group %%s\", group); }
+
+  if(intval(%4)){  /** bind **/
+    imr = (struct ip_mreq *)malloc_check(sizeof(struct ip_mreq));
+    imr->imr_multiaddr.s_addr = inet_addr(ent->h_name);
+    imr->imr_interface.s_addr = htonl(INADDR_ANY);
+
+    if (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, imr,
+                                      sizeof(struct ip_mreq)) < 0){
+      fatalp(\"setsockopt\", \"fail IP_ADD_MEMBERSHIP\");
+    }
+    free(imr);
+
+    if (bind(sock, (struct sockaddr *)addr, sizeof(struct sockaddr)) < 0) {
+      fatalp(\"bind\", \"Socket binding error\");
+    }
+    MakeInBuf(%3, sock, 100);
+  }else{    /** connect **/
+    unsigned char ttl = 1;
+    if(setsockopt(sock, IPPROTO_IP, IP_MULTICAST_TTL, &ttl, sizeof(ttl))<0)
+      fatalp(\"setsockopt\", \"ttl\");
+    if (connect(sock, (struct sockaddr *)addr, sizeof(struct sockaddr)) < 0) {
+      fatalp(\"connect\", \"Socket connection error\");
+    }
+    MakeOutBuf(%3, sock, 100);
+  }
+
+#ifdef ASYNCIO
+  setasync(sock, \"bound socket\");
+  register_asynchronous_io_stream(sock, %2);
+#endif
+  allocp = heapp;
+#else
+  goto %f;
+#endif
+}":[Group+object(byte_string),Port+int,Async+any,
+         Buf-object(pointer),F+int] |
+      R=normal(S),
+      ready_mcast2(S,Async,Buf,F).
+
+ready_mcast2(S,Async,Buf,F) :- F =:= 1 |
+      bound_mcast(S,Async,Buf).
+ready_mcast2(S,_,    Buf,F) :- F =:= 0 |
+      connected_mcast(S,Buf).
+
+connected_mcast([],Buf) :- inline:"
+{
+  struct iobuf *iob = IOBuf(%0);
+  if (close(iob->fd) != 0) {
+      fatalp(\"close\", \"Error in closing asynchronous output\");
+  }
+  close_asynchronous_io_stream(iob->fd);
+
+  iob->fd == -1;
+  free(iob->buf);
+}":[Buf+object(pointer)]|
+  true.
+
+connected_mcast([put(C)|S],Buf) :- inline:"
+{
+#ifdef ASYNCIO
+  struct iobuf *iob = IOBuf(%1);
+  /** no buffering **/
+  *iob->ptr++ = intval(%0);
+  switch (write_buf(iob)) {
+    case -1: goto %f;
+    case 1: break;
+  }
+#else
+  goto %f;
+#endif
+}":[C+int,Buf+object(pointer)]|
+      connected_mcast(S,Buf).
+
+bound_mcast([],Async,Buf) :- inline:"
+{
+#ifndef NO_USESOCKET
+  struct iobuf *iob = IOBuf(%0);
+  int fd = iob->fd;
+  int namelen = 1000;
+  struct sockaddr *name = (struct sockaddr *)malloc_check(namelen);
+  getsockname(fd, name, &namelen);
+  if (close(fd) != 0) {
+    fatalp(\"close\", \"Error in closing bound socket\");
+  }
+#ifdef ASYNCIO
+  close_asynchronous_io_stream(fd);
+#endif
+  if (name->sa_family == PF_UNIX) {
+    if (unlink(name->sa_data)) {
+      fatalp(\"unlink\", \"Error in unlinking socket: %%s\", name->sa_data);
+    }
+  }
+  free(name);
+#else
+  goto %f;
+#endif
+}":[Buf+object(pointer)]|
+    true.
+
+bound_mcast([get(C,Sender1)|S1],[Sender2|Async],Buf) :- inline:"
+{
+#ifndef NO_USESOCKET
+  int c;
+  char *str;
+  struct iobuf *iob = IOBuf(%0);
+
+  if(iob->ptr == iob->lim){  /** In InputBuffer, ptr==lim is true.**/
+    switch (fill_buf(iob)) { /** But in one case of fread() it's not true. **/
+    case -1: goto %f;
+    case -2: goto %f;
+    case 0:  c = -1; break;
+    case 1:  c = *iob->ptr++; break;
+    }
+  }
+  %1 = makeint(c);
+#else
+  goto %f;
+#endif
+}":[Buf+object(pointer),C0-int] |
+    Sender1 = Sender2,
+    C = C0,
+    bound_mcast(S1,Async,Buf).
+bound_mcast(S,[_|Async],Buf) :-
+      bound_mcast(S,Async,Buf).
+
+/****************************************
+	SYSTEM CALLS, etc
+****************************************/
+system(S,R) :- inline:"
+{
+  char *buf = KLIC2C(%0);
+  %1 = makeint(system(buf));
+  free(buf);
+}":[S+object(byte_string),R0-int] | R = R0.
+
+cd(Dir,R) :- inline:"
+{
+  char *buf = KLIC2C(%0);
+  %1 = makeint(chdir(buf));
+  free(buf);
+}":[Dir+object(byte_string),R0-int] | R=R0.
+
+unlink(Path,R) :- inline:"
+{
+  char *path = KLIC2C(%0);
+  %1 = makeint(unlink(path));
+  free(path);
+}":[Path+object(byte_string),R0-int] | R=R0.
+
+mktemp(Template,Filename) :- inline:"
+{
+  char* template = KLIC2C(%0);
+  char* real_template = (char*) malloc_check(strlen(template) + 7);
+  strcpy(real_template, template);
+  strcat(real_template, \"XXXXXX\");
+  if( mkstemp(real_template) < 0 ) real_template[0] = \'\0\';
+  %1 = C2KLIC(real_template,allocp);
+  allocp = heapp;
+  free(template);
+  free(real_template);
+}":[Template+object(byte_string),Filename0-object(byte_string)] |
+    Filename=Filename0.
+
+access(Path,Mode,Result) :- inline:"
+{
+  char *path = KLIC2C(%0);
+  %2 = makeint(access(path, intval(%1)));
+  free(path);
+}":[Path+object(byte_string),Mode+int,Result0-int] | Result=Result0.
+
+chmod(Path,New,Result) :- inline:"
+{
+  char *path = KLIC2C(%0);
+  %2 = makeint(chmod(path, intval(%1)));
+  free(path);
+}":[Path+object(byte_string),New+int,Result0-int] | Result=Result0.
+
+umask(Old) :- inline:"
+{
+  %0 = makeint(umask(0));
+  (void) umask(intval(%0));
+}":[Old0-int] | Old=Old0.
+
+umask(Old,New) :- inline:"
+{
+  %0 = makeint(umask(0));
+  (void) umask(intval(%1));
+}":[Old0-int,New+int] | Old = Old0.
+
+getenv(Name,Value) :- inline:"
+{
+  extern char *getenv();
+  char *str = KLIC2C(%0);
+  char *value = getenv(str);
+  free(str);
+  if (value==0) {
+    %1 = makeint(0);
+  } else {
+    %1 = C2KLIC(value, allocp);
+    allocp = heapp;
+  }
+}":[Name+object(byte_string),Value0-bound] | Value=Value0.
+
+putenv(Str,R) :- inline:"
+{
+  char *str = KLIC2C(%0);
+  %1 = makeint(putenv(str));
+}":[Str+object(byte_string),R0-int] | R=R0.
+
+kill(Pid,Sig,R) :- inline:"
+{
+  %2 = makeint(kill(intval(%0),intval(%1)));
+}":[Pid+int,Sig+int,R0-int] | R=R0.
+
+fork(PID) :- inline:"%0 = makeint(fork());":[PID0-int] | PID=PID0.
+
+fork_with_pipes(R) :- inline:"
+{
+  int fd1[2], fd2[2];
+  long pid;
+  if (pipe(fd1) != 0) goto %f;
+  Fdopen(fd1[0],%1,%f,\"r\"); Fdopen(fd1[1],%2,%f,\"w\");
+  if (pipe(fd2) != 0) goto %f;
+  Fdopen(fd2[0],%3,%f,\"r\"); Fdopen(fd2[1],%4,%f,\"w\");
+  pid = fork();
+  if (pid==0) {
+    fclose(FilePointer(%1));
+    fclose(FilePointer(%4));
+  } else {
+    fclose(FilePointer(%2));
+    fclose(FilePointer(%3));
+  }
+  %0 = makeint(pid);
+}":[PID-int,
+    In1-object(pointer),Out1-object(pointer),
+    In2-object(pointer),Out2-object(pointer)] |
+    (
+	PID=\=0 ->
+	R=parent(PID,In,Out),
+	generic:new(file_io,In,In1,"pipe-input",[],""),
+    	generic:new(file_io,Out,[],"",Out2,"pipe-output")
+    ;
+	PID=:=0 ->
+	R=child(In,Out),
+	generic:new(file_io,In,In2,"pipe-input",[],""),
+    	generic:new(file_io,Out,[],"",Out1,"pipe-output")
+    ).
+otherwise.
+fork_with_pipes(R) :- R=abnormal.
+
+/****************************************
+	COMMAND ARGUMENT ACCESS
+****************************************/
+
+argc(C) :- inline:"%0 = makeint(command_argc);":[Argc-int] | C = Argc.
+
+argv(L) :- inline:"%0 = makeint(command_argc);":[Argc-int] |
+    make_argv_list(0,Argc,L).
+
+make_argv_list(N,N,L) :- L=[].
+make_argv_list(K,N,L) :- K<N, inline:"
+{
+  %1 = C2KLIC(command_argv[intval(%0)], allocp);
+  allocp = heapp;
+}":[K+int,S-object(byte_string)] |
+    L=[S|T], make_argv_list(~(K+1),N,T).
+
+/****************************************
+	TIMING
+****************************************/
+
+times(U,S,CU,CS) :- inline:"
+{
+  /* Let's assume 60Hz clock if HZ is left undefined */
+#ifndef HZ
+#define HZ 60
+#endif
+  struct tms buf;
+  (void) times(&buf);
+  %0 = makeint((int)(buf.tms_utime*1000.0/HZ));
+  %1 = makeint((int)(buf.tms_stime*1000.0/HZ));
+  %2 = makeint((int)(buf.tms_cutime*1000.0/HZ));
+  %3 = makeint((int)(buf.tms_cstime*1000.0/HZ));
+}":[U0-int,S0-int,CU0-int,CS0-int] |
+    U=U0, S=S0, CU=CU0, CS=CS0.
+
+/****************************************
+	DUMMY FOR NAME TABLE MANAGEMENT
+****************************************/
+
+dummy :- X=[fseek(_,_,_), ftell(_), fclose(_)].

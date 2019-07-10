@@ -1,0 +1,170 @@
+:- module main.
+main :- lib:io(Os), 
+	lib:prsl(Os,Os2,'### InterNode Test [Multiple-Wait] Begin ###',Done), 
+	tr(Os2,Done). 
+
+%%%% test for EXo multiple-wait %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr(Os,done):- 
+	lib:prs(Os,Os2,'test for EXo multiple-wait (a-f) : ',Done), 
+	tr_begin(Os2,Done).  
+
+tr_begin(Os,done) :- tr_a(Os). 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr_a(Os) :- test2(3,6,1,2,Test), tr_a(Os,Test).
+tr_a(Os,done) :- lib:prs(Os,Os2,a,Done), tr_a_end(Os2,Done).
+otherwise.
+tr_a(Os,_) :- lib:prs_err(Os,Os2,a,Done), tr_a_end(Os2,Done).
+tr_a_end(Os,done) :- tr_b(Os).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr_b(Os) :- test6(3,6,1,2,3,1,2,3,Test), tr_b(Os,Test).  
+tr_b(Os,done) :- lib:prs(Os,Os2,b,Done), tr_b_end(Os2,Done).  
+otherwise.
+tr_b(Os,_) :- lib:prs_err(Os,Os2,b,Done), tr_b_end(Os2,Done).  
+tr_b_end(Os,done) :- midNode(NextNode), tr_b_next(Os,NextNode).
+tr_b_next(Os,NextNode) :- wait(NextNode) | tr_c(Os)@node(NextNode).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr_c(Os) :- test2(3,6,1,-1,Test), tr_c(Os,Test).  
+tr_c(Os,done) :- lib:prs(Os,Os2,c,Done), tr_c_end(Os2,Done).  
+otherwise.
+tr_c(Os,_) :- lib:prs_err(Os,Os2,c,Done), tr_c_end(Os2,Done).  
+tr_c_end(Os,done) :- tr_d(Os).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr_d(Os) :- test6(3,6,1,2,3,-2,-3,-4,Test), tr_d(Os,Test).  
+tr_d(Os,done) :- lib:prs(Os,Os2,d,Done), tr_d_end(Os2,Done).  
+otherwise.
+tr_d(Os,_) :- lib:prs_err(Os,Os2,d,Done), tr_d_end(Os2,Done).  
+tr_d_end(Os,done) :- lastNode(NextNode), tr_d_next(Os,NextNode).
+tr_d_next(Os,NextNode) :- wait(NextNode) | tr_e(Os)@node(NextNode).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr_e(Os) :- test2(3,6,-2,-3,Test), tr_e(Os,Test).  
+tr_e(Os,done) :- lib:prs(Os,Os2,e,Done), tr_e_end(Os2,Done).  
+otherwise.
+tr_e(Os,_) :- lib:prs_err(Os,Os2,e,Done), tr_e_end(Os2,Done).  
+tr_e_end(Os,done) :- tr_f(Os).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr_f(Os) :- test6(3,6,-6,-5,-4,-3,-2,-1,Test), tr_f(Os,Test).
+tr_f(Os,done) :- lib:prs(Os,Os2,f,Done), tr_f_end(Os2,Done).  
+otherwise.
+tr_f(Os,_) :- lib:prs_err(Os,Os2,f,Done), tr_f_end(Os2,Done).  
+tr_f_end(Os,done) :- tr_end(Os). 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tr_end(Os) :- lib:prsl(Os,Os2,'...done',Done), done(Os2,Done).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+done(Os,done) :- 
+	lib:prsl(Os,Os2,'### InterNode Test [Multiple-Wait] End ###',_), 
+	Os2 = [].  
+
+%===========================================================================
+test2(NR,N,AD,BD,Test2All) :- 
+        nextNode(AD,ADestPE), nextNode(BD,BDestPE), 
+        genFP(ADestPE,Test2,ATerm), genFP(BDestPE,Test2,BTerm), 
+        termDetect([ATerm,BTerm],Test2All), 
+        test2(done,NR,N,ADestPE,BDestPE,Test2).
+test2(done,NR,N,ADestPE,BDestPE,Test2) :- 
+                NR > 0, wait(ADestPE), wait(BDestPE) | 
+        test2l(done,N,ADestPE,BDestPE,TestAll), 
+        test2(TestAll,~(NR-1),N,ADestPE,BDestPE,Test2).
+test2(done,NR,_,_,_,Test2) :- NR = 0 | Test2 = done.
+test2l(done,N,ADestPE,BDestPE,TestAll) :- N > 0 |
+        proc(AVEXo,ATest)@node(ADestPE), 
+        proc(BVEXo,BTest)@node(BDestPE), 
+        suspend2(AVEXo,BVEXo), termDetect([ATest,BTest],Test), 
+        test2l(Test,~(N-1),ADestPE,BDestPE,TestAll). 
+test2l(done,N,_,_,TestAll) :- N = 0 | TestAll = done. 
+suspend2({AEXo},{BEXo}) :- multi2(AEXo,BEXo). 
+multi2({X},BEXo) :- X = ack, single(BEXo).
+multi2(AEXo,{X}) :- X = ack, single(AEXo).
+
+test6(NR,N,AD,BD,CD,DD,ED,FD,Test6All) :- 
+        nextNode(AD,ADestPE), nextNode(BD,BDestPE), nextNode(CD,CDestPE), 
+        nextNode(DD,DDestPE), nextNode(ED,EDestPE), nextNode(FD,FDestPE), 
+        genFP(ADestPE,Test6,ATerm), genFP(BDestPE,Test6,BTerm), 
+        genFP(CDestPE,Test6,CTerm), genFP(DDestPE,Test6,DTerm), 
+        genFP(EDestPE,Test6,ETerm), genFP(FDestPE,Test6,FTerm), 
+        termDetect([ATerm,BTerm,CTerm,DTerm,ETerm,FTerm],Test6All), 
+        test6(done,NR,N,ADestPE,BDestPE,CDestPE,
+                        DDestPE,EDestPE,FDestPE,Test6). 
+test6(done,NR,N,ADestPE,BDestPE,CDestPE,DDestPE,EDestPE,FDestPE,Test6) :- 
+                NR > 0, wait(ADestPE), wait(BDestPE), wait(CDestPE), 
+                        wait(DDestPE), wait(EDestPE), wait(FDestPE) | 
+        test6l(done,N,ADestPE,BDestPE,CDestPE,
+                      DDestPE,EDestPE,FDestPE,TestAll), 
+        test6(TestAll,~(NR-1),N,ADestPE,BDestPE,CDestPE,
+                            DDestPE,EDestPE,FDestPE,Test6). 
+test6(done,NR,_,_,_,_,_,_,_,Test6) :- NR = 0 | Test6 = done. 
+test6l(done,N,ADestPE,BDestPE,CDestPE,DDestPE,EDestPE,FDestPE,TestAll) :- 
+                N > 0 |
+        proc(AVEXo,ATest)@node(ADestPE), 
+        proc(BVEXo,BTest)@node(BDestPE), 
+        proc(CVEXo,CTest)@node(CDestPE), 
+        proc(DVEXo,DTest)@node(DDestPE), 
+        proc(EVEXo,ETest)@node(EDestPE), 
+        proc(FVEXo,FTest)@node(FDestPE), 
+        suspend6(AVEXo,BVEXo,CVEXo,DVEXo,EVEXo,FVEXo), 
+        termDetect([ATest,BTest,CTest,DTest,ETest,FTest],Test), 
+        test6l(Test,~(N-1),ADestPE,BDestPE,CDestPE,
+                           DDestPE,EDestPE,FDestPE,TestAll). 
+test6l(done,N,_,_,_,_,_,_,TestAll) :- N = 0 | TestAll = done. 
+
+suspend6({AEXo},{BEXo},{CEXo},{DEXo},{EEXo},{FEXo}) :- 
+        multi6(AEXo,BEXo,CEXo,DEXo,EEXo,FEXo). 
+multi6({X},BEXo,CEXo,DEXo,EEXo,FEXo) :- 
+        X = ack, single(BEXo), single(CEXo), 
+		 single(DEXo), single(EEXo), single(FEXo).
+multi6(AEXo,{X},CEXo,DEXo,EEXo,FEXo) :- 
+        X = ack, single(AEXo), single(CEXo), 
+		 single(DEXo), single(EEXo), single(FEXo).
+multi6(AEXo,BEXo,{X},DEXo,EEXo,FEXo) :- 
+        X = ack, single(AEXo), single(BEXo), 
+		 single(DEXo), single(EEXo), single(FEXo).
+multi6(AEXo,BEXo,CEXo,{X},EEXo,FEXo) :- 
+        X = ack, single(AEXo), single(BEXo), 
+		 single(CEXo), single(EEXo), single(FEXo).
+multi6(AEXo,BEXo,CEXo,DEXo,{X},FEXo) :- 
+        X = ack, single(AEXo), single(BEXo), 
+		 single(CEXo), single(DEXo), single(FEXo).
+multi6(AEXo,BEXo,CEXo,DEXo,EEXo,{X}) :- 
+        X = ack, single(AEXo), single(BEXo), 
+		 single(CEXo), single(DEXo), single(EEXo).
+
+%===========================================================================
+single({X}) :- X = ack. 
+
+proc(VEXo,Test) :- VEXo = {{X}}, waitACK(X,Test).
+waitACK(ack,Test) :- Test = done. 
+
+%===========================================================================
+termDetect([done|Es],Detect) :- termDetect(Es,Detect).
+termDetect([],Detect) :- Detect = done.
+otherwise.
+termDetect(_,Detect) :- Detect = fail.
+
+genFP(DestPE,Test,Term) :- wait(DestPE) | genFP(Test,Term)@node(DestPE). 
+genFP(done,Term) :- Term = done. 
+otherwise. 
+genFP(_,Term) :- Term = fail. 
+
+%---------------------------------------------------------------------------
+% [Node]
+%---------------------------------------------------------------------------
+nextNode(D,Node):- wait(D) | 
+	current_node(CurrentNode,NumberOfNodes), 
+	CalNode := CurrentNode + D, modNode(CalNode,NumberOfNodes,Node).  
+
+midNode(Node) :- current_node(_,NumberOfNodes), Node := NumberOfNodes/2.
+lastNode(Node) :- current_node(_,NumberOfNodes), Node := NumberOfNodes-1.
+
+modNode(CalNode,NumberOfNodes,Node) :- CalNode >= 0 | 
+	Node := CalNode mod NumberOfNodes.
+modNode(CalNode,NumberOfNodes,Node) :- CalNode <  0 | 
+	CalNode2 := CalNode + NumberOfNodes, 
+	modNode(CalNode2,NumberOfNodes,Node).
+
