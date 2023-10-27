@@ -1,0 +1,260 @@
+
+:- module main. 
+
+main :- lib:io(Os), 
+	lib:prsl(Os,Os2,'### InterNode Test [EXREF -> EXREF -> Vector] Begin ###',_), 
+	test_vector(Os2,Os3), 
+	test_guard_element(Os3,Os4), 
+	test_body_element(Os4,Os5), 
+	test_set_element_4(Os5,Os6), 
+	test_set_element_5(Os6,Os7), 
+	lib:prsl(Os7,[],'### InterNode Test [EXREF -> EXREF -> Vector] End ###',_). 
+
+%---------------------------------------------------------------------
+test_vector(Os,OsE):- 
+	lib:prs(Os,Os2,'vector: (a-u) : ',_), 
+	test_vector(Os2,OsE,Cs), 
+	Cs=[t({a},1,out(a)),
+	    t({b,a},2,out(b)),
+	    t({c,b,a},3,out(c)),
+	    t({d,c,b,a},4,out(d)),
+	    t({e,d,c,b,a},5,out(e)),
+	    t({1,{2},{3,4}},3,out(f)),
+	    t({1,[2],[3,4],[5,6,7]},4,out(g)),
+	    t({1,f(2),g(3,4),h(5,6,7),i(8,9,10,11)},5,out(h)),
+	    t({{a}},1,out(i)),
+	    t({{{a}}},1,out(j)),
+	    t({{{{a}}}},1,out(k)),
+	    t({{{{a}}},{b}},2,out(l)),
+	    t({{{{a}}},{{b}}},2,out(m)),
+	    t({{{{a}}},{{{b}}}},2,out(n)),
+	    t({{a},[b,c]},2,out(o)),
+	    t({{[a]},[b,{c}]},2,out(p)),
+	    t({_},1,out(q)),
+	    t({a,_},2,out(r)),
+	    t({_,b,_},3,out(s)),
+	    t({_,_,c,_},4,out(t)),
+	    t({_,_,_,d,_},5,out(u))]. 
+
+test_vector(Os,OsE,[t(Vec,Len,out(Out))|Cs]):- 
+	lib:nextNodes(3,Ns), 
+	fetch_and_vector(ExV,Len,Res,Ack,Ns), 
+	lib:waitAndUnify(Ack,ExV,Vec), 
+	lib:checkAndPr(Os,Os2,[Res],Out,_), 
+	test_vector(Os2,OsE,Cs). 
+test_vector(Os,OsE,[]):- lib:prsl(Os,Os2,'...done',_), Os2 = OsE. 
+
+fetch_and_vector(ExV,PLen,Res,Ack,[Node|Ns]):- wait(Node) | 
+	fetch_and_vector(Var,PLen,Res,NextAck,Ns)@node(Node), 
+	lib:waitAndUnify(NextAck,Var,ExV), 
+	lib:waitAndUnify(NextAck,Ack,ack). 
+fetch_and_vector(ExV,PLen,Res,Ack,[]):- 
+	fetch_and_vector(ExV,PLen,Res,Ack). 
+
+fetch_and_vector(ExV,PLen,Res,Ack):- 
+	Ack=ack, fetch_and_vector(ExV,PLen,Res). 
+
+fetch_and_vector(ExV,PLen,Res):- vector(ExV,Len) | 
+	lib:eq(PLen,Len,Res).  
+
+%---------------------------------------------------------------------
+test_guard_element(Os,OsE):- 
+	lib:prs(Os,Os2,'(guard) vector_element : (a-p) : ',_), 
+	test_guard_element(Os2,OsE,Cs), 
+	Cs=[t({a},[a],out(a)),
+	    t({b,a},[b,a],out(b)),
+	    t({c,b,a},[c,b,a],out(c)),
+	    t({d,c,b,a},[d,c,b,a],out(d)),
+	    t({e,d,c,b,a},[e,d,c,b,a],out(e)),
+	    t({1,{2},{3,4}},[1,{2},{3,4}],out(f)),
+	    t({1,[2],[3,4],[5,6,7]},[1,[2],[3,4],[5,6,7]],out(g)),
+	    t({1,f(2),g(3,4),h(5,6,7),i(8,9,10,11)},
+			[1,f(2),g(3,4),h(5,6,7),i(8,9,10,11)],out(h)),
+	    t({{a}},[{a}],out(i)),
+	    t({{{a}}},[{{a}}],out(j)),
+	    t({{{{a}}}},[{{{a}}}],out(k)),
+	    t({{{{a}}},{b}},[{{{a}}},{b}],out(l)),
+	    t({{{{a}}},{{b}}},[{{{a}}},{{b}}],out(m)),
+	    t({{{{a}}},{{{b}}}},[{{{a}}},{{{b}}}],out(n)),
+	    t({{a},[b,c]},[{a},[b,c]],out(o)),
+	    t({{[a]},[b,{c}]},[{[a]},[b,{c}]],out(p))]. 
+
+test_guard_element(Os,OsE,[t(Vec,ELs,out(Out))|Cs]):- 
+	lib:nextNodes(3,Ns), 
+	fetch_and_guard_element(ExV,ELs,Res,Ack,Ns), 
+	lib:waitAndUnify(Ack,ExV,Vec), 
+	lib:checkAndPr(Os,Os2,[Res],Out,_), 
+	test_guard_element(Os2,OsE,Cs). 
+test_guard_element(Os,OsE,[]):- lib:prsl(Os,Os2,'...done',_), Os2 = OsE. 
+
+fetch_and_guard_element(ExV,ELs,Res,Ack,[Node|Ns]):- wait(Node) | 
+	fetch_and_guard_element(Var,ELs,Res,NextAck,Ns)@node(Node), 
+	lib:waitAndUnify(NextAck,Var,ExV), 
+	lib:waitAndUnify(NextAck,Ack,ack). 
+fetch_and_guard_element(ExV,ELs,Res,Ack,[]):- 
+	fetch_and_guard_element(ExV,ELs,Res,Ack). 
+
+fetch_and_guard_element(ExV,ELs,Res,Ack):- 
+	Ack=ack, 
+	fetch_and_guard_element_2(ExV,0,ELs,Rs), lib:check(Rs,Res). 
+
+fetch_and_guard_element_2(ExV,Index,[PEle|ELs],Rs):- 
+    vector_element(ExV,Index,Ele) | 
+	lib:eq(PEle,Ele,Done), Rs=[Done|Rs2], 
+	fetch_and_guard_element_2(ExV,~(Index+1),ELs,Rs2). 
+fetch_and_guard_element_2(_,_,[],Rs):- Rs=[]. 
+
+%---------------------------------------------------------------------
+test_body_element(Os,OsE):- 
+	lib:prs(Os,Os2,'(body) vector_element : (a-p) : ',_), 
+	test_body_element(Os2,OsE,Cs), 
+	Cs=[t({a},[a],out(a)),
+	    t({b,a},[b,a],out(b)),
+	    t({c,b,a},[c,b,a],out(c)),
+	    t({d,c,b,a},[d,c,b,a],out(d)),
+	    t({e,d,c,b,a},[e,d,c,b,a],out(e)),
+	    t({1,{2},{3,4}},[1,{2},{3,4}],out(f)),
+	    t({1,[2],[3,4],[5,6,7]},[1,[2],[3,4],[5,6,7]],out(g)),
+	    t({1,f(2),g(3,4),h(5,6,7),i(8,9,10,11)},
+			[1,f(2),g(3,4),h(5,6,7),i(8,9,10,11)],out(h)),
+	    t({{a}},[{a}],out(i)),
+	    t({{{a}}},[{{a}}],out(j)),
+	    t({{{{a}}}},[{{{a}}}],out(k)),
+	    t({{{{a}}},{b}},[{{{a}}},{b}],out(l)),
+	    t({{{{a}}},{{b}}},[{{{a}}},{{b}}],out(m)),
+	    t({{{{a}}},{{{b}}}},[{{{a}}},{{{b}}}],out(n)),
+	    t({{a},[b,c]},[{a},[b,c]],out(o)),
+	    t({{[a]},[b,{c}]},[{[a]},[b,{c}]],out(p))]. 
+
+test_body_element(Os,OsE,[t(Vec,ELs,out(Out))|Cs]):- 
+	lib:nextNodes(3,Ns), 
+	fetch_and_body_element(ExV,ELs,Res,Ack,Ns), 
+	lib:waitAndUnify(Ack,ExV,Vec), 
+	lib:checkAndPr(Os,Os2,[Res],Out,_), 
+	test_body_element(Os2,OsE,Cs). 
+test_body_element(Os,OsE,[]):- lib:prsl(Os,Os2,'...done',_), Os2 = OsE. 
+
+fetch_and_body_element(ExV,ELs,Res,Ack,[Node|Ns]):- wait(Node) | 
+	fetch_and_body_element(Var,ELs,Res,NextAck,Ns)@node(Node), 
+	lib:waitAndUnify(NextAck,Var,ExV), 
+	lib:waitAndUnify(NextAck,Ack,ack). 
+fetch_and_body_element(ExV,ELs,Res,Ack,[]):- 
+	fetch_and_body_element(ExV,ELs,Res,Ack). 
+
+fetch_and_body_element(ExV,ELs,Res,Ack):- 
+	Ack=ack, 
+	fetch_and_body_element_2(ExV,0,ELs,Rs), lib:check(Rs,Res). 
+
+fetch_and_body_element_2(ExV,Index,[PEle|ELs],Rs):- 
+	vector_element(ExV,Index,Ele), 
+	lib:eq(PEle,Ele,Done), Rs=[Done|Rs2], 
+	fetch_and_body_element_2(ExV,~(Index+1),ELs,Rs2). 
+fetch_and_body_element_2(_,_,[],Rs):- Rs=[]. 
+
+%---------------------------------------------------------------------
+test_set_element_4(Os,OsE):- 
+	lib:prs(Os,Os2,'set_vector_element/4 : (a-w) : ',_), 
+	test_set_element_4(Os2,OsE,Cs), 
+	Cs=[t({a},1,out(a)),
+	    t({b,a},2,out(b)),
+	    t({c,b,a},3,out(c)),
+	    t({d,c,b,a},4,out(d)),
+	    t({e,d,c,b,a},5,out(e)),
+	    t({f,e,d,c,b,a},6,out(f)),
+	    t({g,f,e,d,c,b,a},7,out(g)),
+	    t({h,g,f,e,d,c,b,a},8,out(h)),
+	    t({_},1,out(i)),
+	    t({_,_},2,out(j)),
+	    t({_,_,_},3,out(k)),
+	    t({_,_,_,_},4,out(l)),
+	    t({_,_,_,_,_},5,out(m)), 
+	    t({_,_,_,_,_,_},6,out(n)), 
+	    t({_,_,_,_,_,_,_},7,out(o)), 
+	    t({_,_,_,_,_,_,_,_},8,out(p)), 
+	    t({_,a},2,out(q)),
+	    t({_,a,_},3,out(r)),
+	    t({_,_,a,_},4,out(s)),
+	    t({a,_,_,_,a},5,out(t)), 
+	    t({_,a,_,_,a,_},6,out(u)), 
+	    t({_,_,a,_,a,_,_},7,out(v)), 
+	    t({_,a,_,a,_,a,_,_},8,out(w))]. 
+
+test_set_element_4(Os,OsE,[t(Vec,Len,out(Out))|Cs]):- 
+	lib:nextNodes(3,Ns), 
+	fetch_and_set_element_4(ExV,Len,Res,Ack,Ns), 
+	lib:waitAndUnify(Ack,ExV,Vec), 
+	lib:checkAndPr(Os,Os2,[Res],Out,_), 
+	test_set_element_4(Os2,OsE,Cs). 
+test_set_element_4(Os,OsE,[]):- 
+	lib:prsl(Os,Os2,'...done',_), Os2 = OsE. 
+
+fetch_and_set_element_4(ExV,Len,Res,Ack,[Node|Ns]):- wait(Node) | 
+	fetch_and_set_element_4(Var,Len,Res,NextAck,Ns)@node(Node), 
+	lib:waitAndUnify(NextAck,Var,ExV), 
+	lib:waitAndUnify(NextAck,Ack,ack). 
+fetch_and_set_element_4(ExV,Len,Res,Ack,[]):- 
+	fetch_and_set_element_4(ExV,Len,Res,Ack). 
+
+fetch_and_set_element_4(ExV,Len,Res,Ack):- 
+	Ack=ack, fetch_and_set_element_4_2(0,ExV,Len,Res). 
+
+fetch_and_set_element_4_2(Index,ExV,Len,Res):- Index < Len | 
+	set_vector_element(ExV,Index,Index,NewExV), 
+	fetch_and_set_element_4_2(~(Index+1),NewExV,Len,Res). 
+fetch_and_set_element_4_2(Index,ExV,Len,Res):- Index =:= Len | 
+	check_ivector(0,ExV,Len,Res). 
+
+%---------------------------------------------------------------------
+test_set_element_5(Os,OsE):- 
+	lib:prs(Os,Os2,'set_vector_element/5 : (a-p) : ',_), 
+	test_set_element_5(Os2,OsE,Cs), 
+	Cs=[t({a},[a],out(a)),
+	    t({b,a},[b,a],out(b)),
+	    t({c,b,a},[c,b,a],out(c)),
+	    t({d,c,b,a},[d,c,b,a],out(d)),
+	    t({e,d,c,b,a},[e,d,c,b,a],out(e)),
+	    t({1,{2},{3,4}},[1,{2},{3,4}],out(f)),
+	    t({1,[2],[3,4],[5,6,7]},[1,[2],[3,4],[5,6,7]],out(g)),
+	    t({1,f(2),g(3,4),h(5,6,7),i(8,9,10,11)},
+			[1,f(2),g(3,4),h(5,6,7),i(8,9,10,11)],out(h)),
+	    t({{a}},[{a}],out(i)),
+	    t({{{a}}},[{{a}}],out(j)),
+	    t({{{{a}}}},[{{{a}}}],out(k)),
+	    t({{{{a}}},{b}},[{{{a}}},{b}],out(l)),
+	    t({{{{a}}},{{b}}},[{{{a}}},{{b}}],out(m)),
+	    t({{{{a}}},{{{b}}}},[{{{a}}},{{{b}}}],out(n)),
+	    t({{a},[b,c]},[{a},[b,c]],out(o)),
+	    t({{[a]},[b,{c}]},[{[a]},[b,{c}]],out(p))]. 
+
+test_set_element_5(Os,OsE,[t(Vec,ELs,out(Out))|Cs]):- 
+	lib:nextNodes(3,Ns), 
+	fetch_and_set_element_5(ExV,ELs,Res,Ack,Ns), 
+	lib:waitAndUnify(Ack,ExV,Vec), 
+	lib:checkAndPr(Os,Os2,[Res],Out,_), 
+	test_set_element_5(Os2,OsE,Cs). 
+test_set_element_5(Os,OsE,[]):- 
+	lib:prsl(Os,Os2,'...done',_), Os2 = OsE. 
+
+fetch_and_set_element_5(ExV,ELs,Res,Ack,[Node|Ns]):- wait(Node) | 
+	fetch_and_set_element_5(Var,ELs,Res,NextAck,Ns)@node(Node), 
+	lib:waitAndUnify(NextAck,Var,ExV), 
+	lib:waitAndUnify(NextAck,Ack,ack). 
+fetch_and_set_element_5(ExV,ELs,Res,Ack,[]):- 
+	fetch_and_set_element_5(ExV,ELs,Res,Ack). 
+
+fetch_and_set_element_5(ExV,ELs,Res,Ack):- 
+	Ack=ack, 
+	fetch_and_set_element_5_2(ExV,0,ELs,Rs), lib:check(Rs,Res). 
+
+fetch_and_set_element_5_2(ExV,Index,[PEle|ELs],Rs):- 
+	set_vector_element(ExV,Index,Ele,Index,NewExV), 
+	lib:eq(PEle,Ele,Done), Rs=[Done|Rs2], 
+	fetch_and_set_element_5_2(NewExV,~(Index+1),ELs,Rs2). 
+fetch_and_set_element_5_2(ExV,Index,[],Rs):- 
+	check_ivector(0,ExV,Index,Res), Rs=[Res]. 
+
+%=====================================================================
+check_ivector(Index,Vec,Len,Res):- 
+    Index < Len, vector_element(Vec,Index,Ele), Index =:= Ele | 
+	check_ivector(~(Index+1),Vec,Len,Res). 
+check_ivector(Index,_,Len,Res):- Index =:= Len | Res = done. 

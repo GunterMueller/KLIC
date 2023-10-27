@@ -1,0 +1,185 @@
+This is TeX, Version 3.14159265 (TeX Live 2017/Debian) (preloaded format=tex 2018.10.30)  7 AUG 2019 18:21
+**tutorial.tex
+(./tutorial.tex (/usr/share/texmf/tex/texinfo/texinfo.tex
+Loading texinfo [version 2018-01-09.11]:
+\outerhsize=\dimen16
+\outervsize=\dimen17
+\cornerlong=\dimen18
+\cornerthick=\dimen19
+\topandbottommargin=\dimen20
+\bindingoffset=\dimen21
+\normaloffset=\dimen22
+\txipagewidth=\dimen23
+\txipageheight=\dimen24
+\headlinebox=\box16
+\footlinebox=\box17
+\margin=\insert252
+\EMsimple=\toks12
+\groupbox=\box18
+\groupinvalidhelp=\toks13
+\mil=\dimen25
+\exdentamount=\skip18
+\inmarginspacing=\skip19
+\centerpenalty=\count26
+ pdf,
+\tempnum=\count27
+\lnkcount=\count28
+\filename=\toks14
+\filenamelength=\count29
+\pgn=\count30
+\toksA=\toks15
+\toksB=\toks16
+\toksC=\toks17
+\toksD=\toks18
+\boxA=\box19
+\boxB=\box20
+\countA=\count31
+\nopdfimagehelp=\toks19
+ fonts,
+\textleading=\dimen26
+\sffam=\fam8
+ markup,
+\fontdepth=\count32
+ glyphs,
+\errorbox=\box21
+
+page headings,
+\titlepagetopglue=\skip20
+\titlepagebottomglue=\skip21
+\evenheadline=\toks20
+\oddheadline=\toks21
+\evenfootline=\toks22
+\oddfootline=\toks23
+ tables,
+\tableindent=\dimen27
+\itemindent=\dimen28
+\itemmargin=\dimen29
+\itemmax=\dimen30
+\itemno=\count33
+\multitableparskip=\skip22
+\multitableparindent=\skip23
+\multitablecolspace=\dimen31
+\multitablelinespace=\skip24
+\colcount=\count34
+\everytab=\toks24
+ conditionals,
+\doignorecount=\count35
+ indexing,
+\dummybox=\box22
+\whatsitskip=\skip25
+\whatsitpenalty=\count36
+\entryrightmargin=\dimen32
+\thinshrinkable=\skip26
+\entrybox=\box23
+\delayedbox=\box24
+\interbox=\box25
+\secondaryindent=\skip27
+\partialpage=\box26
+\doublecolumnhsize=\dimen33
+\savedtopmark=\toks25
+\savedfirstmark=\toks26
+\balancedcolumns=\box27
+ sectioning,
+\unnumberedno=\count37
+\chapno=\count38
+\secno=\count39
+\subsecno=\count40
+\subsubsecno=\count41
+\appendixno=\count42
+\absseclevel=\count43
+\secbase=\count44
+\chapheadingskip=\skip28
+\secheadingskip=\skip29
+\subsecheadingskip=\skip30
+ toc,
+\tocfile=\write0
+\contentsrightmargin=\skip31
+\savepageno=\count45
+\lastnegativepageno=\count46
+\tocindent=\dimen34
+ environments,
+\lispnarrowing=\skip32
+\envskipamount=\skip33
+\circthick=\dimen35
+\cartouter=\dimen36
+\cartinner=\dimen37
+\normbskip=\skip34
+\normpskip=\skip35
+\normlskip=\skip36
+\lskip=\skip37
+\rskip=\skip38
+\nonfillparindent=\dimen38
+\tabw=\dimen39
+\verbbox=\box28
+
+defuns,
+\defbodyindent=\skip39
+\defargsindent=\skip40
+\deflastargmargin=\skip41
+\defunpenalty=\count47
+\parencount=\count48
+\brackcount=\count49
+ macros,
+\macscribble=\write1
+\savedcatcodeone=\count50
+\savedcatcodetwo=\count51
+\paramno=\count52
+\macname=\toks27
+ cross references,
+\auxfile=\write2
+\savesfregister=\count53
+\toprefbox=\box29
+\printedrefnamebox=\box30
+\infofilenamebox=\box31
+\printedmanualbox=\box32
+ insertions,
+\footnoteno=\count54
+\SAVEfootins=\box33
+\SAVEmargin=\box34
+
+(/usr/share/texlive/texmf-dist/tex/generic/epsf/epsf.tex
+This is `epsf.tex' v2.7.4 <14 February 2011>
+\epsffilein=\read0
+\epsfframemargin=\dimen40
+\epsfframethickness=\dimen41
+\epsfrsize=\dimen42
+\epsftmp=\dimen43
+\epsftsize=\dimen44
+\epsfxsize=\dimen45
+\epsfysize=\dimen46
+\pspoints=\dimen47
+)
+\noepsfhelp=\toks28
+ localization,
+\nolanghelp=\toks29
+\countUTFx=\count55
+\countUTFy=\count56
+\countUTFz=\count57
+ formatting,
+\defaultparindent=\dimen48
+ and turning on texinfo input format.) [1] [2]
+(./tutorial.aux)
+\openout2 = `tutorial.aux'.
+
+ (./tutorial.toc [-1]) [-2] Chapter 1
+\openout0 = `tutorial.toc'.
+
+ [1] Chapter 2 [2]
+@cpindfile=@write3
+\openout3 = `tutorial.cp'.
+
+
+Writing index file tutorial.cp
+[3] [4] [5] [6] Chapter 3 [7] [8] [9] [10] [11] [12] [13] [14] Chapter 4
+[15] [16] [17] [18] [19] [20] Chapter 5 [21] [22] [23] [24] [25] [26]
+Chapter 6 [27] [28] [29] [30] (Concept Index) [31] [32] [33] ) 
+Here is how much of TeX's memory you used:
+ 3263 strings out of 497973
+ 34368 string characters out of 6220703
+ 71279 words of memory out of 5000000
+ 4117 multiletter control sequences out of 15000+600000
+ 34384 words of font info for 120 fonts, out of 8000000 for 9000
+ 51 hyphenation exceptions out of 8191
+ 15i,6n,13p,307b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
+
+Output written on tutorial.dvi (37 pages, 151928 bytes).

@@ -1,0 +1,35 @@
+	.file	"lock.c"
+//	.version	"01.01"
+	.ident	"hc1.0b -O3 -pentium -on GLOBALS_VOLATILE lock.c\n"
+	.text
+	.align	4
+.L00TEXT:
+
+//====================
+// s_lock
+//--------------------
+	.align	16
+	.globl	_s_lock
+_s_lock:
+	movl	4(%esp),%eax
+loop1:
+        movl    $-1,%ecx
+__AIR_s_lock:
+	xchgl	(%eax),%ecx
+        incl    %ecx
+        je      loop1
+	ret	
+//ueda	.type	s_lock,@function
+//ueda	.size	s_lock,.-s_lock
+
+//====================
+// s_unlock
+//--------------------
+	.align	16
+	.globl	_s_unlock
+_s_unlock:
+	movl	4(%esp),%eax
+__AIR_s_unlock:	movl	$0,(%eax)
+	ret	
+//ueda	.type	s_unlock,@function
+//ueda	.size	s_unlock,.-s_unlock

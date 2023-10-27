@@ -1,0 +1,7 @@
+/*
+ * @(#)$Header: /mm2/home/cvs/bc-src/tgif/xbm/pat23.xbm,v 1.1 2004/06/18 23:18:45 william Exp $
+ */
+#define pat23_width 8
+#define pat23_height 8
+static unsigned char pat23_bits[] = {
+   0x83, 0x07, 0x0e, 0x1c, 0x38, 0x70, 0xe0, 0xc1};

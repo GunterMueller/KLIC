@@ -1,0 +1,7 @@
+This directory contains simple example programs.
+
+The 'parallel' directory contains parallel programs for
+distributed-memory KLIC (that runs also on multicore machines).
+
+The 'workshop' directory contains programs from the KLIC workshop
+textbooks (that can be found in the documents/workshop directory).

@@ -1,0 +1,16 @@
+% nrev0.kl1
+% リストを逆転する.  
+:- module main.
+
+main :- true |
+    nrev([1,2,3,4,5,6],X),
+    io:outstream([print(X),nl]).
+
+nrev([], Y) :- true | Y=[].
+nrev([A|X], Y) :- true |
+     nrev(X, RevX),
+     append(RevX, [A], Y).
+
+append([], Y, Z) :- true  | Y = Z.
+append([A|X], Y, Z) :- true |
+     Z=[A|Z1], append(X, Y, Z1).

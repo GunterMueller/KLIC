@@ -1,0 +1,95 @@
+#Reliable Multicast Library configuration file
+
+#Reliable Multicast Library version
+RM_VERSION=1.10
+
+#Transmission mode: 0 multicast (default), 1 unicast
+TRANSMISSION_MODE=0
+
+#Multicast or Unicast IP address to send data (destination IP)
+DEST_IP=225.1.2.3
+
+#Multicast or Unicast port to send data (destination port)
+DEST_PORT=5151
+
+#Time to live for the packets setting (1 indicates local network)
+TTL=1
+
+#Inter-packet sleep timer:
+#Time between packet transmissions ( choose from 0 to 65535 microseconds)
+MICROSLEEP=10
+
+#Log file path - NULL disable logging (default)
+LOG_FILE=NULL
+
+#Random Timers Distribution: 0 uniform 1 exponential
+TIMER_DISTRIBUTION=0
+
+#Timer parameters
+# Timers values are obtained in the intervals:
+# (TIMER_PARAM_A*T,(TIMER_PARAM_A+TIMER_PARAM_B)*T) for NAKs
+# (TIMER_PARAM_C*T,(TIMER_PARAM_C+TIMER_PARAM_D)*T) for wait for retransmitions
+# (TIMER_PARAM_E*T,(TIMER_PARAM_C+TIMER_PARAM_F)*T) for for retransmitions
+# Where 
+#  TIMER_PARAM_A, TIMER_PARAM_B, TIMER_PARAM_C, TIMER_PARAM_D, TIMER_PARAM_E and
+#  TIMER_PARAM_F are integer constants 
+#  T is the estimated one-way delay to the senders
+TIMER_PARAM_A=2
+TIMER_PARAM_B=2
+TIMER_PARAM_C=5
+TIMER_PARAM_D=2
+TIMER_PARAM_E=2
+TIMER_PARAM_F=2
+
+#Host related parameters and timers:
+# Must contain exactly the following lines:
+#   HOSTS_IDENTIFIED=0
+#   DEFAULT <AVERAGE_ESTIMATED_DELAY>
+#   host1   <ESTIMATED_ONE-WAY_DELAY_TO_host1>
+#   host2   <ESTIMATED_ONE-WAY_DELAY_TO_host2>
+#   ...
+#   hostN   <ESTIMATED_ONE-WAY_DELAY_TO_hostN>
+# If HOSTS_IDENTIFIED=0 then we will read only the DEFAULT
+# estimated delay. 
+HOSTS_IDENTIFIED=0
+DEFAULT 50
+
+#Max number of naks that can be sent for each packet. 100 (default)
+MAX_NAK=100
+
+# We will be able to retransmit the last MAX_MEMBER_CACHE_SIZE packets from each
+# member of the multicast group, i.e., we will store the last
+# MAX_MEMBER_CACHE_SIZE PACKETS from each member of the multicast group in the
+# cache. 4000 (default)
+#
+# WARNING: if you set MAX_MEMBER_CACHE_SIZE to low values the protocol may fail!
+#
+MAX_MEMBER_CACHE_SIZE=4000 
+
+#Enable support for new members 1 enabled (default), 0 disabled
+NEW_MEMBER_SUPPORT=0
+
+#Show transmission statistics: 0 disabled (default) 1 enabled
+STATISTICS=0
+
+#Time between transmission of refresh messages (seconds)
+REFRESH_TIMER=10
+
+#Loss simulation: 0 disabled (default) any float number > 0 enabled
+#
+# A note about loss simulation:                         
+# When loss simulation is enabled (LOSS_PROB > 0) we always loose the first 10 
+# received packets, and the first received data packet - that is, 
+# the first burst of received packets.
+# After that, packets are lost according to LOSS_PROB.
+# Example: LOSS_PROB=30
+# The first 10 received packets will be lost.  
+# Then, 30% of the packets will be lost 
+LOSS_PROB=0
+
+# Time to wait, in microseconds, before leaving the multicast group.
+LEAVE_GROUP_WAIT_TIME=500000
+
+# Size of the buffer of the receiver host
+# (maximum size of a message that may be processed by the receiver host).
+RCV_BUFFER_SIZE=10000

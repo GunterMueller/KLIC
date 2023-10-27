@@ -1,0 +1,151 @@
+\contentsline {chapter}{\numberline {第1章}はじめに}{4}
+\contentsline {part}{第I部\hspace {1zw}逐次処理系}{5}
+\contentsline {chapter}{\numberline {第2章}データ構造}{6}
+\contentsline {section}{\numberline {2.1}KL1レベルのデータ構造}{6}
+\contentsline {subsection}{\numberline {2.1.1}ワード}{7}
+\contentsline {subsection}{\numberline {2.1.2}CONSとファンクタ}{8}
+\contentsline {subsection}{\numberline {2.1.3}参照セルと純粋未定義変数セル}{9}
+\contentsline {subsection}{\numberline {2.1.4}中断ゴールを現わす構造}{10}
+\contentsline {section}{\numberline {2.2}タグ関連のマクロ}{10}
+\contentsline {section}{\numberline {2.3}ジェネリック・オブジェクト}{12}
+\contentsline {subsection}{\numberline {2.3.1}ジェネリック・オブジェクトの種類}{13}
+\contentsline {subsection}{\numberline {2.3.2}ジェネリック・オブジェクトのデータ構造}{14}
+\contentsline {subsubsection}{Data object}{14}
+\contentsline {subsubsection}{Consumer}{14}
+\contentsline {subsubsection}{Generator}{15}
+\contentsline {section}{\numberline {2.4}実装レベルのデータ}{16}
+\contentsline {subsection}{\numberline {2.4.1}大域データ構造体}{16}
+\contentsline {subsection}{\numberline {2.4.2}ヒープ}{18}
+\contentsline {subsection}{\numberline {2.4.3}モジュール}{20}
+\contentsline {subsection}{\numberline {2.4.4}述語}{21}
+\contentsline {subsection}{\numberline {2.4.5}ゴールレコード}{21}
+\contentsline {subsubsection}{実行可能状態}{22}
+\contentsline {subsubsection}{中断状態}{22}
+\contentsline {chapter}{\numberline {第3章}KLICの基本的な動作}{26}
+\contentsline {section}{\numberline {3.1}動作モデル}{26}
+\contentsline {section}{\numberline {3.2}トップレベルループ}{27}
+\contentsline {section}{\numberline {3.3}コンパイルドコード}{28}
+\contentsline {subsection}{\numberline {3.3.1}モジュールの原則}{28}
+\contentsline {subsection}{\numberline {3.3.2}述語呼び出しの実現}{29}
+\contentsline {subsection}{\numberline {3.3.3}述語の原則}{30}
+\contentsline {subsection}{\numberline {3.3.4}データのキャッシュ}{32}
+\contentsline {section}{\numberline {3.4}例外的な処理}{32}
+\contentsline {subsection}{\numberline {3.4.1}ヒープの使い方}{34}
+\contentsline {subsection}{\numberline {3.4.2}エンコーディング規則}{35}
+\contentsline {subsubsection}{基本規則}{35}
+\contentsline {subsubsection}{モジュール関数名エンコード規則}{36}
+\contentsline {subsubsection}{述語名エンコード規則}{36}
+\contentsline {subsubsection}{定数構造体のコンパイル}{36}
+\contentsline {section}{\numberline {3.5}例}{37}
+\contentsline {subsection}{\numberline {3.5.1}コード説明}{42}
+\contentsline {chapter}{\numberline {第4章}割り込み/中断/失敗}{53}
+\contentsline {section}{\numberline {4.1}例外処理}{53}
+\contentsline {subsection}{\numberline {4.1.1}割り込み時の処理}{53}
+\contentsline {subsection}{\numberline {4.1.2}KL1レベルでの割り込み処理}{55}
+\contentsline {subsection}{\numberline {4.1.3}割り込み処理: klic\_interrupt}{55}
+\contentsline {section}{\numberline {4.2}中断、失敗処理: interrupt\_goal}{56}
+\contentsline {subsection}{\numberline {4.2.1}関数型仕様}{56}
+\contentsline {subsection}{\numberline {4.2.2}動作}{57}
+\contentsline {section}{\numberline {4.3}Timer}{58}
+\contentsline {subsection}{\numberline {4.3.1}基本的な方式}{59}
+\contentsline {subsection}{\numberline {4.3.2}実装詳細}{59}
+\contentsline {chapter}{\numberline {第5章}単一化器}{61}
+\contentsline {section}{\numberline {5.1}Passsive unification}{61}
+\contentsline {section}{\numberline {5.2}Active unification}{62}
+\contentsline {section}{\numberline {5.3}単一化器: do\_unify()}{62}
+\contentsline {subsection}{\numberline {5.3.1}ゴールの再開: resume\_goals()}{64}
+\contentsline {subsubsection}{中断構造に対しての処理の概略}{64}
+\contentsline {subsubsection}{resume\_goals()の詳細}{65}
+\contentsline {subsection}{\numberline {5.3.2}Generator の起動: generator\_unify()}{67}
+\contentsline {subsection}{\numberline {5.3.3}単一化ゴールのエンキュー: enqueue\_unify\_goal()}{68}
+\contentsline {subsection}{\numberline {5.3.4}複雑なゴールのエンキュー: enqueue\_unify\_terms()}{68}
+\contentsline {chapter}{\numberline {第6章}ジェネリック・オブジェクト}{70}
+\contentsline {section}{\numberline {6.1}ジェネリック・オブジェクトの概略}{70}
+\contentsline {subsection}{\numberline {6.1.1}ジェネリック・オブジェクトの種類}{71}
+\contentsline {subsection}{\numberline {6.1.2}Data object}{71}
+\contentsline {subsection}{\numberline {6.1.3}Consumer object}{74}
+\contentsline {subsection}{\numberline {6.1.4}Generator object}{75}
+\contentsline {chapter}{\numberline {第7章}GC}{77}
+\contentsline {section}{\numberline {7.1}基本的なGCのアルゴリズム}{77}
+\contentsline {section}{\numberline {7.2}GCの対象領域}{78}
+\contentsline {section}{\numberline {7.3}Copyされたかどうかの判定}{78}
+\contentsline {section}{\numberline {7.4}GCのきっかけ}{79}
+\contentsline {section}{\numberline {7.5}GCのためのデータ構造}{79}
+\contentsline {section}{\numberline {7.6}GCのアルゴリズム}{79}
+\contentsline {subsection}{\numberline {7.6.1}klic\_gc}{79}
+\contentsline {subsection}{\numberline {7.6.2}collect\_garbage()}{80}
+\contentsline {section}{\numberline {7.7}copy\_one\_queue()}{81}
+\contentsline {section}{\numberline {7.8}copy\_terms()}{81}
+\contentsline {chapter}{\numberline {第8章}トレーサ}{84}
+\contentsline {section}{\numberline {8.1}機能概要}{84}
+\contentsline {section}{\numberline {8.2}提供機能の概要}{84}
+\contentsline {section}{\numberline {8.3}リンク時のトレース指定}{85}
+\contentsline {section}{\numberline {8.4}名前情報の管理}{86}
+\contentsline {section}{\numberline {8.5}トレースの制御と情報入手}{87}
+\contentsline {subsection}{\numberline {8.5.1}擬似ゴールの構造}{88}
+\contentsline {subsection}{\numberline {8.5.2}CALL ポートのトレースのきっかけ}{89}
+\contentsline {subsection}{\numberline {8.5.3}REDUCE/SUSPEND ポートのトレースのきっかけ}{90}
+\contentsline {subsection}{\numberline {8.5.4}リダクション結果の子ゴールの認識}{90}
+\contentsline {subsection}{\numberline {8.5.5}リデュースにともなう再開ゴールの把握}{91}
+\contentsline {subsection}{\numberline {8.5.6}リデュース結果のゴールのトレース}{91}
+\contentsline {subsection}{\numberline {8.5.7}トレースされた中断ゴールの再開の把握}{92}
+\contentsline {subsection}{\numberline {8.5.8}trace\_after()の処理}{92}
+\contentsline {part}{第II部\hspace {1zw}並列処理系}{95}
+\contentsline {chapter}{\numberline {第9章}概要}{96}
+\contentsline {section}{\numberline {9.1}両版の違い}{96}
+\contentsline {section}{\numberline {9.2}ノードの表現}{96}
+\contentsline {section}{\numberline {9.3}逐次版とのインターフェース}{96}
+\contentsline {section}{\numberline {9.4}両者の切りわけ}{97}
+\contentsline {chapter}{\numberline {第10章}メッセージ通信版}{98}
+\contentsline {section}{\numberline {10.1}処理系の構成}{99}
+\contentsline {section}{\numberline {10.2}基本方式}{99}
+\contentsline {subsection}{\numberline {10.2.1}荘園}{100}
+\contentsline {subsubsection}{終了検出}{100}
+\contentsline {subsubsection}{中断検出}{100}
+\contentsline {subsection}{\numberline {10.2.2}外部参照ポインタ}{103}
+\contentsline {subsubsection}{表現形式}{103}
+\contentsline {subsubsection}{{ジェネリック・オブジェクト}を用いた実現}{103}
+\contentsline {subsubsection}{輸出表}{104}
+\contentsline {subsubsection}{外部参照ポインタの生成}{105}
+\contentsline {subsubsection}{外部参照ポインタの解放}{105}
+\contentsline {subsection}{\numberline {10.2.3}分散ユニフィケーション}{106}
+\contentsline {subsubsection}{外部参照オブジェクトX と具体値 value}{108}
+\contentsline {subsubsection}{{ジェネレータ外部参照オブジェクト} X と, {コンシューマ(群)} あるいは中断ゴール (群) がフックした変数 Y}{108}
+\contentsline {subsubsection}{{ジェネレータ外部参照オブジェクト} 同士 (X, Y)}{108}
+\contentsline {subsubsection}{{コンシューマ外部参照オブジェクト(群)} がフックしている変数同士}{108}
+\contentsline {subsubsection}{{外部参照オブジェクト} X と変数 V}{109}
+\contentsline {subsubsection}{具体的な実装}{109}
+\contentsline {subsection}{\numberline {10.2.4}参照値の読出し (dereference)}{109}
+\contentsline {subsection}{\numberline {10.2.5}ループへの対処}{111}
+\contentsline {subsubsection}{ユニフィケーションによるループ}{111}
+\contentsline {subsubsection}{生成}{111}
+\contentsline {subsubsection}{問題点}{111}
+\contentsline {subsubsection}{解決方法}{112}
+\contentsline {subsubsection}{読出し処理によるループ}{112}
+\contentsline {subsubsection}{生成}{112}
+\contentsline {subsubsection}{問題点}{112}
+\contentsline {subsubsection}{解決方法}{113}
+\contentsline {section}{\numberline {10.3}詳細な実装}{114}
+\contentsline {subsection}{\numberline {10.3.1}分散プロセス立ち上げ方式}{114}
+\contentsline {subsection}{\numberline {10.3.2}メッセージの送信/受信}{115}
+\contentsline {subsubsection}{メッセージの送信}{115}
+\contentsline {subsubsection}{メッセージの受信}{116}
+\contentsline {subsection}{\numberline {10.3.3}分散処理用{ジェネリック・オブジェクト}の詳細}{116}
+\contentsline {subsubsection}{{ジェネレータ外部参照オブジェクト}の詳細}{117}
+\contentsline {subsubsection}{{コンシューマ外部参照オブジェクト}の詳細}{118}
+\contentsline {subsection}{\numberline {10.3.4}{リプライ・コンシューマ・オブジェクト}の詳細}{118}
+\contentsline {chapter}{\numberline {第11章}共有メモリ並列実装}{120}
+\contentsline {section}{\numberline {11.1}概要}{120}
+\contentsline {section}{\numberline {11.2}処理系の構成}{120}
+\contentsline {subsection}{\numberline {11.2.1}共有変数オブジェクト}{120}
+\contentsline {subsection}{\numberline {11.2.2}局所領域と共有領域}{121}
+\contentsline {subsection}{\numberline {11.2.3}ゴールの投げだし}{122}
+\contentsline {subsection}{\numberline {11.2.4}共有変数の具体化}{123}
+\contentsline {subsection}{\numberline {11.2.5}共有ヒープへのコピーの遅延}{123}
+\contentsline {section}{\numberline {11.3}共有ヒープのガーベジコレクション}{124}
+\contentsline {subsection}{\numberline {11.3.1}局所GC}{124}
+\contentsline {subsection}{\numberline {11.3.2}共有ヒープGC}{124}
+\contentsline {subsubsection}{ルートの決定}{126}
+\contentsline {subsubsection}{並列読み出しと書き込み}{126}
+\contentsline {subsubsection}{コンパイル時のオプション}{129}
+\contentsline {chapter}{索引}{130}

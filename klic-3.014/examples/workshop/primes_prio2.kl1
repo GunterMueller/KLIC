@@ -1,0 +1,20 @@
+:- module main.                                                           %  1
+main :- primes(1000,LP), io:outstream([print(LP),nl]).                    %  2
+
+primes(Nth,LP) :- gen_primes(AB,Ps), pkup(Ps,Nth,AB,LP).                  %  3
+
+gen_primes(AB,Ps) :- gen(AB,2,Ns)@lower_priority, sift(Ns,Ps).            %  4
+
+gen(abort,_,Ns) :- Ns=[].                                                 %  5
+alternatively.                                                            %  6
+gen(AB,   N,Ns) :- Ns=[N|Ns2], N2:=N+1, gen(AB,N2,Ns2).                   %  7
+
+sift([],    Zs) :- Zs=[].                                                 %  8
+sift([P|Xs],Zs) :- Zs=[P|Zs2], filter(P,Xs,Ys), sift(Ys,Zs2).             %  9
+
+filter(_,[],    Ys) :-               Ys=[].                               % 10
+filter(P,[X|Xs],Ys) :- X mod P=\=0 | Ys=[X|Ys2], filter(P,Xs,Ys2).        % 11
+filter(P,[X|Xs],Ys) :- X mod P=:=0 |             filter(P,Xs,Ys).         % 12
+
+pkup([P|_], Nth,AB,LP) :- Nth=:=1 | LP=P, AB=abort.                       % 13
+pkup([_|Ps],Nth,AB,LP) :- Nth=\=1 | Nth2:=Nth-1, pkup(Ps,Nth2,AB,LP).     % 14

@@ -1,0 +1,23 @@
+  :- module(main).
+
+  main :- data:sort(X), qsort(X).
+
+  qsort(In) :- true | term1(In,Mid,[]), term2(Mid,Out,[]), io:outstream(Out).
+
+  node1([]   ,V,N,L,R,Xs,Ys) :-  true   | L = [], R = [], Xs=[(N-V)|Ys].
+  node1([H|T],V,N,L,R,Xs,Ys) :-  H > V  | R = [H|NR], node1(T,V,N,L,NR,Xs,Ys).
+  node1([H|T],V,N,L,R,Xs,Ys) :-  H < V  | L = [H|NL], node1(T,V,N,NL,R,Xs,Ys).
+  node1([H|T],V,N,L,R,Xs,Ys) :- H =:= V | M := N+1, node1(T,V,M,L,R,Xs,Ys).
+
+  term1([]   ,Xs ,Ys) :- true | Xs = Ys.
+  term1([H|T],Xs0,Ys) :- true |
+       term1(L,Xs0,Xs1), node1(T,H,1,L,R,Xs1,Xs2), term1(R,Xs2,Ys).
+
+  node2([]       ,V,L,R) :-  true   | L = [], R = [].
+  node2([(K-M)|T],V,L,R) :-  K =< V | R = [(K-M)|NR], node2(T,V,L,NR).
+  node2([(K-M)|T],V,L,R) :-  K >  V | L = [(K-M)|NL], node2(T,V,NL,R).
+
+  term2([]   ,Xs ,Ys) :- true | Xs = Ys.
+  term2([(K-M)|T],Xs0,Ys) :- true |
+       term2(L,Xs0,Xs1), Xs1 = [print(hist(M,K),nl|Xs2], 
+       node2(T,K,L,R), term2(R,Xs2,Ys).

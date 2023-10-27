@@ -1,0 +1,59 @@
+@numchapentry{Language Overview}{1}{Overview}{1}
+@numchapentry{Execution Mechanism of KL1}{2}{Execution Mechanism}{3}
+@numsecentry{A Simple Example}{2.1}{Simple Example}{3}
+@numsecentry{Program Execution}{2.2}{Program Execution}{3}
+@numsecentry{Unification}{2.3}{Unification}{4}
+@numsecentry{Syntax of Clauses}{2.4}{Clause Syntax}{4}
+@numsecentry{Basic Execution Mechanism}{2.5}{Basic Execution Mechanism}{5}
+@numsecentry{Concurrency, Communication and Synchronization}{2.6}{Concurrency}{5}
+@numsecentry{More on Execution Mechanism}{2.7}{More on Execution Mechanism}{6}
+@numsecentry{Summary of Execution Mechanism}{2.8}{Summary of Execution Mechanism}{7}
+@numchapentry{Data Types and Notation}{3}{Data Types and Notation}{8}
+@numsecentry{Logical Variables}{3.1}{Logical Variables}{8}
+@numsubsecentry{Variables are not Memory Addresses}{3.1.1}{Variables are not Memory Addresses}{8}
+@numsubsecentry{Variables Without Types}{3.1.2}{Variables Don't Have Types}{8}
+@numsecentry{Atomic Data}{3.2}{Atomic Data}{9}
+@numsubsecentry{Symbolic Atoms}{3.2.1}{Symbolic Atoms}{9}
+@numsubsecentry{Numerical Atoms}{3.2.2}{Numerical Atoms}{10}
+@numsecentry{Structured Data}{3.3}{Structured Data}{10}
+@numsubsecentry{Functors}{3.3.1}{Functors}{11}
+@numsubsecentry{Vectors}{3.3.2}{Vectors}{11}
+@numsubsecentry{Strings}{3.3.3}{String}{12}
+@numsubsecentry{Lists}{3.3.4}{Lists}{12}
+@numsubsecentry{Incomplete Data Structures}{3.3.5}{Incomplete Data Structures}{12}
+@numsubsecentry{Unification of Structures}{3.3.6}{Unification of Structures}{13}
+@numsubsubsecentry{Guard Unification of Structures}{3.3.6.1}{Guard Unification of Structures}{13}
+@numsubsubsecentry{Body Unification of Structures}{3.3.6.2}{Body Unification of Structures}{13}
+@numsubsecentry{Structures are Values}{3.3.7}{Structures are Values}{13}
+@numsecentry{Notational Conventions}{3.4}{Notational Conventions}{14}
+@numsubsecentry{Guard Unification within Head}{3.4.1}{Guard Unification within Head}{14}
+@numsubsecentry{Omitting the Goal true}{3.4.2}{Omitting the Goal `true'}{14}
+@numsecentry{Summary of Data Types and Notation}{3.5}{Summary of Data Types and Notation}{15}
+@numchapentry{Processes and Streams}{4}{Processes and Streams}{16}
+@numsecentry{Processes}{4.1}{Processes}{16}
+@numsubsecentry{Processes of KL1}{4.1.1}{Processes of KL1}{16}
+@numsubsecentry{Summing Up Elements of a List}{4.1.2}{Summing Up Elements of a List}{16}
+@numsubsecentry{List of Natural Numbers}{4.1.3}{List of Natural Numbers}{17}
+@numsecentry{Communication}{4.2}{Communication}{18}
+@numsubsecentry{Combining Processes}{4.2.1}{Combining Processes}{18}
+@numsubsecentry{Stream Communication}{4.2.2}{Stream Communication}{19}
+@numsubsecentry{Process State}{4.2.3}{Process State}{20}
+@numsubsecentry{Structured Messages}{4.2.4}{Structured Messages}{20}
+@numsecentry{Summary of Processes and Streams}{4.3}{Summary of Processes and Streams}{21}
+@numchapentry{Process Network}{5}{Process Network}{22}
+@numsecentry{Filters}{5.1}{Filters}{22}
+@numsecentry{Concatenating Streams}{5.2}{Concatenating Streams}{23}
+@numsecentry{Merging Streams}{5.3}{Merging Streams}{25}
+@numsecentry{Builtin Merger}{5.4}{Builtin Merger}{26}
+@numsecentry{Dispatchers}{5.5}{Dispatchers}{26}
+@numsecentry{Servers}{5.6}{Servers}{27}
+@numsecentry{Summary of Process Network}{5.7}{Summary of Process Network}{27}
+@numchapentry{Pragmas}{6}{Pragmas}{28}
+@numsecentry{Principles of Specification of Parallel Execution}{6.1}{Principles of Specification of Parallel Execution}{28}
+@numsubsecentry{Programs Specify Load Distribution}{6.1.1}{Programs Specify Load Distribution}{28}
+@numsubsecentry{Separating Concurrency and Parallelism}{6.1.2}{Separating Concurrency and Parallelism}{29}
+@numsecentry{Goal Distribution}{6.2}{Goal Distribution}{29}
+@numsecentry{Goal Priority}{6.3}{Goal Priority}{30}
+@numsecentry{Clause Priority}{6.4}{Clause Priority}{30}
+@numsecentry{Summary of Pragmas}{6.5}{Summary of Pragmas}{31}
+@unnchapentry{Concept Index}{10001}{Concepts}{32}

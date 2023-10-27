@@ -1,0 +1,38 @@
+#
+# @(#)$Header: /mm2/home/cvs/bc-src/tgif/make.common,v 1.1 2004/06/18 23:20:49 william Exp $
+#
+# This file is shared by Makefile.noimake and descrip.mms.
+# $(O) and $(XBM) must be defined before this file is included.
+#
+
+OBJ1 =  align$(O) animate$(O) arc$(O) attr$(O) auxtext$(O) \
+        box$(O) button$(O) \
+        chat$(O) chinput$(O) choice$(O) choose$(O) cli_xcin$(O) convkinput$(O) \
+                convxim$(O) cmd$(O) color$(O) cursor$(O) cutpaste$(O) \
+        dialog$(O) drawing$(O) dup$(O) \
+        edit$(O) eps$(O) exec$(O) expr$(O) \
+        file$(O) font$(O) ftp$(O) \
+        grid$(O) group$(O) \
+        help$(O) http$(O) \
+        imgproc$(O) import$(O) ini$(O) inmethod$(O) \
+        list$(O) \
+        mainloop$(O) mainmenu$(O) mark$(O) markup$(O) menu$(O) \
+                menuinfo$(O) miniline$(O) move$(O) msg$(O) \
+        names$(O) navigate$(O) nkf$(O) \
+        obj$(O) oval$(O) \
+        page$(O) pattern$(O) pin$(O) poly$(O) polygon$(O) ps$(O) \
+        raster$(O) rcbox$(O) rect$(O) remote$(O) ruler$(O) \
+        scroll$(O) select$(O) setup$(O) shape$(O) shortcut$(O) \
+                special$(O) spline$(O) stk$(O) stream$(O) stretch$(O) \
+                strtbl$(O) \
+        tangram2$(O) tdgtbase$(O) tdgtbmpl$(O) tdgtbrow$(O) tdgtbtn$(O) \
+		tdgtdraw$(O) tdgtlist$(O) tdgtmsg$(O) tdgtsedt$(O) \
+		tgif_dbg$(O) tgtwb5$(O) tgtwb5dl$(O) tgtwb5xl$(O) \
+		tidget$(O) tcp$(O) text$(O) \
+        util$(O) \
+        version$(O) vms_comp$(O) \
+        wb$(O) wb1$(O) wb2$(O) wb3$(O) wb_buff$(O) wb_mcast$(O) wb_seg$(O) \
+        xbitmap$(O) xpixmap$(O) xprtfltr$(O)
+
+OBJS = tgif$(O) $(OBJ1)
+

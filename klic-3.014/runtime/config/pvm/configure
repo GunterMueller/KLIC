@@ -1,0 +1,47 @@
+# ---------------------------------------------------------- 
+#   (C) 1995 Institute for New Generation Computer Technology 
+#	(Read COPYRIGHT for detailed information.) 
+#   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+#       (Read COPYRIGHT-JIPDEC for detailed information.)
+# ----------------------------------------------------------
+cat <<GAZONK
+
+# This KLIC needs a PVM3.3 system installed.
+
+GAZONK
+
+if test "$PVM_ROOT" = ""; then
+	PVM_ROOT="/usr/local/src/pvm3/pvm3.3"
+fi
+ask_directory "PVM_ROOT" "PVM_ROOT" || exit 1
+if test "$PVM_ARCH" = ""; then
+	if test -x $PVM_ROOT/lib/pvmgetarch; then
+		PVM_ARCH=`$PVM_ROOT/lib/pvmgetarch`
+	else
+		PVM_ARCH="SUN4SOL2"
+	fi
+fi
+ask_with_default "PVM_ARCH" "PVM_ARCH" || exit 1
+if test "$PVMLIB" = ""; then
+	PVMLIB="pvm3"
+fi
+ask_with_default "PVM library" "PVMLIB" || exit 1
+
+# This script is used for PVM-TCP version.
+
+if [ "$disttype" = "pvm" ]; then
+  echo $n "Use polling version with reduction counter"$c
+  if ask_yes_or_no no USE_REDUCTION_COUNT; then
+    USE_REDUCTION_COUNT=yes
+    REDUCTION_COUNTS=500
+    ask_with_default "How many Counts" "REDUCTION_COUNTS" || exit 1
+  else
+    USE_REDUCTION_COUNT=no
+  fi
+fi
+
+export PVM_ROOT
+export PVM_ARCH
+export PVMLIB
+export USE_REDUCTION_COUNT
+export REDUCTION_COUNTS

@@ -1,0 +1,184 @@
+/*-----------------------------------------------------------------------------
+Program:  Waves
+Author:   I. Foster 
+Modified: translated from Strand into KL1 by E. Tick
+Date:     March 5 1991
+
+Notes:
+1. To run:
+    :- go(D,I,S).
+
+where D = the dimension of the torus (must be greater than 5) and
+I = the number of iterations (typically 3 or 4).  This program builds 
+a torus computes the sum at each point using an iterative technique.
+
+Ian Foster says typical query is:  ?- go(6,6,S).  but that seems small...
+
+Make by nkc June 7 1991   
+     nkc waves.kl1 output=kbn,wave:go,waves
+
+-----------------------------------------------------------------------------*/
+:- module main.
+
+main:-true | go6_2.
+
+go6_6 :- true | go(6,6,S).
+go6_2 :- true | go(6,2,S).
+go10_5 :- true | go(10,5,S).
+go11_5 :- true | go(11,5,S).
+go12_5 :- true | go(12,5,S).
+go9_6  :- true | go( 9,6,S).
+go10_6 :- true | go(10,6,S).
+go11_6 :- true | go(11,6,S).
+
+go(D,Stop,S) :- D > 5, Stop > 0 |                       % D dimensional cube
+	IDim := D - 2,					% 1 =< i =< D-1
+        S=yes,
+	planes(0,D,Ks,Stop,done,Done,Go),		% spawn structure
+	gen(IDim,D,Ks),					% close edge streams
+	start(Done,Go).					% begin computation
+otherwise.
+go(_,_,S) :- true | S=no.
+
+planes(K,D,Ks,Stop,L,R,Go) :- K < D | 			% spawn planes in K
+	K1 := K + 1,
+	gen1(D,Js), 
+	plane(1,K,D,Js,Ks,NKs,Stop,L,M,Go), 		% spawn one plane
+	planes(K1,D,NKs,Stop,M,R,Go).			% rest recursively
+planes(K,K,Ks,_,L,R,_) :- true |			% all done
+	R = L, end(Ks).
+
+plane(I,K,D,Js,[Ks|Kss],NKs,Stop,L,R,Go) :- true |      % spawn colums in I
+	I1 := I + 1,
+	NKs = [Ks1|Kss1], 
+	col(I,0,K,D,{[],_},Js,Js1,Ks,Ks1,Stop,L,M,Go), 	% spawn one column
+	plane(I1,K,D,Js1,Kss,Kss1,Stop,M,R,Go).		% rest recursively
+plane(_,_,_,Js,[],NKs,_,L,R,_) :- true |		% all done
+	R = L, NKs = [], end1(Js).
+
+col(I,J,K,D,S,[W|Ws],Es,[B|Bs],Fs,Stop,L,R,Go) :- true |% spawn a column
+	J1 := J + 1, Max := D - 1, End := D - 2,
+	Es = [{Eo,Ei}|Es1], Fs = [{Fo,Fi}|Fs1], 	% spawn point I,J,K
+	pt(I,J,K,End,Max,{Ni,No},{Ei,Eo},S,W,B,{Fi,Fo},1,Stop,L,M,Go),
+	col(I,J1,K,D,{No,Ni},Ws,Es1,Bs,Fs1,Stop,M,R,Go).
+col(_,_,_,_,{_,So},[],Es,[],Fs,_,L,R,_) :- true |	% all points spawned
+	R = L, So = [], Es = [], Fs = [].
+
+pt(I,J,K,E,_,{Ni,No},{Ei,Eo},{Si,So},{Wi,Wo},{Bi,Bo},{Fi,Fo},IS,Stop,L,R,Go):-
+        2 =< I, I < E, 1 =< J, J =< E, 1 =< K, K =< E | 	
+	R = L,						% Interior Point
+	filter(Go,Ni,So,send(IS),Is,I1,Os,O1),		% deal with step msgs
+	filter(Go,Ei,Wo,send(IS),I1,I2,O1,O2),
+	filter(Go,Si,No,none,I2,I3,O2,O3),
+	filter(Go,Wi,Eo,none,I3,I4,O3,O4),
+	filter(Go,Bi,Fo,none,I4,I5,O4,O5),
+	filter(Go,Fi,Bo,send(IS),I5,[],O5,[]),
+	node(I,J,K,Is,Os,IS,Stop).
+pt(1,J,K,E,_,{Ni,No},{Ei,Eo},{Si,So},{Wi,Wo},{Bi,Bo},{Fi,Fo},IS,Stop,L,R,Go):- 
+        1 =< J, J =< E, 1 =< K, K =< E |
+	Eo = [step(0,S1,A1),step(1,S2,A2)|Eo1],	% Low I Boundary
+	acknowledged(A1,A2,L,R),
+	route(Go,Ni,Ei,Si,Wi,Bi,Fi,No,Eo1,So,Wo,Bo,Fo,Os),
+	node(1,J,K,[S1,S2],Os,IS,Stop).
+pt(E,J,K,E,_,{Ni,No},{Ei,Eo},{Si,So},{Wi,Wo},{Bi,Bo},{Fi,Fo},IS,Stop,L,R,Go):- 
+        1 =< J, J =< E, 1 =< K, K =< E |
+	Wo = [step(0,S1,A1),step(1,S2,A2)|Wo1], 	% High I Boundary
+	acknowledged(A1,A2,L,R),
+	route(Go,Ni,Ei,Si,Wi,Bi,Fi,No,Eo,So,Wo1,Bo,Fo,Os),
+	node(E,J,K,[S1,S2],Os,IS,Stop).
+pt(I,J,0,E,_,{Ni,No},{Ei,Eo},{Si,So},{Wi,Wo},{Bi,Bo},{Fi,Fo},IS,Stop,L,R,Go):- 
+        1 =< I, I =< E, 1 =< J, J =< E |
+	K1 := E - 2, Fo = [step(K1,S1,A1)|Fo1],	% Low K Boundary
+	acknowledged(A1,L,R),
+	route(Go,Ni,Ei,Si,Wi,Bi,Fi,No,Eo,So,Wo,Bo,Fo1,Os),
+	node(I,J,0,[S1],Os,IS,Stop).
+pt(I,J,M,E,M,{Ni,No},{Ei,Eo},{Si,So},{Wi,Wo},{Bi,Bo},{Fi,Fo},IS,Stop,L,R,Go):- 
+        1 =< I, I =< E, 1 =< J, J =< E |			
+	K1 := E - 2, Bo = [step(K1,S1,A1)|Bo1], 	% High K Boundary
+	acknowledged(A1,L,R),
+	route(Go,Ni,Ei,Si,Wi,Bi,Fi,No,Eo,So,Wo,Bo1,Fo,Os),
+	node(I,J,M,[S1],Os,IS,Stop).
+pt(I,0,K,E,M,{Ni,No},{Ei,Eo},{Si,So},{Wi,Wo},{Bi,Bo},{Fi,Fo},IS,Stop,L,R,Go):- 
+        1 =< I, I =< E, 0 =< K, K =< M |			
+	J1 := E - 2, No = [step(J1,S1,A1)|No1], 	% Low J Boundary
+	acknowledged(A1,L,R),
+	route(Go,Ni,Ei,Si,Wi,Bi,Fi,No1,Eo,So,Wo,Bo,Fo,Os),
+	node(I,0,K,[S1],Os,IS,Stop).
+pt(I,M,K,E,M,{Ni,No},{Ei,Eo},{Si,So},{Wi,Wo},{Bi,Bo},{Fi,Fo},IS,Stop,L,R,Go):- 
+        1 =< I, I =< E, 0 =< K, K =< M |			
+	J1 := E - 2, So = [step(J1,S1,A1)|So1],	% High J Boundary
+	acknowledged(A1,L,R),
+	route(Go,Ni,Ei,Si,Wi,Bi,Fi,No,Eo,So1,Wo,Bo,Fo,Os),
+	node(I,M,K,[S1],Os,IS,Stop).
+
+filter(Go,[step(0,S,A)|Is],Os,IM,Ib,Ie,Ob,Oe) :- true | % step at destination
+        Ob = [S|Ob1], A = ack,	                        % acknowledge + merge
+	filter(Go,Is,Os,IM,Ib,Ie,Ob1,Oe).		% deal with others
+filter(Go,[step(N,S,A)|Is],Os,IM,Ib,Ie,Ob,Oe) :-	% step to be routed
+        N > 0 | N1 := N - 1, Os = [step(N1,S,A)|Os1],	% route it
+	filter(Go,Is,Os1,IM,Ib,Ie,Ob,Oe).		% deal with others
+filter(go,I,O,send(IS),Ib,Ie,Ob,Oe) :- true |		% all done, initiate
+	Ib = [I|Ie], O = [IS|O1], Ob = [O1|Oe].	% send state behind
+filter(go,I,O,none,Ib,Ie,Ob,Oe) :- true |		% all done
+	Ib = [I|Ie], Ob = [O|Oe].
+                                                        % route boundary msgs
+route(Go,Ni,Ei,Si,Wi,Bi,Fi,No,Eo,So,Wo,Bo,Fo,Os) :- true |
+    bfilter(Go,Ni,So,Os,O1), bfilter(Go,Ei,Wo,O1,O2), 
+    bfilter(Go,Si,No,O2,O3), bfilter(Go,Wi,Eo,O3,O4),
+    bfilter(Go,Bi,Fo,O4,O5), bfilter(Go,Fi,Bo,O5,[]).
+
+bfilter(Go,[step(0,S,A)|Is],Os,Ob,Oe) :- true |		% step at destination
+    Ob = [S|Ob1], A = ack,			        % acknowledge + merge
+    bfilter(Go,Is,Os,Ob1,Oe).                           % deal with others
+bfilter(Go,[step(N,S,A)|Is],Os,Ob,Oe) :-		% step to be routed
+    N > 0 | N1 := N - 1, Os = [step(N1,S,A)|Os1],	% route it
+    bfilter(Go,Is,Os1,Ob,Oe).		                % deal with others
+bfilter(go,_,O,Ob,Oe) :- true |	Ob=Oe, O=[].	        % all done
+
+node(I,J,K,Is,Os,State,Stop) :-				% internal pt 
+    Stop > 0 | 						% still iterating
+    Stop1 := Stop-1,	
+    getin(Is,Vals,Is1),				        % recv from neighbors
+    compute(I,J,K,Vals,State,NewState),		        % compute local value
+    putout(NewState,Os,Os1),			        % send to neighbors
+    node(I,J,K,Is1,Os1,NewState,Stop1).		        % do it again
+node(_,_,_,_,_,_,0) :- true | true.			% time to stop
+
+getin([[V|Vs]|Ss],Vo,Is1) :- true |			% recv from open strms
+    Vo = [V|Vs1], Is1 = [Vs|Ss1], 	
+    getin(Ss,Vs1,Ss1).
+getin([[]|Ss],Vs,Is1) :- true | getin(Ss,Vs,Is1).	% skip closed strms
+getin([],Vs,Is1) :- true | Vs=[], Is1=[].
+
+compute(I,J,K,L,S,NS) :- true |
+    checklist(L,Sync),
+    show(Sync,I,J,K,L,S,NS).
+
+checklist([L|Ls],Sync) :- integer(L) | checklist(Ls,Sync).
+checklist([],    Sync) :-       true | Sync = [].
+
+show(Sync,I,J,K,L,S,NS) :- wait(Sync) | NS := S + 1.
+
+putout(State,[S|Ss],So) :- true |			% send state out
+    S = [State|S1], So = [S1|Ss1],		        % return new tail
+    putout(State,Ss,Ss1).				% send to others
+putout(_,[],So) :- true | So=[].			% all sent
+
+start(done,Go) :- true | Go=go.				% begin when spawned
+
+acknowledged(ack,L,R) :- true | R=L.		        % close cct if acked
+acknowledged(ack,ack,L,R) :- true | R=L.		% close if two asks
+
+
+gen(N,D,Ks) :-  N>0 | N1 := N-1, Ks=[Ks1|Kss], gen1(D,Ks1), gen(N1,D,Kss).
+gen(0,_,Ks) :- true | Ks=[].
+
+gen1(N,Ks)  :-  N>0 | N1 := N-1, Ks = [{[],_}|Ks1], gen1(N1,Ks1).
+gen1(0,Ks)  :- true | Ks=[].
+
+end([S|Ss]) :- true | end1(S), end(Ss).			
+end([]) :- true | true.
+
+end1([{_,O}|Ss]) :- true | O=[], end1(Ss).
+end1([]) :- true | true.
+

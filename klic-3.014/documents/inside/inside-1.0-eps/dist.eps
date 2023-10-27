@@ -1,0 +1,325 @@
+%!PS-Adobe-2.0 EPSF-1.2
+%%BoundingBox: 178 660 325 807
+%%Title: dist
+%%CreationDate: Tue Jan 20 16:42:43 1998
+%%Creator: Tgif-3.0J-p13 by William Chia-Wei Cheng (william@cs.UCLA.edu)
+
+/tgifdict 7 dict def
+tgifdict begin
+
+%%Title: eucfont.ps
+% old eucfont.ps(OCFeucfont) and new eucfont.ps(CIDeucfont) were combined.
+%  1996-09, kawamata@sra.co.jp
+% Sample Usage:
+%   Operands are only font names permitted. Don't put fontdict itself.
+% /Courier-Ryumin /Courier /Ryumin-Light-EUC-V eucfont
+
+%%Title: CIDeucfont.ps
+%%Creator: yohtaki@cis.ibaraki.ac.jp
+%%CreationDate: 1996-9-29
+%%EndComments
+%
+% <newfont> <asciifont> <kanjifont> CIDeucfont
+/CIDeucfont {
+dup findfont /WMode get 1 eq 4 1 roll % push direction info.
+12 dict begin
+  /CIDInit /ProcSet findresource begin
+  exch [ 3 1 roll ] beginrearrangedfont
+      3 -1 roll {   % pop direction info
+         /WMode 1 def	% vertical font
+         0 beginusematrix [ 0 1 -1 0 0 0.3 ] endusematrix
+      } if
+      1 usefont
+      1 beginbfrange
+         <00> <7F> <00>
+       endbfrange
+     endrearrangedfont
+  end
+end
+} def
+
+%%Title: OCFeucfont.ps
+%%Creator: shikida@cs.titech.ac.jp, ueno@cs.titech.ac.jp
+%%CreationDate: 1991-2-27
+%%EndComments
+% <font> OCFcopyfont <font>
+/OCFcopyfont {
+    dup maxlength 1 add dict begin
+    {
+	1 index /FID ne 2 index /UniqueID ne and
+	{def} {pop pop} ifelse
+    } forall
+    currentdict
+    end
+} bind def
+% <newfont> <asciifont> <kanjifont> OCFeucfont
+/OCFeucfont {
+      12 dict begin
+	dup type /nametype eq { findfont } if
+	dup /WMode known {
+	    dup /WMode get /WMode exch def
+	    WMode 1 eq {
+		[0.0 1.0 -1.0 0.0 0.0 0.30] makefont
+	    } if
+	} if
+	OCFcopyfont dup begin
+	    /Encoding Encoding
+	    FMapType dup 2 eq {
+		pop 128 128
+	    } { 5 eq {
+		256 256
+	    } {
+		/compositefont errordict /invalidfont get exec
+	    } ifelse
+	    } ifelse
+	    getinterval def
+	end
+	/kanjifont exch definefont
+	exch
+
+	dup type /nametype eq { findfont } if
+	exch
+
+	/FDepVector [ 4 2 roll ] def
+	/FontType 0 def
+	/FMapType 4 def
+	/FontMatrix matrix def
+	/Encoding [ 0 1 ] def
+	/FontBBox {0 0 0 0} def
+	dup /FontName exch def
+	currentdict
+    end
+    definefont pop
+} def
+
+% <newfont> <asciifont> <kanjifont> eucfont
+/eucfont {
+	dup findfont
+	/FMapType get 9 eq
+		{ CIDeucfont}
+		{ OCFeucfont} ifelse
+} def
+/tgifcentertext { dup stringwidth pop 2 div neg 0 rmoveto } def
+
+end
+
+%%PageBoundingBox: 178 660 325 807
+tgifdict begin
+/tgifsavedpage save def
+
+1 setmiterlimit
+1 setlinewidth
+
+0 setgray
+
+72 0 mul 72 11.70 mul translate
+72 128 div 100.000 mul 100 div dup neg scale
+
+gsave
+
+/tgiforigctm matrix currentmatrix def
+
+% BOX
+0 setgray
+newpath
+   320 256 moveto 576 256 lineto 576 320 lineto 320 320 lineto
+closepath fill
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         320 256 moveto 576 256 lineto 576 320 lineto 320 320 lineto
+      closepath
+      2 setlinewidth
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         320 64 moveto 576 64 lineto 576 256 lineto 320 256 lineto
+      closepath
+      2 setlinewidth
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   0.995 setgray
+   newpath
+      320 128 moveto 512 128 lineto 512 192 lineto 320 192 lineto
+   closepath fill
+grestore
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         320 128 moveto 512 128 lineto 512 192 lineto 320 192 lineto
+      closepath
+      2 setlinewidth
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   0.94 setgray
+   newpath
+      320 192 moveto 384 192 lineto 384 256 lineto 320 256 lineto
+   closepath fill
+grestore
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         320 192 moveto 384 192 lineto 384 256 lineto 320 256 lineto
+      closepath
+      2 setlinewidth
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   0.94 setgray
+   newpath
+      384 192 moveto 448 192 lineto 448 256 lineto 384 256 lineto
+   closepath fill
+grestore
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         384 192 moveto 448 192 lineto 448 256 lineto 384 256 lineto
+      closepath
+      2 setlinewidth
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   0.94 setgray
+   newpath
+      448 192 moveto 512 192 lineto 512 256 lineto 448 256 lineto
+   closepath fill
+grestore
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         448 192 moveto 512 192 lineto 512 256 lineto 448 256 lineto
+      closepath
+      2 setlinewidth
+      stroke
+   grestore
+grestore
+
+% BOX
+0 setgray
+gsave
+   0.763 setgray
+   newpath
+      416 224 moveto 512 224 lineto 512 256 lineto 416 256 lineto
+   closepath fill
+grestore
+gsave
+   10 setmiterlimit
+   gsave
+      newpath
+         416 224 moveto 512 224 lineto 512 256 lineto 416 256 lineto
+      closepath
+      2 setlinewidth
+      stroke
+   grestore
+grestore
+
+% TEXT
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H /Times-Roman /Ryumin-Light-EUC-H eucfont
+/Times-Roman-Ryumin-Light-EUC-H findfont [17 0 0 -17 0 0] makefont setfont
+   gsave
+      448 104 moveto (KLIC\263\313\311\364) tgifcentertext show
+   grestore
+
+% TEXT
+0 setgray
+newpath
+   356 149 moveto 476 149 lineto 476 170 lineto 356 170 lineto
+closepath 1 setgray fill
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [17 0 0 -17 0 0] makefont setfont
+   gsave
+      416 166 moveto (\245\341\245\303\245\273\241\274\245\270\304\314\277\256) tgifcentertext show
+   grestore
+
+% TEXT
+0 setgray
+newpath
+   333 208 moveto 370 208 lineto 370 239 lineto 333 239 lineto
+closepath 1 setgray fill
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [12 0 0 -12 0 0] makefont setfont
+   gsave
+      352 221 moveto (\266\246\315\255) tgifcentertext show
+      352 236 moveto (\245\341\245\342\245\352) tgifcentertext show
+   grestore
+
+% TEXT
+0 setgray
+newpath
+   389 199 moveto 442 199 lineto 442 215 lineto 389 215 lineto
+closepath 1 setgray fill
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [12 0 0 -12 0 0] makefont setfont
+   gsave
+      416 212 moveto (PVM/TCP) tgifcentertext show
+   grestore
+
+% TEXT
+0 setgray
+newpath
+   466 197 moveto 494 197 lineto 494 213 lineto 466 213 lineto
+closepath 1 setgray fill
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [12 0 0 -12 0 0] makefont setfont
+   gsave
+      480 210 moveto (PVM) tgifcentertext show
+   grestore
+
+% TEXT
+0 setgray
+newpath
+   445 224 moveto 482 224 lineto 482 255 lineto 445 255 lineto
+closepath 1 setgray fill
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [12 0 0 -12 0 0] makefont setfont
+   gsave
+      464 237 moveto (PVM) tgifcentertext show
+      464 252 moveto (\275\350\315\375\267\317) tgifcentertext show
+   grestore
+
+% TEXT
+0 setgray
+newpath
+   417 277 moveto 479 277 lineto 479 298 lineto 417 298 lineto
+closepath 1 setgray fill
+0 setgray
+/Times-Roman-Ryumin-Light-EUC-H findfont [17 0 0 -17 0 0] makefont setfont
+   gsave
+      448 294 moveto (OS, H/W) tgifcentertext show
+   grestore
+
+grestore
+tgifsavedpage restore
+end
+%MatchingCreationDate: Tue Jan 20 16:42:43 1998

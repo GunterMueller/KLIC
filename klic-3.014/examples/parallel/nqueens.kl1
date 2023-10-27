@@ -1,0 +1,70 @@
+% Parallel N-queens in KL1 in a continuation-passing style,
+% translated from the original, Prolog version given in the end of this file
+%
+% Taken from Kazunozi Ueda: Logic/Constraint Programming and
+% Concurrency: The Hard-Won Lessons of the Fifth Generation Computer
+% Project. Science of Computer Programming, Vol.164 (2018), pp.3-17.
+%
+% To compile: klic -dp nqueens.kl1 rlib.kl1 tty.kl1
+% To run (e.g., for 14 queens with 8 workers): ./a.out -p 8 14
+
+:- module main.
+
+main :- true | unix:argv(ISL), rlib:isltoi(ISL,N),
+    gen(1,N,L), queens(1, N, L, [], 'L0', NS),
+    tty:ttystream([putt(NS),nl]).
+
+queens(M, N, [], Y, Cont, NS) :- cont0(M, N, Cont, Y, NS).
+queens(M, N, [A|D],  Y, Cont, NS) :-
+    select(M, N, [A|D], 'L1'(Y,Cont), NS).
+
+select(M, N, [],  Cont, NS) :- NS = 0.
+select(M, N, [A|D],  Cont, NS) :-
+    select1(M, N, [A|D], Cont, NS1),
+    select2(M, N, [A|D], Cont, NS2),
+    NS := NS1 + NS2.
+
+select1(M, N, [A|D], Cont, NS) :- cont12(M, N, Cont, A, D, NS).
+
+select2(M, N, [],    _,  NS) :- NS = 0.
+select2(M, N, [A|D], Cont, NS) :- select(M, N, D, 'L2'(A,Cont), NS).
+
+qsafe(M, N, U, [P | Q], V, Cont, NS) :- P+V=\=U, P-V=\=U |
+    V1 := V+1, qsafe(M, N, U, Q, V1, Cont, NS).
+qsafe(M, N, U, [P | Q], V, Cont, NS) :- P+V=:=U | NS = 0.
+qsafe(M, N, U, [P | Q], V, Cont, NS) :- P-V=:=U | NS = 0.
+
+qsafe(3, N, U, [], V, 'L3'(D,A,Y,Cont), NS) :- queens(3, N, D, [A|Y], Cont, NS).
+qsafe(2, N, U, [], V, 'L3'(D,A,Y,Cont), NS) :-
+    pe(A, N, Y, PE), queen_dist(3, N, D, [A|Y], Cont, NS, PE).
+qsafe(1, N, U, [], V, 'L3'(D,A,Y,Cont), NS) :- queens(2, N, D, [A|Y], Cont, NS).
+
+pe(A, N, [B|_], PE) :- current_node(_, PEs), PE := (A + N*B) mod PEs.
+
+cont0(M, N, 'L0', Y, NS) :- NS = 1.
+
+cont12(M, N, 'L2'(H,Cont), A, D, NS) :- cont12(M, N, Cont, A, [H|D], NS).
+cont12(M, N, 'L1'(Y,Cont), A, D, NS) :- qsafe(M, N, A, Y, 1, 'L3'(D,A,Y,Cont), NS).
+
+queen_dist(M, N, D, [A|Y], Cont, NS, PE) :- PE =\= 0 |
+    queens(M, N, D, [A|Y], Cont, NS)@node(PE).
+queen_dist(M, N, D, [A|Y], Cont, NS, PE) :- PE =:= 0 |
+    queens(M, N, D, [A|Y], Cont, NS)@lower_priority.
+
+%%% miscellaneous
+
+gen(I ,J,Js ) :- I > J | Js=[].
+gen(I0,J,Js0) :- I0 =< J | Js0=[I0|Js], I:=I0+1, gen(I,J,Js).
+
+% % Original version in Prolog, with output unification moved to the end
+% queens([], Y0, Y) :- /*L0*/ Y = Y0.
+% queens([A | D], Y, Z) :-
+%   select([A | D], U, V) /*L1*/, qsafe(U, Y, 1), /*L3*/ queens(V, [U | Y], Z).
+% 
+% % select(original-list, selected-element, rest)
+% select([A | D], A, D).
+% select([A | D], U, V0) :- select(D, U, V) /*L2*/, V0 = [A | V].
+% 
+% % qsafe(new-row, old-row-list, column-distance)
+% qsafe(U, [P | Q], V) :- P+V=\=U, P-V=\=U, V1 is V+1, qsafe(U, Q, V1).
+% qsafe(U, [],      V).

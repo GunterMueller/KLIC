@@ -1,0 +1,162 @@
+\documentstyle[a4,mytwocolumn]{jarticle}
+\title{KL1 入門部分の概要 (案)}
+\author{近山 隆}
+\date{1993/11/04}
+\begin{document}
+\maketitle
+
+\section{構文と実行機構の基本}
+\begin{itemize}
+\item 簡単な例を使っての説明 (if-then)
+\begin{verbatim}
+not(In,Out) :- In=0 | Out=1.
+not(In,Out) :- In=1 | Out=0.
+\end{verbatim}
+\begin{itemize}
+\item 手続的意味 (informal)
+\item 実行の過程
+\begin{itemize}
+\item リダクションの進行
+\item データフロー同期による実行順変更
+\end{itemize}
+\item ユニフィケーション
+\begin{itemize}
+\item ガード: 同期とマッチング
+\item ボディ: 具体化\\
+(両方が具体値の場合は説明しない)
+\end{itemize}
+\end{itemize}
+\item 構文の一般的説明\\
+ヘッド引数は変数のみ\\
+構造体は説明しない
+\item 実行機構の説明\\
+ゴール → サブゴールへの書換え
+\item 補足事項
+\begin{itemize}
+\item 非決定性
+\item 全節が失敗した時
+\item 具体値同士のボディ・ユニファイ
+\item otherwise (else)
+\end{itemize}
+\end{itemize}
+
+\section{データとシンタクス}
+\begin{itemize}
+\item 論理変数について
+\begin{itemize}
+\item メモリ番地ではない\\
+数学での変数に近いもの
+\item 変数に型はない
+\end{itemize}
+\item 整数
+\item 組込述語
+\begin{itemize}
+\item ガード組込述語 (比較・演算)
+\item ボディ組込述語 (演算)
+\end{itemize}
+\item 記号アトム
+\item 構造体データ\\
+ファンクタ, コンス (リスト)
+\item 不完全データ構造
+\item 構造体同士のユニフィケーション
+\begin{itemize}
+\item ガードでのマッチングの仕方
+\item ボディでもマッチングになること
+\end{itemize}
+\item シンタクスの追加説明
+\begin{itemize}
+\item ヘッドにパターンが書ける
+\item ゴール true の省略
+\end{itemize}
+\end{itemize}
+
+\section{プロセスと通信}
+\begin{itemize}
+\item プロセス
+\begin{itemize}
+\item 再帰呼び出しによる繰り返し
+\item リスト要素についての繰り返し
+\item 繰り返しによるリスト生成
+\end{itemize}
+\item ストリーム通信
+\begin{itemize}
+\item リスト生成とその読み出しの結合
+\item それをプロセス間通信と読めること
+\item データフロー同期が行なわれること
+\item 間に自動的にバッファが入ること
+\end{itemize}
+\item プロセスの状態
+\begin{itemize}
+\item 状態を引数として保持
+\item 不完全メッセージによる読み出し
+\end{itemize}
+\end{itemize}
+
+\section{プロセスのネットワーク}
+\begin{itemize}
+\item ネットワーク構造の概観
+\item 木構造の問題分割
+\begin{itemize}
+\item リストの flatten\\
+\verb&[a,[b,c],[[d],e],[f]]&\\
+→ \verb&[a,b,c,d,e,f]&
+\item AND-OR 木の単純な評価
+\end{itemize}
+\item フィルタ (パイプライン)
+\item ストリームの連結 (append)
+\item ストリームのマージ
+\item ディスパッチとマージの組合せ
+\item 差分リストの基本
+\item サーバ・クライアント構造
+\end{itemize}
+
+\section{効率的な計算: プラグマ}
+\begin{itemize}
+\item プラグマの考え方\\
+正しさと効率の分離
+\item ゴール優先度指定
+\begin{itemize}
+\item データフローと優先度の関係
+\item 非決定性と優先度の関係
+\begin{itemize}
+\item 見込み計算について
+\end{itemize}
+\item ボディ中のゴール順\\
+= 暗黙の優先度指定
+\item 優先度は下げていく方向で指定
+\end{itemize}
+\item 節優先度指定 (alternatively)
+\item 並列実行と実行ノード指定
+\begin{itemize}
+\item データは自動的にコピー
+\item アクセスの局所性について
+\end{itemize}
+\end{itemize}
+
+\section{述語論理との関係}
+\begin{itemize}
+\item 公理としての節の意味
+\item 証明過程としての計算
+\item 反例としての計算結果
+\end{itemize}
+
+\section{他言語との関係}
+\begin{itemize}
+\item 手続き型言語との比較
+\begin{itemize}
+\item Purity
+\item 大域的状態の欠如
+\item 実行順の制約からの解放
+\end{itemize}
+\item 関数型言語との比較
+\begin{itemize}
+\item Strict/non-strict
+\item Nondeterminacy
+\end{itemize}
+\item Prolog との比較
+\begin{itemize}
+\item 実行順依存性 (cut, I/O, 算術演算)
+\item var の無意味さ
+\end{itemize}
+\end{itemize}
+\end{document}

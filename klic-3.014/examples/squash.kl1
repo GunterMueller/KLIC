@@ -1,0 +1,26 @@
+%%%%% Text Processing--Converting `**' to `^' %%%%%
+%
+% klic squash.kl1
+
+:- module main.
+main :- true | in(Xs), sq(Xs,Ys), out(Ys).
+
+sq([X|Xs1], Ys) :- X=\=42/*asterisk*/ | Ys=[X|Ys1], sq(Xs1, Ys1).
+sq([X|Xs1], Ys) :- X=:=42/*asterisk*/ | sq2(Xs1, Ys).
+sq([],      Ys) :- true   | Ys=[].
+sq2([X|Xs1], Ys) :- X=\=42 | Ys=[42,X|Ys1], sq(Xs1, Ys1).
+sq2([X|Xs1], Ys) :- X=:=42 | Ys=[94/*uparrow*/|Ys1], sq(Xs1, Ys1).
+sq2([],      Ys) :- true   | Ys=[42].
+
+in(Xs) :- true |
+    io:instream(Is0), Is0=[getc(C)|Is1],
+    inconv(C,Is1,Xs).
+
+inconv(C,Is, Os ) :- C=:= -1 | Os=[], Is=[].
+inconv(C,Is0,Os0) :- C=\= -1 |
+    Os0=[C|Os], Is0=[getc(C1)|Is], inconv(C1,Is,Os). 
+
+out(Xs) :- true | outchars(Xs,Os), io:outstream(Os).
+
+outchars([Y|Ys1],Os) :- true | Os=[putc(Y)|Os1], outchars(Ys1,Os1).
+outchars([],     Os) :- true | Os=[print('*** END OF FILE ***'),nl].

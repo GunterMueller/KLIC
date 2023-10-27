@@ -1,0 +1,401 @@
+% (C) 1998 Japan Information Processing Development Center
+% 詳細な配布条件については、COPYRIGHT-JIPDEC.jを参照してください。
+\chapter{GC}
+\index{GC}
+
+KL1は自動メモリ管理を前提とした言語であり、KLICはGCを備える。
+KLICのGCのアルゴリズムは大まかには以下のような特徴がある
+(殆どはこれまでに既に述べてきたことである)。
+
+\begin{itemize}
+\item ``stop and copy''GC。よって、ヒープは2面を持つ。
+
+\item コピーの順は、深さ優先であり、新領域のscanは行わない。
+これは、ジェネリックオブジェクトのように、GCが理解できないようなデータ
+(端的にはタグがないようなデータ)について、不用意にGCがアクセスし
+誤った処理をしないようにするための配慮である。
+
+\item ヒープのサイズは可変であり、GC後にfreeな領域がすくなくなると
+ヒープのサイズを拡張する。
+\end{itemize}
+
+GCの処理は、\filename{gc.c}に記述されている。
+
+
+\section{基本的なGCのアルゴリズム}
+
+基本的、一般的なKLICのGCは、以下のように行われる
+(copy\_one\_term(\filename{gc.c}))。
+
+\begin{enumerate}
+\item コピー対象の項のアドレスを
+GC スタックに積む(push\_gc\_stack())(図\ref{gc-stat}(1))。
+copy\_one\_termでは1つの項しか積まないが、一般的には任意個の項を積んで良い。
+
+\index{GC stack}
+\index{GCすたっく@GCスタック}
+
+\item GC スタック先頭中のアドレスの示す項に対して、\label{gc-entry}
+\begin{itemize}
+\item 一重ループ未定義変数(= 純粋未定義変数)であれば、
+新領域に未定義変数を生成し、
+旧領域からその変数にポインタを張る。
+(純粋未定義変数である、ということは、そのGCルート自身も
+ヒープに存在する場合に限られる)。
+
+\item さもなくば、とりあえず新領域にコピーし(図\ref{gc-stat}(2))、
+そのデータが
+\begin{itemize}
+\item アトミックならばそれで終了
+\item 旧領域を指すポインタであれば、新領域のコピー先を指すように
+旧領域のコピー対象を書きかえ、
+その旧領域データをGCスタックに積む(図{gc-stat}(3))。
+構造であれば、基本的には構造の内容同様に検査しスタックに積む。
+\end{itemize}
+\end{itemize}
+
+\item \ref{gc-entry}にジャンプし、GC スタックが空になるまで続ける。
+\end{enumerate}
+
+\begin{figure}[hbp]
+\begin{center}
+\epsfile{file=gc-stat.eps,width=.8\textwidth}
+\end{center}
+\caption{KLICのGCの基本原理}
+\label{gc-stat}
+\end{figure}
+
+\section{GCの対象領域}
+
+\index{GC!たいしょうりょういき@対象領域}
+
+KLICでは、ヒープ内のデータ、ヒープ外のデータ(主に
+定数構造体)が存在するが、GCの対象となるのはヒープ内のデータである。
+よって、一般的には「ヒープ旧領域」にはないデータは
+ヒープ新領域か、ヒープ外に存在することになり、コピーの対象にはならない。
+
+\section{Copyされたかどうかの判定}
+
+\index{GC!はんてい@判定}
+
+KLICでは構造体の内部を直接指すポインタを許しているため、
+構造体全体がコピーされているのか、構造体の一部がコピーされているのかを
+判断する方法は必ずしも自明ではない。
+
+重複してコピーを行わないため、コピーされたかどうかを判定する必要がある。
+\label{cons-condition}
+
+\begin{itemize}
+\item ATOMICデータの場合には「旧領域にあるATOMICデータはコピーされていない」
+という基準で判断する。
+
+\item 通常のREFは「旧領域を指している限りその先にはコピーされていないデータが
+ある」という判断で良い。
+
+\item CONSの場合、そのCDR部がCONSタグで新領域を指している場合には、
+CAR/CDR共に新領域にコピー済みであるとする。CONSのコピーは、CONSタグを持った
+セルと2ワードセル同時に行うため、CONSタグのセルと2ワードセルがこのように
+新旧領域に跨がることはないので特殊なマークとして利用できる。
+
+\item FUNCTORの場合、1ワード目がさらにFUNCTORタグであれば、それは新領域への
+コピー先であることを表わす。FUNCTORタグの先は、ATOMである(通常の
+関数FUNCTOR)であるか、REFである(data object)以外には通常ありえないため、
+特殊なマークとして利用できる。
+
+\item ゴールレコードの場合には、
+\begin{itemize}
+\item エンキュー済みのゴールレコードの場合には、ゴールスタック
+をコピーすることにより
+行われ、ゴールスタック同士でゴールレコードを共用することはないため、
+重複コピーは
+なされない(中断構造中で発見しても、タグがREFであればすでに
+エンキューされているので、コピーしない\REFER{goal-tag})。
+
+\item 中断ゴールは、コピーの後に、next fieldにコピー先へのポインタを入れる。
+さらに、pred部に0を入れる。よって、中断ゴールで、pred部に0が入っているものは
+コピー済みである。さらに、ゼロが入っておらず、かつ、next fieldがREFであるものは
+すでにscheduleされたものであるので、中断ゴールとしてはcopy する必要がない
+(goal queueをコピーするときにコピー対象になる)。
+\end{itemize}
+
+\item Consumer, generator objectでは、先頭のfieldが新領域へのポインタに
+なっていればそこがコピー先である(コピーされる前はこのfieldは
+メソッド表を指しており、これはヒープの外である)。
+\end{itemize}
+
+\section{GCのきっかけ}
+
+\index{GC!きっかけ}
+
+GCのきっかけは、リダクションの切れ目にて、割り込み検査が行われ、
+真にheapが溢れそうなことが判明することによる
+(\filename{intrpt.c}, klic\_interrupt()。\REFER{gc-start})。
+
+\section{GCのためのデータ構造}
+
+GCのために付加的に用いられるデータ構造は(2面あるヒープを除けば)gcstackである。
+これはGC途中のデータを置くスタックである。つまり、
+Cのレベルのスタックを用いることなく、自前で用意したスタックを用いて
+GCの再帰処理を行っている。
+
+\section{GCのアルゴリズム}
+
+\index{GC!あるごりずむ@アルゴリズム}
+
+GCのアルゴリズムを、実際のソースコードを参照しつつ説明する。
+GC処理のtop levelは\filename{gc.c}のklic\_gcである。
+
+\subsection{klic\_gc}
+
+このklic\_gc()中では、heap拡張などを含む、GCについての全体制御を行っている。
+
+\begin{enumerate}
+\item make\_heap\_largerが真かどうか検査する(初期的には偽)。
+\begin{itemize}
+\item make\_heap\_largderが真であれば、
+\begin{enumerate}
+\item heapsizeを倍にするため、heapsize, bytesizeなどの大域変数を変更する。
+(この時、maxheapsizeが有効であればその検査をしていることに注意)。
+
+\item new\_old\_space\_top にbytesize分のメモリを確保する。
+
+\begin{itemize}
+\item メモリが確保できたならば、old\_space\_topをfreeし、
+old\_space\_top, old\_space\_sizeを更新する。
+
+\item メモリが確保できず、heap拡張不能なことが致命的である
+(lastgc\_dangerousが真)場合にはfatal errorとする。
+
+このlastgc\_dangerousは、heap拡張が不能な場合、そのまま続行すると、
+無限ループを起こす可能性があるため、複数回heap拡張が不能になったかどうか
+検出するために設けられている。
+\end{itemize}
+\end{enumerate}
+
+\item make\_heap\_largerが偽でかつ、heap拡張不能なことが致命的である
+(lastgc\_dangerousが真、詳細後述)場合にはfatal errorとする。
+\end{itemize}
+
+\item (上記の処理でfatal errorにならなかった場合)flip\_space()にて、
+xxx\_space\_top, xxx\_space\_size をold/newについてswapする。
+
+\item copied\_susp を0に初期化する。これは「永久中断の検出」のために
+用いる、GCにより発見された中断ゴールの数を意味する。
+
+\item collect\_garbageを呼びだす。この関数は現在実行中のゴールスタック
+(qp)、および、他の優先度のゴールスタック、さらにGCフックされた
+他のデータ構造をGCルートとしてコピーを行う。
+
+\item コピーをした結果、空領域が「近々に必要なヒープサイズ
+(this\_more\_space) を考慮して不足しそうな場合(heapsize中、
+maxaxtiveratioで指定される比率を上まわるかどうか検査し、
+必要に応じてmake\_heap\_largerをONにする。
+
+\item コピーをした結果、「近々に必要なヒープサイズよりも空領域が
+少ない」ということがわかれば、lastgc\_dangerous をONにし、
+もう一度GCを行う。
+\end{enumerate}
+
+
+\subsection{collect\_garbage()}
+実際にcopyを行う部分。
+
+\begin{enumerate}
+\item GCを行うのが最初であれば、gcstackの実体を割りつける。
+
+\item allocp, ntop, heaptop をnews\_space\_top とする。
+otopをold\_space\_top とする。osizeを、old\_space\_sizeとする。
+
+\item gc\_hook\_table に登録されている関数群を起動する。
+このテーブルには、処理の際に、ゴールレコード以外に、
+GCルートとなるような関数群を
+register\_gc\_hook()(\filename{alloc.c}) なる関数により
+予め登録されている。
+現在のKLICでは以下のような名称の関数および処理が登録
+されている。\label{gc-hook}
+
+\begin{description}
+\item[gc\_asyncio\_stream:\ ] 
+非同期I/Oを行うfile descriptorに毎にある、I/O ストリームの登録先
+%(参照\ref{async-io})
+。
+
+\item[gc\_timer\_data:\ ] タイマ用stream I/Oのための変数の登録先
+`REFER{timer}。
+
+\item[gc\_signal\_stream:\ ] 割り込み醉うの変数の登録先
+\REFER{signal}。
+
+\item[gc\_exp\_table:\ ] 輸出表に登録されているデータ群(並列実装)。
+
+\item[gc\_decode\_stack:\ ] メッセージデコード中のデータ群(並列実装)。
+\end{description}
+
+\item 優先度毎にgoal queueをコピーする(copy\_one\_queue())
+\REFER{copy-one-queue}。
+\end{enumerate}
+
+\section{copy\_one\_queue()}\label{copy-one-queue}
+
+goal queueを1つコピーする。
+
+\begin{enumerate}
+\item コピーする時には、ゴールの末尾よりコピーする。これは、
+以下のような理由による。
+
+\begin{itemize}
+\item 一般的に1つの変数を共有する
+「書き込みゴール」と「読み出しゴール」があるときに、読み出しゴール内に
+純粋未定義変数が置かれることが実行効率上有利である
+(手繰りの段数が少なくて良い)。
+
+\item 一方、GCによりゴールレコードをコピーする際には、先にコピーを行った
+方に純粋未定義変数セルは確保される。よって、読み出しゴールを先に
+コピーしておきたい。
+
+\item 一方、通常の記述では、「読み出しゴール」は「書き込みゴール」よりも
+後に実行される(ゴールスタックの後方に位置する)。
+\end{itemize}
+よって、ゴールスタックの
+順にコピーを行うよりも後からコピーを行う方が有利である。
+
+\item ゴールを1つコピーする(マクロcopy\_one\_goal())。
+
+\begin{enumerate}
+\item アリティよりゴールレコードサイズを知り、新領域にゴールレコード
+を確保する。
+
+\item next, pred filedをコピーする。旧領域のゴールのnext部には
+コピー先、pred部には0を代入する。
+
+\item 引数の末尾よりGC スタックに積むための処理を行う(マクロreserve\_copy())。
+直接的に純粋未定義変数、ATOMIC、コピー済み参照でなければ
+新領域に旧領域の内容をコピー、旧領域に新領域への参照を書き、
+新領域へのポインタをスタックに積む。
+
+%% \item 中断ゴールであればゴールの数を中断ゴール数をインクリメントする。
+
+\end{enumerate}
+
+\item GC スタックをtopから順に再帰的にコピーする(copy\_terms())。
+\end{enumerate}
+
+\section{copy\_terms()}
+
+GC スタックの内容をコピーする。GCの心臓部分。
+
+\begin{enumerate}
+\item GC スタックトップを取りだす(addr)。
+%よって
+%初期的にはaddrには新領域へのポインタがはいっている。
+\label{gc-loop-entry}
+このaddrは今後書きかえられるが、常に「書き戻すべきアドレス」を指している
+一段derefしたものをobjとする。
+
+\item objのタグに応じて処理する。\label{loop-entry}
+
+\begin{itemize}
+\item ATOMICの場合には、addr の先にobjを書き、\ref{gc-loop-entry}へ。
+
+\item REFの場合には、objの先をderefし、valueに入れる。\label{deref-entry}
+valueのタグに対応し、以下の処理を行う。
+\begin{itemize}
+\item REFの場合:
+\begin{itemize}
+\item 一重ループであり、かつ、addrが新領域にあれば、addr自身を一重ループ
+にし、\ref{gc-loop-entry}にもどる。
+
+\item 一重ループであり、かつ、addrが新領域になければ、新領域に
+一重ループを生成し、それへのREFをaddrに入れ、\ref{gc-loop-entry}にもどる。
+
+\item 二重ループであれば、その先はgeneratorかhook構造体であるのでコピーする。
+
+\begin{itemize}
+\item Generatorであれば、新領域に1ワードわりつけ、addrに書きこむ。
+このワードは、二重ループのエントリになる。
+objectの先頭を調べ、コピー済みでなければ、そっくり
+そのままコピーする(Generator自身のコピーは、GC methodを呼びだす)。
+先頭をコピー先に書きかえる。コピー済ならば、suspend構造までを作成し、
+generatorのコピー先のアドレスをコピーする。
+
+\item 中断ゴールまたはconsumerであるならば、不要となったgoal(すでにscheduling
+されたゴール)を避けつつ、コピーする。
+\end{itemize}
+
+\item 一/二重ループでなく、かつ、valueが旧領域を指しているならば、
+objをvalueとし、\ref{deref-entry}へ(つまり、dereference loopを成す)。
+
+\item valueが旧領域以外(つまり、新領域 or ヒープ外)であれば、
+この先はコピー済であることがわかったので、
+addrの先にvalueを書きこみ\ref{gc-loop-entry}へ。
+\end{itemize}
+\item CONSの場合には、valueが新領域であれば、これはCONS2ワードとも
+すでにコピーされている
+ことを意味する\REFER{cons-condition}ので、それをaddrの先に書きこむ。
+新領域でなければ、objにvalueをコピーし、一ループレベル上の
+CONSの項\ref{cons-case}に飛ぶ。
+
+\item ATOMICであれば、addrの先にATOM値を書き\ref{gc-loop-entry}に。
+
+\item FUNCTORであれば、objにvalueをコピーし、一ループレベル上の
+FUNCTORの項\REFER{functor-case}に飛ぶ。
+\end{itemize}
+
+\item \label{cons-case}
+objがCONSであることが判明すれば、それが新領域を指しているか、
+旧領域を指しているか判断する。新領域であれば、それはCONS2ワードとも
+すでにコピーされていることを意味する\REFER{cons-condition}ので、
+それをaddrの先に書きこむ。
+旧領域であれば、CDRを読み出す。
+
+\begin{itemize}
+\item CDRが構造体(実際に意味を持つのはCONS)タグを持ち、新領域を指していれば、
+それは、CDRの示す先にCONS全体がコピーされていることを意味するので、
+addrの先にCDRをコピーする。
+
+
+\item 上記以外であれば、まだそのCONSはコピーされていない。
+
+\begin{enumerate}
+\item 新領域ヒープ上に2ワードセルを確保する。
+\item CAR部分をコピーするために、reserve\_copyにより
+スタックに積む。
+\item 新しい2ワードセルへCONSポインタを、旧領域のコピー元の2ワードセルの
+CDR部分、および、addrの先(追跡が開始されたセルで新領域にある)にコピーする。
+
+\item CDR部分がATOMICであれば、そのままコピーし、\ref{gc-entry}にジャンプする。
+ATOMICでなければ、新しい2ワードセルのCDR部分のアドレスをaddrに、
+objにCDRをコピーし、スタックに積まずに\ref{loop-entry}にジャンプする。
+
+つまり、このCDR処理部分は、末尾再帰処理の最適化をしている。
+\end{enumerate}
+\end{itemize}
+
+\item ObjがFUNCTORタグであることがわかれば、それが旧領域を指すかどうか
+検査する。旧領域でなければaddrの先にコピーしてそのまま終了。
+旧領域であれば、第一ファンクタを読み出し、そのタグを調べる。
+\label{functor-case}
+
+\begin{itemize}
+\item 第一ファンクタが REFであれば、これはデータオブジェクトで
+あることを意味するので、GC methodを呼びだし、
+それへのポインタをFUNCTORタグ付きでコピーする。旧領域の第一ファンクタ部
+も新領域のobjectへのFUNCTOR付きポインタとし、addrの先に書きこむ。
+
+\item 第一ファンクタがREFでなく、FUNCTORでもなければ、
+これはFUNCTORであることがわかるので、
+新領域にファンクタの領域を確保し、第一ファンクタへのポインタを
+FUNCTORタグ付きでaddrの先、旧領域のオブジェクトの第一ファンクタ位置に
+書きこむ。さらに全ての要素についてのコピーをスタックに積む
+(reserve\_copy())。
+
+\item 第一ファンクタがファンクタであれば、これはコピーされた
+FUNCTORまたはオブジェクトであるので、その第一ファンクタの内容を
+addrの先に書く。
+\end{itemize}
+以上の処理のあと、\ref{gc-loop-entry}にジャンプする。
+\end{itemize}
+
+\item スタックが空になれば、処理は終了する。
+\end{enumerate}
+

@@ -1,0 +1,476 @@
+% (C) 1998 Japan Information Processing Development Center
+% 詳細な配布条件については、COPYRIGHT-JIPDEC.jを参照してください。
+% 中断、割り込み、失敗
+
+\chapter{割り込み/中断/失敗}
+
+\index{れいがいしょり@例外処理}
+\index{わりこみ@割り込み}
+\index{ちゅうだん@中断}
+\index{しっぱい@失敗}
+
+KLICでは、KL1のコードをコンパイルした部分が実行されている時の
+大部分は、割り込み処理処理を行わず、KLICにとって「都合の良い」
+タイミング、すなわち、リダクション処理の「切れ目」で
+「割り込みがあった」ことを検出し、割り込みが起きていた場合については、
+「割り出し」が行われ、実行時ライブラリにて
+行われることはすでに\REF{basic-run}で述べた。
+また、中断の処理、失敗の処理についても、コンパイルしたコード中では
+行われず、実行時ライブラリに割り出されて行われることも述べた。
+
+本章では、これらの「割り出し処理」についてさらに詳細に解説を行う。
+
+具体的には、以下についての説明を行う。
+
+\begin{itemize}
+\item 割り込み処理について、\filename{interrupt.c}中で定義されている、
+klic\_interrupt、および、例外が起きたときに起動されるコード群
+について解説を行う。
+\item 中断、失敗の処理\filename{faisus.c}中で定義されている、
+interrupt\_goal 中の処理について解説を行う。
+\end{itemize}
+
+\section{例外処理}
+
+\subsection{割り込み時の処理}\label{signal}\label{interrupt}
+
+\index{わりこみ@割り込み}
+
+割り込みが発生した場合、
+先に述べたように、KLICでは実行中には一般的には割り込み処理を行わず、
+割り込みがあったことのみを記録しておき、後にklic\_interruptにて処理を行う。
+
+割り込みがあった「その時」に実行されるコードについての
+記述は、\filename{signal.c}中で記述されている。
+
+KLICでの割り込み処理は、基本的に以下のように2段がまえになっている。
+
+\begin{itemize}
+\item 各割り込み種別(UNIXのSIGXXX)毎に、UNIXレベルの割り込みハンドラが存在し、
+また、各割り込み毎に「割り込みフラグ」(signal\_flags)がある。
+このハンドラは、割り込みが起きたときには、当該
+「割り込みフラグ」をonにすることにより「割り込みがあった」ということを
+記録し、heaplimitを0とするだけである。
+このハンドラは、handle\_signal()なる既定の関数で、\filename{signal.c}で
+定義されている。
+
+\item リダクションの切れ目にて、ヒープ検査の際に割り込みがあったことが
+確認された場合には「割り込みフラグ」を検査し、割り込み種類別の
+処理を実行する。各割り込み毎の処理は、割り込み処理表(signal\_handlers)に
+記録されている。この処理は後述する、klic\_interrupt()内で行われる。
+\end{itemize}
+
+つまり、割り込みハンドラには2通りがある。以下の説明で、特に
+断ることなく「割り込みハンドラ」と称した場合には、後者、つまり、
+リダクションの切れ目で行われる処理を記述したハンドラを指す。
+
+この「割り込みハンドラ」の関数仕様は以下のようになっている。
+
+\begin{verbatim}
+handler(allocp, signal)
+\end{verbatim}
+\begin{description}
+\item[q *allocp:\ ] ヒープトップ。つまり、割り込みハンドラ中では、
+ヒープ割付を行うことが可能で、したがって、KL1のゴールをわりつけることも
+できる。
+
+\item[int signal:\ ] 割り込み種別(SIGXXX)
+\end{description}
+
+SIGINT, SIGALRMについては、以下のように、特殊な割り込みハンドラを
+システム側で設定している。
+
+\begin{itemize}
+\item SIGINTに関しては、sigint\_interruptをセットするだけの処理を行うハンドラ
+(default\_sigint\_handler)が設定される。
+
+\item SIGALRMに関しては、そもそも、
+UNIXレベルのハンドラが異なっており、
+timer\_expiration\_handler がセットされる(タイマについての処理は
+\filename{timer.c}にて記述される)。
+タイマ割り込みは、システムで利用している一方、ユーザも利用する可能性がある
+ため、仮想化の処理を行い、実効上、複数のタイマを同時に
+設定できるようになっている。
+\end{itemize}
+
+これまでの説明で登場しなかった
+割り込み処理に関して定義されている主な関数群の説明を以下に記述する。
+
+\begin{description}
+\item[klic\_signal\_handler():\ ] 割り込みフラグを参照し、
+割り込みフラグがonである場合には当該処理を割り込み処理表を参照することにより
+実行する。後述されるklic\_interupt内で呼びだされる。
+
+\item[add\_signal\_handler():\ ] 割り込み処理を登録する。
+つまり、
+
+\begin{itemize}
+\item 割り込み処理表に指定された関数を登録する
+(add\_slit\_check\_signal\_handler())。
+
+\item 指定された割り込み種別に対してsigaction()にてUNIXレベルの割り込み処理
+を設定する。
+\end{itemize}
+
+\item[init\_general\_signal\_handling():\ ] 割り込み処理表、
+割り込みフラグを初期化する。
+\end{description}
+
+\subsection{KL1レベルでの割り込み処理}
+
+KLICの内部で行われている割り込み処理はこれまでに述べてきたような
+ことを行っている。一方で、KL1ユーザレベルで割り込み処理を記述、
+登録することも可能になっており、そのための処理を「割り込みハンドラ」として
+実装している。すなわち、シグナルが発生するたびに、CONSで
+ユーザが指定した未定義変数を具体化していく、という処理を行っている。
+
+KL1レベルでのインターフェースはunixモジュール(gunix.kl1)で定義されており、
+{\tt signal\_stream(Signal, Result, Variable)} なるインターフェースで
+ある。
+
+このような処理に関しての関数群もsignal.cで定義されている。
+
+\begin{description}
+\item[streamed\_signal\_handler():\ ] 割り込みがおきるたびに
+CONSを割りつけ、あらかじめ登録された変数に単一化を行う関数。
+
+\item[register\_streamed\_signal():\ ] KL1述語signal\_streamより
+呼びだされる登録用関数。streamed\_signal\_handler() を割り込みハンドラとして
+登録する。複数回登録されたならば、シグナルストリームになる変数同士を
+単一化する。
+\end{description}
+
+\subsection{割り込み処理: klic\_interrupt}
+
+klic\_interruptは、リダクションの切れ目にて、
+ヒープ溢れが起きたかのように見えた時に呼び出される処理であり、
+「実際にヒープが溢れた場合」、および「例外処理がおきたため、
+擬似的にヒープが溢れたかのように見えた場合(heaplimit が0の場合)
+に呼び出される処理であった。
+
+実際の処理は以下のように行われている。
+
+\begin{enumerate}
+\item まず、resumeされているかもしれないゴールを通常のスタックに
+書き戻す。これは、実行時ライブラリ中で行われた処理により
+エンキューされたようなゴールは大域変数resumed\_goals にエンキューされている。
+この二次的なゴールスタックにエンキューされているゴールを本来の
+ゴールスタックにエンキューし直す\REFER{decache}。
+この「エンキューし直し」処理を行う関数が
+\filename{intrpt.c}で定義されている
+enqueue\_resumed\_goals()である。\label{re-push}
+
+ここでは、まず、ここで述べたようなエンキューが完了していないような
+ゴールがあることを考慮し、まず、enqueue\_resumed\_goals()を呼びだしている。
+
+\item トレーサ対応のコードの場合、ここで、トレーサの処理をおこなう。
+\label{trace-trigger}
+具体的には、stepping\_flag、
+trace\_flagを参照し、を参照し、ONならば各々
+step\_after()、trace\_after処理(共に\filename{trace.c}内で定義
+されている)を行う。詳細は、\REF{tracer}を参照のこと。
+
+
+\item 割り込みの原因を調査する。
+\begin{itemize}
+\item まず、以下で説明する「特殊な割り込み」以外の
+「本来の割り込み処理」が必要かどうか検査する。
+「本来の割り込み処理」がおきたかどうかは、signal\_doneを参照することにより
+判明する。割り込みがあった場合には、klic\_signal\_handlerを呼びだし、
+必要な処理を行う(詳細後述)。その結果、heapに不足ができていないか判断する。
+
+また、割り込み処理もKL1のゴールにて実現することができるようになっている。
+この場合、ゴールのエンキュー
+は前述の「例外的ゴールスタック」に対して行われるため、
+enqueue\_resumed\_goalsを呼び出し、処理ゴールがもしあればスケジュールされる
+ようにしておく(先にheapに不足ができていないか判断している
+一因は、このエンキューのためにヒープが消費されている可能性のあることである)。
+
+\item 割り込み原因がSIGINTによるものであれば、大域変数sigint\_interruptが
+onになっている。これについてはその場でKLICの処理全体を終了させる。
+
+\item より高い優先度のゴールがエンキューされたのであれば、
+大域変数higher\_priority\_goal がonになっている。
+その場合には、次に実行しようとしていたゴールをエンキューし、
+同変数をoffにし、最も高い優先度のキューに現在実行中のキューを置き換える。
+
+この「割り込み」は、通常のエンキュー時に起こる可能性があり、
+汎用の(つまり、エンキューすべきゴールが、現在実行中の優先度
+と同じであることが確定できない場合に呼びだされる)ゴールエンキュー
+関数enqueue\_goal()中で優先度を比較した上でセットする。
+このエンキューはいわば同期的に行われるため、
+前述の「割り込み用ゴールスタック」を用いずに、直接、通常の優先度付きゴール
+キューにエンキューされる。しかしながら、実行ゴールスタックの置きかえは
+やはりここで行われる。
+
+\item 真にヒープに溢れがおきたかどうか、検査する。
+この検査は以下のように行われる。
+
+\begin{verbatim}
+    if (allocp + this_more_space >= real_heaplimit) 
+\end{verbatim}
+
+このreal\_heaplimitは、割り込み発生があっても、強制的に
+0に起きかえられることのないheaplimitのコピーである。
+this\_more\_space は、ヒープ不足で中断した計算を実行するために
+最低限確保しなければならない
+空きヒープ領域の容量を示している。
+
+上記のif文がtrueになった場合にはGCを起動する(klic\_gcの呼びだし)。
+\label{gc-start}
+GC呼び出し前後にGC\_ON(), GC\_OFFとあるのはマクロであり、
+GC処理についての統計情報を確保するためのものである。
+\end{itemize}
+\end{enumerate}
+
+\section{中断、失敗処理: interrupt\_goal}\label{fail-suspend}
+\index{ちゅうだん@中断}
+\index{しっぱい@失敗}
+
+中断、失敗については、コンパイルコードより、必要な場合に
+適宜関数interrupt\_goal()が呼び出されることにより処理される。
+
+\subsection{関数型仕様}
+
+interrupt\_goalは、以下のような関数型になっている。
+
+\begin{verbatim}
+q *interrupt_goal(allocp, pred, reasonp)
+     q *allocp;
+     struct predicate *pred;
+     q *reasonp;
+\end{verbatim}
+
+引数は各々、ヒープトップ、最後に実行しようとしていた述語の述語構造体、
+中断スタック先頭を表わす。戻り値は、更新されたヒープトップである。
+
+\subsection{動作}
+
+この関数に制御が移された時の状況、および、対応する処理については、
+\REF{interrupt-abs} に記述した通りである。繰り返すと以下のようになる。
+
+\begin{description}
+\item[他にすべき処理が生じた時:\ ] この場合には、reasonp には 0が
+セットされている。この場合には、resumed\_goals にgoalを格納し、
+他の処理をすべくreturnする。
+
+\item[述語が「失敗」したとき:\ ] この場合にはreasonpは中断スタック
+の底を指している。
+失敗の処理(関数do\_fail())が呼び出される。
+
+\item[述語が「中断」しそうなとき:\ ]
+これまでの説明で判明したように、KLICでは、3段以上REFの連鎖がある場合には
+コンパイルコード中では追跡をあきらめ、interrupt\_goal の呼び出しを行って
+いる。
+
+この場合には、「中断原因の候補」は中断スタックに積まれているので、
+それを調べ、候補が全て真に未定義変数であれば中断処理を行う。
+候補のいずれかが具体値であることが判明すれば、resume\_same\_prio()関数
+により、当該ゴールを「再開」する(つまり、エンキューしてしまう)。
+\end{description}
+
+これらに相当する処理を、interrupt\_goal 内で行っており、
+その内容を処理順に従い詳説する。\label{interrupt-check}
+
+\begin{enumerate}
+\item まず、中断スタックポインタreasonp
+が 0であるかどうか検査する。0の場合には、
+(擬似的に)heap溢れがおきており、GC要求または例外要求が起きている。
+その場合には、現在実行中のゴールを、resumed\_goals に接続する。
+
+\item 中断スタックが空であれば失敗したことを
+表わしているので、終了する。
+中断スタックが空でない場合には、内容にある中断要因を調査する。
+中断要因を手繰った結果、実は具体値であったことが判明した場合には、
+ゴール引数を手繰った結果に置換し、現在実行中のゴールを再度実行する
+(resume\_same\_prio())。全ての内容が未定義変数であることが分れば、
+真に中断すべきゴールであるので、次の処理に進む。
+
+\item トレースサポートのシステムであれば、stepping\_flag,
+trace\_flag がONの場合、各々、step\_susp(), trace\_susp() を
+呼びだす\REFER{trace-susp}。
+
+\item ゴールを中断させる処理を行う。
+
+\begin{enumerate}
+\item ゴールレコードに現在の優先度を記録する。
+
+\item 再度中断スタックの内容を1つづつ手繰る。
+一重ループの変数(つまり、純粋未定義変数)であることがわかれば、
+中断レコードを作り、中断要因となった未定義変数とポインタを張り合う。
+
+\item 二重ループの変数であれば、そこには、中断ゴール/consumer群、または、
+generatorがぶらさがっている。この判断はマクロ
+is\_generator\_susp()で行うことができる。
+
+\begin{itemize}
+\item 中断ゴール/consumerがぶらさがっていることがわかれば、
+その中断レコードの先に現在実行中のゴールもぶらさげる。
+
+\item Generatorの場合には、
+objectに対して、generateメソッドを発行する。
+これはマクロgeneric\_generate()で行うことができる。
+
+\begin{itemize}
+\item 結果がmakecons(0)(つまり、consタグでVALUEが0)であれば、
+これは「generate遅延」を意味するので、suspendメソッド(generic\_suspend()) を
+発行する。その結果がmakeref(0)以外であれば、このジェネレータにより
+具体化が行われたことになる。そこで再実行するため、flag redo\_requestを
+onにする。
+
+makeref(0)以外であれば、なにもしない。
+
+\item 結果がmakecons(0)以外であれば、「その値で変数は具体化される」ことを
+意味するので、変数を戻り値で具体化し、再実行をするため、redo\_requestを
+onにする。
+\end{itemize}
+\end{itemize}
+
+\item 以上の処理を中断スタック中の変数すべてに行ったらredo\_requestを参照し、
+onであれば resume\_same\_prio() により再実行する。
+\end{enumerate}
+\end{enumerate}
+
+\section{Timer}\label{timer}
+
+Timerの実装について解説を行う。
+
+前述のように、timerはシステムで利用している一方、ユーザでも利用される
+可能性が高いため、仮想化したものになっている。つまり、以下のように、
+通常の割り込みの実装とは異なっており、すでに特殊なハンドラが用意 
+されている。
+
+\begin{itemize}
+\item UNIXレベルの割り込み関数としては、timer\_expiration\_handler()を
+利用する。
+
+\item 割り込みの登録は、Cレベルではcall\_at\_specified\_interval(),
+call\_at\_specified\_time()、call\_at\_time\_intervals() を用いる。
+\end{itemize}
+
+さらに、KL1レベルで利用できるタイマも用意されており、
+このタイマは、上記のタイマの仕掛を利用して実装されている。
+つまり、上記のタイマの一イベントとしてKL1レベルのタイマが
+動作する。
+
+\subsection{基本的な方式}
+
+基本的な方式を以下で述べる。
+
+\begin{itemize}
+\item KLICで独自に、タイマを必要とする処理群のリスト(timer\_wait\_root)を持つ。
+このリストは処理すべき時間の順に時刻と処理すべき内容(関数ポインタ)より成る。
+ちなみに、このリストはフリーリスト管理しており、通常のヒープの管理とは
+独立している。
+
+\item KLICは上記のリストの先頭を参照し、次にアラームを受けるべき時刻を
+知り、現在の時刻と比較してその時刻にSIGALRMを受けるよう、
+タイマにセットをする(このために、UNIXのsetitimer() を利用している)。
+
+\item SIGALRMを受けたら、その直後に
+再度リストを参照し指定された処理を行い、
+「タイマ要求リスト」の先頭を参照し、前段に戻る。
+なお、実際には、リストの先頭以降が要求する時刻を
+すでに過ぎていたり、同時刻に複数の処理が指定されている
+可能性があるため、現在の時刻と比較し、「未来のもの」以外は
+みな処理されるようにしている。
+\end{itemize}
+
+KL1レベルのタイマの実装もほぼ同様の方式であるが、
+時刻が来たことの検出は、直接UNIXレベルに依頼するのではなく、
+上記のタイマ管理の一環として行っている。また、KL1レベルのタイマでは、
+上記のタイマが「SIGALRMを受けた直後」に動作するのに対して、
+他の例外処理同様、「SIGALRMを受けた直後」のリダクションの切れ目で実際には
+行われる。
+
+\subsection{実装詳細}
+
+Timerの実装はほぼ以下のつのファイルよりなる。より低レベルなものから、
+KL1のインターフェースを実現したものの順に概説する。
+
+\begin{description}
+\item[timer.c:\ ] 再低位の関数群。
+\begin{description}
+\item[init\_virtualized\_timer():\ ] タイマ関連の初期化。
+\item[call\_at\_specified\_interval(),
+call\_at\_specified\_time(), call\_at\_time\_intervals():\ ]
+各々、「特定の時間後」、「特定の時刻」、 「特定の間隔で」
+タイマをセットするための関数。処理については引数funcにより関数として
+設定する。通常はklic\_timer\_interrupt\_handler() が
+セットされる(ktimer.c)。
+\item[schedule\_timer\_interrupt():\ ] 前期3つの関数の下請けであり、
+タイマ要求リストに要求された時刻と処理関数をセットする。
+
+\item[process\_timer\_expired\_events(), 
+timer\_expiration\_handler():\ ] 実際にSIGALRMを受けたときに
+実行されるUNIXレベルの例外ハンドラ。
+リストを先頭から嘗め、「現在の時刻」以前の処理を次々と行う。
+処理の結果、タイマ要求が残っているならば、restart\_timer()を呼びだすことに
+より、タイマ処理を再開する。
+
+\item[restart\_timer():\ ] タイマ要求の先頭を参照し、
+次の時刻をセットする。
+
+\item[insert\_timer\_queue():\ ] タイマ要求を新たに登録する。
+登録時にタイマ要求リストは時刻の昇順にソートされている状態にする。
+\end{description}
+
+\item[ktimer.c:\ ] より高水準のタイマの関数群。
+
+低水準のタイマとの最大の差は、低水準タイマは
+SIGALRMが発生した直後に処理を行うのに対して、高水準なものは、
+直後のリダクションの切れ目に処理をおこなうことにある。よって、少なくとも
+KL1の実行に関わるような事柄はこの高水準タイマで設定される必要がある。
+
+高水準のタイマ要求リストには、要求時刻と、ハンドラ、およびデータを1つ
+渡すことができるようになっている。
+
+\begin{description}
+\item[reserve\_klic\_timer\_interrupt():\ ] 
+高水準タイマのCレベルのAPI。指定された時刻と具体化すべき変数とを
+高水準タイマ要求として登録する。
+仕様としては、タイマ設定時に変数が渡され、
+その変数を具体化することにより時刻が来たことをKL1に知らせる、
+となっている。つまり、KL1で利用されることを考慮したAPIである。
+
+指定された時刻、処理をタイマ要求リストに登録し、その後、
+process\_timer\_interrupt() を呼びだす。
+
+タイマ要求リストには、具体化すべき変数と、それに「NILを具体化する」
+という関数(process\_timed\_instantiation())が登録される。
+
+\item[set\_simple\_interval\_timer\_handler():\ ]
+高水準のタイマであるが、設定する処理の内容は、Cの関数を指定する。
+よって、「リダクションの切れ目で呼びだされるCレベルのタイマハンドラ」である。
+
+指定された時刻、処理をタイマ要求リストに登録し、その後、
+process\_timer\_interrupt() を呼びだす。
+
+タイマ要求リストには、具体化すべき関数ポインタ(をアトムタグにしたもの)、
+と、その「関数を実行する」関数(process\_simple\_timer\_handler())が登録される。
+アトムタグが付加されているのは、後述のgc\_timer\_dataで単純にコピーされることを
+狙ってのことである。
+
+\item[process\_timer\_interrupt():\ ]
+上記2つの関数の下請けであり、かつ、リダクションの切れ目で
+実行される例外処理ハンドラである。
+
+この関数では、高水準タイマ要求リストを嘗め、
+すでに過去のものになっている要求について、その指定されているハンドラ
+(つまり、process\_timed\_instantiation()/process\_\allowbreak simple\_\allowbreak timer\_handler())を
+実行する。
+実行した後には
+klic\_timer\_interrupt\_handler() を例外処理関数として
+call\_at\_specified\_time により低レベルタイマに登録する。
+
+このklic\_timer\_interrupt\_hander() は、一般的な例外処理と同様、単に
+「例外があった」ことを記録し、klic\_signal\_handler() 内で
+process\_timer\_interrupt()も実行される。
+
+\item[gc\_timer\_data():\ ] 高水準タイマ要求リストには
+変数が含まれている。その変数のメンテナンスを行うための関数。
+GC hookの機構を用いて登録されている\REFER{gc-hook}。
+
+\end{description}
+\end{description}
+

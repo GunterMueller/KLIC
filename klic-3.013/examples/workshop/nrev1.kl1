@@ -1,0 +1,10 @@
+:- module main.
+
+main :- true |
+    nrev([1,2,3,4,5,6], X),
+    io:outstream([print(X),nl]).
+
+nrev([], Y) :- true | Y = [].
+nrev([A|X], Y) :- true |
+    nrev(X, RevX),
+    app:append(RevX, [A], Y).

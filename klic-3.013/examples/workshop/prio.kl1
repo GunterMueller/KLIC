@@ -1,0 +1,29 @@
+% prio.kl1
+:- module main.                                                          %  1
+
+main :- true |                                                           %  2
+        eval(_,T,E), io:outstream([print(E),nl]),                        %  3
+        T = and(and(and(t,or(f,or(t,f))),f),or(t,or(and(f,t),f))).       %  4
+
+eval(abort,_,_) :- true | true.                                          %  5
+alternatively.                                                           %  6
+eval(AB,and(L,R),E) :- true |                                            %  7
+        and_node(AB,EL,ER,ABL,ABR,E),                                    %  8
+        eval(ABL,L,EL)@lower_priority, eval(ABR,R,ER)@lower_priority.    %  9
+eval(AB,or(L,R),E) :- true |                                             % 10
+        or_node(AB,EL,ER,ABL,ABR,E),                                     % 11
+        eval(ABL,L,EL)@lower_priority, eval(ABR,R,ER)@lower_priority.    % 12
+eval(_,t,E) :- true | E = t.                                             % 13
+eval(_,f,E) :- true | E = f.                                             % 14
+
+and_node(abort,_,_,ABL,ABR,_) :- true | ABL = abort, ABR = abort.        % 15
+alternatively.                                                           % 16
+and_node(_,t,t,_,_,E) :- true | E = t.                                   % 17
+and_node(_,f,_,_,ABR,E) :- true | E = f, ABR = abort.                    % 18
+and_node(_,_,f,ABL,_,E) :- true | E = f, ABL = abort.                    % 19
+
+or_node(abort,_,_,ABL,ABR,_) :- true | ABL = abort, ABR = abort.         % 20
+alternatively.                                                           % 21
+or_node(_,f,f,_,_,E) :- true | E = f.                                    % 22
+or_node(_,t,_,_,ABR,E) :- true | E = t, ABR = abort.                     % 23
+or_node(_,_,t,ABL,_,E) :- true | E = t, ABL = abort.                     % 24

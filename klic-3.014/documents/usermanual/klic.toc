@@ -1,0 +1,134 @@
+@unnchapentry{Terms and Conditions for Use of ICOT Free Software}{10001}{Copying}{1}
+@numchapentry{Introduction}{1}{Introduction}{3}
+@numsecentry{Description of Predicates and Methods}{1.1}{Description}{3}
+@numsubsecentry{Predicates and Methods}{1.1.1}{Predicates and Methods}{3}
+@numsubsecentry{Messages}{1.1.2}{Messages}{4}
+@numsubsecentry{Argument Modes}{1.1.3}{Argument Modes}{4}
+@numsecentry{Reporting Bugs and Sending Comments}{1.2}{Reporting Bugs}{4}
+@numchapentry{KL1 Language}{2}{Language}{5}
+@numsecentry{Basic Execution Mechanism}{2.1}{Basics}{5}
+@numsecentry{Predicates}{2.2}{Predicates}{6}
+@numsecentry{Modules}{2.3}{Modules}{6}
+@numsecentry{Goals}{2.4}{Goals}{7}
+@numsecentry{Initial Goal}{2.5}{Initial Goal}{7}
+@numsecentry{Generic Objects}{2.6}{Generic Objects}{7}
+@numsubsecentry{Creating Generic Objects}{2.6.1}{Creating Objects}{8}
+@numsubsecentry{Guard Methods of Generic Data Objects}{2.6.2}{Guard Methods}{8}
+@numsubsecentry{Body Methods of Generic Data Objects}{2.6.3}{Body Methods}{8}
+@numsecentry{Priority Specification}{2.7}{Priority}{8}
+@numsecentry{Clause Preference}{2.8}{Alternatively}{9}
+@numsecentry{Shorthand Notation for Argument Pairs}{2.9}{Argument Pair Notation}{9}
+@numsubsecentry{Paired Arguments and their Expansion}{2.9.1}{Paired Arguments}{10}
+@numsubsecentry{Macros for Paired Arguments}{2.9.2}{Macros for Paired Arguments}{11}
+@numsubsecentry{Usage of Paired Arguments}{2.9.3}{Usage of Paired Arguments}{11}
+@numsecentry{Inserting C Language Code Inline}{2.10}{Inline C Code}{12}
+@numsubsecentry{Inline Insertion at the Top of Files}{2.10.1}{Top Insertion}{12}
+@numsubsecentry{Inline Insertion in the Guard}{2.10.2}{Guard Insertion}{12}
+@numsubsecentry{C-Level Representation of KL1 Terms}{2.10.3}{C-Level Rep}{13}
+@numsubsecentry{Examples}{2.10.4}{Examples of Inline}{13}
+@numsubsecentry{Some Hints on Using the Inline C Code Feature}{2.10.5}{Hints of Inline}{14}
+@numchapentry{Builtin and Library Features}{3}{Builtin and Library}{15}
+@numsecentry{Common Operations}{3.1}{Common Operations}{15}
+@numsubsecentry{Unification}{3.1.1}{Unification}{15}
+@numsubsecentry{Synchronization}{3.1.2}{Synchronization}{15}
+@numsubsecentry{Comparison and Hashing}{3.1.3}{Comparison and Hashing}{15}
+@numsubsecentry{Execution Status}{3.1.4}{Execution Status}{16}
+@numsubsecentry{Debugging}{3.1.5}{Debugging}{16}
+@numsecentry{Atomic Data}{3.2}{Atomic Data}{17}
+@numsubsecentry{Symbolic Atoms}{3.2.1}{Symbolic Atoms}{17}
+@numsubsubsecentry{Notation of Symbolic Atoms}{3.2.1.1}{Notation of Atoms}{17}
+@numsubsubsecentry{Operations on Symbolic Atoms}{3.2.1.2}{Symbolic Atom Operation}{18}
+@numsubsecentry{Integer Atoms}{3.2.2}{Integers}{19}
+@numsubsubsecentry{Notation of Integers}{3.2.2.1}{Notation of Integers}{19}
+@numsubsubsecentry{Integer Arithmetics}{3.2.2.2}{Integer Arith}{19}
+@numsubsubsecentry{Integer Comparison}{3.2.2.3}{Integer Comp}{20}
+@numsubsecentry{Floating Point Numbers}{3.2.3}{Floating Points}{20}
+@numsubsubsecentry{Notation of Floating Point Numbers}{3.2.3.1}{Notation of Floats}{21}
+@numsubsubsecentry{Creating New Floating Point Numbers}{3.2.3.2}{Creating Floats}{21}
+@numsubsubsecentry{Floating Point Arithmetics}{3.2.3.3}{Floating Arith}{21}
+@numsubsubsecentry{Floating Point Comparison}{3.2.3.4}{Floating Comp}{22}
+@numsecentry{Structured Data}{3.3}{Structured Data}{23}
+@numsubsecentry{Functor Structures}{3.3.1}{Functors}{23}
+@numsubsubsecentry{Notation of Functors}{3.3.1.1}{Notation of Functors}{23}
+@numsubsubsecentry{Operations on Functors}{3.3.1.2}{Functor Operation}{23}
+@numsubsecentry{Lists}{3.3.2}{Lists}{24}
+@numsubsubsecentry{Notation of Lists}{3.3.2.1}{Notation of Lists}{25}
+@numsubsubsecentry{Manipulation of Message Streams}{3.3.2.2}{Merging}{25}
+@numsubsecentry{Vectors}{3.3.3}{Vectors}{27}
+@numsubsubsecentry{Notation of Vectors}{3.3.3.1}{Notation of Vectors}{27}
+@numsubsubsecentry{Creating New Vectors}{3.3.3.2}{Creating Vectors}{27}
+@numsubsubsecentry{Predicates on Vectors}{3.3.3.3}{Predicates on Vectors}{27}
+@numsubsecentry{Strings}{3.3.4}{Strings}{28}
+@numsubsubsecentry{Notation of Strings}{3.3.4.1}{Notation of Strings}{28}
+@numsubsubsecentry{Creating New Strings}{3.3.4.2}{Creating Strings}{29}
+@numsubsubsecentry{Predicates on Strings}{3.3.4.3}{Predicates on Strings}{30}
+@numsecentry{Handling Program Code as Data}{3.4}{Executable Code}{31}
+@numsubsecentry{Modules}{3.4.1}{Module Type}{31}
+@numsubsecentry{Predicates}{3.4.2}{Predicate Type}{31}
+@numsecentry{Unix Interface}{3.5}{Unix}{32}
+@numsubsecentry{Obtaining Unix Interface Stream}{3.5.1}{Unix Stream}{32}
+@numsubsecentry{Opening Streams for Input and Output Operations}{3.5.2}{I/O Opening}{33}
+@numsubsecentry{Using Sockets}{3.5.3}{Sockets}{34}
+@numsubsecentry{Files and Directories}{3.5.4}{Files & Dirs}{34}
+@numsubsecentry{Handling Signal Interrupts}{3.5.5}{Signals}{35}
+@numsubsecentry{Miscellaneous Messages to the Unix Stream}{3.5.6}{Misc Unix Messages}{36}
+@numsubsecentry{Predicate Interface}{3.5.7}{Predicate Interface}{36}
+@numsecentry{Input and Output}{3.6}{Input and Output}{37}
+@numsubsecentry{Input and Output with C-like Interface}{3.6.1}{C-like I/O}{37}
+@numsubsubsecentry{Common Messages with C-like Interface}{3.6.1.1}{Common Msgs (C style)}{37}
+@numsubsubsecentry{Input Messages with C-like Interface}{3.6.1.2}{Input Msgs (C style)}{38}
+@numsubsubsecentry{Output Messages with C-like Interface}{3.6.1.3}{Output Msgs (C style)}{38}
+@numsubsecentry{Input and Output with Prolog-like Interface}{3.6.2}{Prolog I/O}{39}
+@numsubsubsecentry{Opening Prolog-like I/O Streams}{3.6.2.1}{Opening Prolog I/O}{39}
+@numsubsubsecentry{Common Messages with Prolog-like Interface}{3.6.2.2}{Common Msgs (Prolog style)}{39}
+@numsubsubsecentry{Input Messages with Prolog-like Interface}{3.6.2.3}{Input Msgs (Prolog style)}{40}
+@numsubsubsecentry{Output Messages with Prolog-like Interface}{3.6.2.4}{Output Msgs (Prolog style)}{40}
+@numsubsubsecentry{Wrapped Terms}{3.6.2.5}{Wrapped Terms}{41}
+@numsecentry{Controlling System Behavior}{3.7}{System Control}{42}
+@numsecentry{Timer}{3.8}{Timer}{43}
+@numsecentry{Random Number Generator}{3.9}{Random Numbers}{44}
+@numchapentry{Using KLIC}{4}{Using KLIC}{45}
+@numsecentry{Compiling Programs with KLIC}{4.1}{Compiling}{45}
+@numsubsecentry{Command for Compilation}{4.1.1}{Command for Compilation}{45}
+@numsubsecentry{Compiler Options}{4.1.2}{Compiler Options}{45}
+@numsubsecentry{How KLIC Compiler Works}{4.1.3}{Mechanism of Compilation}{47}
+@numsecentry{Running Programs Compiled with KLIC}{4.2}{Running}{47}
+@numsubsecentry{Runtime Switches for Programs Compiled with KLIC}{4.2.1}{Runtime Switches}{48}
+@numsecentry{Tracing Program Execution}{4.3}{Tracing}{48}
+@numsubsecentry{Preparation for Traced Execution}{4.3.1}{Preparing for Trace}{48}
+@numsubsecentry{Trace Ports}{4.3.2}{Trace Ports}{49}
+@numsubsecentry{Format of Trace Display}{4.3.3}{Output of Tracer}{49}
+@numsubsecentry{Trace Controlling Commands}{4.3.4}{Controlling Trace}{51}
+@numsubsubsecentry{Controlling Tracing of the Traced Goal}{4.3.4.1}{Goal Control}{51}
+@numsubsubsecentry{Controlling Tracing of Newly Created Subgoals}{4.3.4.2}{Subgoal Control}{52}
+@numsubsubsecentry{Changing Default Trace of Predicates}{4.3.4.3}{Predicate Control}{52}
+@numsubsecentry{Spying}{4.3.5}{Spying}{53}
+@numsubsecentry{Controlling Trace Ports}{4.3.6}{Port Control}{53}
+@numsubsecentry{Display Control Commands}{4.3.7}{Display Control}{54}
+@numsubsecentry{Dumping Goals}{4.3.8}{Dumping Goals}{55}
+@numsubsecentry{Miscellaneous Commands}{4.3.9}{Misc Trace Commands}{55}
+@numsubsecentry{Detecting Perpetual Suspensions}{4.3.10}{Perpetual Suspension}{55}
+@numsecentry{Installation}{4.4}{Install}{56}
+@numsubsecentry{Configuration}{4.4.1}{Configuration}{56}
+@numsubsecentry{Compiling the KLIC system}{4.4.2}{Make All}{56}
+@numsubsecentry{Testing the Compilation}{4.4.3}{Make Tests}{56}
+@numsubsecentry{Installing the Objects}{4.4.4}{Make Install}{57}
+@numsubsecentry{Cleaning Up the Installation Directory}{4.4.5}{Make Distclean}{57}
+@numsubsecentry{When Something Goes Wrong}{4.4.6}{Troubles}{57}
+@numsecentry{Distributed Memory Parallel Implementation of KLIC}{4.5}{Distributed KLIC}{57}
+@numsubsecentry{Installation of Distributed KLIC}{4.5.1}{Installation of Distributed KLIC}{57}
+@numsubsecentry{Compiling Programs for Distributed KLIC}{4.5.2}{Compiling Programs for Distributed KLIC}{58}
+@numsubsecentry{Running Programs of Distributed KLIC}{4.5.3}{Running Programs of Distributed KLIC}{58}
+@numsubsubsecentry{Setting Up PVM}{4.5.3.1}{Setting Up PVM}{58}
+@numsubsubsecentry{Runtime Options for Distributed KLIC}{4.5.3.2}{Runtime Options for Distributed KLIC}{58}
+@numsubsubsecentry{Known Bugs of Distributed KLIC}{4.5.3.3}{Known Bugs of Distributed KLIC}{59}
+@numsecentry{Shared-Memory Implementation of KLIC}{4.6}{Shared-Memory KLIC}{59}
+@numsubsecentry{Installation of Shared-Memory KLIC}{4.6.1}{Installation of Shared-Memory KLIC}{59}
+@numsubsecentry{Compiling Programs for Shared-Memory KLIC}{4.6.2}{Compiling Programs for Shared-Memory KLIC}{60}
+@numsubsecentry{Running Programs of Shared-Memory KLIC}{4.6.3}{Running Programs of Shared-Memory KLIC}{60}
+@numsubsubsecentry{Runtime Options for Shared-MemoryKLIC}{4.6.3.1}{Runtime Options for Shared-Memory KLIC}{60}
+@numsubsubsecentry{Known Bugs of Shared-Memory KLIC}{4.6.3.2}{Known Bugs of Shared-Memory KLIC}{60}
+@unnchapentry{Data Type Index}{10002}{Type Index}{61}
+@unnchapentry{Predicate, Method and Message Index}{10003}{Predicate Index}{62}
+@unnchapentry{Module Index}{10004}{Module Index}{65}
+@unnchapentry{Concept Index}{10005}{Concepts}{66}

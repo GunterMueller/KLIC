@@ -1,0 +1,6 @@
+FILES:
+  klic.1:     manpage (do "man ./klic.1" to view)
+  usermanual: directory of User Manuals (English and Japanese)
+  tutorial:   directory of "Introduction to KL1" (English)
+  workshop:   directory of the KLIC workshop textbooks for the
+              KL1 language and KLIC systems (Japanese)

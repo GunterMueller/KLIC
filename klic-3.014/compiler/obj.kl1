@@ -1,0 +1,572 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1993, 1994 Institute for New Generation Computer Technology 
+% %	(Read COPYRIGHT for detailed information.) 
+% ----------------------------------------------------------- */
+%
+%  referring modules.
+%       klic_comp_util, klic_comp_kl1cmp, kl1_comp_write
+%       shoen, atom_table, klic_comp_message
+
+:- inline:"#include <ctype.h>".
+
+:- module klic_comp_obj.
+
+write_object(Obj,Info)-Out :- write_object(Obj,Info,0)-Out.
+
+write_object([],_,_)-Out.
+write_object([unify(X1,Y1,Q),unify(X2,Y2,_)|T2],Info,H)-Out :-
+    write_adjust(Q,H)-Out,
+    ( T2=[unify(X3,Y3,_)|T3] ->
+	( T3=[unify(X4,Y4,_)|T4] ->
+	    klicformat(
+	    "  unify4(~k, ~k, ~k, ~k, ~k, ~k, ~k, ~k);\n",
+	    [X1,Y1,X2,Y2,X3,Y3,X4,Y4])-Out,
+	    T=T4
+	; otherwise ; true ->
+	    klicformat(
+	    "  unify3(~k, ~k, ~k, ~k, ~k, ~k);\n",
+	    [X1,Y1,X2,Y2,X3,Y3])-Out,
+	    T=T3
+	)
+    ; otherwise ; true ->
+	klicformat("  unify2(~k, ~k, ~k, ~k);\n",[X1,Y1,X2,Y2])-Out,
+	T=T2
+    ),
+    write_object(T,Info,0)-Out.
+otherwise.
+write_object([H|T],Info,H0)-Out :-
+    write_one(H,Info,H0,Heap)-Out,
+    write_object(T,Info,Heap)-Out.
+
+/* Labels */
+write_one(label(Lab),Info)-H-Out :-
+    klicformat(" ~l:\n",[Info,Lab])-Out.
+
+/* Register transfer */
+write_one(move(To,From),_)-H-Out :- 
+    write_one_move(To,From)-Out.
+
+/* Element access */
+write_one(get_elem(To,From,Pos),_)-H-Out :-
+    klicformat("  ~r = ~e;\n",[To,From,Pos])-Out.
+
+/* Indexing */
+write_one(deref(X,Lloop,Lsusp),Info)-H-Out :-
+    klicformat(
+	"  deref_and_jump(~r,~l);\n"
+	"  *reasonp++ =  ~r;\n"
+	"  goto ~l;\n",
+	[X,Info,Lloop, X, Info,Lsusp])-Out.
+write_one(goto(Label),Info)-H-Out :-
+    klicformat("  goto ~l;\n",[Info,Label])-Out.
+write_one(sw_tag(X),_)-H-Out :-
+    klicformat("  switch (ptagof(~r)) {\n",[X])-Out.
+write_one(sw_sym(X),_)-H-Out :-
+    klicformat("  switch (symval(~r)) {\n",[X])-Out.
+write_one(sw_int(X),_)-H-Out :-
+    klicformat("  switch ((unsigned long)~r) {\n",[X])-Out.
+write_one(sw_funct(X),_)-H-Out :-
+    klicformat("  switch (symval(functor_of(~r))) {\n",[X])-Out.
+write_one(case_label(S),_)-H-Out :-
+    klicformat(" case ~s:\n",[S])-Out.
+write_one(case_sym(Atom),_)-H-Out :-
+    klicformat(" case symval(~a):\n",[Atom])-Out.
+write_one(case_int(Atom),_)-H-Out :-
+    klicformat(" case (unsigned long) ~a:\n",[Atom])-Out.
+write_one(case_funct(Funct),_)-H-Out :-
+    klicformat(" case ~f:\n",[Funct])-Out.
+write_one(case_default,_)-H-Out :-
+    klicformat(" default:\n")-Out.
+write_one(end_sw,_)-H-Out :-
+    klicformat("  };\n")-Out.
+write_one(eq(X,Y,Lab,FailLab,SuspLab),Info)-H-Out :-
+    klicformat("  if_equal(~r, ~r, ~l, ~l, ~l);\n",
+    	[X,Y,Info,Lab,Info,FailLab,Info,SuspLab])-Out.
+write_one(if_not_eq(X,Y,Lab),Info)-H-Out :-
+    klicformat("  if_not_equal(~r, ~r, ~l);\n", [X,Y,Info,Lab])-Out.
+write_one(if_int(X,ElseLab),Info)-H-Out :-
+    klicformat("  if (isint(~r)) goto ~l;\n",[X,Info,ElseLab])-Out.
+write_one(if_not_int(X,ElseLab),Info)-H-Out :-
+    klicformat("  if (!isint(~r)) goto ~l;\n",[X,Info,ElseLab])-Out.
+write_one(if_list(X,ElseLab),Info)-H-Out :-
+    klicformat("  if (iscons(~r)) goto ~l;\n",[X,Info,ElseLab])-Out.
+write_one(if_not_list(X,ElseLab),Info)-H-Out :-
+    klicformat("  if (!iscons(~r)) goto ~l;\n",[X,Info,ElseLab])-Out.
+write_one(if_funct(X,ElseLab),Info)-H-Out :-
+    klicformat("  if (isfunctor(~r)) goto ~l;\n",[X,Info,ElseLab])-Out.
+write_one(if_not_funct(X,ElseLab),Info)-H-Out :-
+    klicformat("  if (!isfunctor(~r)) goto ~l;\n",[X,Info,ElseLab])-Out.
+write_one(if_not_gobj(X,ElseLab),Info)-H-Out :-
+    klicformat("  if (!isgobj(~r)) goto ~l;\n",[X,Info,ElseLab])-Out.
+write_one(if_not_class(X,Class,ElseLab),Info)-H-Out :-
+    klicformat("  if (!isclass(~r,~q)) goto ~l;\n",[X,Class,Info,ElseLab])-Out.
+write_one(if_ref(X,ElseLab),Info)-H-Out :-
+    klicformat("  if (isref(~r)) goto ~l;\n",[X,Info,ElseLab])-Out.
+write_one(if_not_ref(X,ElseLab),Info)-H-Out :-
+    klicformat("  if (!isref(~r)) goto ~l;\n",[X,Info,ElseLab])-Out.
+write_one(if_funct_not(X,F,ElseLab),Info)-H-Out :-
+    klicformat("  if (functor_of(~r) != makesym(~f)) goto ~l;\n",
+	[X,F,Info,ElseLab])-Out.
+write_one(if_not(X,Value,ElseLab),Info)-H-Out :-
+    klicformat("  if (~r != ~k) goto ~l;\n",[X,Value,Info,ElseLab])-Out.
+
+/* Inline expansion */
+
+write_one(inline(Format,Args,ElseLab),Info)-H-Out :-
+    klicformat("  ")-Out,
+    write_inline(Format,Args,Info,ElseLab)-Out.
+
+/* Constant loading */
+write_one(load_const(X,Const),_)-H-Out :-
+    klicformat("  ~r = ~k;\n",[X,Const])-Out.
+
+/* Variable loading */
+write_one(load_newvar(V),_)-H-Out :-
+    klicformat("  allocp[~d] = ~r = makeref(&allocp[~d]);\n",[H,V,H])-Out,
+    H+=1.
+
+/* Allocation */
+write_one(make_cons(X),_)-H-Out :-
+    klicformat("  ~r = makecons(&allocp[~d]);\n",[X,H])-Out,
+    H+=2.
+write_one(make_functor(X,N),_)-H-Out :-
+    klicformat("  ~r = makefunctor(&allocp[~d]);\n",[X,H])-Out,
+    H+=N.
+write_one(make_vector(X,L),_)-H-Out :-
+    klicformat("  ~r = create_vector(&allocp[~d], ~d, allocp);\n",
+	[X,H,L])-Out,
+    H+=L.
+write_one(alloc_functor_id(F,A),_)-H-Out :-
+    klicformat("  allocp[~d] = makesym(~f);\n",[H,F/A])-Out.
+write_one(alloc_value(X,K),_)-H-Out :-
+    Off := H+K,
+    klicformat("  allocp[~d] = ~r;\n",[Off,X])-Out.
+write_one(alloc_var(X,K),_)-H-Out :-
+    Off := H+K,
+    klicformat("  allocp[~d] = ~r = makeref(&allocp[~d]);\n",[Off,X,Off])-Out.
+write_one(alloc_elem(X,K,KK),_)-H-Out :-
+    Off := H+KK,
+    klicformat("  allocp[~d] = ~e;\n",[Off,X,K])-Out.
+write_one(alloc_const(Id,K),_)-H-Out :-
+    Off := H+K,
+    klicformat("  allocp[~d] = ~k;\n",[Off,Id])-Out.
+write_one(make_space(N),_)-H-Out :-
+    H += N.
+
+/* Unificaiton */
+write_one(unify(X,Y,Q),_)-H-Out :-
+    write_adjust(Q,H)-Out,
+    H <== 0,
+    klicformat("  unify(~k, ~k);\n",[X,Y])-Out.
+write_one(unify_value(X,Y,Q),_)-H-Out :-
+    write_adjust(Q,H)-Out,
+    H <== 0,
+    klicformat("  unify_value(~k, ~k);\n",[X,Y])-Out.
+
+/* Execution control */
+write_one(execute(Name,Arity,Susp,Q),_)-H-Out :-
+    write_adjust(Q,H)-Out,
+    H <== 0,
+    write_one_execute(Name,Arity,Susp)-Out.
+
+write_one(proceed(Q),_)-H-Out :-
+    write_adjust(Q,H)-Out,
+    H <== 0,
+    klicformat("  proceed();\n")-Out.
+write_one(set_pred(Name,Arity),info(M,_,_))-H-Out :-
+    H1 := H+1,
+    klicformat("  allocp[~d] = (q)(&~p);\n",[H1,M,Name,Arity])-Out.
+write_one(set_ext_pred(Module,Name,Arity),_)-H-Out :-
+    H1 := H+1,
+    klicformat("  allocp[~d] = (q)(&~p);\n",[H1,Module,Name,Arity])-Out.
+write_one(heappos(HP),_)-H-Out :-
+    HP = H.
+write_one(push_goal(Q0,HP),_)-H-Out :-
+    HP = H,
+    klicformat("  allocp[~d] = (q)~Q;\n",[H,Q0])-Out.
+write_one(throw_goal(Node,Q0,Q),_)-H-Out :-
+    klicformat("  throw_goal(~r,~r,~r);\n",[Node,Q0,Q])-Out.
+write_one(enq_at_prio(P,Q0,Q),_)-H-Out :-
+    klicformat("  enqueue_at_priority(~k,~r,~r);\n",[P,Q0,Q])-Out.
+write_one(enq_at_lower_prio(P,Q0,Q),_)-H-Out :-
+    klicformat("  enqueue_at_lower_priority(~k,~r,~r);\n",[P,Q0,Q])-Out.
+write_one(enq_at_prio_no_check(P,Q0,Q),_)-H-Out :-
+    klicformat("  enqueue_at_priority_no_check(~k,~r,~r);\n",[P,Q0,Q])-Out.
+write_one(enq_at_lower_prio_no_check(P,Q0,Q),_)-H-Out :-
+    klicformat("  enqueue_at_lower_priority_no_check(~k,~r,~r);\n",
+	[P,Q0,Q])-Out.
+write_one(set_qp(X,Q),_)-H-Out :-
+    klicformat("  ~r = (q)~Q;\n", [X, Q])-Out.
+
+write_one(set_value(P,X),_)-H-Out :-
+    PP := P+H+2,
+    klicformat("  allocp[~d] = ~r;\n",[PP,X])-Out.
+write_one(set_newvar(P,X),_)-H-Out :-
+    PP := P+H+2,
+    klicformat("  allocp[~d] = ~r = makeref(&allocp[~d]);\n",[PP,X,PP])-Out.
+write_one(set_elem(P,X,K),_)-H-Out :-
+    PP := P+H+2,
+    klicformat("  allocp[~d] = ~e;\n",[PP,X,K])-Out.
+write_one(set_const(P,Id),_)-H-Out :-
+    PP := P+H+2,
+    klicformat("  allocp[~d] = ~k;\n",[PP,Id])-Out.
+
+/* Builtin */
+write_one(bblt(L,NF,Args,OArgs),_)-H-Out :-
+    klic_comp_util:append(Args,OArgs,AArgs),
+    klic_comp_util:length(Args,ArgsLength),
+    write_one_bblt(L,ArgsLength,NF,AArgs)-Out.
+
+/* Guard builtin */
+write_one(gblt(F,_,Args,Value,Lint),Info)-H-Out :-
+    klicformat("  ~w(~,,~k,~l);\n",[F,Args,Value,Info,Lint])-Out.
+write_one(gblt_pred(F,_,Args,Lint),Info)-H-Out :-
+    klicformat("  ~w(~,,~l);\n",[F,Args,Info,Lint])-Out.
+
+write_one(otherwise,Info)-H-Out :-
+    klicformat("  otherwise(~l);\n",[Info,interrupt])-Out.
+write_one(alternatively,Info)-H-Out :-
+    klicformat("  alternative(~l);\n",[Info,clear_reason])-Out.
+
+write_one(equiv(R1,R0),_)-H-Out :-
+    klicformat("  ~r = ~r;\n",[R0,R1])-Out.
+
+/* Generic Objects */
+write_one(new_generic(Class,Arity,Obj,Q),_)-H-Out :-
+    write_adjust_qp(Q)-Out,
+    klicformat("  new_generic(~q_g_new, ~d, ~r, ~d);\n",
+	[Class,Arity,Obj,H])-Out,
+    H <== 0.
+write_one(call_generic(Obj,FA,Q),_)-H-Out :-
+    write_adjust_qp(Q)-Out,
+    klicformat("  call_generic(~k, ~f, ~d);\n",[Obj,FA,H])-Out,
+    H <== 0.
+write_one(guard_generic(Obj,FA,Nin,Lint),Info)-H-Out :-
+    klicformat("  guard_generic(~k, ~f, ~d, ~l);\n",
+	[Obj,FA,Nin,Info,Lint])-Out.
+write_one(store_generic_arg(X,K),_)-H-Out :-
+    klicformat("  generic_arg[~d] = ~k;\n",[K,X])-Out.
+write_one(load_generic_arg(R,K),_)-H-Out :-
+    klicformat("  ~r = generic_arg[~d];\n",[R,K])-Out.
+otherwise.
+write_one(Object,_)-H-Out :-
+    klic_comp_message:warning("Failed to write out object: ~w", [Object]).
+
+write_one_move(X,X)-Out.
+otherwise.
+write_one_move(To,From)-Out :-
+    klicformat("  ~r = ~r;\n",[To,From])-Out.
+
+write_one_execute(Name,Arity,Susp)-Out :- Susp=:=0 |
+    klicformat(
+	"  execute(~q_~d_0);\n"
+	"  goto ~q_~d_ext_interrupt;\n",
+	[Name,Arity, Name,Arity])-Out.
+write_one_execute(Name,Arity,Susp)-Out :- Susp=\=0 |
+    klicformat(
+	"  execute(~q_~d_clear_reason);\n"
+	"  goto ~q_~d_ext_interrupt;\n",
+	[Name,Arity, Name,Arity])-Out.
+
+write_one_bblt([],_,NF,AArgs)-Out :-
+    klicformat("  ~w_no_check(~,);\n",[NF,AArgs])-Out.
+write_one_bblt([1],1,NF,AArgs)-Out :-
+    klicformat("  ~w(~,);\n",[NF,AArgs])-Out.
+write_one_bblt([1],2,NF,AArgs)-Out :-
+    klicformat("  ~w_no_check_y(~,);\n",[NF,AArgs])-Out.
+write_one_bblt([2],_,NF,AArgs)-Out :-
+    klicformat("  ~w_no_check_x(~,);\n",[NF,AArgs])-Out.
+otherwise.
+write_one_bblt(_,_,NF,AArgs)-Out :-
+    klicformat("  ~w(~,);\n",[NF,AArgs])-Out.
+
+%%%%%%%
+
+
+
+write_adjust(Q,H)-Out :-
+    write_adjust_qp(Q)-Out,
+    write_adjust_allocp(H)-Out.
+
+write_adjust_qp(qp)-Out.
+write_adjust_qp(Q)-Out :- Q\=qp | klicformat("  qp = ~Q;\n",[Q])-Out.
+
+write_adjust_allocp(Off)-Out :- Off=:=0 | true.
+write_adjust_allocp(Off)-Out :- Off=\=0 |
+    klicformat("  allocp += ~d;\n",[Off])-Out.
+
+/* Formatting routine */
+klicformat_stderr(Format,Args) :-
+    klicio:klicio([stderr(normal(STD_ERR))]),
+    klicformat(Format,Args)+STD_ERR+[].
+
+flush(user_error,Status) :-
+	klicio:klicio([stderr(normal([fflush(Status)]))]).
+flush(Status)-Out :- Out <= fflush(Status).
+
+klicformat(Format)-Out :- Out <= fwrite(Format).
+
+klicformat(Format,Args)-Out :- string(Format,Length,8) |
+    klicformat(0,Length,Format,Args,OutB,OutT),
+    wait_and_out(OutB,OutT)-Out.
+
+wait_and_out(OutB,OutT)-Out :-
+    Out=OutB, Out<==OutT.
+
+klicformat(K,N,_Format,_Args)-Out :- K>=N | true.
+klicformat(K,N,Format,Args)-Out :-
+    K<N, string_element(Format,K,C),
+    K1 := K+1, C=\= #"~" |
+	Out <= C,
+	klicformat(K1,N,Format,Args)-Out.
+klicformat(K,N,Format,Args)-Out :-
+    K<N, string_element(Format,K,C),
+    K1 := K+1, C=:= #"~", string_element(Format,K1,SC) |
+	K2 := K1+1,
+	format_special(SC,Args,ArgsT)-Out,
+	klicformat(K2,N,Format,ArgsT)-Out.
+
+format_special(#"a",[A|T],T1)-Out :-
+    T1 = T,
+    klic_comp_write:write_atom(A)-Out.
+format_special(#"c",[N|T],T1)-Out :-
+    T1 = T,
+    Out <= N.
+format_special(#"d",[N|T],T1)-Out :-
+    T1 = T,
+    write_int(N)-Out.
+format_special(#"D", [N0-N1|T], T1)-Out :-
+    T1 = T,
+    format_special_D(N0, N1)-Out.
+format_special(#"e",[X,E|T],T1)-Out :- 
+    T1 = T,
+    write_elem_access(X,E)-Out.
+format_special(#"f",[F/A|T],T1)-Out :-
+    T1 = T,
+    klic_comp_write:write_funct_name(F,A)-Out.
+format_special(#"g",[X|T],T1)-Out :-
+    T1 = T,
+    generic:print(X,S),
+    Out <= fwrite(S).
+format_special(#"i",[I|T],T1)-Out :-
+    T = T1,
+    format_special_i(I)-Out.
+format_special(#"k",[K|T],T1)-Out :- 
+    T1 = T,
+    write_param(K)-Out.
+format_special(#"l",[info(_,N,A),Lab|T],T1)-Out :- 
+    T1 = T,
+    klicformat("~q_~d_~w", [N,A,Lab])-Out.
+format_special(#"L",[L|T],T1)-Out :- 
+    T1 = T,
+    format_special_L(L)-Out.	
+format_special(#"n",T,T1)-Out :-
+    T1 = T,
+    Out <= key#lf.
+format_special(#"p",[M,N,A|T],T1)-Out :- 
+    T1 = T,
+    klic_comp_write:write_pred_name(M,N,A)-Out.
+format_special(#"q",[A|T],T1)-Out :-
+    T1 = T,
+    atom_table:get_atom_string(A,AN),
+    write_atom_name_string(AN)-Out.
+format_special(#"r",[R|T],T1)-Out :- 
+    T1 = T,
+    write_reg(R)-Out.
+format_special(#"R",[R|T],T1)-Out :-
+    T1 = T,
+    write_reg_int(R)-Out.
+format_special(#"s",[S|T],T1)-Out :-
+    T1 = T,
+    Out <= fwrite(S).
+format_special(#"S", [S|T],T1)-Out :-
+    T1 = T,
+    write_short(S)-Out.
+format_special(#"w",[X|T],T1)-Out :-
+    T1 = T,
+    format_special_w(X)-Out.
+format_special(#"W",[X|T],T1)-Out :-
+    T1 = T,
+    format_special_W(X)-Out.
+format_special(#",",[L|T],T1)-Out :- 
+    T1 = T,
+    write_params_blt(L)-Out.
+format_special(#"Q",[Q|T],T1)-Out :- 
+    T1 = T,
+    write_qp(Q)-Out.
+format_special(#"~",T,T1)-Out :-
+    T1 = T,
+    Out <= #"~".
+otherwise.
+format_special(X)-T-Out :-
+    klic_comp_message:report_error("unknown format char ~c", [X]).
+
+format_special_i(X)-Out :- atom(X) |
+        format_special_w(X)-Out.
+format_special_i(BG/F/A)-Out :-
+        klicformat("~w_~w_~d", [BG, F, A])-Out.
+otherwise.
+format_special_i(F/A)-Out :-
+        klicformat("~w_~d", [F, A])-Out.
+
+format_special_w(X)-Out :- atom(X) |
+	atom_table:get_atom_string(X,Str),
+	Out <= fwrite(Str).
+otherwise.
+format_special_w(X)-Out :-
+	unparser:unparse(X,s(ops([],[],[]),_))-Out.
+
+format_special_W(X)-Out :-
+	unparser:unwparse(X,s(ops([],[],[]),_))-Out.
+
+format_special_D(From, To)-Out :-
+        klicformat("HALFWORD(")-Out,
+	format_special_D_1(From, To)-Out,
+	klicformat(")")-Out.
+
+format_special_D_1(From, To)-Out :- integer(From), integer(To) |
+	N := To - From,
+	write_int(N)-Out.
+format_special_D_1(From, F/A)-Out :- integer(From) |
+        klicformat("LABELDIFF(~d, ", [From])-Out,
+	format_special_L(F/A)-Out,
+	klicformat(")")-Out.
+format_special_D_1(F/A, To)-Out :- integer(To) |
+	klicformat("KLICLABELDIFF(")-Out,
+	format_special_L(F/A)-Out,
+	klicformat(", ~d)", [To])-Out.
+format_special_D_1(F0/A0, F1/A1)-Out :-
+        klicformat("KLICLABELDIFF(")-Out,
+	format_special_L(F0/A0)-Out,
+	klicformat(", ")-Out,
+	format_special_L(F1/A1)-Out,
+	klicformat(")")-Out.
+
+format_special_L(F/A)-Out :- atom(F), integer(A) |
+        klicformat("kliclabel_~f", [F/A])-Out.
+format_special_L(F/A/N)-Out :- integer(N) |
+	klicformat("kliclabel_~f__~d", [F/A, N])-Out.
+format_special_L(F/A/N)-Out :- atom(N) |
+	klicformat("kliclabel_~f__~q", [F/A, N])-Out.
+
+write_params([])-Out.
+write_params([H])-Out:- write_param(H)-Out.
+write_params([H|T])-Out:- T\=[] |
+    write_param(H)-Out, Out <= #",", write_params(T)-Out.
+
+write_param(int(Int))   -Out :- klicformat("makeint(~dL)",[Int])-Out.
+write_param(atom(Atom)) -Out :- klic_comp_write:write_atom(Atom)-Out.
+write_param(const(float(Id)))-Out :-
+    klicformat("makefloat(float_const_~d)",[Id])-Out.
+write_param(const(predicate(Id)))-Out :-
+    klicformat("makepred(pred_const_~d)",[Id])-Out.
+write_param(const(list(Id)))-Out :-
+    klicformat("makecons(cons_const_~d)",[Id])-Out.
+write_param(const(functor(Id)))-Out :-
+    klicformat("makefunctor(funct_const_~d)",[Id])-Out.
+write_param(const(string(Id)))-Out :-
+    klicformat("makefunctor(&string_const_~d)",[Id])-Out.
+write_param(const(vector(Id)))-Out :-
+    klicformat("makefunctor(&vector_const_~d)",[Id])-Out.
+write_param(r(E))       -Out :- write_reg(E)-Out.
+write_param(arg(Reg,E)) -Out :- write_elem_access(Reg,E)-Out.
+
+write_params_blt([])-Out.
+write_params_blt([H])-Out:- write_param(H)-Out.
+write_params_blt([H|T])-Out:- T\=[] |
+    write_param_blt(H)-Out, Out <= #",", write_params(T)-Out.
+
+write_param_blt(r(E))       -Out :- write_reg(E)-Out.
+
+write_int(I)-Out :- I>=0, I<10 | Out <= ~(#"0"+I).
+write_int(I)-Out :- I>=10 |
+    C:= #"0"+I mod 10,
+    write_int(~(I/10))-Out,
+    Out <= C.
+write_int(I)-Out :- I<0, N:= -I, I=:=N |	% I = 0x800...00
+    Out<= #"-",
+    I1:= -(I/10), I2:= -(I+I1*10), C:= #"0"+I2,
+    write_int(I1)-Out, Out <= C.
+write_int(I)-Out :- I<0, N:= -I, I=\=N |
+    Out<= #"-",
+    write_int(N)-Out.
+
+/* Element access */
+write_elem_access(X, car)-Out :- klicformat("car_of(~r)", [X])-Out.
+write_elem_access(X, cdr)-Out :- klicformat("cdr_of(~r)", [X])-Out.
+write_elem_access(X, Pos)-Out :- integer(Pos) |
+	klicformat("arg(~r, ~d)", [X,Pos])-Out.
+
+write_reg(a(N))-Out :- Out <= #"a", write_int(N)-Out.
+write_reg(x(N))-Out :- Out <= #"x", write_int(N)-Out.
+write_reg(r(R))-Out :- write_reg(R)-Out.
+
+write_reg_int(a(N))-Out :- write_int(N)-Out.
+write_reg_int(x(N))-Out :- N1 := N + 128, write_int(N1)-Out.
+write_reg_int(r(R))-Out :- write_reg_int(R)-Out.
+
+write_short(N)-Out :- wait(N) | klicformat("HALFWORD(~d)", [N])-Out.
+
+write_qp(qp)-Out :- klicformat("qp")-Out.
+write_qp(N) -Out :- integer(N) |
+    klicformat("(struct goalrec*)&allocp[~d]", [N])-Out.
+
+/* Inline expansion */
+write_inline(string(Format),Args,Info,ElseLab)-Out :-
+    string(Format,L,8) |
+    write_inline(0,L,Format,Args,Info,ElseLab)-Out.
+
+write_inline(K,L,_Format,_Args,_Info,_ElseLab)-Out :- K>= L |
+    Out <= key#lf.
+write_inline(K,L,Format,Args,Info,ElseLab)-Out :- K<L,
+	string_element(Format,K,C), K1 := K+1, C=\= #"%" |
+    Out <= C,
+    write_inline(K1,L,Format,Args,Info,ElseLab)-Out.
+write_inline(K,L,Format,Args,Info,ElseLab)-Out :- K<L,
+	string_element(Format,K,C), K1 := K+1, C=:= #"%",
+	string_element(Format,K1,S) |
+    K2 := K1+1,
+    inline_special(S,Args,Info,ElseLab)-Out,
+    write_inline(K2,L,Format,Args,Info,ElseLab)-Out.
+
+inline_special(C,_Args,_Info,_ElseLab)-Out :- C=:= #"%" |
+    Out <= C.
+inline_special(C,_Args,Info,ElseLab)-Out :- C=:= #"f" |
+    klicformat("~l",[Info,ElseLab])-Out.
+inline_special(C,Args,_Info,_ElseLab)-Out :- #"0" =< C, C =< #"9" |
+    N := C - #"0",
+    klic_comp_util:nth(N,Args,R),
+    klicformat("~r",[R])-Out.
+otherwise. 
+inline_special(C,_Args,_Info,_ElseLab)-Out :-
+    Out <= #"%", Out <= C.
+
+write_atom_name_string(S)-Out :- string(S,N,_) |
+	write_atom_name_string(0,N,S)-Out.
+
+write_atom_name_string(K,N,_S)-Out :- K>=N | true.
+write_atom_name_string(K,N,S)-Out :-
+	K<N, K1:=K+1, string_element(S,K,C) |
+    write_atom_name_char(C)-Out,
+    write_atom_name_string(K1,N,S)-Out.
+
+write_atom_name_char(C)-Out :- inline:"
+{
+  long c = intval(%0);
+  if (!isalnum(c)) goto %f;
+}":[C+int] |
+    Out <= C.
+otherwise.
+write_atom_name_char(C)-Out :- C=:= #"_" |
+    Out <= C, Out <= C.
+write_atom_name_char(C)-Out :- C =\= #"_" |
+    Out <= #"_",
+    U := C>>4,
+    L := C/\15,
+    hexchar(U, Upper),
+    hexchar(L, Lower),
+    Out <= Upper,
+    Out <= Lower.
+
+hexchar(C, N) :- C < 10 | N := #"0" + C.
+hexchar(C, N) :- C >= 10 | N := #"A" - 10 + C.

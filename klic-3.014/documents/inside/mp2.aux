@@ -1,0 +1,92 @@
+\relax 
+\@writefile{toc}{\contentsline {chapter}{\numberline {第10章}メッセージ通信版}{98}}
+\@writefile{lof}{\addvspace {10\jsc@mpt }}
+\@writefile{lot}{\addvspace {10\jsc@mpt }}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.1}{\ignorespaces メッセージ通信版KLICの構成}}{98}}
+\newlabel{dist-comm}{{10.1}{98}}
+\@writefile{toc}{\contentsline {section}{\numberline {10.1}処理系の構成}{99}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.2}{\ignorespaces メッセージ通信実装の構成}}{99}}
+\newlabel{d-klic-conf}{{10.2}{99}}
+\@writefile{toc}{\contentsline {section}{\numberline {10.2}基本方式}{99}}
+\newlabel{d-klic-fundamental}{{10.2}{99}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.2.1}荘園}{100}}
+\@writefile{toc}{\contentsline {subsubsection}{終了検出}{100}}
+\@writefile{toc}{\contentsline {subsubsection}{中断検出}{100}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.3}{\ignorespaces WTC方式：ゴールの送受信と里親の終了}}{101}}
+\newlabel{rokthrowterm}{{10.3}{101}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.4}{\ignorespaces 荘園の中断検出}}{102}}
+\newlabel{rokcheck}{{10.4}{102}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.5}{\ignorespaces 外部参照ポインタの生成.}}{103}}
+\newlabel{rok:fig:genexref}{{10.5}{103}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.2.2}外部参照ポインタ}{103}}
+\@writefile{toc}{\contentsline {subsubsection}{表現形式}{103}}
+\@writefile{toc}{\contentsline {subsubsection}{{ジェネリック・オブジェクト}を用いた実現}{103}}
+\@writefile{toc}{\contentsline {subsubsection}{輸出表}{104}}
+\newlabel{export-table}{{10.2.2}{104}}
+\@writefile{toc}{\contentsline {subsubsection}{外部参照ポインタの生成}{105}}
+\@writefile{toc}{\contentsline {subsubsection}{外部参照ポインタの解放}{105}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.2.3}分散ユニフィケーション}{106}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.6}{\ignorespaces 外部参照ポインタの分割輸出と解放}}{107}}
+\newlabel{roksplitrelease}{{10.6}{107}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.7}{\ignorespaces 外部参照ポインタの間接輸出}}{107}}
+\newlabel{rokindirectexport}{{10.7}{107}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.8}{\ignorespaces {外部参照オブジェクト} X と具体値のユニフィケーション.}}{108}}
+\newlabel{rok:fig:exrefvalue}{{10.8}{108}}
+\@writefile{toc}{\contentsline {subsubsection}{外部参照オブジェクトX と具体値 value}{108}}
+\@writefile{toc}{\contentsline {subsubsection}{{ジェネレータ外部参照オブジェクト} X と, {コンシューマ(群)} あるいは中断ゴール (群) がフックした変数 Y}{108}}
+\@writefile{toc}{\contentsline {subsubsection}{{ジェネレータ外部参照オブジェクト} 同士 (X, Y)}{108}}
+\@writefile{toc}{\contentsline {subsubsection}{{コンシューマ外部参照オブジェクト(群)} がフックしている変数同士}{108}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.9}{\ignorespaces {ジェネレータ外部参照オブジェクト} X と {コンシューマ(群)}のユニフィケーション.}}{109}}
+\newlabel{rok:fig:exrefgencon}{{10.9}{109}}
+\@writefile{toc}{\contentsline {subsubsection}{{外部参照オブジェクト} X と変数 V}{109}}
+\@writefile{toc}{\contentsline {subsubsection}{具体的な実装}{109}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.2.4}参照値の読出し (dereference)}{109}}
+\newlabel{rok:section:fetch}{{10.2.4}{109}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.10}{\ignorespaces 外部参照ポインタが指す参照値の読出し.}}{110}}
+\newlabel{rok:fig:fetchingvalue}{{10.10}{110}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.2.5}ループへの対処}{111}}
+\@writefile{toc}{\contentsline {subsubsection}{ユニフィケーションによるループ}{111}}
+\@writefile{toc}{\contentsline {subsubsection}{生成}{111}}
+\@writefile{toc}{\contentsline {subsubsection}{問題点}{111}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.11}{\ignorespaces ユニフィケーションによるループの生成.}}{112}}
+\newlabel{rok:fig:loopcreationbyunify}{{10.11}{112}}
+\@writefile{toc}{\contentsline {subsubsection}{解決方法}{112}}
+\@writefile{toc}{\contentsline {subsubsection}{読出し処理によるループ}{112}}
+\@writefile{toc}{\contentsline {subsubsection}{生成}{112}}
+\@writefile{toc}{\contentsline {subsubsection}{問題点}{112}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.12}{\ignorespaces ゴミのループが生まれてしまったかもしれない.}}{113}}
+\newlabel{rok:fig:garbageloop}{{10.12}{113}}
+\@writefile{toc}{\contentsline {subsubsection}{解決方法}{113}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.13}{\ignorespaces 読出し処理によって生まれたループの回収.}}{114}}
+\newlabel{rok:fig:looprelease}{{10.13}{114}}
+\@writefile{toc}{\contentsline {section}{\numberline {10.3}詳細な実装}{114}}
+\newlabel{d-klic-communication}{{10.3}{114}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.3.1}分散プロセス立ち上げ方式}{114}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.14}{\ignorespaces ワーカ群立ち上げ後の状態}}{115}}
+\newlabel{d-klic-initproc}{{10.14}{115}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.3.2}メッセージの送信/受信}{115}}
+\@writefile{toc}{\contentsline {subsubsection}{メッセージの送信}{115}}
+\@writefile{toc}{\contentsline {subsubsection}{メッセージの受信}{116}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.3.3}分散処理用{ジェネリック・オブジェクト}の詳細}{116}}
+\@writefile{toc}{\contentsline {subsubsection}{{ジェネレータ外部参照オブジェクト}の詳細}{117}}
+\@writefile{toc}{\contentsline {subsubsection}{{コンシューマ外部参照オブジェクト}の詳細}{118}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.3.4}{リプライ・コンシューマ・オブジェクト}の詳細}{118}}
+\@setckpt{mp2}{
+\setcounter{page}{120}
+\setcounter{equation}{0}
+\setcounter{enumi}{2}
+\setcounter{enumii}{2}
+\setcounter{enumiii}{0}
+\setcounter{enumiv}{0}
+\setcounter{footnote}{2}
+\setcounter{mpfootnote}{0}
+\setcounter{part}{2}
+\setcounter{chapter}{10}
+\setcounter{section}{3}
+\setcounter{subsection}{4}
+\setcounter{subsubsection}{0}
+\setcounter{paragraph}{0}
+\setcounter{subparagraph}{0}
+\setcounter{figure}{14}
+\setcounter{table}{0}
+}

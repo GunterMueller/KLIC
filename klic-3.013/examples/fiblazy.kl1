@@ -1,0 +1,21 @@
+% Demand-driven (lazy) Fionacci sequence generator.
+% Start the program and input (from stdin) either of "more." or "done."
+%
+% klic fiblazy.kl1 tty.kl1
+
+:- module main.
+
+main :- true |
+    fibonaccilazy(Fs), driver(Fs,IOs), tty:ttystream(IOs).
+
+fibonaccilazy(Ns) :- true | fiblazy(-1,1,Ns).
+fiblazy(_, _, []     ) :- true | true.
+fiblazy(N1,N2,[N3|Ns]) :- true |
+    N3:=N1+N2, fiblazy(N2,N3,Ns).
+
+driver(Fs,IOs0) :- true |
+    IOs0=[gett(X)|IOs], checkinput(Fs,IOs,X).
+checkinput(Fs0,IOs0,more) :- true |
+    Fs0=[N|Fs], IOs0=[putt(N),nl|IOs],
+    driver(Fs,IOs).
+checkinput(Fs, IOs, done) :- true | Fs=[], IOs=[].

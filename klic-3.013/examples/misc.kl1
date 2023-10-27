@@ -1,0 +1,19 @@
+:- module misc.
+
+factorial(X,Y) :- X=:=0 | Y:=1.
+factorial(X,Y) :- X > 0 |
+   X1:=X-1, factorial(X1,Y1), Y:=X*Y1.
+
+length([],    N) :- true | N:=0.
+length([_|L0],N) :- true | length(L0,N0), N:=N0+1.
+
+length_iter(L,N) :- true | length(L,0,N).
+length([],    N0,N) :- true | N:=N0.
+length([_|L0],N0,N) :- true | N1:=N0+1, length(L0,N1,N).
+
+nreverse([],    Lr) :- true | Lr=[].
+nreverse([A|L0],Lr) :- true | nreverse(L0,Lr0), append(Lr0,[A],Lr).
+
+reverse(L,Lr) :- true | reverse(L,[],Lr).
+reverse([],   S,Lr) :- true | Lr=S.
+reverse([A|L],S,Lr) :- true | reverse(L,[A|S],Lr).

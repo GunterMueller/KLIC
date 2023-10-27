@@ -1,0 +1,57 @@
+#ifndef XCOMM
+#define XCOMM #
+#endif
+
+#ifndef NullParameter
+#define NullParameter
+#endif
+
+XCOMM 
+XCOMM  Author:      William Chia-Wei Cheng (bill.cheng@acm.org)
+XCOMM 
+XCOMM  Copyright (C) 1990-2001, William Chia-Wei Cheng.
+XCOMM 
+XCOMM  @(#)$Header: /mm2/home/cvs/bc-src/tgif/po/Imakefile,v 1.1 2004/06/18 23:12:02 william Exp $
+XCOMM 
+
+XCOMM -------------------------------------------- XCOMM
+XCOMM There should be no need to modify this file. XCOMM
+XCOMM -------------------------------------------- XCOMM
+
+#include <Po.tmpl>
+
+#define IHaveSubdirs
+
+SUBDIRS = ja ru fr
+
+#define PassCDebugFlags 'CDEBUGFLAGS=$(CDEBUGFLAGS)'
+
+MakeSubdirs($(SUBDIRS))
+DependSubdirs($(SUBDIRS))
+
+TGIFNLSVER	= 1.0.8
+
+distr: tar versioninfo
+
+tar:
+	rm -f tgifintl-$(TGIFNLSVER).tar/**/*
+	tar cvf tgifintl-$(TGIFNLSVER).tar \
+		Imakefile Po.tmpl Po.tmpl-/**/* README HISTORY \
+		ja/Imakefile ja/ja.po \
+		ru/Imakefile ru/ru.po \
+		fr/Imakefile fr/fr.po
+	rm -rf tgifintl-$(TGIFNLSVER)
+	mkdir tgifintl-$(TGIFNLSVER)
+	cd tgifintl-$(TGIFNLSVER); tar xvf ../tgifintl-$(TGIFNLSVER).tar; cd ..
+	rm -f tgifintl-$(TGIFNLSVER).tar
+	tar cvf tgifintl-$(TGIFNLSVER).tar tgifintl-$(TGIFNLSVER)
+	rm -rf tgifintl-$(TGIFNLSVER)
+	gzip tgifintl-$(TGIFNLSVER).tar
+	rm -f /**/*.cat.Z.uu
+
+versioninfo:
+	what Imakefile README Po.tmpl Po.tmpl-/**/* \
+		ja/Imakefile ja/ja.po \
+		ru/Imakefile ru/ru.po \
+		fr/Imakefile fr/fr.po \
+		> VersionInfo/Distribution/tgifintl-$(TGIFNLSVER)

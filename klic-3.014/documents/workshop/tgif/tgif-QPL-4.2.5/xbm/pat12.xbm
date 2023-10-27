@@ -1,0 +1,7 @@
+/*
+ * @(#)$Header: /mm2/home/cvs/bc-src/tgif/xbm/pat12.xbm,v 1.1 2004/06/18 23:18:44 william Exp $
+ */
+#define pat12_width 8
+#define pat12_height 8
+static unsigned char pat12_bits[] = {
+   0x01, 0x02, 0x04, 0x00, 0x40, 0x20, 0x10, 0x00};

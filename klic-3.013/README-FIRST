@@ -1,0 +1,104 @@
+	    =============================================
+	    KL1 to C compiler system: KLIC (version 3.013)
+
+			     May 26, 2021
+
+		   Kazunori UEDA, Waseda University
+		   ueda -at- ueda.info.waseda.ac.jp
+	    =============================================
+
+This version of KLIC (3.01) is essentially a maintenance release of
+klic-3.003 (official version previously released from ICOT and JIPDEC)
+and its extension, klic-3.005 (developed at Waseda University by
+Hiroshi Igarashi, Yusuke Takagi, Ryo Matsumura and Yusuke Kaneki).
+
+It contains a sequential core and a distributed-memory parallel
+implementation.  It is known to work on
+
+- Linux (Ubuntu 20.04LTS with GCC 9.3.0 on Intal and ARM64 Platforms,
+  Raspbian GNU/Linux 10 (buster) on Raspberry Pi 4B,
+  CentOS release 7.6 with GCC 4.8.5),
+- macOS version 10.14.6 (Mojave) with GCC 8.1.0 and
+  Apple LLVM 9.1.0 (see Note below), and
+- Cygwin (32-bit) version 2.5.1-1 with GCC 5.3.0,
+
+all as 32-bit applications (which means KLIC will not run on WSL
+(Windows Subsystem for Linux)).
+
+Despite its name, the distributed-memory parallel implementation runs
+perfectly on recent SMP (symmetric multiprocessor) systems as well as
+single-processor systems with multi-core CPUs.
+
+Please see README or README.j (Japanese) for the rest of the
+introduction, which is still valid except for hardware-specific
+information and contact addresses.  Further documents can be found
+in the 'document' directory:
+
+- KLIC User's Manual (klic.pdf, klicj.pdf (Japanese)) in the
+  'usermanual' directory
+
+- "Introduction to KL1" (tutorial.pdf, KL1TUT.info) in the 'tutorial'
+  directory
+
+- "KLIC Workshop textbook (two parts, Japanese only)" (lang-utf.pdf,
+  system-utf.pdf) in the 'workshop' directory.
+
+Version 3.012 is exactly the same as 3.01 for the software, but
+contains tutorial/workshop material (described above) and example
+programs (in the 'examples' directory).
+
+
+INSTALLATION
+
+For convenience of installation, this distribution includes
+configuration files containing typical settings for several OSes
+(config.sh.*) inclulding Ubunt, CentOS, and macOS.  We'd suggest
+copying one of them to config.sh (say by "cp config.sh.CentOS
+config.sh"), making changes to library paths if necessary, and run
+"./Configure".
+
+Because KLIC runs as a 32-bit application, please make sure that
+32-bit C libraries have been prepared.
+
+For Ubuntu and CentOS, they can be installed as:
+
+  (Ubuntu) sudo apt install gcc-multilib
+  (CentOS) sudo yum install glibc-devel
+           sudo yum install glibc-devel.i686
+           sudo yum install glibc-static
+           sudo yum install glibc-static.i686
+
+For macOS, you may need Xcode 9.* and Command Line Tools for that
+version of Xcode, whichever of clang or gcc you use.  If you have
+already installed Xcode 10.*, you can still install Xcode 9.* with a
+different name and switch between the two versions using 'xcode-select
+-s'.  Please search the web to find out how to do so.  Note that
+future macOS after Mojave (10.14) will not support any 32-bit
+applications and will not run this version of KLIC.
+
+Further details of the installation procedure can be found in INSTALL
+and INSTALL.j (Japanese).
+
+  Note: for macOS Mojave, LLVM 7.0-9.1 with -O2 may not properly
+  compile C files generated from KLIC.  In this case, please use -O1
+  to compile C files generated from KLIC (see and use the setting of
+  DEF_KLICCFLAGS in config.sh.MacOSX).  Alternatviely, you can
+  download GNU GCC from http://hpc.sourceforge.net/ or elsewhere and
+  use it.
+
+RUNNING KLIC
+
+How to compile KL1 programs and to run compiled binaries can be found
+in Chapter 4 of KLIC User's Manual (klic.pdf, klicj.pdf) in the
+"documents" directory.  To enable parallel execution, give the "-dp"
+option to KLIC and use the "-p N" (N being the number of workers)
+to the compiled binary (Sections 4.5.2, 4.5.3 of the Manual).
+
+If you have installed KLIC with shared libraries enabled, you may need
+to set the LD_LIBRARY_PATH environment variable to search for the
+libraries at run time.
+
+Implementation details of KLIC can be found in the (revived) document
+"Inside KLIC" (in documents/inside).  Detailed changelog can be found
+in ChangeLog.  Compiler developers may need to consult FOR-DEVELOPERS
+or FOR-DEVELOPERS.j.

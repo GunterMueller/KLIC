@@ -1,0 +1,25 @@
+% Hamming's problem: generate a sequence of integers of the
+% form 2^k * 3^m * 5^n (k,m,n >=0)
+%
+% klic hamm.kl1 tty.kl1
+
+:- module main.
+
+main :- true | mults(1000,Ys), tty:ttystream([putt(Ys),nl]).
+
+mults(N,Ys) :- true |
+    timeslist(2,N,Ys,Ys2),
+    timeslist(3,N,Ys,Ys3),
+    timeslist(5,N,Ys,Ys5),
+    merge(Ys3,Ys5,Ys35), merge(Ys2,Ys35,Ys235),
+    Ys=[1|Ys235].
+
+timeslist(U,N,[X|_ ],Ys ) :- U*X  > N | Ys=[].
+timeslist(U,N,[X|Xs],Ys0) :- U*X =< N |
+    W:=U*X, Ys0=[W|Ys], timeslist(U,N,Xs,Ys).
+
+merge([],    Ys,    Zs ) :- true | Zs=Ys.
+merge(Xs,    [],    Zs ) :- true | Zs=Xs.
+merge([A|Xs],[B|Ys],Zs0) :- A < B | Zs0=[A|Zs], merge(Xs,[B|Ys],Zs).
+merge([A|Xs],[B|Ys],Zs0) :- A > B | Zs0=[B|Zs], merge([A|Xs],Ys,Zs).
+merge([A|Xs],[B|Ys],Zs0) :- A=:=B | Zs0=[A|Zs], merge(Xs,Ys,Zs).

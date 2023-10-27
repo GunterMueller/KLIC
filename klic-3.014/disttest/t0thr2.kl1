@@ -1,0 +1,175 @@
+% test for "reexportation" of external references which refer to vectors or lists.  
+
+%   a: throw_goal({})
+%   b: throw_goal({a})
+%   c: throw_goal({1,2,3})
+%   d: throw_goal({1,a,[],2,b})
+%   e: throw_goal({{}})
+%   f: throw_goal({a,{b,c,{d,e,f}}})
+%   g: throw_goal({{{{{5},4,4},3,3,3},2,2,2,2},1,1,1,1,1})
+%   h: throw_goal([a,b,c])
+%   i: throw_goal([a,[b,[c,[d,[e]]]]])
+%   j: throw_goal([1,[2,3,[4,5,6],7,8],9])
+%   k: throw_goal([xyz,a(x),b(y,z)])
+%   l: throw_goal([{a},{b,c},{d,e,f}])
+%   m: throw_goal([a,{b,[c,d],e},{[f,g,h],i,j},k])
+
+%===========================================================================
+:- module main.
+main :- lib:io(Os), 
+	lib:prsl(Os,Os2,'### InterNode Test [Reexportation] Begin ###',Done), 
+	vlarg(Os2,Done). 
+
+%===========================================================================
+vlarg(Os,done):- 
+	lib:prs(Os,Os2,'Test for throw_goal vector/list (a-m) : ',Done), 
+	vlarg_a(Os2,Done).
+
+%%%% a: throw_goal({})
+vlarg_a(Os,done):- vlarg_a_exe(Os,{}).
+vlarg_a_exe(Os,A):- nextnode(Node), vlarg_a_exe(Os,A,Node).
+vlarg_a_exe(Os,A,Node):- wait(Node) | vlarg_a_mid(Os,A)@node(Node).
+vlarg_a_mid(Os,A):- nextnode(Node), vlarg_a_mid(Os,A,Node).
+vlarg_a_mid(Os,A,Node):- wait(Node) | vlarg_a_ck1(Os,A)@node(Node).
+vlarg_a_ck1(Os,{}):- lib:prs(Os,Os2,a,Done), vlarg_b(Os2,Done).
+otherwise.
+vlarg_a_ck1(Os,_):- lib:prs_err(Os,Os2,a,Done), vlarg_b(Os2,Done).
+
+%%%% b: throw_goal({a})
+vlarg_b(Os,done):- vlarg_b_exe(Os,{a}).
+vlarg_b_exe(Os,A):- nextnode(Node), vlarg_b_exe(Os,A,Node).
+vlarg_b_exe(Os,A,Node):- wait(Node) | vlarg_b_mid(Os,A)@node(Node).
+vlarg_b_mid(Os,A):- nextnode(Node), vlarg_b_mid(Os,A,Node).
+vlarg_b_mid(Os,A,Node):- wait(Node) | vlarg_b_ck1(Os,A)@node(Node).
+vlarg_b_ck1(Os,{a}):- lib:prs(Os,Os2,b,Done), vlarg_c(Os2,Done).
+otherwise.
+vlarg_b_ck1(Os,_):- lib:prs_err(Os,Os2,b,Done), vlarg_c(Os2,Done).
+
+%%%% c: throw_goal({1,2,3})
+vlarg_c(Os,done):- vlarg_c_exe(Os,{1,2,3}).
+vlarg_c_exe(Os,A):- nextnode(Node), vlarg_c_exe(Os,A,Node).
+vlarg_c_exe(Os,A,Node):- wait(Node) | vlarg_c_mid(Os,A)@node(Node).
+vlarg_c_mid(Os,A):- nextnode(Node), vlarg_c_mid(Os,A,Node).
+vlarg_c_mid(Os,A,Node):- wait(Node) | vlarg_c_ck1(Os,A)@node(Node).
+vlarg_c_ck1(Os,{1,2,3}):- lib:prs(Os,Os2,c,Done), vlarg_d(Os2,Done).
+otherwise.
+vlarg_c_ck1(Os,_):- lib:prs_err(Os,Os2,c,Done), vlarg_d(Os2,Done).
+
+%%%% d: throw_goal({1,a,[],2,b})
+vlarg_d(Os,done):- vlarg_d_exe(Os,{1,a,[],2,b}).
+vlarg_d_exe(Os,A):- nextnode(Node), vlarg_d_exe(Os,A,Node).
+vlarg_d_exe(Os,A,Node):- wait(Node) | vlarg_d_mid(Os,A)@node(Node).
+vlarg_d_mid(Os,A):- nextnode(Node), vlarg_d_mid(Os,A,Node).
+vlarg_d_mid(Os,A,Node):- wait(Node) | vlarg_d_ck1(Os,A)@node(Node).
+vlarg_d_ck1(Os,{1,a,[],2,b}):- lib:prs(Os,Os2,d,Done), vlarg_e(Os2,Done).
+otherwise.
+vlarg_d_ck1(Os,_):- lib:prs_err(Os,Os2,d,Done), vlarg_e(Os2,Done).
+
+%%%% e: throw_goal({{}})
+vlarg_e(Os,done):- vlarg_e_exe(Os,{{}}).
+vlarg_e_exe(Os,A):- nextnode(Node), vlarg_e_exe(Os,A,Node).
+vlarg_e_exe(Os,A,Node):- wait(Node) | vlarg_e_mid(Os,A)@node(Node).
+vlarg_e_mid(Os,A):- nextnode(Node), vlarg_e_mid(Os,A,Node).
+vlarg_e_mid(Os,A,Node):- wait(Node) | vlarg_e_ck1(Os,A)@node(Node).
+vlarg_e_ck1(Os,{{}}):- lib:prs(Os,Os2,e,Done), vlarg_f(Os2,Done).
+otherwise.
+vlarg_e_ck1(Os,_):- lib:prs_err(Os,Os2,e,Done), vlarg_f(Os2,Done).
+
+%%%% f: throw_goal({a,{b,c,{d,e,f}}})
+vlarg_f(Os,done):- E=a, vlarg_f_exe(Os,{a,{b,c,{d,e,f}}}).
+vlarg_f_exe(Os,A):- nextnode(Node), vlarg_f_exe(Os,A,Node).
+vlarg_f_exe(Os,A,Node):- wait(Node) | vlarg_f_mid(Os,A)@node(Node).
+vlarg_f_mid(Os,A):- nextnode(Node), vlarg_f_mid(Os,A,Node).
+vlarg_f_mid(Os,A,Node):- wait(Node) | vlarg_f_ck1(Os,A)@node(Node).
+vlarg_f_ck1(Os,{a,{b,c,{d,e,f}}}):- 
+	lib:prs(Os,Os2,f,Done), vlarg_g(Os2,Done).
+otherwise.
+vlarg_f_ck1(Os,_):- lib:prs_err(Os,Os2,f,Done), vlarg_g(Os2,Done).
+
+%%%% g: throw_goal({{{{{5},4,4},3,3,3},2,2,2,2},1,1,1,1,1})
+vlarg_g(Os,done):- 
+	vlarg_g_exe(Os,{{{{{5},4,4},3,3,3},2,2,2,2},1,1,1,1,1}).
+vlarg_g_exe(Os,A):- nextnode(Node), vlarg_g_exe(Os,A,Node).
+vlarg_g_exe(Os,A,Node):- wait(Node) | vlarg_g_mid(Os,A)@node(Node).
+vlarg_g_mid(Os,A):- nextnode(Node), vlarg_g_mid(Os,A,Node).
+vlarg_g_mid(Os,A,Node):- wait(Node) | vlarg_g_ck1(Os,A)@node(Node).
+vlarg_g_ck1(Os,{{{{{5},4,4},3,3,3},2,2,2,2},1,1,1,1,1}):- 
+	lib:prs(Os,Os2,g,Done), vlarg_h(Os2,Done).
+otherwise.
+vlarg_g_ck1(Os,_):- lib:prs_err(Os,Os2,g,Done), vlarg_h(Os2,Done).
+
+%%%% h: throw_goal([a,b,c])
+vlarg_h(Os,done):- vlarg_h_exe(Os,[a,b,c]).
+vlarg_h_exe(Os,A):- nextnode(Node), vlarg_h_exe(Os,A,Node).
+vlarg_h_exe(Os,A,Node):- wait(Node) | vlarg_h_mid(Os,A)@node(Node).
+vlarg_h_mid(Os,A):- nextnode(Node), vlarg_h_mid(Os,A,Node).
+vlarg_h_mid(Os,A,Node):- wait(Node) | vlarg_h_ck1(Os,A)@node(Node).
+vlarg_h_ck1(Os,[a,b,c]):- lib:prs(Os,Os2,h,Done), vlarg_i(Os2,Done).
+otherwise.
+vlarg_h_ck1(Os,_):- lib:prs_err(Os,Os2,h,Done), vlarg_i(Os2,Done).
+
+%%%% i: throw_goal([a,[b,[c,[d,[e]]]]])
+vlarg_i(Os,done):- vlarg_i_exe(Os,[a,[b,[c,[d,[e]]]]]).
+vlarg_i_exe(Os,A):- nextnode(Node), vlarg_i_exe(Os,A,Node).
+vlarg_i_exe(Os,A,Node):- wait(Node) | vlarg_i_mid(Os,A)@node(Node).
+vlarg_i_mid(Os,A):- nextnode(Node), vlarg_i_mid(Os,A,Node).
+vlarg_i_mid(Os,A,Node):- wait(Node) | vlarg_i_ck1(Os,A)@node(Node).
+vlarg_i_ck1(Os,[a,[b,[c,[d,[e]]]]]):- 
+	lib:prs(Os,Os2,i,Done), vlarg_j(Os2,Done).
+otherwise.
+vlarg_i_ck1(Os,_):- lib:prs_err(Os,Os2,i,Done), vlarg_j(Os2,Done).
+
+%%%% j: throw_goal([1,[2,3,[4,5,6],7,8],9])
+vlarg_j(Os,done):- vlarg_j_exe(Os,[1,[2,3,[4,5,6],7,8],9]).
+vlarg_j_exe(Os,A):- nextnode(Node), vlarg_j_exe(Os,A,Node).
+vlarg_j_exe(Os,A,Node):- wait(Node) | vlarg_j_mid(Os,A)@node(Node).
+vlarg_j_mid(Os,A):- nextnode(Node), vlarg_j_mid(Os,A,Node).
+vlarg_j_mid(Os,A,Node):- wait(Node) | vlarg_j_ck1(Os,A)@node(Node).
+vlarg_j_ck1(Os,[1,[2,3,[4,5,6],7,8],9]):- 
+	lib:prs(Os,Os2,j,Done), vlarg_k(Os2,Done).
+otherwise.
+vlarg_j_ck1(Os,_):- lib:prs_err(Os,Os2,j,Done), vlarg_k(Os2,Done).
+
+%%%% k: throw_goal([xyz,a(x),b(y,z)])
+vlarg_k(Os,done):- vlarg_k_exe(Os,[xyz,a(x),b(y,z)]).
+vlarg_k_exe(Os,A):- nextnode(Node), vlarg_k_exe(Os,A,Node).
+vlarg_k_exe(Os,A,Node):- wait(Node) | vlarg_k_mid(Os,A)@node(Node).
+vlarg_k_mid(Os,A):- nextnode(Node), vlarg_k_mid(Os,A,Node).
+vlarg_k_mid(Os,A,Node):- wait(Node) | vlarg_k_ck1(Os,A)@node(Node).
+vlarg_k_ck1(Os,[xyz,a(x),b(y,z)]):- 
+	lib:prs(Os,Os2,k,Done), vlarg_l(Os2,Done).
+otherwise.
+vlarg_k_ck1(Os,_):- lib:prs_err(Os,Os2,k,Done), vlarg_l(Os2,Done).
+
+%%%% l: throw_goal([{a},{b,c},{d,e,f}])
+vlarg_l(Os,done):- vlarg_l_exe(Os,[{a},{b,c},{d,e,f}]).
+vlarg_l_exe(Os,A):- nextnode(Node), vlarg_l_exe(Os,A,Node).
+vlarg_l_exe(Os,A,Node):- wait(Node) | vlarg_l_mid(Os,A)@node(Node).
+vlarg_l_mid(Os,A):- nextnode(Node), vlarg_l_mid(Os,A,Node).
+vlarg_l_mid(Os,A,Node):- wait(Node) | vlarg_l_ck1(Os,A)@node(Node).
+vlarg_l_ck1(Os,[{a},{b,c},{d,e,f}]):- 
+	lib:prs(Os,Os2,l,Done), vlarg_m(Os2,Done).
+otherwise.
+vlarg_l_ck1(Os,_):- lib:prs_err(Os,Os2,l,Done), vlarg_m(Os2,Done).
+
+%%%% m: throw_goal([a,{b,[c,d],e},{[f,g,h],i,j},k])
+vlarg_m(Os,done):- vlarg_m_exe(Os,[a,{b,[c,d],e},{[f,g,h],i,j},k]).
+vlarg_m_exe(Os,A):- nextnode(Node), vlarg_m_exe(Os,A,Node).
+vlarg_m_exe(Os,A,Node):- wait(Node) | vlarg_m_mid(Os,A)@node(Node).
+vlarg_m_mid(Os,A):- nextnode(Node), vlarg_m_mid(Os,A,Node).
+vlarg_m_mid(Os,A,Node):- wait(Node) | vlarg_m_ck1(Os,A)@node(Node).
+vlarg_m_ck1(Os,[a,{b,[c,d],e},{[f,g,h],i,j},k]):- 
+	lib:prs(Os,Os2,m,Done), vlarg_end(Os2,Done).
+otherwise.
+vlarg_m_ck1(Os,_):- lib:prs_err(Os,Os2,m,Done), vlarg_end(Os2,Done).
+
+vlarg_end(Os,done):- lib:prsl(Os,Os2,'...done',Done), done(Os2,Done).
+
+%===========================================================================
+done(Os,done):- lib:prsl(Os,Os2,'### InterNode Test [Reexportation] End ###',_), Os2 = [].  
+
+%===========================================================================
+nextnode(Node):- 
+	builtin:current_node(CurrentNode,NumberOfNodes), 
+	Node := (CurrentNode+1) mod NumberOfNodes.
+

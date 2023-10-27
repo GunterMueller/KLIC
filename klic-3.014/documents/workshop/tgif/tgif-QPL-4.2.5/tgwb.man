@@ -1,0 +1,122 @@
+.\" Tgwb's man pages.
+.\"
+.\" @(#)$Header: /mm2/home/cvs/bc-src/tgif/tgwb.man,v 1.1 2004/06/18 23:20:01 william Exp $
+.\"
+.\"
+.\"
+.\"
+.\"
+.\"
+.\"
+.TH tgwb n "Version 4.1 Patchlevel 43 and Above" "Tgwb"
+.\"================================================================
+.SH NAME
+.\"
+\fItgwb\fR \- a shared vector-based drawing whiteboard, based
+on \fItgif\fR, for collaborating over the Internet.
+.\"================================================================
+.SH SYNOPSIS
+.\"
+.B tgwb
+[\fB-no-wb\fR]
+[\fB-no-chat\fR]
+[\fB-chatnick\fR <nickname>]
+[\fB<tgif-options>\fR]
+.\"================================================================
+.SH DESCRIPTION
+.\"
+\fITgwb\fR is a shared vector-based drawing whiteboard, based
+on tgif(n), for collaborating over the Internet.
+.\"================================================================
+.SH OPTIONS
+.\"
+The command line arguments can be:
+.TP
+.B -no-wb
+Disable whiteboard.
+.TP
+.B -no-chat
+No chat window will be initially visible.  The chat window can be
+made visible by selecting \fIShow Chat\fR in the
+Show/Hide submenu of the Layout Menu.
+.TP
+.B -chatnick \fR<nickname>\fB
+User's nickname will be set to <nickname>.  This overrides the
+Tgif.ChatNickName X default.
+.PP
+All other commandline options (<tgif-options>) are treated as
+options for tgif(n).
+.\"================================================================
+.SH CHAT WINDOW
+.\"
+In addition to tgif's windows, tgwb has a Chat window which has
+a message display area and a toolbar on the bottom.  The toolbar
+contains the following items (from left to right):
+.TP
+.I Auto-scroll Button
+If this button is depressed, the message display area will
+scroll automatically to the bottom when a new message entered by
+another user arrives.
+.TP
+.I Color Button
+Clicking with the left/right mouse button or dragging
+with the middle mouse button can change the user's chat color.
+.TP
+.I Bold Button
+If this button is depressed, bold font will be used.
+.TP
+.I Italic Button
+If this button is depressed, italic font will be used.
+.TP
+.I Edit Area
+This is where the user can enter a message to be sent.
+Pressing the <Enter> key has the same effect as clicking on
+the Send Button.
+.TP
+.I Send Button
+Click on this button sends the message in the Edit Area.
+.\"================================================================
+.SH X DEFAULTS
+.\"
+.TP
+.I Tgif.NoChatWindow: [true,false]
+If set to ``true'', no Chat Window will be shown initially.
+The default is false.
+.TP
+.I Tgif.ChatNickName: STRING
+The STRING specifies a nickname to be used in chat.
+By default, the value of the USER environment variable is
+used as the user's nickname.  The nickname specified here
+can be overridden by the -chatnick commandline option.
+.\"================================================================
+.SH SEE ALSO
+.\"
+\fBtgif\fR(n)
+.\"================================================================
+.SH IDIOSYNCRASIES
+.\"
+Some idiosyncrasies are mentioned here.
+.PP
+Font size in the chat window cannot be changed dynamically.
+.\"================================================================
+.SH BUGS
+.\"
+Joining the existing chat session does not work.
+.\"
+.\"================================================================
+.SH COPYRIGHT
+.\"
+Please see the ``Copyright'' file for details on the copyrights
+of tgif(n).  Please see the ``README.tgwb'' file for additional
+copyright information.
+.\"================================================================
+.SH STATUS
+.\"
+The current status of tgif(n) can be obtained from tgif's
+World-Wide-Web home page at <URL:http://bourbon.usc.edu:8001/tgif/>.
+.\"================================================================
+.SH AUTHOR
+.\"
+William Chia-Wei Cheng (bill.cheng@acm.org)
+.br
+<URL:http://bourbon.usc.edu/william/>

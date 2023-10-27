@@ -1,0 +1,373 @@
+#
+# Author:      William Chia-Wei Cheng (bill.cheng@acm.org)
+#
+# Copyright (C) 2001-2009, William Chia-Wei Cheng.
+#
+# This file may be distributed under the terms of the Q Public License
+# as defined by Trolltech AS of Norway and appearing in the file
+# LICENSE.QPL included in the packaging of this file.
+#
+# THIS FILE IS PROVIDED AS IS WITH NO WARRANTY OF ANY KIND, INCLUDING
+# THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL,
+# INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING
+# FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+# NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
+# WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+#
+# @(#)$Header: /mm2/home/cvs/bc-src/tgif/Makefile.noimake,v 1.9 2011/05/16 16:25:17 william Exp $
+#
+
+INSTALLPATH	= /usr/local
+MANSECTION	= n
+
+O 		= .o
+XBM 		= xbm/
+
+CC 		= cc
+BINDIR		= $(INSTALLPATH)/bin
+TGIFDIR 	= $(INSTALLPATH)/lib/tgif
+MANPATH		= $(INSTALLPATH)/man
+MANDIR		= $(MANPATH)/man$(MANSECTION)
+
+XDIR		= /usr/openwin
+MOTIFDIR	= /usr/dt
+INCROOT		= /usr/X11R6/include
+USRLIBDIR	= /usr/X11R6/lib
+
+#
+# Change INSTALL to /usr/ucb/install if INSTPGMFLAGS doesn't mean strip on
+#		your machine (such as an RS6000).  Stripping gets rid of
+#		symbol talbe and relocation bits in a binary file.
+# 'make install' will not work with Solaris because it requires the install
+#		directory right after the -c option.  So, if you are running
+#		Solaris, please install the files manually.
+#
+INSTALL		= install
+
+CFLAGS		= -O $(DEFINES) -I$(INCROOT)
+LDFLAGS		= -L$(USRLIBDIR) -lc -lX11 -ldl -lm
+####################################################################
+# Try the following instead of the above on a Solaris machine
+#
+#CFLAGS		= -O $(DEFINES) -I/usr/local/include \
+#		  -I$(XDIR)/include -I$(MOTIFDIR)/include
+#LDFLAGS	= -L$(XDIR)/lib -L$(MOTIFDIR)/lib \
+#		  -lc -lXmu -lXt -lX11 -ldl -lm -lsocket -lnsl
+####################################################################
+# Try the following instead of the above on a AIX machine
+#
+#CFLAGS		= -O $(DEFINES) -I/usr/local/include
+#LDFLAGS	= -L/usr/local/lib -lc -lX11 -ldl -lm
+####################################################################
+# Try the following instead of the above on an IRIX machine
+#
+#CFLAGS		= -O2 -xansi -32 -mips2 -Wf,-XNh2000 -nostdinc \
+#		  -DSYSV -DSVR4 -DFUNCPROTO=7 -DNARROWPROTO $(DEFINES) \
+#		  -I/usr/local/include \
+#		  -I$(XDIR)/include -I$(MOTIFDIR)/include
+#LDFLAGS	= -O2 -xansi -32 -mips2 -Wf,-XNh2000 \
+#		  -L$(XDIR)/lib -L$(MOTIFDIR)/lib \
+#		  -lXexe -lX11 -lm -L/usr/lib/mips2 -L/usr/lib -ldl -lm
+####################################################################
+
+###########################################################################
+# For a simple install, hopefully, you only need to change the above lines.
+###########################################################################
+
+COMPILE.c = $(CC) -c $(CFLAGS) $(CPPFLAGS)
+LINK.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS)
+
+INSTPGMFLAGS 	= -s
+INSTMANFLAGS	= -m 0444
+DEFINES		= -DTGIF_PATH=\"$(TGIFDIR)\" -DPSFILE_MOD=0664 \
+		  -DEPSF_FILE_EXT=\"eps\" -DPS_FILE_EXT=\"ps\" \
+		  -DXBM_FILE_EXT=\"xbm\" -DXPM_FILE_EXT=\"xpm\" \
+		  -DOBJ_FILE_EXT=\"obj\" -DSYM_FILE_EXT=\"sym\" \
+		  -DTEXT_FILE_EXT=\"txt\" -DPIN_FILE_EXT=\"pin\" \
+		  -DNETLIST_FILE_EXT=\"net\" -DCOMP_FILE_EXT=\"cmp\" \
+		  -DTELEPORT_ATTR=\"warp_to=\" -DTMP_DIR=\"/tmp/\" \
+		  -DLAUNCH_ATTR=\"launch=\" -DEXEC_ATTR=\"exec=\" \
+		  -D_BACKGROUND_DONT_FORK -D_USE_XDRAWPOINT_TO_PUT_A_POINT
+
+#-D_NO_ZLIB
+#   Include the above line if you do not have zlib installed in your
+#   system.  Zlib is only used in tgif when _TGIF_WB2 (see below) is
+#   used.
+#-D_NO_ENTER_TEXT_EVERYWHERE
+#   Include the above line if you do not want to be able to enter
+#   text from the keyboard in tgif unless the drawing area of tgif
+#   has the keyboard focus.
+#-D_DARWIN_MOD1_AS_META
+#   Include the above line if you are compiling for Mac OS X and
+#   you want to use the Mod1 key as the <Meta> key.  By default,
+#   the Mod2 key is treated as the <Meta> key (at the time this
+#   option was added).
+#-D_XPM3TOPPM
+#   Include the above line if the xpmtoppm you have only knows how to
+#   handle XPM format version 3.  (This is the case with xpm-9.14.)
+#   This has the same effect as setting Tgif.XPmOutputVersion to 3 and
+#   Tgif.UseXPmVersion1ForImageMap to false.
+#-D_NO_LANDSCAPE_PDF_SETPAGEDEVICE
+#   Include the above line if you want tgif to *not* generate
+#   "setpagedevice" PostScript command to rotate the generated PostScript
+#   file.  (This is meant to be used when ps2pdf can handle landscape
+#   PostScript files correctly.)
+#-D_PRTGIF_USE_ISO_LATIN_1_ALWAYS
+#   Include the above line if you want to always use ISO 8859-1 character
+#   set for single-byte characters when running tgif with the -print
+#   commandline option.  Please only use this if you are sure that you
+#   will *never* use other encodings.  You can selectively turn off
+#   reencoding by using either the Tgif.DontReencode X default or the
+#   -dontreencode commandline option.
+#-D_TMP_DIR_IN_HOME_DIR
+#   Include the above line if you want the temporary directory to be
+#   a user's $HOME/.Tgif directory by default.
+#-D_DONT_USE_MKTEMP
+#   Include the above line if you do not want to use mktemp() and your
+#   system supports tempnam().  The use of mktemp() is not recommanded
+#   due to some security considerations.
+#-D_PS_SEVENBIT_DOUBLEBYTE_TEXT
+#   Include the above line if bit 7 in both bytes of a double-byte
+#   character should be masked out when printing/exporting double-byte
+#   text to a PostScript file.
+#-D_USE_PS_ADOBE_STRING=\"true\"
+#   Include the above line in the DEFINES if you want to configure tgif
+#   to use a default Tgif.UsePsAdobeString value.
+#-D_MINIMAL_EPS=1
+#   Include the above line in the DEFINES if you want to configure tgif
+#   to use a default Tgif.MinimalEPS value.
+#-DENABLE_NLS
+#   Include the above line if you want to enable NLS (Native Language
+#   Support).
+#-D_DONT_USE_PORTABLE_LOCALE (obsoleted)
+#   Include the above line if don't want to use the portable locale.
+#   (Portable locale is "C" for all locale categories.)
+#-D_NO_RECURSIVE_EXTERN
+#   Include the above line if your C compiler cannot handle
+#   "#define extern extern".  The /bin/cc compiler on HP-UX reports a
+#   Recursion in macro "extern" when the above define is used.
+#-D_DL_EXPORT_UNDERSCORE
+#   Include the above line if you use export filters and there is an entry
+#   point to an export filter named "_TgifExportFilterMain" (and there's
+#   no entry point named "TgifExportFilterMain").  One can see all the
+#   entry points to an export filter by running 'nm' against it.
+#-D_NO_TGTWB5
+#   Include the above line if you do not want to include the code
+#   that handles tgtwb5.  Please also remove "tgtwb5.o" and "tgtwb5xl.o"
+#   from OBJ1 in Imakefile.
+#-D_NO_XCIN
+#   Include the above line if you do not want to include the code
+#   that handles xcin.  Please also remove "cli_xcin.o" from
+#   OBJ1 in Imakefile.
+#-D_NO_CHINPUT
+#   Include the above line if you do not want to include the code
+#   that handles chinput.  Please also remove "chinput.o" from
+#   OBJ1 in Imakefile.
+#-D_NO_KINPUT
+#   Include the above line if you do not want to include the code
+#   that handles kinput.  Please also remove "convkinput.o" from
+#   OBJ1 in Imakefile.
+#-D_NO_XIM
+#   Include the above line if you do not want to include the code
+#   that handles X Input Method.  Please also remove "convxim.o" from
+#   OBJ1 in Imakefile.
+#-D_NO_NKF
+#   Include the above line if you do not want to include the code
+#   that handles Network Kanji Filter (NKF).  Please also remove
+#   "nkf.o" from OBJ1 in Imakefile.
+#-D_NO_DL_SUPPORT
+#   Include the above line if you don't have <dlfcn.h>.  If you define
+#   _NO_DL_SUPPORT, please use the SYS_LIBRARIES that does not contain
+#   -ldl above.
+#-D_NO_LOCALE_SUPPORT
+#   Include the above line if you don't have <X11/Xlocale.h>.  If this
+#   is the case and you don't have <locale.h>, you must also use
+#   -D_NO_XIM because "convxim.c" assumes that you have <locale.h>.
+#-D_METRIC_PIX_PER_INCH
+#   Include the above line if you want to use 127 pixels per inch
+#   when printing in the metric system.  If this line is not
+#   included, 128 pixels per inch is used.
+#-D_NO_GETTIMEOFDAY
+#   Include the above line if you do not have the gettimeofday()
+#   function but have the ftime() function.
+#-D_TANGRAM_II
+#   Include the above line if you want to include the Tangram-II features
+#   by Carlos Fisch de Brito, Luiz Rogerio Goncalves de Carvalho, and
+#   Denise Jorge de Oliveira <fisch,luiz,dezinha@land.ufrj.br> of the
+#   Tangram-II team of the Universidade Federal do Rio de Janeiro.  These
+#   features are under development and highly experimental.
+#-D_TGIF_WB (obsoleted)
+#   Include the above line if you want to include the whiteboard feature
+#   by Renato Santana <renato@nce.ufrj.br>.
+#-D_TGIF_WB2
+#   Include the above line if you want to include the whiteboard feature
+#   by Magnos Martinello <magnos@land.ufrj.br> and Raphael S. de Moraes
+#   <raphael@land.ufrj.br>.  The whiteboard needs IP multicast support,
+#   and therefore, can only run on IP multicast enabled kernels.  This
+#   code is experimental and have know bugs (such as buffer overflow) and
+#   only runs on Solaris 2.6 or above or Linux 6.x or above.  If you would
+#   like to try it, please manipulate only small objects at this time.
+#-D_HAS_STREAMS_SUPPORT
+#   Include the above line in addition to -D_TGIF_WB2 if you have the
+#   /usr/include/stropts.h file (such as Solaris 2.6 or above or Linux
+#   6.x or above.
+#-DBSD_COMP
+#   Include the above line if you are compiling on a Solaris (or
+#   possibly an SGI) machine which requires it in <sys/ioctl.h>.
+#   (If you see the error that FIONBIO is not defined when compiling
+#   tcp.c, then you probably need this.)
+#-D_BACKGROUND_DONT_FORK
+#   Try the above line if there are defunct tgif child processes.
+#-D_NO_LSTAT
+#   Include the above line if lstat() is not available.  In this case,
+#   using BrowseXBitmap and BrowseXPixmap under the File Menu may cause
+#   infinite loop if the directory structure is infinitely recursive.
+#-D_USE_XDRAWPOINT_TO_PUT_A_POINT
+#   Include the above line if the grid points are not visible.  This can
+#   be used to bypass some X server bugs (such as certain Linux X server
+#   using VGA16 screen) where the XDrawLine() Xlib call does not work
+#   properly.
+#-D_NO_EXTERN (obsoleted)
+#   Include the above line in the DEFINES if you don't want to include
+#   the extern definition for functions defined in a module.  For example,
+#   if this option is set, then file "foo.c" will not include "foo.e",
+#   and certain other extern definition in "foo.c" will be omitted.
+#-D_NO_PROTO
+#   Include the above line in the DEFINES if checking for function
+#   prototypes is not desired.  Checking for function prototypes
+#   are automatically enabled if you are using an ANSI or C++ compilor.
+#   However, not all ANSI/C++ compilors are created equal.
+#-D_BSD
+#   Include the above line in the DEFINES if the select() function can
+#   does not be found for AIX systems (such as RS6000).  Also, on AIX
+#   systems, if you see garbage file names when you try to open files,
+#   try this flag to make direct and dirent equivalent (in <sys/dir.h>).
+#-D_NO_RAND48
+#   Include the above line in the DEFINES if you do not have the
+#   srand48() or drand48() functions in your system's library.
+#-DNO_STRSTR
+#   Include the above line in the DEFINES if you do not have the strstr()
+#   function in your system's string library.
+#-DINVERT_CTM_BUG
+#   Include the above line in the DEFINES if you are using PostScript
+#   utilities which fails when trying to invert non-invertible CTM
+#   (e.g., muluti.ps from ftp.ucc.su.oz.au:/pub/ps_printing/multi).
+#-DHP_LINE_BUG
+#   Include the above line in the DEFINES if two-vertices horizontal and
+#   verticle line segments don't draw properly on a buggy HP server.
+#-DDONTFREECOLORS
+#   Include the above line in the DEFINES if you don't want the black and
+#   the white colors to be freed when tgif initializes itself.  You should
+#   not need to do this unless you need to get around some server bugs.
+#-DUSE_XAPPLRESDIR
+#   Include the above line in the DEFINES if $XAPPLRESDIR/Tgif is used to
+#   specify the resource file.  If your system does not have putenv()
+#   (such as IBM-RT), then this won't work.
+#-DXAPPLOADDIR_DEF
+#   If you define USE_XAPPLRESDIR, define this to a default directory
+#   to use in case $XAPPLRESDIR isn't set.
+#-DUSE_XT_INITIALIZE
+#   This will cause the XToolkit to be initialized so that the X defaults
+#   are obtained from the Xt directories.  This should only be used when
+#   USE_XAPPLRESDIR option is NOT used.  Please remember to use the
+#   LOCAL_LIBRARIES with $(XTOOLLIB) $(XMULIB) above.
+#-DNO_THIN_LINE
+#   Include the above line in the DEFINES if a line width of 0 causes
+#   your server to crash.  This is to get around a bug in some X servers.
+#-DTHIN_OVAL_AND_ARC
+#   Include the above line in the DEFINES if you want 0 width arcs to
+#   be used when the width of an arc is less than or equal to 1.
+#   (Sun3 server has a bug that makes drawing ovals and arcs with
+#   width other than 0 VERY slow).
+#-DKEEP_WHEN_PRINT
+#   Include the above line in the DEFINES if you don't want the temp
+#   file to be deleted after sending the print job to the printer.
+#   (Some VMS systems might require this flag to be used.)
+#-DPRINT_CMD=\"lpr\"
+#   Include the above line in the DEFINES if you want to configure tgif
+#   to use a default print command.
+#-DNOTR4MODE
+#   Include the above line in the DEFINES if you are running X11R3.
+#   This will cause tgif NOT to use some X11R4 window manager related
+#   functions that's not present in R3.
+#-DMAPBEFORESELECT
+#   Include the above line in the DEFINES to call XMapWindow() before
+#   calling XSelectInput().  This might be needed to get around some
+#   server bugs.
+#-DDONT_FREE_COLORMAP
+#   Include the above line in the DEFINES if you don't want the colormap
+#   to be freed when tgif exits.
+#-DA4PAPER
+#   Include the above line in the DEFINES if you want to print on A4 paper
+#   (8.25in by 11.7in or about 21cm by 29.7cm).
+
+include make.common
+
+tgif: $(OBJS)
+#	$(CC) -o tgif $(OBJS) /usr/lib/debug/malloc.o -g $(LDFLAGS)
+	$(CC) -o tgif $(OBJS) -g $(LDFLAGS)
+
+all: tgif #prtgif frontend11.o testdrive
+	@echo Making all ...
+
+prtgif: prtgif.o $(OBJ1)
+#	$(CC) -o prtgif prtgif.o $(OBJ1) /usr/lib/debug/malloc.o -O $(LDFLAGS)
+	$(CC) -o prtgif prtgif.o -O $(LDFLAGS)
+
+testdrive: testdrive.o $(OBJ1)
+#	$(CC) -o prtgif prtgif.o $(OBJ1) /usr/lib/debug/malloc.o -O $(LDFLAGS)
+	$(CC) -o testdrive testdrive.o $(OBJ1) -O $(LDFLAGS)
+
+frontend11.o: $(OBJ1)
+	ld -o frontend11.o -r $(OBJ1)
+
+install: $(BINDIR)/tgif $(BINDIR)/prtgif \
+		$(TGIFDIR)/tgificon.eps $(TGIFDIR)/tgificon.obj \
+		$(TGIFDIR)/tgificon.xbm $(TGIFDIR)/tgificon.xpm \
+		$(TGIFDIR)/tangram.sym $(TGIFDIR)/tgif.Xdefaults \
+		$(TGIFDIR)/keys.obj
+	@echo Making install ...
+
+$(BINDIR)/tgif: tgif
+	$(INSTALL) -c $(INSTPGMFLAGS) tgif $(BINDIR)/tgif
+
+$(BINDIR)/prtgif: prtgif
+	$(INSTALL) -c $(INSTPGMFLAGS) prtgif $(BINDIR)/prtgif
+
+$(TGIFDIR)/tgificon.eps: tgificon.eps
+	$(INSTALL) -c tgificon.eps $(TGIFDIR)/tgificon.eps
+
+$(TGIFDIR)/tgificon.obj: tgificon.obj
+	$(INSTALL) -c tgificon.obj $(TGIFDIR)/tgificon.obj
+
+$(TGIFDIR)/tgificon.xbm: tgificon.xbm
+	$(INSTALL) -c tgificon.xbm $(TGIFDIR)/tgificon.xbm
+
+$(TGIFDIR)/tgificon.xpm: tgificon.xpm
+	$(INSTALL) -c tgificon.xpm $(TGIFDIR)/tgificon.xpm
+
+$(TGIFDIR)/tangram.sym: tangram.sym
+	$(INSTALL) -c tangram.sym $(TGIFDIR)/tangram.sym
+
+$(TGIFDIR)/tgif.Xdefaults: tgif.Xdefaults
+	$(INSTALL) -c tgif.Xdefaults $(TGIFDIR)/tgif.Xdefaults
+
+$(TGIFDIR)/keys.obj: keys.obj
+	$(INSTALL) -c keys.obj $(TGIFDIR)/keys.obj
+
+install.man: $(MANDIR)/tgif.$(MANSECTION) $(MANDIR)/prtgif.$(MANSECTION)
+	@echo Making install.man ...
+
+$(MANDIR)/tgif.$(MANSECTION): tgif.man
+	$(INSTALL) -c $(INSTMANFLAGS) tgif.man $(MANDIR)/tgif.$(MANSECTION)
+
+$(MANDIR)/prtgif.$(MANSECTION): prtgif.man
+	$(INSTALL) -c $(INSTMANFLAGS) prtgif.man $(MANDIR)/prtgif.$(MANSECTION)
+
+.e.o:
+
+clean:
+	rm -f tgif prtgif *.o core
+
+include make.comdep

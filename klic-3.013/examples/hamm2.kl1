@@ -1,0 +1,26 @@
+% Hamming's problem: generate a sequence of integers of the
+% form 2^k * 3^m * 5^n (k,m,n >=0)
+%
+% klic hamm.kl1 tty.kl1
+
+:- module main.
+
+main :- true | mults(1000,Ys), tty:ttystream([putt(Ys),nl]).
+
+mults(N,Ys) :- true |
+    timeslist(2,Ys,Ys2), timeslist(3,Ys,Ys3), timeslist(5,Ys,Ys5),
+    merge(Ys3,Ys5,Ys35), merge(Ys2,Ys35,Ys235),
+    breaker(N,Ys235,Ys0), Ys=[1|Ys0].
+
+timeslist(U,[],    Ys ) :- true | Ys=[].
+timeslist(U,[X|Xs],Ys0) :- true | W:=U*X, Ys0=[W|Ys], timeslist(U,Xs,Ys).
+
+merge([],    Ys,    Zs ) :- true | Zs=Ys.
+merge(Xs,    [],    Zs ) :- true | Zs=Xs.
+merge([A|Xs],[B|Ys],Zs0) :- A < B | Zs0=[A|Zs], merge(Xs,[B|Ys],Zs).
+merge([A|Xs],[B|Ys],Zs0) :- A > B | Zs0=[B|Zs], merge([A|Xs],Ys,Zs).
+merge([A|Xs],[B|Ys],Zs0) :- A=:=B | Zs0=[A|Zs], merge(Xs,Ys,Zs).
+
+breaker(N,[X|Xs],Ys)  :- X  > N | Ys=[].
+breaker(N,[X|Xs],Ys0) :- X =< N | Ys0=[X|Ys], breaker(N,Xs,Ys).
+

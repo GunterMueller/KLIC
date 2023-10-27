@@ -1,0 +1,9 @@
+% insertion sort.
+
+:- module inssort.
+
+sort([],    S) :- true | S=[].
+sort([X|L0],S) :- true | sort(L0,S0), insert(X,S0,S).
+insert(X,[],     R) :- true | R=[X].
+insert(X,[Y|L],  R) :- X=<Y | R=[X,Y|L].
+insert(X,[Y|L0],R) :- X > Y | R=[Y|L], insert(X,L0,L).  

@@ -1,0 +1,196 @@
+% icpsi538::>sys>user>imai>KL1>life.kl1.7, 20-Dec-91 12:19:59, Edit by imai
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% mesh64m.ghc 				1987.09.22. GOTO
+%	The counterfeit of LIFE game
+%
+%     General Notes:
+%	The original life game uses eight-neighbours, however, this program
+%	uses only four-neighbours (north, south, east, west).
+%	This test program has following features.
+%	(1) Two dimensional "cell" processes are generated.
+%		- The cell process has two directional streams
+%		  with four neighbours.
+%		- The cell process is linked as a "torus".
+%	(2) The cell process has its own state, which is updated using its
+%	     "current" states of four neighbours'.
+%		- Note that there is no world clock.
+%		- This program has much locality in the stream communication.
+%		- However, this program does not suit for depth-first
+%		  execution.
+%		- As the result, there may occur many suspensions.
+%	(3) The parameters related to the program size can be given by the
+%	     initial states and the state transition function of cells.
+
+%%%%%%%%%%
+% life(G,X,Y,DivX,DivY,R) 
+%	G    : the number of Max life cycles
+%	X    : number of life node for X
+%	Y    : number of life node for Y
+%		(initial state is computed by combination of X and Y)
+%	DivX : Cluster Division for X
+%	DivY : Cluster Division for Y
+%	R    : the result list
+%
+% for Example
+%  +-------------+  X=31, Y=15, DivX=2, DivY=3
+%  |14    |      |
+%  |10    |      |  The number of computing node (cluster) is determined by
+%  |------+------|  number of clusters currently available.
+%  |9     |      |
+%  |5     |      |  In this case, if we have
+%  |------+------|            +---+           +---+           +---+
+%  |4     |      |  3clusters |1|2| 6clusters |4|5| 4clusters |0|1|
+%  |0   14|15  31|            |-+-|           |-+-|           |-+-|
+%  +-------------+            |2|0|           |2|3|           |2|3|
+%                             |-+-|           |-+-|           |-+-|
+%                             |0|1|           |0|1|           |0|1|
+%                             +---+           +---+           +---+
+%                   However even if we have 12 clusters, the mapping is exactly
+%                   same as the case of 6 clusters!!
+:- module main.
+
+main :-	go(N), klicio:klicio([stdout(normal([putt(N),nl]))]).
+
+go(N) :- life(120,16,16,4,4,L), count_1(L,N).
+
+display(A) :- display_console(A) | true.
+
+count_1([SubL|L],N) :- true |
+	count_sub(SubL,0,SubN), count_1(L,N2), N := SubN + N2.
+count_1([],N) :- true | N=0.
+
+count_sub([1|L],N,NFinal) :- true | count_sub(L,~(N+1),NFinal).
+count_sub([0|L],N,NFinal) :- true | count_sub(L,     N,NFinal).
+count_sub([],   N,NFinal) :- true | NFinal = N.
+
+life(G,X,Y,DivX,DivY,R) :- true |
+	init(X,Y,X,Y,Sinit),
+	Config = kumon(X,Y,DivX,DivY),
+	make_row(X,Y,Config,G,Sinit,NS1,NS1,NS2,NS2,R,[]).
+
+%%%%%%%%%%%%%
+% initialize table (by A.Imai)
+%	randomly (not a better function, actually) generate initial table
+%%%%%%%%%%%%%
+
+init(X,Y,TX,TY,List) :- X > 0 |
+	init_col(X,Y,TX,TY,ColL,X),
+	List = [ColL|List1],
+	init(~(X-1),Y,TX,TY,List1).
+init(0,Y,TX,TY,List) :- true | List = [].
+
+init_col(X,Y,TX,TY,List,PrevNum) :- Y > 0 |
+	rand_0_or_1(X,Y,PrevNum,Rand,NewNum),
+	List = [Rand|List1],
+	init_col(X,~(Y-1),TX,TY,List1,NewNum).
+init_col(X,0,TX,TY,List,_) :- true | List = [].
+
+rand_0_or_1(X,Y,PrevNum,Rand,NewNum) :-
+    integer(X), integer(Y), integer(PrevNum) |
+	NewNum := ( PrevNum >> 3 ) + ( X << 2 ) + ( Y >> 2 ),
+	Rand := NewNum mod 2.
+
+%%%%%%%%%%
+% make_row(G,Init,Ns1,Sn1,Ns2,Sn2,Rh,Rt)
+%	G  : the number of Max life cycles
+%	Init : The initial state list
+%		[I_col1,I_col2,....,I_coln]
+%	Ns1,Sn1 : North/south stream
+%	Ns2,Sn2 : North/south stream
+%	Rh,Rt : The result list
+
+make_row(X,Y,Config,G,[I_col|Is],Ns1,Sn1,Ns2,Sn2,Rh,Rt) :- true |
+	Rh=[C|Rhs],
+	compute_node(X,Y,Config,Node),
+	make_col(     X,Y,Config,G,I_col,Ns1,S1 ,Ns2,S2 ,EW1,EW1,EW2,EW2,C  ,[])@node(Node),
+%	make_col(     X,Y,Config,G,I_col,Ns1,S1 ,Ns2,S2 ,EW1,EW1,EW2,EW2,C  ,[]),
+	make_row(~(X-1),Y,Config,G,Is   ,S1 ,Sn1,S2 ,Sn2                ,Rhs,Rt).
+
+make_row(X,Y,Config,G,[]        ,Ns1,Sn1,Ns2,Sn2,Rh,Rt) :- true |
+	Rh = Rt,
+	Sn1=[S1|Ssn1], Sn2=[S2|Ssn2],
+	connect_row(Ns1,Ssn1,Ns2,Ssn2,S1,S2).
+
+%%%%%%%%%%
+% connect_row(Ns1,Sn1,Ns2,Sn2,S1,S2)
+%	Ns1,Sn1,Ns2,Sn2 : North/south stream for make_col
+%	S1,S2 : North/south stream for cells
+
+connect_row([N1|Ns1],Sn1,[N2|Ns2],Sn2,S1,S2) :- true |
+	N1 = S1, N2 = S2, Sn1=[Ss1|Ssn1], Sn2=[Ss2|Ssn2],
+	connect_row(Ns1,Ssn1,Ns2,Ssn2,Ss1,Ss2).
+
+connect_row([]      ,_  ,[]      ,_  ,_ ,_ ) :- true | true.
+
+%%%%%%%%%%
+% make_col(G,I_col,Ns1,Sn1,Ns2,Sn2,Ew1,We1,Ew2,We2,Ch,Ct)
+%	G  : the number of Max life cycles
+%	I_col : the initial state list for colomn
+%	Ns1,Sn1: north/south stream
+%	Ns2,Sn2: north/south stream
+%	Ew1,We1: east/west stream
+%	Ew2,We2: east/west stream
+%	Ch,Ct: The result list for colomn
+
+make_col(X,Y,Config,G,[I|Is],[N1|Ns1],Sn1,[N2|Ns2],Sn2,Ew1,We1,Ew2,We2,Ch,Ct) :-
+    Config=kumon(TX,TY,DivX,DivY) |
+	Ch=[R|Chs],
+	Sn1=[S1|Ssn1], Sn2=[S2|Ssn2],
+	compute_node(X,Y,Config,Node),
+	cell(I,N1,S1,N2,S2,Ew1,WE1,Ew2,WE2,R,G)@node(Node),
+%	cell(I,N1,S1,N2,S2,Ew1,WE1,Ew2,WE2,R,G),
+	make_col(X,~(Y-1),Config,G,Is,Ns1,Ssn1,Ns2,Ssn2,WE1,We1,WE2,We2,Chs,Ct).
+
+make_col(X,Y,Config,G,[]    ,_       ,Sn1,_       ,Sn2,Ew1,We1,Ew2,We2,Ch,Ct) :-
+    true |
+	Ch = Ct, Ew1 = We1, Ew2 = We2, Sn1=[], Sn2=[].
+
+compute_node(X,Y,kumon(TX,TY,DivX,DivY),Node) :- true |
+	current_node(_,TotalNode),
+	Node := ((X/(TX/DivX)) + ((Y/(TY/DivY))*DivX)) mod TotalNode.
+%	Node = 0.
+
+%%%%%%%%%%%
+% cell --> cell1
+
+cell(I,N1,S1,N2,S2,E1,W1,E2,W2,R,G) :- true |
+	N2=[I|On], S1=[I|Os], W2=[I|Ow], E1=[I|Oe],
+	cell1(I,N1,S2,W1,E2,On,Os,Ow,Oe,R,G).
+
+% cell1(X,Ni,Si,Ei,Wi,On,Os,Ow,Oe,R,G)
+%	X  : the state of cell
+%	Ni : the state of the north neighbor cell
+%	Si : the state of the south neighbor cell
+%	Ei : the state of the east neighbor cell
+%	Wi : the state of the west neighbor cell
+%	On,Os,Ow,Oe  : Output stream of internal state to four neighbours
+%	R  : The result output stream head
+%	G  : the number of life cycle (Generation)
+
+cell1(X,[N|Ni],[S|Si],[E|Ei],[W|Wi],On,Os,Ow,Oe,R,G) :- G > 0, G1:=G-1,
+    T1:=S+N, T2:=E+W, T:=T1+T2 | 
+	change(X,T,Y),
+	On=[Y|On1], Os=[Y|Os1], Ow=[Y|Ow1], Oe=[Y|Oe1],
+	cell1(Y,Ni,Si,Ei,Wi,On1,Os1,Ow1,Oe1,R,G1).
+
+cell1(X,_     ,_     ,_     ,_     ,On,Os,Ow,Oe,R,0) :- true |
+	On=[],Os=[],Ow=[],Oe=[],R = X.
+
+%%%%%%%%%%%
+% change(X,T,Y) : The state transition function.
+%		  The following function works as a kind of "differntial
+%		  (Kyoukai-sen chuushutsu)" in the two dimensional pattern
+%		  processing.
+%		  Other function can be given easily.
+%	Y <- f(X,T)
+
+change(0,0,Y) :- true | Y = 1.
+change(0,1,Y) :- true | Y = 0.
+change(0,2,Y) :- true | Y = 1.
+change(0,3,Y) :- true | Y = 0.
+change(0,4,Y) :- true | Y = 1.
+change(1,0,Y) :- true | Y = 0.
+change(1,1,Y) :- true | Y = 1.
+change(1,2,Y) :- true | Y = 0.
+change(1,3,Y) :- true | Y = 1.
+change(1,4,Y) :- true | Y = 0.

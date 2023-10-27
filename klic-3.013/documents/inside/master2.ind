@@ -1,0 +1,203 @@
+\begin{theindex}
+
+  \item active unification, 61, 62
+
+  \indexspace
+
+  \item CONS, 8
+
+  \indexspace
+
+  \item encoding, 35
+  \item execute, 29
+
+  \indexspace
+
+  \item functor, 8
+
+  \indexspace
+
+  \item GC, 77
+    \subitem アルゴリズム, 79
+    \subitem きっかけ, 79
+    \subitem 共有ヒープ, 124
+    \subitem 対象領域, 78
+    \subitem 判定, 78
+  \item GC stack, 77
+  \item GCスタック, 77
+  \item Generatorの起動, 67
+  \item generic object, 12
+  \item goal, 21
+  \item goal record, 21
+  \item goal stack, 21
+
+  \indexspace
+
+  \item heap, 18
+
+  \indexspace
+
+  \item module, 28
+
+  \indexspace
+
+  \item naive reverse, 37
+
+  \indexspace
+
+  \item passive unification, 61
+  \item PVM-TCP版, 98
+  \item PVM版, 98
+
+  \indexspace
+
+  \item ref, 9
+
+  \indexspace
+
+  \item tag, 6
+  \item tracer, 84
+
+  \indexspace
+
+  \item WEC, 105
+  \item word, 7
+  \item WRC, 105
+  \item WTC, 100
+
+  \indexspace
+
+  \item エンコーディング規則, 35
+
+  \indexspace
+
+  \item 外部参照ポインタ, 103
+    \subitem 解放, 105
+    \subitem 生成, 105
+
+  \indexspace
+
+  \item 共有変数オブジェクト, 120
+  \item 共有メモリ版, 98, 120
+    \subitem 共有領域, 121
+    \subitem 局所領域, 121
+
+  \indexspace
+
+  \item 具体化, 9, 61
+
+  \indexspace
+
+  \item ゴール, 21
+    \subitem エンキュー, 29
+    \subitem 実行可能, 22
+    \subitem 多重待ち, 24
+    \subitem 中断, 22
+    \subitem 直接呼び出し, 29
+    \subitem 通常呼び出し, 29
+    \subitem デキュー, 29
+  \item ゴールスタック, 21, 27
+  \item ゴールレコード, 21
+
+  \indexspace
+
+  \item 再開処理, 64, 65
+  \item 参照, 9
+
+  \indexspace
+
+  \item ジェネリック・オブジェクト, 12, 70
+    \subitem consumer, 13, 71, 74
+    \subitem data, 13, 71
+    \subitem generator, 13, 71, 75
+    \subitem Generatorの起動, 67
+    \subitem 構造, 14
+      \subsubitem consumer, 14
+      \subsubitem data, 14
+      \subsubitem generator, 15
+    \subitem メソッド表, 12
+  \item 失敗, 53, 56
+  \item 述語, 21
+    \subitem 出力形式, 30
+  \item 述語呼び出し, 29
+  \item 純粋未定義変数, 9
+  \item 荘園, 100
+    \subitem 終了, 100
+    \subitem 中断, 100
+
+  \indexspace
+
+  \item 大域データ構造体, 16
+  \item タグ, 6
+  \item 単一化, 61
+    \subitem active unification, 61, 62
+    \subitem passive unification, 61
+  \item 単一化ゴール, 68
+
+  \indexspace
+
+  \item 中断, 53, 56
+  \item 中断構造, 64
+  \item 中断ゴール, 10
+
+  \indexspace
+
+  \item 定数構造体, 28, 36
+
+  \indexspace
+
+  \item 動作モデル, 26
+  \item トップレベルループ, 27
+  \item トレーサ, 84
+    \subitem CALLポート, 85, 89
+    \subitem FAILポート, 85
+    \subitem REDUポート, 85, 90
+    \subitem SUSPポート, 85, 90
+    \subitem 擬似ゴール, 88
+    \subitem 機能一覧, 84
+    \subitem 名前管理, 86
+
+  \indexspace
+
+  \item ヒープ, 18, 34
+  \item ヒープ割付点, 20
+
+  \indexspace
+
+  \item ファンクタ, 8
+  \item 分散プロセス立ち上げ方式, 114
+  \item 分散ユニフィケーション, 106
+
+  \indexspace
+
+  \item 未定義変数, 9
+    \subitem 分類, 14
+
+  \indexspace
+
+  \item メッセージ通信版, 98
+  \item メッセージの送信/受信, 115
+
+  \indexspace
+
+  \item モジュール, 20, 28
+
+  \indexspace
+
+  \item 輸出オブジェクト, 104, 117, 118
+  \item 輸出表, 103, 104, 117
+
+  \indexspace
+
+  \item 例外処理, 32, 53
+
+  \indexspace
+
+  \item 論理変数, 9
+
+  \indexspace
+
+  \item ワード, 7
+  \item 割り込み, 53
+
+\end{theindex}

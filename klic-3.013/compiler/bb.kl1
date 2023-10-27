@@ -1,0 +1,84 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1993,1995 Institute for New Generation Computer Technology 
+% %       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+% ----------------------------------------------------------- */
+:- module klic_comp_bb.
+
+/* Integer Arithmetics */
+is_body_builtin(add(A,B,C),Ans) :- int_binary(bblt_add(A,B,C),Ans).
+is_body_builtin(subtract(A,B,C),Ans) :- int_binary(bblt_sub(A,B,C),Ans).
+is_body_builtin(multiply(A,B,C),Ans) :- int_binary(bblt_mult(A,B,C),Ans).
+is_body_builtin(divide(A,B,C),Ans) :- int_binary(bblt_div(A,B,C),Ans).
+is_body_builtin(modulo(A,B,C),Ans) :- int_binary(bblt_mod(A,B,C),Ans).
+is_body_builtin(and(A,B,C),Ans) :- int_binary(bblt_and(A,B,C),Ans).
+is_body_builtin(or(A,B,C),Ans) :- int_binary(bblt_or(A,B,C),Ans).
+is_body_builtin(exclusive_or(A,B,C),Ans) :-
+    int_binary(bblt_exclusive_or(A,B,C),Ans).
+is_body_builtin(shift_left(A,B,C),Ans) :- int_binary(bblt_lshift(A,B,C),Ans).
+is_body_builtin(shift_right(A,B,C),Ans) :- int_binary(bblt_rshift(A,B,C),Ans).
+is_body_builtin(complement(A,B),Ans) :- int_unary(bblt_complement(A,B),Ans).
+is_body_builtin(plus(A,B),Ans) :- int_unary(bblt_plus(A,B),Ans).
+is_body_builtin(minus(A,B),Ans) :- int_unary(bblt_minus(A,B),Ans).
+
+/* Floating Point Arithmetics */
+
+is_body_builtin(floating_point_add(A,B,C),Ans) :-
+    float_binary(bblt_float_add(A,B,C), Ans).
+is_body_builtin(floating_point_subtract(A,B,C),Ans) :-
+    float_binary(bblt_float_sub(A,B,C), Ans).
+is_body_builtin(floating_point_multiply(A,B,C),Ans) :-
+    float_binary(bblt_float_mult(A,B,C), Ans).
+is_body_builtin(floating_point_divide(A,B,C),Ans) :-
+    float_binary(bblt_float_div(A,B,C), Ans).
+is_body_builtin(floating_point_power(A,B,C),Ans) :-
+    float_binary(bblt_float_pow(A,B,C), Ans).
+is_body_builtin(floating_point_sin(A,B),Ans) :-
+    float_unary(bblt_float_sin(A,B), Ans).
+is_body_builtin(floating_point_cos(A,B),Ans) :-
+    float_unary(bblt_float_cos(A,B), Ans).
+is_body_builtin(floating_point_tan(A,B),Ans) :-
+    float_unary(bblt_float_tan(A,B), Ans).
+is_body_builtin(floating_point_asin(A,B),Ans) :-
+    float_unary(bblt_float_asin(A,B), Ans).
+is_body_builtin(floating_point_acos(A,B),Ans) :-
+    float_unary(bblt_float_acos(A,B), Ans).
+is_body_builtin(floating_point_atan(A,B),Ans) :-
+    float_unary(bblt_float_atan(A,B), Ans).
+is_body_builtin(floating_point_sinh(A,B),Ans) :-
+    float_unary(bblt_float_sinh(A,B), Ans).
+is_body_builtin(floating_point_cosh(A,B),Ans) :-
+    float_unary(bblt_float_cosh(A,B), Ans).
+is_body_builtin(floating_point_tanh(A,B),Ans) :-
+    float_unary(bblt_float_tanh(A,B), Ans).
+is_body_builtin(floating_point_exp(A,B),Ans) :-
+    float_unary(bblt_float_exp(A,B), Ans).
+is_body_builtin(floating_point_log(A,B),Ans) :-
+    float_unary(bblt_float_log(A,B), Ans).
+is_body_builtin(floating_point_sqrt(A,B),Ans) :-
+    float_unary(bblt_float_sqrt(A,B), Ans).
+is_body_builtin(floating_point_ceil(A,B),Ans) :-
+    float_unary(bblt_float_ceil(A,B), Ans).
+is_body_builtin(floating_point_floor(A,B),Ans) :-
+    float_unary(bblt_float_floor(A,B), Ans).
+is_body_builtin(floating_point_to_integer(A,B),Ans) :-
+    Ans = yes(bblt_fix(A,B),
+	floating_arithmetics, [object(float)], [int]).
+
+is_body_builtin(current_node(A,B),Ans) :-
+    Ans = yes(bblt_current_node(A,B), builtin, [], [int,int]).
+otherwise.
+is_body_builtin(_,Ans) :- Ans = no.
+
+int_binary(X,Ans) :-
+    Ans = yes(X, integer_arithmetics, [int,int], [int]).
+int_unary(X,Ans) :-
+    Ans = yes(X, integer_arithmetics, [int], [int]).
+
+float_binary(X,Ans) :-
+    Ans = yes(X, floating_arithmetics,
+	[object(float),object(float)], [object(float)]).
+float_unary(X,Ans) :-
+    Ans = yes(X, floating_arithmetics,
+	[object(float)], [object(float)]).

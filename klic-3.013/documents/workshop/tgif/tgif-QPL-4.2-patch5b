@@ -1,0 +1,80 @@
+*** miniline.c.orig	2011-06-27 19:04:58.000000000 -0700
+--- miniline.c	2011-09-06 21:29:50.000000000 -0700
+***************
+*** 16,20 ****
+   * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   *
+!  * @(#)$Header: /mm2/home/cvs/bc-src/tgif/miniline.c,v 1.38 2011/05/18 22:41:20 william Exp $
+   */
+  
+--- 16,20 ----
+   * WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   *
+!  * @(#)$Header: /mm2/home/cvs/bc-src/tgif/miniline.c,v 1.40 2011/09/07 04:28:51 cvsps Exp $
+   */
+  
+***************
+*** 5662,5669 ****
+  
+  static
+! void DumpSetFont(FP, font, font_name, double_byte, style, sz_unit)
+     FILE *FP;
+!    int font, double_byte, style, sz_unit;
+     char *font_name;
+  {
+     char buf[MAXSTRING], font_str[MAXSTRING], real_font_str[MAXSTRING];
+--- 5662,5674 ----
+  
+  static
+! void DumpSetFont(FP, font, font_name, double_byte, style, sz_unit,
+!       pn_cancel_double_byte_mod_bytes)
+     FILE *FP;
+!    int font, double_byte, style, sz_unit, *pn_cancel_double_byte_mod_bytes;
+     char *font_name;
++    /*
++     * The only known condition for setting *cancel_double_byte_mod_bytes to
++     *       TRUE is when Japanese EUC fonts are used.
++     */
+  {
+     char buf[MAXSTRING], font_str[MAXSTRING], real_font_str[MAXSTRING];
+***************
+*** 5685,5688 ****
+--- 5690,5697 ----
+        MapAliasedPSFontName(real_font_str, sizeof(real_font_str));
+  
++       if (pn_cancel_double_byte_mod_bytes != NULL &&
++             strstr(real_font_str, "-EUC-") != NULL) {
++          *pn_cancel_double_byte_mod_bytes = TRUE;
++       }
+  #ifdef _PS_USE_EUC_FONT
+        /* do not translate -- program constants */
+***************
+*** 5756,5759 ****
+--- 5765,5769 ----
+     int double_byte=pStrSeg->double_byte, color_index=pStrSeg->color;
+     int double_byte_mod_bytes=pStrSeg->double_byte_mod_bytes;
++    int cancel_double_byte_mod_bytes=FALSE;
+     int asc=(pStrSeg->read_only ? pStrSeg->orig_asc : pStrSeg->asc);
+     char *font_name=pStrSeg->font_name;
+***************
+*** 5780,5787 ****
+     }
+     DumpIndentString(FP, indent);
+!    DumpSetFont(FP, font, font_name, double_byte, style, sz_unit);
+     DumpIndentString(FP, indent);
+     fprintf(FP, "(");
+!    DumpOneStr(FP, font, double_byte, double_byte_mod_bytes, pStrSeg->dyn_str.s);
+     if (do_dump) {
+        int underline_on=pStrSeg->underline_on;
+--- 5790,5800 ----
+     }
+     DumpIndentString(FP, indent);
+!    DumpSetFont(FP, font, font_name, double_byte, style, sz_unit,
+!          &cancel_double_byte_mod_bytes);
+     DumpIndentString(FP, indent);
+     fprintf(FP, "(");
+!    DumpOneStr(FP, font, double_byte,
+!          double_byte_mod_bytes && !cancel_double_byte_mod_bytes,
+!          pStrSeg->dyn_str.s);
+     if (do_dump) {
+        int underline_on=pStrSeg->underline_on;

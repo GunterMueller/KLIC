@@ -1,0 +1,20 @@
+\initial {浮}
+\entry {\code {浮動小数点数[ふどうしょうすうてんすう]}}{21}
+\initial {フ}
+\entry {\code {ファンクタ[ふぁんくた]}}{24}
+\initial {モ}
+\entry {\code {モジュール[もじゅーる]}}{31}
+\initial {マ}
+\entry {\code {マージャ[まーじゃ]}}{26}
+\initial {文}
+\entry {\code {文字列[もじれつ]}}{29}
+\initial {リ}
+\entry {\code {リスト[りすと]}}{25}
+\initial {ア}
+\entry {\code {アトム[あとむ]}}{18}
+\initial {ベ}
+\entry {\code {ベクタ[べくた]}}{27}
+\initial {整}
+\entry {\code {整数[せいすう]}}{19}
+\initial {述}
+\entry {\code {述語[じゅつご]}}{32}

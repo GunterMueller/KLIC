@@ -1,0 +1,282 @@
+This is the ``tgwb - Tangram Whiteboard'' README file.
+
+Contents:
+    1. Introduction
+    2. Compiling and installing
+        2.1 Tgif version prior to 4.1.46
+        2.2 Tgif version 4.1.46 and newer
+    3. Using
+        3.1 Environment
+        3.2 Configuration
+        3.3 mcastproxy
+    4. Known bugs
+    5. Further information
+    
+1. Introduction
+
+This section describes a whiteboard tool built on top of TGIF: TGWB (Tangram
+Whiteboard). The tgwb allows simultaneous modifications in drawings by users in
+a group. It is a versatile multicast distributed tool. TGWB is a module of the
+Tangram2, developed at LAND (http://www.land.ufrj.br).
+
+Distributed whiteboards must ensure that every member in a session has the same
+view of the drawings. A Reliable Multicast Library and a total ordering
+mechanism was developed to allow reliable multicast transmission and member
+view consistency. 
+
+2. Compiling and installing
+
+2.1 Tgif versions prior to 4.1.16
+
+   TGWB is basically tgif with 3 noted differences:
+
+   a) Modify Target.tmpl and change TARGET_1 to tgwb as follows:
+
+             TARGET_1 = tgwb-bin
+
+   b) Follow the instructions in the README file for tgif.  Make all the
+      selections and modifications you need for Tgif.tmpl.  Right before you
+      build (starting from running "xmkmf"), do the following in Tgif.tmpl:
+
+      i)   Replace "tgif" in the PROGRAMS line by "tgwb-bin"
+      ii)  Append the following compiler option to the MOREDEFINES line:
+
+             -D_TGIF_WB2
+
+      iii) Add the following line after the SYS_LIBRARIES line:
+
+             EXTRA_LIBRARIES = -L./rmcast/src -lz -lpthread -lrmcast
+
+   c) This version requires the rmcast library which is included
+      with the distribution.  To build the rmcast library, simple
+      do:
+
+             cd rmcast
+             ./configure
+             make
+             cd ..
+      
+   d) Then build tgwb:
+   
+       xmkmf
+       make tgwb
+
+   e) To install, execute as root:
+    
+       make install-tgwb
+
+2.2 Tgif version 4.1.46 or newer
+
+    Since version 4.1.46, tgif will load the reliable multicast library
+    dynamically. If you want to use the whiteboard mode you will have to
+    execute the following steps:
+    
+    a) Compile and install tgif:
+    
+        cd tgif-<version>
+        xmkf
+        make
+        make install
+
+    b) Compile and install the reliable multicast library included in the
+       rmcast directory within the tgif code:
+       
+       cd rmcast
+       ./configure
+       make
+       make install
+       
+       OBS: to install the library in the default location (/usr/local/lib) you
+            will need root privileges.
+    
+    To run tgif in whiteboard mode execute:
+    
+        tgif -tgwb2
+
+    OBS: If tgif could not find the reliable multicast library, you can try:
+    
+        tgif -tgwb2 -rmcastlibdir <librmcast.so_directory>
+        
+    For instance, if librmcast.so is in the /usr/local/lib directory you can
+    execute:
+    
+        tgif -tgwb2 -rmcastlibdir /usr/local/lib
+    
+3. Using TGWB
+
+3.1 Environment
+
+The TGWB tool was develop to be used in a IP Multicast network. If Multicast is
+not available one can use the mcastproxy program to connect the whiteboards.
+More information about mcastproxy can be found in section 3.3.
+
+3.2 TGWB Configuration
+
+The reliable multicast transmission was implemented as a function library
+called RML (Reliable Multicast Library). When tgwb is started the user is
+prompted for configuration options, such as multicast address and port and
+whether or not the mcastproxy (see section 3.3) program
+should be started. Another way to customize RML options is editing the
+configure file tgwb.conf, located at .tgwb directory in the user's home.
+
+The following is a TGWB configuration file example:
+
+#########################################################################
+#Reliable Multicast Library configuration file
+
+#Reliable Multicast Library version
+RM_VERSION=1.0
+
+#Transmission mode: 0 multicast (default), 1 unicast
+TRANSMISSION_MODE=0
+
+#Multicast or Unicast IP address to send data (destination IP)
+DEST_IP=225.1.2.3
+
+#Multicast or Unicast port to send data (destination port)
+DEST_PORT=5151
+
+#Time to live for the packets setting (1 indicates local network)
+TTL=1
+
+#Inter-packet sleep timer:
+#Time between packet transmissions ( choose from 0 to 65535 microseconds)
+MICROSLEEP=10
+
+#Log file path - NULL disable logging (default)
+LOG_FILE=NULL
+
+#Random Timers Distribution: 0 uniform 1 exponential
+TIMER_DISTRIBUTION=0
+
+#Timer parameters
+# Timers values are obtained in the intervals:
+# (TIMER_PARAM_A*T,(TIMER_PARAM_A+TIMER_PARAM_B)*T) for NAKs
+# (TIMER_PARAM_C*T,(TIMER_PARAM_C+TIMER_PARAM_D)*T) for wait for retransmitions
+# (TIMER_PARAM_E*T,(TIMER_PARAM_C+TIMER_PARAM_F)*T) for for retransmitions
+# Where 
+#  TIMER_PARAM_A, TIMER_PARAM_B, TIMER_PARAM_C, TIMER_PARAM_D, TIMER_PARAM_E and
+#  TIMER_PARAM_F are integer constants 
+#  T is the estimated one-way delay to the senders
+TIMER_PARAM_A=2
+TIMER_PARAM_B=2
+TIMER_PARAM_C=5
+TIMER_PARAM_D=2
+TIMER_PARAM_E=2
+TIMER_PARAM_F=2
+
+#Host related parameters and timers:
+# Must contain exactly the following lines:
+#   HOSTS_IDENTIFIED=0
+#   DEFAULT <AVERAGE_ESTIMATED_DELAY>
+#   host1   <ESTIMATED_ONE-WAY_DELAY_TO_host1>
+#   host2   <ESTIMATED_ONE-WAY_DELAY_TO_host2>
+#   ...
+#   hostN   <ESTIMATED_ONE-WAY_DELAY_TO_hostN>
+# If HOSTS_IDENTIFIED=0 then we will read only the DEFAULT
+# estimated delay. 
+HOSTS_IDENTIFIED=0
+DEFAULT 50
+
+#Max number of naks that can be sent for each packet. 100 (default)
+MAX_NAK=100
+
+# We will be able to retransmit the last MAX_MEMBER_CACHE_SIZE packets from each
+# member of the multicast group, i.e., we will store the last
+# MAX_MEMBER_CACHE_SIZE PACKETS from each member of the multicast group in the
+# cache. 4000 (default)
+#
+# WARNING: if you set MAX_MEMBER_CACHE_SIZE to low values the protocol may fail!
+#
+MAX_MEMBER_CACHE_SIZE=4000 
+
+#Enable support for new members 1 enabled (default), 0 disabled
+NEW_MEMBER_SUPPORT=0
+
+#Show transmission statistics: 0 disabled (default) 1 enabled
+STATISTICS=0
+
+#Time between transmission of refresh messages (seconds)
+REFRESH_TIMER=10
+
+#Loss simulation: 0 disabled (default) any float number > 0 enabled
+#
+# A note about loss simulation:                         
+# When loss simulation is enabled (LOSS_PROB > 0) we always loose the first 10 
+# received packets, and the first received data packet - that is, 
+# the first burst of received packets.
+# After that, packets are lost according to LOSS_PROB.
+# Example: LOSS_PROB=30
+# The first 10 received packets will be lost.  
+# Then, 30% of the packets will be lost 
+LOSS_PROB=0
+
+# Time to wait, in microseconds, before leaving the multicast group.
+LEAVE_GROUP_WAIT_TIME=500000
+
+# Size of the buffer of the receiver host
+# (maximum size of a message that may be processed by the receiver host).
+RCV_BUFFER_SIZE=10000
+#########################################################################
+
+3.3 mcastproxy
+
+When IP Multicast is not available the mcastproxy program can be used to
+connect hosts. Suppose that students from two different campi want to use TGWB.
+Suppose also that multicast is available in the local networks but it is not
+available among the campi. In that scenario, illustrated in figure below, the
+mcastproxy program can be used to connect each campi. There will be one
+instance of mcastproxy in each campus. Each mcastproxy instance can listen to
+local multicast traffic and send it unicast to each other campus. The packets
+received through unicast are sent through multicast to local users. 
+
+Campus 1 Network <----Multicast----> mcastproxy1
+                                          |
+                                          |
+                                          |
+                                          |
+                                       Unicast
+                                          |
+                                          |
+                                          |
+                                          |
+Campus 2 Network <----Multicast----> mcastproxy2
+
+mcastproxy program uses a configuration file, mcastproxy.conf from the
+.tgwb directory located at user's home. Next is presented an example of
+this file.
+
+############################################
+#Multicast group address
+GROUPADDR=225.1.2.3
+#Number of hosts to send unicast packets
+NADDR=2
+#IP Addresses list to send unicast packets
+ADDRLIST
+192.168.1.2
+10.0.0.1
+# Time to live for multicast packets
+TTL=1
+REUSEADDR=0
+# Loopback: 1 enable, 0 disable
+LOOPBACK=1
+# Unicast port to use
+UCASTPORT=32566
+# Multicast port to use
+MCASTPORT=5151
+############################################
+
+4. Known bugs
+
+The current release of tgwb has a few known bugs.  The major one being
+that there is no provision made for joining a whiteboard in session; the
+way to get around this problem is to select New from the File Menu of
+a tgwb to clear all whiteboards.
+
+5. Further Information
+
+   Please read the "Copyright" file in this distribution for the copyright
+   and licensing information.
+   
+   Further information can be found in the RML documentation or at
+   http://www.land.ufrj.br/tools/rmcast

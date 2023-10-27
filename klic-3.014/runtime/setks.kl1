@@ -1,0 +1,110 @@
+/* ---------------------------------------------------------- 
+%   (C) 1994 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- module keyed_sorted_set.
+
+create(Stream) :-
+    splay_tree:create(Pool),
+    main(Stream,[],Pool).
+
+create(Cmpr,Stream) :-
+    splay_tree:create(Cmpr,Pool),
+    main(Stream,[],Pool).
+
+main([],[])+_Pool.
+main([],[S|ST])+Pool :- main(S,ST)+Pool.
+main([do(S)|T],ST)+Pool :- main(S,[T|ST])+Pool.
+otherwise.
+main([Message|T],ST)+Pool :- message(Message)-Pool, main(T,ST)+Pool.
+
+message(empty(YorN))-Pool :-
+    splay_tree:empty(YorN)-Pool.
+message(empty(Key,YorN))-Pool :-
+    splay_tree:empty(Key,YorN)-Pool.
+message(put(Key,Value,ValueO))-Pool :-
+    message(get_if_any_and_put(Key,ValueO,Value))-Pool.
+message(get(Key,Value))-Pool :-
+    splay_tree:empty(Key,no)-Pool,
+    splay_tree:get(Key,Value)-Pool.
+message(get_if_any(Key,Value))-Pool :-
+    splay_tree:empty(Key,Empty)-Pool,
+    (
+	Empty=yes -> Value={}
+      ;
+	Empty=no ->
+	splay_tree:get(Key,V)-Pool,
+	Value={V}
+    ).
+message(get_all(Values))-Pool :-
+    splay_tree:get_all(All)-Pool,
+    convert(All,Values).
+message(get_all(Key,Values))-Pool :-
+    splay_tree:empty(Key,Empty)-Pool,
+    (
+	Empty=yes -> Values=[]
+      ;
+	Empty=no ->
+	splay_tree:get(Key,Value)-Pool,
+	Values = [Value]
+    ).
+message(carbon_copy(Values))-Pool :-
+    splay_tree:get_all(All)+Pool+_,
+    convert(All,Values).
+message(carbon_copy(Key,Values))-Pool :-
+    splay_tree:empty(Key,Empty)-Pool,
+    (
+	Empty=yes -> Values=[]
+      ;
+	Empty=no ->
+	splay_tree:update(Key,Value,Value)-Pool,
+	Values = [Value]
+    ).
+
+message(get_and_put(Key,Old,New))-Pool :-
+	message(get_and_put_if_any(Key,Old0,New,_))-Pool,
+	Old0 = {Old}.
+message(get_if_any_and_put(Key,Old,New))-Pool :-
+    splay_tree:empty(Key,Empty)-Pool,
+    (
+	Empty=yes ->
+	splay_tree:put(Key,New)-Pool,
+	Old={}
+      ;
+	Empty=no ->
+	splay_tree:update(Key,V,New)-Pool,
+	Old={V}
+    ).
+message(get_and_put_if_any(Key,Old,New0,New))-Pool :-
+    splay_tree:empty(Key,Empty)-Pool,
+    (
+	Empty=yes -> Old={}, New={New0}
+      ;
+	Empty=no ->
+	splay_tree:update(Key,V,New0)-Pool,
+	Old={V}, New={}
+    ).
+message(get_max_if_any(Elem))-Pool :-
+    splay_tree:empty(Empty)-Pool,
+    (
+	Empty=yes -> Elem={}
+      ;
+	Empty=no ->
+	splay_tree:get_max(Key,Value)-Pool,
+	Elem={Key,Value}
+    ).
+message(get_min_if_any(Elem))-Pool :-
+    splay_tree:empty(Empty)-Pool,
+    (
+	Empty=yes -> Elem={}
+      ;
+	Empty=no ->
+	splay_tree:get_min(Key,Value)-Pool,
+	Elem={Key,Value}
+    ).
+
+convert([],F) :- F=[].
+convert([K=V|L],F) :- F=[{K,V}|F1], convert(L,F1).

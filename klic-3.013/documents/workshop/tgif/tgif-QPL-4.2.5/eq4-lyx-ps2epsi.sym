@@ -1,0 +1,742 @@
+%TGIF 4.1.43
+state(0,37,100.000,0,0,0,8,1,3,1,1,0,0,1,0,1,0,'Courier',0,80640,0,0,0,10,0,0,1,1,0,16,1,0,1,1,1,0,1088,1408,1,0,2880,0).
+%
+% @(#)$Header: /mm2/home/cvs/bc-src/tgif/eq4-lyx-ps2epsi.sym,v 1.1 2004/06/18 23:20:01 william Exp $
+% %W%
+%
+unit("1 pixel/pixel").
+color_info(13,65535,1,[
+	"#ff00ff", 65535, 0, 65535, 65280, 0, 65280, 1,
+	"#ff0000", 65535, 0, 0, 65280, 0, 0, 1,
+	"#00ff00", 0, 65535, 0, 0, 65280, 0, 1,
+	"#0000ff", 0, 0, 65535, 0, 0, 65280, 1,
+	"#ffff00", 65535, 65535, 0, 65280, 65280, 0, 1,
+	"#000000", 0, 0, 0, 0, 0, 0, 1,
+	"#ffffff", 65535, 65535, 65535, 65280, 65280, 65280, 1,
+	"#ff8000", 65535, 32896, 0, 65280, 32768, 0, 1,
+	"#ffce00", 65535, 52942, 0, 65280, 52736, 0, 1,
+	"#d02090", 53456, 8224, 37008, 53248, 8192, 36864, 1,
+	"CadetBlue", 24415, 40606, 41120, 24415, 40606, 41120, 1,
+	"blue", 0, 0, 65535, 0, 0, 65535, 1,
+	"red", 65535, 0, 0, 65535, 0, 0, 1
+]).
+slideshow_info('',-20,-20).
+script_frac("0.6").
+fg_bg_colors('#0000ff','#ffff00').
+dont_reencode("UtopiaFS:FFDingbests:ZapfDingbats").
+ps_font_aliases([
+	"UtopiaFS-Regular=Utopia-Regular",
+	"UtopiaFS-Bold=Utopia-Bold",
+	"UtopiaFS-Italic=Utopia-Italic",
+	"UtopiaFS-BoldItalic=Utopia-BoldItalic"
+	]).
+page(1,"LyX equation symbol (uses ghostscript's ps2epsi).",1,'').
+sym([
+polygon('CadetBlue','',5,[
+	64,144,131,144,131,128,64,128,64,144],0,1,0,0,3029,0,0,0,0,0,'1',0,
+    "00",[
+]),
+xbm('#0000ff','',64,144,181,170,0,3028,0,117,26,0,0,1,247000,616000,364000,642000,0,0,1,0,0,0,0,
+    "Wed Oct  9 21:19:46 2002","/tmp/Tgif9AI2Rh.eps",127,[
+    "%!PS-Adobe-2.0 EPSF-1.2",
+    "save countdictstack mark newpath /showpage {} def /setpagedevice {pop} def",
+    "%DVIPSWebPage: (www.radicaleye.com)",
+    "%DVIPSCommandLine: dvips -t letter -o Tgif9AI2Rh.ps Tgif9AI2Rh.dvi",
+    "%DVIPSParameters: dpi=600, compressed",
+    "%DVIPSSource:  TeX output 2002.10.09:2119",
+    "%!",
+    "/TeXDict 300 dict def TeXDict begin/N{def}def/B{bind def}N/S{exch}N/X{S",
+    "N}B/A{dup}B/TR{translate}N/isls false N/vsize 11 72 mul N/hsize 8.5 72",
+    "mul N/landplus90{false}def/@rigin{isls{[0 landplus90{1 -1}{-1 1}ifelse 0",
+    "0 0]concat}if 72 Resolution div 72 VResolution div neg scale isls{",
+    "landplus90{VResolution 72 div vsize mul 0 exch}{Resolution -72 div hsize",
+    "mul 0}ifelse TR}if Resolution VResolution vsize -72 div 1 add mul TR[",
+    "matrix currentmatrix{A A round sub abs 0.00001 lt{round}if}forall round",
+    "exch round exch]setmatrix}N/@landscape{/isls true N}B/@manualfeed{",
+    "statusdict/manualfeed true put}B/@copies{/#copies X}B/FMat[1 0 0 -1 0 0]",
+    "N/FBB[0 0 0 0]N/nn 0 N/IEn 0 N/ctr 0 N/df-tail{/nn 8 dict N nn begin",
+    "/FontType 3 N/FontMatrix fntrx N/FontBBox FBB N string/base X array",
+    "/BitMaps X/BuildChar{CharBuilder}N/Encoding IEn N end A{/foo setfont}2",
+    "array copy cvx N load 0 nn put/ctr 0 N[}B/sf 0 N/df{/sf 1 N/fntrx FMat N",
+    "df-tail}B/dfs{div/sf X/fntrx[sf 0 0 sf neg 0 0]N df-tail}B/E{pop nn A",
+    "definefont setfont}B/Cw{Cd A length 5 sub get}B/Ch{Cd A length 4 sub get",
+    "}B/Cx{128 Cd A length 3 sub get sub}B/Cy{Cd A length 2 sub get 127 sub}",
+    "B/Cdx{Cd A length 1 sub get}B/Ci{Cd A type/stringtype ne{ctr get/ctr ctr",
+    "1 add N}if}B/id 0 N/rw 0 N/rc 0 N/gp 0 N/cp 0 N/G 0 N/CharBuilder{save 3",
+    "1 roll S A/base get 2 index get S/BitMaps get S get/Cd X pop/ctr 0 N Cdx",
+    "0 Cx Cy Ch sub Cx Cw add Cy setcachedevice Cw Ch true[1 0 0 -1 -.1 Cx",
+    "sub Cy .1 sub]/id Ci N/rw Cw 7 add 8 idiv string N/rc 0 N/gp 0 N/cp 0 N{",
+    "rc 0 ne{rc 1 sub/rc X rw}{G}ifelse}imagemask restore}B/G{{id gp get/gp",
+    "gp 1 add N A 18 mod S 18 idiv pl S get exec}loop}B/adv{cp add/cp X}B",
+    "/chg{rw cp id gp 4 index getinterval putinterval A gp add/gp X adv}B/nd{",
+    "/cp 0 N rw exit}B/lsh{rw cp 2 copy get A 0 eq{pop 1}{A 255 eq{pop 254}{",
+    "A A add 255 and S 1 and or}ifelse}ifelse put 1 adv}B/rsh{rw cp 2 copy",
+    "get A 0 eq{pop 128}{A 255 eq{pop 127}{A 2 idiv S 128 and or}ifelse}",
+    "ifelse put 1 adv}B/clr{rw cp 2 index string putinterval adv}B/set{rw cp",
+    "fillstr 0 4 index getinterval putinterval adv}B/fillstr 18 string 0 1 17",
+    "{2 copy 255 put pop}for N/pl[{adv 1 chg}{adv 1 chg nd}{1 add chg}{1 add",
+    "chg nd}{adv lsh}{adv lsh nd}{adv rsh}{adv rsh nd}{1 add adv}{/rc X nd}{",
+    "1 add set}{1 add clr}{adv 2 chg}{adv 2 chg nd}{pop nd}]A{bind pop}",
+    "forall N/D{/cc X A type/stringtype ne{]}if nn/base get cc ctr put nn",
+    "/BitMaps get S ctr S sf 1 ne{A A length 1 sub A 2 index S get sf div put",
+    "}if put/ctr ctr 1 add N}B/I{cc 1 add D}B/bop{userdict/bop-hook known{",
+    "bop-hook}if/SI save N @rigin 0 0 moveto/V matrix currentmatrix A 1 get A",
+    "mul exch 0 get A mul add .99 lt{/QV}{/RV}ifelse load def pop pop}N/eop{",
+    "SI restore userdict/eop-hook known{eop-hook}if showpage}N/@start{",
+    "userdict/start-hook known{start-hook}if pop/VResolution X/Resolution X",
+    "1000 div/DVImag X/IEn 256 array N 2 string 0 1 255{IEn S A 360 add 36 4",
+    "index cvrs cvn put}for pop 65781.76 div/vsize X 65781.76 div/hsize X}N",
+    "/p{show}N/RMat[1 0 0 -1 0 0]N/BDot 260 string N/Rx 0 N/Ry 0 N/V{}B/RV/v{",
+    "/Ry X/Rx X V}B statusdict begin/product where{pop false[(Display)(NeXT)",
+    "(LaserWriter 16/600)]{A length product length le{A length product exch 0",
+    "exch getinterval eq{pop true exit}if}{pop}ifelse}forall}{false}ifelse",
+    "end{{gsave TR -.1 .1 TR 1 1 scale Rx Ry false RMat{BDot}imagemask",
+    "grestore}}{{gsave TR -.1 .1 TR Rx Ry scale 1 1 false RMat{BDot}",
+    "imagemask grestore}}ifelse B/QV{gsave newpath transform round exch round",
+    "exch itransform moveto Rx 0 rlineto 0 Ry neg rlineto Rx neg 0 rlineto",
+    "fill grestore}B/a{moveto}B/delta 0 N/tail{A/delta X 0 rmoveto}B/M{S p",
+    "delta add tail}B/b{S p tail}B/c{-4 M}B/d{-3 M}B/e{-2 M}B/f{-1 M}B/g{0 M}",
+    "B/h{1 M}B/i{2 M}B/j{3 M}B/k{4 M}B/w{0 rmoveto}B/l{p -4 w}B/m{p -3 w}B/n{",
+    "p -2 w}B/o{p -1 w}B/q{p 1 w}B/r{p 2 w}B/s{p 3 w}B/t{p 4 w}B/x{0 S",
+    "rmoveto}B/y{3 2 roll p a}B/bos{/SS save N}B/eos{SS restore}B end",
+    "",
+    "TeXDict begin 40258431 52099146 1000 600 600 (Tgif9AI2Rh.dvi)",
+    "@start",
+    "%DVIPSBitmapFont: Fa cmr17 20.74 1",
+    "/Fa 1 51 df<ED7FF00207B57E023F14F091B612FC4915FF902707FE007F13C0D90FE001",
+    "0F7FD91F80010113F849C87F017CED3FFE496F7E48486F138048486F13C04848817113E0",
+    "484817F090CAFC48EF7FF8121E003EEF3FFC123CA2007CEF1FFE1278A2EA7FC0D8FFF0EE",
+    "0FFF7F7F7FA76C5A6C5A6C5AD807C0EE1FFECBFCA3F03FFCA3F07FF8A219F018FF19E05F",
+    "19C04D1380A24D130060170F4D5A604D5A4D5A604D5A4C90C7FC4C5A4C5A5F4C5A4C5A4C",
+    "5A4C5A94C8FC16FE4B5A4B5A4B5A4B5A4B5A4B5A4BC9FC157E5D4A5A4A5A4A5A4A5A4A48",
+    "15074AC9FC143E4A160E5C495A495A495A495A49CA121E011E171C5B5B49173C485A4848",
+    "177C4848EE01FC48B912F8A25A5A5ABAFCA219F0A3407279F14F>50",
+    "D E",
+    "%EndDVIPSBitmapFont",
+    "%DVIPSBitmapFont: Fb cmr17 24.88 1",
+    "/Fb 1 62 df<003FC112FC4820FEC3FCA46C20FE6C20FCD5FCB3AC003FC112FC4820FEC3",
+    "FCA46C20FE6C20FC802E76CA95>61 D E",
+    "%EndDVIPSBitmapFont",
+    "%DVIPSBitmapFont: Fc cmmi12 24.88 3",
+    "/Fc 3 78 df[<99263FFFC0160E090FB500FE160F98B700C0151F080704F0153F083F04",
+    "FC157E4FB915FE07079126FC003F6D1301073F91C7000113E096B500F86E6C6CEB03FC06",
+    "0302C0DB0FF81307060F49C96C6C130F4E01F8DC01FE131F067F01C0706CEB3FF84DB5CB",
+    "EA7F804D01FC063F137F050F4995381FC0FF4D01E0DE0FE113F04D49F007F394B5CCEA03",
+    "F74C4997B5FC4C01F87314E0040F5B4C49854C5B4C90CE6C13C04C5A4B49874B5B4B491D",
+    "804B49875D4B5B4B4975130092B5CFFC4A5B5E4A674A5B4A491C075C4C654A5B5C91B55A",
+    "6A4991D0FC5D5B494966A2495BA2494966491F0FA2495B6A4B1D0790B59BC8FC5D5AA248",
+    "91D4FCA3485BA3485BA35A5CA35A5CA35A5CA55CA2B5FCA65C200F68A368203E7E207E20",
+    "7CA220FC686E1C016C671F03681F076C676E1C0F555A6C9CC9FC676E1C7E6C1E7C1FFC6C",
+    "6D515A545A6C6D515A1E0F6C6D64545A6D6C51CAFC6D1C7E6F4F5A6D6D4F5A6D6D4F5A6D",
+    "515A6D6DF13FC06D6D4F5A6D01FE07FECBFC6E6CF003FC6E6DEF0FF86E01E0EF3FF06E6D",
+    "EFFFC06E01FC04035B020101FFDC0FFECCFC6E02E0ED7FF8033F01FC913807FFE06FD9FF",
+    "E090B51280030791B648CDFC030117F8DB003F16C004074BCEFCDC007F14F0050301FCCF",
+    "FC>144 149 118 272 145 67 D[<041FC012804C1FC0A4701F80DC00014ACA120FDD00",
+    "1F49EF001F501803501800223F8E50857C13004E87A25085A2608E5062A295B5FCA297CE",
+    "127EA25FA24F1B7CA25FA24F1BFCA25F6B61A25FA2610C0F15014D4E7E6B4F94C8FC2200",
+    "4D4E93C7FCA24F163E1E7E5FA24F5EA294B51601A296C9485AA24C18071D0F4E4C5A1D3F",
+    "4C18FF1C034E037F5B95B9FC5EA266A25E06F8C8FC4E03075B884C83884E94CCFC895EA2",
+    "4E167EA25EA24E167C1DFC93B5FCA295CA481678227C4B060117FCA24D4D4B5AA24B7248",
+    "4B5A9AC9FC4D6421075D575A5F575A5D213F4D99C8FCA24B1D7E21FE5F565A5D565A5F56",
+    "5A5D200F4D505AA292B5515A207F94CE12FF555B5C5590C9FC4C62555A4A1C3F1F7F4C4F",
+    "485A4A630C0F5B4A1B7F0B03B5FC023F083F5C0103B5061FB6FC007FC05AC1FCA268A26C",
+    "67>146 141 118 268 150 69 D[<041FB600FC0B1FB612FC4C6F5315FEA15CA2A191B7",
+    "FC705616FCDC00016EF88000DD001F5402F8C7FC07BFE307DF5BA15EA149485BA2073FE3",
+    "1F3F5BA1133E4E6C6D64A1137C063E0CF891C8FCA2067E5348B5FCA2067C53485BA1485A",
+    "DEFC0F6D1BC1A1EA0F8106F8E31F015BA20501F63E03A206F00B7C5CA112F805036D6D63",
+    "FB01F006E0E203E05CA2050753485AA206C0E20F805CFB1F00050F6D6D63233E0680525D",
+    "A2051F535BA2060051485D585A4D6D6D63585A053E524892C9FCA2057E52C7B5FCA2057C",
+    "0A3E5D6A05FC6D6D626A4D51485DA2040152485BA24D51485D575A04036F6C6257C7FC4D",
+    "093E5EA20407525CA24D515E565A040F6F6C62565A4D50485EA2041F51485C56C8FC94C8",
+    "66746D153E4C6768043E5194CAFCA2047E504892B5FC555A047C68746D4A5A04FC66555A",
+    "4C50C85CA20301093E5D674C68746D5C030367545A4C4F485FA2030750485D545A4C6874",
+    "6D49C9FC030F671E3E4C4F60A2031F505E535A93C965746D485A4B67535A033E4F4895CB",
+    "FCA2037E4FCAB5FC1D3E037C68746D5A03FC66654BDEFDF060A20201DFFFE05E654B6802",
+    "03725B0207679ACAFC4A6C4E61021F67023F614A6C4E5F49487E01076D6C7048057F7F01",
+    "7F02F00A07B6FC007FB700F04C92B912F8B84D5CA26499C8FC6C4C031E6F60>199",
+    "141 118 268 196 77 D E",
+    "%EndDVIPSBitmapFont",
+    "end",
+    "TeXDict begin",
+    "letter",
+    "",
+    "1 0 bop 1453 855 a Fc(E)103 b Fb(=)92 b Fc(M)55 b(C)2358",
+    "770 y Fa(2)p eop",
+    "end",
+    "userdict /end-hook known{end-hook}if",
+    "cleartomark countdictstack exch sub { end } repeat restore"],
+    "0000000000000000000000000001e00000000000000000000000000006700000
+     0000000000000000000000043800000000000000000000000000061800000000
+     0000000000000000000618000000000000000000000000000018000000000000
+     0000000000000000300000000000000000000000001e10300fffc00000000000
+     f801f000ffb0600381c000000000003803c001c0e0c00300c000000000003803
+     c00380e1800700c00000000000780780070063080700c000000000007c05800e
+     00661807088000000000005c0b801c0047f006180000000000004c1b801c0040
+     0006380000000000004c1300180000000ff00001fffe0000cc3300380000000e
+     100000000000008c6700380000000c110000000000008c4700380000000c3100
+     00000000008cc600380080001c010001fffe00018e8600380180001c030001ff
+     fe00010f0e00380100001806000000000001070e0018020000380e0000000000
+     03060c000c0c0000fffc00000000000fc67f000fb80000000000000000000000
+     000003e00000",[
+])
+],
+3027,0,0,[
+attr("", "not_rigid", 0, 1, 1,
+text('blue',64,152,1,0,1,81,16,3037,13,3,0,0,0,0,2,81,16,0,0,"",0,0,0,0,165,'',[
+minilines(81,16,0,0,0,0,0,[
+mini_line(81,13,3,0,0,0,[
+str_block(0,81,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,81,13,3,0,-1,0,0,0,0,0,
+	"not_rigid")])
+])
+])])),
+attr("eq=", "#LyX 1.2 created this file. For more info see http://www.lyx.org/", 0, 1, 1,
+text('blue',64,48,46,0,1,612,736,3036,13,3,0,0,0,0,2,612,736,0,0,"",0,0,0,0,61,'',[
+minilines(612,736,0,0,0,0,0,[
+mini_line(612,13,3,0,0,0,[
+str_block(0,612,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,612,13,3,0,-2,0,0,0,0,0,
+	"eq=#LyX 1.2 created this file. For more info see http://www.lyx.org/")])
+]),
+mini_line(126,13,3,0,0,0,[
+str_block(0,126,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,126,13,3,0,-2,0,0,0,0,0,
+	"\\lyxformat 220")])
+]),
+mini_line(162,13,3,0,0,0,[
+str_block(0,162,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,162,13,3,0,-1,0,0,0,0,0,
+	"\\textclass article")])
+]),
+mini_line(153,13,3,0,0,0,[
+str_block(0,153,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,153,13,3,0,-1,0,0,0,0,0,
+	"\\language english")])
+]),
+mini_line(171,13,3,0,0,0,[
+str_block(0,171,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,171,13,3,0,-1,0,0,0,0,0,
+	"\\inputencoding auto")])
+]),
+mini_line(171,13,3,0,0,0,[
+str_block(0,171,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,171,13,3,0,-2,0,0,0,0,0,
+	"\\fontscheme default")])
+]),
+mini_line(153,13,3,0,0,0,[
+str_block(0,153,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,153,13,3,0,-2,0,0,0,0,0,
+	"\\graphics default")])
+]),
+mini_line(198,13,3,0,0,0,[
+str_block(0,198,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,198,13,3,0,-2,0,0,0,0,0,
+	"\\paperfontsize default")])
+]),
+mini_line(144,13,3,0,0,0,[
+str_block(0,144,13,3,0,-8,0,0,0,[
+str_seg('blue','Courier',0,80640,144,13,3,0,-8,0,0,0,0,0,
+	"\\spacing single ")])
+]),
+mini_line(162,13,3,0,0,0,[
+str_block(0,162,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,162,13,3,0,-2,0,0,0,0,0,
+	"\\papersize Default")])
+]),
+mini_line(144,13,3,0,0,0,[
+str_block(0,144,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,144,13,3,0,-2,0,0,0,0,0,
+	"\\paperpackage a4")])
+]),
+mini_line(135,13,3,0,0,0,[
+str_block(0,135,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,135,13,3,0,-2,0,0,0,0,0,
+	"\\use_geometry 0")])
+]),
+mini_line(126,13,3,0,0,0,[
+str_block(0,126,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,126,13,3,0,-2,0,0,0,0,0,
+	"\\use_amsmath 0")])
+]),
+mini_line(117,13,3,0,0,0,[
+str_block(0,117,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,117,13,3,0,-2,0,0,0,0,0,
+	"\\use_natbib 0")])
+]),
+mini_line(234,13,3,0,0,0,[
+str_block(0,234,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,234,13,3,0,-2,0,0,0,0,0,
+	"\\use_numerical_citations 0")])
+]),
+mini_line(234,13,3,0,0,0,[
+str_block(0,234,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,234,13,3,0,-2,0,0,0,0,0,
+	"\\paperorientation portrait")])
+]),
+mini_line(126,13,3,0,0,0,[
+str_block(0,126,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,126,13,3,0,-2,0,0,0,0,0,
+	"\\secnumdepth 3")])
+]),
+mini_line(99,13,3,0,0,0,[
+str_block(0,99,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,99,13,3,0,-2,0,0,0,0,0,
+	"\\tocdepth 3")])
+]),
+mini_line(252,13,3,0,0,0,[
+str_block(0,252,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,252,13,3,0,-2,0,0,0,0,0,
+	"\\paragraph_separation indent")])
+]),
+mini_line(144,13,3,0,0,0,[
+str_block(0,144,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,144,13,3,0,-1,0,0,0,0,0,
+	"\\defskip medskip")])
+]),
+mini_line(216,13,3,0,0,0,[
+str_block(0,216,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,216,13,3,0,-1,0,0,0,0,0,
+	"\\quotes_language english")])
+]),
+mini_line(135,13,3,0,0,0,[
+str_block(0,135,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,135,13,3,0,-2,0,0,0,0,0,
+	"\\quotes_times 2")])
+]),
+mini_line(135,13,3,0,0,0,[
+str_block(0,135,13,3,0,-3,0,0,0,[
+str_seg('blue','Courier',0,80640,135,13,3,0,-3,0,0,0,0,0,
+	"\\papercolumns 1")])
+]),
+mini_line(117,13,3,0,0,0,[
+str_block(0,117,13,3,0,-3,0,0,0,[
+str_seg('blue','Courier',0,80640,117,13,3,0,-3,0,0,0,0,0,
+	"\\papersides 1")])
+]),
+mini_line(189,13,3,0,0,0,[
+str_block(0,189,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,189,13,3,0,-1,0,0,0,0,0,
+	"\\paperpagestyle empty")])
+]),
+mini_line(0,13,3,0,0,0,[
+str_block(0,0,13,3,0,0,0,0,0,[
+str_seg('blue','Courier',0,80640,0,13,3,0,0,0,0,0,0,0,
+	"")])
+]),
+mini_line(144,13,3,0,0,0,[
+str_block(0,144,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,144,13,3,0,-1,0,0,0,0,0,
+	"\\layout Standard")])
+]),
+mini_line(0,13,3,0,0,0,[
+str_block(0,0,13,3,0,0,0,0,0,[
+str_seg('blue','Courier',0,80640,0,13,3,0,0,0,0,0,0,0,
+	"")])
+]),
+mini_line(0,13,3,0,0,0,[
+str_block(0,0,13,3,0,0,0,0,0,[
+str_seg('blue','Courier',0,80640,0,13,3,0,0,0,0,0,0,0,
+	"")])
+]),
+mini_line(144,13,3,0,0,0,[
+str_block(0,144,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,144,13,3,0,-1,0,0,0,0,0,
+	"\\begin_inset ERT")])
+]),
+mini_line(144,13,3,0,0,0,[
+str_block(0,144,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,144,13,3,0,-1,0,0,0,0,0,
+	"status Collapsed")])
+]),
+mini_line(0,13,3,0,0,0,[
+str_block(0,0,13,3,0,0,0,0,0,[
+str_seg('blue','Courier',0,80640,0,13,3,0,0,0,0,0,0,0,
+	"")])
+]),
+mini_line(144,13,3,0,0,0,[
+str_block(0,144,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,144,13,3,0,-1,0,0,0,0,0,
+	"\\layout Standard")])
+]),
+mini_line(0,13,3,0,0,0,[
+str_block(0,0,13,3,0,0,0,0,0,[
+str_seg('blue','Courier',0,80640,0,13,3,0,0,0,0,0,0,0,
+	"")])
+]),
+mini_line(99,13,3,0,0,0,[
+str_block(0,99,13,3,0,-8,0,0,0,[
+str_seg('blue','Courier',0,80640,99,13,3,0,-8,0,0,0,0,0,
+	"\\backslash ")])
+]),
+mini_line(45,13,3,0,0,0,[
+str_block(0,45,13,3,0,-8,0,0,0,[
+str_seg('blue','Courier',0,80640,45,13,3,0,-8,0,0,0,0,0,
+	"Huge ")])
+]),
+mini_line(99,13,3,0,0,0,[
+str_block(0,99,13,3,0,-8,0,0,0,[
+str_seg('blue','Courier',0,80640,99,13,3,0,-8,0,0,0,0,0,
+	"\\end_inset ")])
+]),
+mini_line(0,13,3,0,0,0,[
+str_block(0,0,13,3,0,0,0,0,0,[
+str_seg('blue','Courier',0,80640,0,13,3,0,0,0,0,0,0,0,
+	"")])
+]),
+mini_line(0,13,3,0,0,0,[
+str_block(0,0,13,3,0,0,0,0,0,[
+str_seg('blue','Courier',0,80640,0,13,3,0,0,0,0,0,0,0,
+	"")])
+]),
+mini_line(207,13,3,0,0,0,[
+str_block(0,207,13,3,0,-3,0,0,0,[
+str_seg('blue','Courier',0,80640,207,13,3,0,-3,0,0,0,0,0,
+	"\\begin_inset Formula \\[")])
+]),
+mini_line(171,13,3,0,0,0,[
+str_block(0,171,13,3,0,-4,0,0,0,[
+str_seg('blue','Courier',0,80640,171,13,3,0,-4,0,0,0,0,0,
+	"E\\, =\\, M\\, C^{2}\\]")])
+]),
+mini_line(0,13,3,0,0,0,[
+str_block(0,0,13,3,0,0,0,0,0,[
+str_seg('blue','Courier',0,80640,0,13,3,0,0,0,0,0,0,0,
+	"")])
+]),
+mini_line(99,13,3,0,0,0,[
+str_block(0,99,13,3,0,-8,0,0,0,[
+str_seg('blue','Courier',0,80640,99,13,3,0,-8,0,0,0,0,0,
+	"\\end_inset ")])
+]),
+mini_line(0,13,3,0,0,0,[
+str_block(0,0,13,3,0,0,0,0,0,[
+str_seg('blue','Courier',0,80640,0,13,3,0,0,0,0,0,0,0,
+	"")])
+]),
+mini_line(0,13,3,0,0,0,[
+str_block(0,0,13,3,0,0,0,0,0,[
+str_seg('blue','Courier',0,80640,0,13,3,0,0,0,0,0,0,0,
+	"")])
+]),
+mini_line(72,13,3,0,0,0,[
+str_block(0,72,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,72,13,3,0,-1,0,0,0,0,0,
+	"\\the_end")])
+])
+])])),
+attr("file_name=", "/tmp/Tgif9AI2Rh", 0, 1, 1,
+text('blue',64,32,1,0,1,225,16,3035,13,3,0,0,0,0,2,225,16,0,0,"",0,0,0,0,45,'',[
+minilines(225,16,0,0,0,0,0,[
+mini_line(225,13,3,0,0,0,[
+str_block(0,225,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,225,13,3,0,-1,0,0,0,0,0,
+	"file_name=/tmp/Tgif9AI2Rh")])
+])
+])])),
+attr("cleanup=", "", 0, 1, 1,
+text('blue',64,-72,3,0,1,540,48,3034,13,3,0,0,0,0,2,540,48,0,0,"",0,0,0,0,-59,'',[
+minilines(540,48,0,0,0,0,0,[
+mini_line(72,13,3,0,0,0,[
+str_block(0,72,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,72,13,3,0,-1,0,0,0,0,0,
+	"cleanup=")])
+]),
+mini_line(540,13,3,0,0,0,[
+str_block(0,540,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,540,13,3,0,-2,0,0,0,0,0,
+	"    rm -f $(file_name).tex $(file_name).aux $(file_name).dvi")])
+]),
+mini_line(513,13,3,0,0,0,[
+str_block(0,513,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,513,13,3,0,-2,0,0,0,0,0,
+	"        $(file_name).log $(file_name).ps $(file_name).eps")])
+])
+])])),
+attr("cmd=", "", 0, 1, 1,
+text('blue',64,-152,5,0,1,648,80,3033,13,3,0,0,0,0,2,648,80,0,0,"",0,0,0,0,-139,'',[
+minilines(648,80,0,0,0,0,0,[
+mini_line(36,13,3,0,0,0,[
+str_block(0,36,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,36,13,3,0,-1,0,0,0,0,0,
+	"cmd=")])
+]),
+mini_line(108,13,3,0,0,0,[
+str_block(0,108,13,3,0,-4,0,0,0,[
+str_seg('blue','Courier',0,80640,108,13,3,0,-4,0,0,0,0,0,
+	"    cd /tmp;")])
+]),
+mini_line(477,13,3,0,0,0,[
+str_block(0,477,13,3,0,-4,0,0,0,[
+str_seg('blue','Courier',0,80640,477,13,3,0,-4,0,0,0,0,0,
+	"    xterm -geom 40x8+200+400 -e lyx $(file_name).tex;")])
+]),
+mini_line(585,13,3,0,0,0,[
+str_block(0,585,13,3,0,-4,0,0,0,[
+str_seg('blue','Courier',0,80640,585,13,3,0,-4,0,0,0,0,0,
+	"    xterm -geom 40x8+200+400 -e lyx $(file_name).tex --export ps;")])
+]),
+mini_line(648,13,3,0,0,0,[
+str_block(0,648,13,3,0,-2,0,0,0,[
+str_seg('blue','Courier',0,80640,648,13,3,0,-2,0,0,0,0,0,
+	"    xterm -geom 40x8+200+400 -e ps2epsi $(file_name).ps $(file_name).eps")])
+])
+])])),
+attr("exec=", "", 0, 1, 1,
+text('blue',64,-272,9,0,1,477,144,3032,13,3,0,0,0,0,2,477,144,0,0,"",0,0,0,0,-259,'',[
+minilines(477,144,0,0,0,0,0,[
+mini_line(45,13,3,0,0,0,[
+str_block(0,45,13,3,0,-1,0,0,0,[
+str_seg('blue','Courier',0,80640,45,13,3,0,-1,0,0,0,0,0,
+	"exec=")])
+]),
+mini_line(378,13,3,0,0,0,[
+str_block(0,378,13,3,0,-4,0,0,0,[
+str_seg('blue','Courier',0,80640,378,13,3,0,-4,0,0,0,0,0,
+	"    mktemp(\"/tmp/TgifXXXXXX\",\"file_name\");")])
+]),
+mini_line(468,13,3,0,0,0,[
+str_block(0,468,13,3,0,-4,0,0,0,[
+str_seg('blue','Courier',0,80640,468,13,3,0,-4,0,0,0,0,0,
+	"    write_attr_into_file(header,\"$(file_name).tex\");")])
+]),
+mini_line(441,13,3,0,0,0,[
+str_block(0,441,13,3,0,-4,0,0,0,[
+str_seg('blue','Courier',0,80640,441,13,3,0,-4,0,0,0,0,0,
+	"    append_attr_into_file(eq,\"$(file_name).tex\");")])
+]),
+mini_line(477,13,3,0,0,0,[
+str_block(0,477,13,3,0,-4,0,0,0,[
+str_seg('blue','Courier',0,80640,477,13,3,0,-4,0,0,0,0,0,
+	"    append_attr_into_file(footer,\"$(file_name).tex\");")])
+]),
+mini_line(162,13,3,0,0,0,[
+str_block(0,162,13,3,0,-4,0,0,0,[
+str_seg('blue','Courier',0,80640,162,13,3,0,-4,0,0,0,0,0,
+	"    launch(\"cmd\");")])
+]),
+mini_line(423,13,3,0,0,0,[
+str_block(0,423,13,3,0,-4,0,0,0,[
+str_seg('blue','Courier',0,80640,423,13,3,0,-4,0,0,0,0,0,
+	"    read_file_into_attr(\"$(file_name).tex\",eq);")])
+]),
+mini_line(369,13,3,0,0,0,[
+str_block(0,369,13,3,0,-4,0,0,0,[
+str_seg('blue','Courier',0,80640,369,13,3,0,-4,0,0,0,0,0,
+	"    update_eps_child(\"$(file_name).eps\");")])
+]),
+mini_line(189,13,3,0,0,0,[
+str_block(0,189,13,3,0,-4,0,0,0,[
+str_seg('blue','Courier',0,80640,189,13,3,0,-4,0,0,0,0,0,
+	"    launch(\"cleanup\")")])
+])
+])])),
+attr("header=", "", 0, 1, 1,
+text('#0000ff',247,-21,1,0,1,63,16,3031,13,3,0,0,0,0,2,63,16,0,0,"",0,0,0,0,-8,'',[
+minilines(63,16,0,0,0,0,0,[
+mini_line(63,13,3,0,0,0,[
+str_block(0,63,13,3,0,-1,0,0,0,[
+str_seg('#0000ff','Courier',0,80640,63,13,3,0,-1,0,0,0,0,0,
+	"header=")])
+])
+])])),
+attr("footer=", "", 0, 1, 1,
+text('#0000ff',64,-21,1,0,1,63,16,3030,13,3,0,0,0,0,2,63,16,0,0,"",0,0,0,0,-8,'',[
+minilines(63,16,0,0,0,0,0,[
+mini_line(63,13,3,0,0,0,[
+str_block(0,63,13,3,0,-1,0,0,0,[
+str_seg('#0000ff','Courier',0,80640,63,13,3,0,-1,0,0,0,0,0,
+	"footer=")])
+])
+])]))
+]).
+group([
+group([
+text('#0000ff',224,50,1,0,1,406,17,643,14,3,0,-1,0,0,2,406,17,0,0,"",0,0,0,0,64,'',[
+minilines(406,17,0,0,0,-1,0,[
+mini_line(406,14,3,0,0,0,[
+str_block(0,406,14,3,0,-1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,406,14,3,0,-1,0,0,0,0,0,
+	"You can use LyX to edit your equation and still see it in tgif.")])
+])
+])]),
+text('#0000ff',192,50,1,0,1,19,17,863,14,3,0,0,0,0,2,19,17,0,0,"",0,0,0,0,64,'',[
+minilines(19,17,0,0,0,0,0,[
+mini_line(19,14,3,0,0,0,[
+str_block(0,19,14,3,0,0,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,19,14,3,0,0,0,0,0,0,0,
+	"(1)")])
+])
+])])
+],
+3109,0,0,[
+]),
+group([
+text('#0000ff',192,74,1,0,1,19,17,656,14,3,0,0,0,0,2,19,17,0,0,"",0,0,0,0,88,'',[
+minilines(19,17,0,0,0,0,0,[
+mini_line(19,14,3,0,0,0,[
+str_block(0,19,14,3,0,0,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,19,14,3,0,0,0,0,0,0,0,
+	"(2)")])
+])
+])]),
+text('#0000ff',224,74,4,0,1,414,65,657,14,3,0,-1,0,0,2,414,65,0,3,"",0,0,0,0,88,'',[
+minilines(414,65,0,3,0,-1,0,[
+mini_line(414,14,3,0,0,0,[
+str_block(0,414,14,3,0,-2,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,414,14,3,0,-2,0,0,0,0,0,
+	"Now, when you double click the equation object below it will ")])
+]),
+mini_line(400,14,3,0,3,0,[
+str_block(0,400,14,3,0,3,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,400,14,3,0,3,0,0,0,0,0,
+	"start LyX for editing.  Edit the equation, save the file in LyX")])
+]),
+mini_line(407,14,3,0,1,0,[
+str_block(0,407,14,3,0,1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,407,14,3,0,1,0,0,0,0,0,
+	"to keep your modifications, then close LyX and the equation")])
+]),
+mini_line(133,14,3,0,0,0,[
+str_block(0,133,14,3,0,-1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,133,14,3,0,-1,0,0,0,0,0,
+	"should be updated.")])
+])
+])])
+],
+3112,0,0,[
+]),
+group([
+text('#0000ff',224,146,3,0,1,408,49,1039,14,3,0,-1,0,0,2,408,49,0,2,"",0,0,0,0,160,'',[
+minilines(408,49,0,2,0,-1,0,[
+mini_line(408,14,3,0,2,0,[
+str_block(0,408,14,3,0,2,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,408,14,3,0,2,0,0,0,0,0,
+	"This was accomplished by changing the header, footer, and")])
+]),
+mini_line(389,14,3,0,2,0,[
+str_block(0,389,14,3,0,2,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,389,14,3,0,2,0,0,0,0,0,
+	"cmd  attributes in this special equation object.  Note that")])
+]),
+mini_line(403,14,3,0,0,0,[
+str_block(0,403,14,3,0,-1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,403,14,3,0,-1,0,0,0,0,0,
+	"you do not have to update your .Xdefaults for this to work...")])
+])
+])]),
+text('#0000ff',192,146,1,0,1,19,17,651,14,3,0,0,0,0,2,19,17,0,0,"",0,0,0,0,160,'',[
+minilines(19,17,0,0,0,0,0,[
+mini_line(19,14,3,0,0,0,[
+str_block(0,19,14,3,0,0,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,19,14,3,0,0,0,0,0,0,0,
+	"(3)")])
+])
+])])
+],
+3115,0,0,[
+]),
+group([
+text('#0000ff',192,202,1,0,1,19,17,3154,14,3,0,0,0,0,2,19,17,0,0,"",0,0,0,0,216,'',[
+minilines(19,17,0,0,0,0,0,[
+mini_line(19,14,3,0,0,0,[
+str_block(0,19,14,3,0,0,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,19,14,3,0,0,0,0,0,0,0,
+	"(4)")])
+])
+])]),
+group([
+group([
+text('#0000ff',288,234,2,0,1,339,33,3262,14,3,0,-1,0,0,2,339,33,0,1,"",0,0,0,0,248,'',[
+minilines(339,33,0,1,0,-1,0,[
+mini_line(339,14,3,0,1,0,[
+str_block(0,339,14,3,0,1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,339,14,3,0,1,0,0,0,0,0,
+	"Remove any new changes in the LyX file and save")])
+]),
+mini_line(191,14,3,0,0,0,[
+str_block(0,191,14,3,0,-1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,191,14,3,0,-1,0,0,0,0,0,
+	"using the older LyX version.")])
+])
+])]),
+text('#0000ff',256,234,1,0,1,19,17,3263,14,3,0,0,0,0,2,19,17,0,0,"",0,0,0,0,248,'',[
+minilines(19,17,0,0,0,0,0,[
+mini_line(19,14,3,0,0,0,[
+str_block(0,19,14,3,0,0,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,19,14,3,0,0,0,0,0,0,0,
+	"(a)")])
+])
+])])
+],
+3261,0,0,[
+]),
+group([
+text('#0000ff',288,282,5,0,1,336,81,3265,14,3,0,-1,0,0,2,336,81,0,2,"",0,0,0,0,296,'',[
+minilines(336,81,0,2,0,-1,0,[
+mini_line(304,14,3,0,2,0,[
+str_block(0,304,14,3,0,2,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,304,14,3,0,2,0,0,0,0,0,
+	"In tgif right click on the equation, select Edit")])
+]),
+mini_line(283,14,3,0,1,0,[
+str_block(0,283,14,3,0,1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,283,14,3,0,1,0,0,0,0,0,
+	"attribute, select eq=, and replace the eq=")])
+]),
+mini_line(336,14,3,0,0,0,[
+str_block(0,336,14,3,0,-1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,336,14,3,0,-1,0,0,0,0,0,
+	"information with the contents of a simple LyX file.")])
+]),
+mini_line(300,14,3,0,1,0,[
+str_block(0,300,14,3,0,1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,300,14,3,0,1,0,0,0,0,0,
+	"Make sure the LyX file has was created with")])
+]),
+mini_line(120,14,3,0,0,0,[
+str_block(0,120,14,3,0,-1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,120,14,3,0,-1,0,0,0,0,0,
+	"pagestyle=empty.")])
+])
+])]),
+text('#0000ff',256,282,1,0,1,20,17,3266,14,3,0,0,0,0,2,20,17,0,0,"",0,0,0,0,296,'',[
+minilines(20,17,0,0,0,0,0,[
+mini_line(20,14,3,0,0,0,[
+str_block(0,20,14,3,0,0,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,20,14,3,0,0,0,0,0,0,0,
+	"(b)")])
+])
+])])
+],
+3264,0,0,[
+]),
+text('#0000ff',224,202,2,0,1,371,33,3153,14,3,0,-1,0,0,2,371,33,0,1,"",0,0,0,0,216,'',[
+minilines(371,33,0,1,0,-1,0,[
+mini_line(371,14,3,0,1,0,[
+str_block(0,371,14,3,0,1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,371,14,3,0,1,0,0,0,0,0,
+	"Older versions of LyX (< 1.2) may give a warning when")])
+]),
+mini_line(215,14,3,0,1,0,[
+str_block(0,215,14,3,0,1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,215,14,3,0,1,0,0,0,0,0,
+	"editing this equation.  You can:")])
+])
+])]),
+text('#0000ff',224,266,1,0,1,19,17,3181,14,3,0,0,0,0,2,19,17,0,1,"",0,0,0,0,280,'',[
+minilines(19,17,0,1,0,0,0,[
+mini_line(19,14,3,0,1,0,[
+str_block(0,19,14,3,0,1,0,0,0,[
+str_seg('red','Helvetica-BoldOblique',3,80640,19,14,3,0,1,0,0,0,0,0,
+	"or:")])
+])
+])])
+],
+3296,0,0,[
+])
+],
+3307,0,0,[
+])
+],
+3328,0,0,[
+]).

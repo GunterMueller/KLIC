@@ -1,0 +1,103 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1995 Institute for New Generation Computer Technology 
+% %       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+% ----------------------------------------------------------- */
+:- module klic_comp_cmacro.
+
+expand(Terms0, Terms) :- true |
+   keyed_set:create(Pool),
+   expand(Terms0, Terms)+Pool+[].
+
+expand([], Terms)-P :- Terms=[].
+expand([functor(':-'(functor(with(Defs))))|Rest], Terms)-P :-
+   insDefs(Defs)-P,
+   expand(Rest, Terms)-P.
+otherwise.
+expand([Cls0|Rest], Terms0)-P :-
+   replaceClause(Cls0, Cls)-P,
+   Terms0=[Cls|Terms],
+   expand(Rest, Terms)-P.
+
+insDefs(functor(','(functor('='(variable(S), Def)), Rest)))-P :- true |
+   P <= put(S, Def, _),
+   insDefs(Rest)-P.
+insDefs(functor('='(variable(S), Def)))-P :- true |
+   P <= put(S, Def, _).
+otherwise.
+insDefs(functor(','(Arg, Rest)))-P :- true |
+   klic_comp_message:report_error("Unrecognized macro definition: ~w",[Arg]),
+   insDefs(Rest)-P.
+otherwise.
+insDefs(Rest)-P :- true |
+   klic_comp_message:report_error("Unrecognized macro definition: ~w",[Rest]).
+
+replaceClause(functor(':-'(Dec)), WFunc)-P :- true |
+   WFunc=functor(':-'(Dec)).
+replaceClause(functor(':-'(H0,functor('|'(G0,B0)))), WFunc)-P :- true |
+   replaceHead(H0, H, Gs)-P,
+   replaceGoals(G0, Gs, G1)-P,
+   replaceGoals(B0, [], B1)-P,
+   reconstGoals(G1, G),
+   reconstGoals(B1, B),
+   WFunc=functor(':-'(H, functor('|'(G,B)))).
+otherwise.
+replaceClause(functor(':-'(H0,B0)), WFunc)-P :- true |
+   replaceClause(functor(':-'(H0, functor('|'(atom(true), B0)))), WFunc)-P.
+otherwise.
+replaceClause(functor(Func), WFunc)-P :- true |
+   replaceClause(functor(:-(functor(Func),
+	         functor('|'(atom(true), atom(true))))),
+                 WFunc)-P.
+otherwise.
+replaceClause(WTerm0, WTerm)-P :- true |
+   WTerm0=WTerm.
+
+replaceGoals(Gs0, GTail, GHead)-P :- true |
+   replaceGoals(Gs0, GHead, GList0, GList0, GTail)-P.
+
+replaceHead(functor(H0), WFunc, Goals)-P :- functor(H0, PFunc, A) |
+   replace(1, A, H0, Goals, [])-P,
+   WFunc=functor(H0).
+otherwise.
+replaceHead(WFunc0, WFunc, Goals)-P :- true |
+   WFunc0=WFunc, Goals=[].
+
+replaceGoals(functor(','(G0,Goals)), GHead, GTail, U0, U)-P :- true |
+   replace(G0, U0, U1)-P,
+   GHead=[G0|GHead1],
+   replaceGoals(Goals, GHead1, GTail, U1, U)-P.
+otherwise.
+replaceGoals(G0, GHead, GTail, U0, U)-P :- true |
+   replace(G0, U0, U)-P,
+   GHead = [G0|GTail].
+
+replace(functor(Func0), U0, U)-P :- functor(Func0, PFunc, A) |
+   replace(1, A, Func0, U0, U)-P.
+replace(list([H0|T0]), U0, U)-P :- true |
+   replace(H0, U0, U1)-P,
+   replace(T0, U1, U)-P.
+replace(variable(S), U0, U)-P :- true |
+   P <= empty(S,YorN),
+   replace(YorN, S, U0, U)-P.
+otherwise.
+replace(WT0, U0, U)-P :- true | U0=U.
+
+replace(yes, _, U0, U)-P :- true | U0=U.
+replace(no, S, U0, U)-P :- true |
+   P <= get_and_put(S, V, V), U0=[functor(variable(S)=V)|U].
+
+replace(A, N, _, U0, U)-P :- A > N | U0=U.
+replace(A, N, Func0, U0, U)-P :- A =< N |
+   arg(A, Func0, Arg0),
+   replace(Arg0, U0, U1)-P,
+   A1 := A+1,
+   replace(A1, N, Func0, U1, U)-P.
+
+reconstGoals([], Goals) :- true | Goals = atom(true).
+reconstGoals([G], Goals) :- true | Goals = G.
+otherwise.
+reconstGoals([G|Rest], Goals) :- Goals=functor(','(G,Goals1)),
+    reconstGoals(Rest, Goals1).
+

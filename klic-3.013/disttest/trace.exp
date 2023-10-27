@@ -1,0 +1,134 @@
+#!/usr/local/bin/expect -f
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+			  ;# script wasn't run conservatively originally
+if {$force_conservative} {
+	set send_slow {1 .1}
+	proc send {ignore arg} {
+		sleep .1
+		exp_send -s -- $arg
+	}
+}
+
+set timeout -1
+spawn ./trace -t -p2
+match_max 100000
+expect -exact "0:        1 CALL: main:main? "
+send -- "
+"
+expect -exact "\r
+0:        1 REDU: main:main :-\r
+   2   0:+loop(\[1,0,1,0,1,0\])? "
+send -- "
+"
+expect -exact "\r
+0:        2 CALL: main:loop(\[1,0,1,0,1,0\])? "
+send -- "
+"
+expect -exact "\r
+0:        2 REDU: main:loop(\[1,0,1,0,1,0\]) :-\r
+   3   0:+dummy(1)? "
+send -- "
+"
+expect -exact "\r
+1:   200000 CALL: main:loop(\[0,1,0,1,0\])? "
+send -- "
+"
+expect -exact "\r
+1:   200000 REDU: main:loop(\[0,1,0,1,0\]) :-\r
+   2   0:+dummy(1)? "
+send -- "
+"
+expect -exact "\r
+0:        3 CALL: main:dummy(1)? "
+send -- "
+"
+expect -exact "\r
+0:        3 REDU: main:dummy(1)? "
+send -- "
+"
+expect -exact "\r
+1:        2 CALL: main:dummy(1)? "
+send -- "
+"
+expect -exact "\r
+1:        2 REDU: main:dummy(1)? "
+send -- "
+"
+expect -exact "\r
+0:   100000 CALL: main:loop(\[1,0,1,0\])? "
+send -- "
+"
+expect -exact "\r
+0:   100000 REDU: main:loop(\[1,0,1,0\]) :-\r
+   4   0:+dummy(1)? "
+send -- "
+"
+expect -exact "\r
+1:   200001 CALL: main:loop(\[0,1,0\])? "
+send -- "
+"
+expect -exact "\r
+1:   200001 REDU: main:loop(\[0,1,0\]) :-\r
+   3   0:+dummy(1)? "
+send -- "
+"
+expect -exact "\r
+0:        4 CALL: main:dummy(1)? "
+send -- "
+"
+expect -exact "\r
+0:        4 REDU: main:dummy(1)? "
+send -- "
+"
+expect -exact "\r
+1:        3 CALL: main:dummy(1)? "
+send -- "
+"
+expect -exact "\r
+1:        3 REDU: main:dummy(1)? "
+send -- "
+"
+expect -exact "\r
+0:   100001 CALL: main:loop(\[1,0\])? "
+send -- "
+"
+expect -exact "\r
+0:   100001 REDU: main:loop(\[1,0\]) :-\r
+   5   0:+dummy(1)? "
+send -- "
+"
+expect -exact "\r
+1:   200002 CALL: main:loop(\[0\])? "
+send -- "
+"
+expect -exact "\r
+1:   200002 REDU: main:loop(\[0\]) :-\r
+   4   0:+dummy(1)? "
+send -- "
+"
+expect -exact "\r
+0:        5 CALL: main:dummy(1)? "
+send -- "
+"
+expect -exact "\r
+0:        5 REDU: main:dummy(1)? "
+send -- "
+"
+expect -exact "\r
+1:        4 CALL: main:dummy(1)? "
+send -- "
+"
+expect -exact "\r
+1:        4 REDU: main:dummy(1)? "
+send -- "
+"
+expect -exact "\r
+0:   100002 CALL: main:loop(\[\])? "
+send -- "
+"
+expect -exact "\r
+0:   100002 REDU: main:loop(\[\])? "
+send -- "
+"
+expect eof

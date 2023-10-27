@@ -1,0 +1,107 @@
+\contentsline {chapter}{\numberline {第1章}KL1 入門}{1}
+\contentsline {section}{\numberline {1.1}はじめに}{1}
+\contentsline {section}{\numberline {1.2}構文と実行機構の基本}{2}
+\contentsline {subsection}{\numberline {1.2.1}プログラムの形式と基本実行機構}{2}
+\contentsline {subsubsection}{簡単なプログラム}{2}
+\contentsline {subsubsection}{プログラムの実行}{2}
+\contentsline {subsubsection}{ユニフィケーション}{3}
+\contentsline {paragraph}{ガード・ユニフィケーション}{3}
+\contentsline {paragraph}{ボディ・ユニフィケーション}{3}
+\contentsline {subsubsection}{節の形式と基本実行機構}{4}
+\contentsline {subsubsection}{並列実行, 通信, 同期の機構}{4}
+\contentsline {subsubsection}{実行機構についての補足}{6}
+\contentsline {paragraph}{複数の節が使えたら?}{6}
+\contentsline {paragraph}{どの節も使えなかったら?}{6}
+\contentsline {paragraph}{ボディ・ユニフィケーションで, 既に値の決まっている変数の値をまた決めようとしたら?}{6}
+\contentsline {subsection}{\numberline {1.2.2}他のプログラム言語と比べて}{6}
+\contentsline {subsubsection}{手続き型言語と KL1}{6}
+\contentsline {subsubsection}{関数型言語と KL1}{6}
+\contentsline {subsubsection}{他の論理型言語と KL1}{7}
+\contentsline {paragraph}{Prolog と KL1}{7}
+\contentsline {paragraph}{他の並列論理型言語と KL1}{7}
+\contentsline {subsubsection}{オブジェクト指向言語と KL1}{7}
+\contentsline {section}{\numberline {1.3}データとシンタクス}{7}
+\contentsline {subsection}{\numberline {1.3.1}論理変数}{7}
+\contentsline {subsubsection}{変数はメモリ番地ではない}{8}
+\contentsline {subsubsection}{変数に型はない}{8}
+\contentsline {subsection}{\numberline {1.3.2}アトミックなデータ}{8}
+\contentsline {subsubsection}{記号アトム}{8}
+\contentsline {subsubsection}{数値アトム}{9}
+\contentsline {subsection}{\numberline {1.3.3}構造を持ったデータ}{10}
+\contentsline {subsubsection}{未完成データ構造}{10}
+\contentsline {subsubsection}{構造データのユニフィケーション}{10}
+\contentsline {paragraph}{ガード・ユニフィケーション}{11}
+\contentsline {paragraph}{ボディ・ユニフィケーション}{11}
+\contentsline {subsection}{\numberline {1.3.4}略記法}{11}
+\contentsline {subsubsection}{ガード・ユニフィケーションのヘッドでの表記}{11}
+\contentsline {subsubsection}{ゴール true の省略}{12}
+\contentsline {section}{\numberline {1.4}プロセスとストリーム通信}{12}
+\contentsline {subsection}{\numberline {1.4.1}プロセス}{12}
+\contentsline {subsubsection}{KL1 のプロセスとは}{12}
+\contentsline {subsubsection}{リスト要素の和}{13}
+\contentsline {subsubsection}{自然数のリスト}{14}
+\contentsline {subsection}{\numberline {1.4.2}ストリーム通信}{14}
+\contentsline {subsubsection}{プロセスの複合}{14}
+\contentsline {subsubsection}{ストリーム通信}{15}
+\contentsline {subsubsection}{プロセスの状態}{16}
+\contentsline {subsubsection}{複雑なメッセージ}{17}
+\contentsline {section}{\numberline {1.5}プロセス・ネットワーク}{17}
+\contentsline {subsection}{\numberline {1.5.1}フィルタ}{17}
+\contentsline {subsection}{\numberline {1.5.2}ストリームの連結}{18}
+\contentsline {subsection}{\numberline {1.5.3}マージャ}{20}
+\contentsline {subsection}{\numberline {1.5.4}ディスパッチャ}{21}
+\contentsline {subsection}{\numberline {1.5.5}サーバ}{22}
+\contentsline {section}{\numberline {1.6}プログラム動作の指定}{22}
+\contentsline {subsection}{\numberline {1.6.1}並列実行指定の方針}{23}
+\contentsline {subsubsection}{負荷分散はプログラムで指定する}{23}
+\contentsline {subsubsection}{ふたつの並列性を分離する}{23}
+\contentsline {subsection}{\numberline {1.6.2}ゴール分散プラグマ}{24}
+\contentsline {subsection}{\numberline {1.6.3}ゴール優先度指定プラグマ}{24}
+\contentsline {subsection}{\numberline {1.6.4}節優先度指定プラグマ}{25}
+\contentsline {section}{\numberline {1.7}一階述語論理と KL1}{25}
+\contentsline {subsection}{\numberline {1.7.1}プログラムは公理の集まり}{25}
+\contentsline {subsection}{\numberline {1.7.2}実行は証明過程, 計算結果は反例}{26}
+\contentsline {subsection}{\numberline {1.7.3}証明系としての Prolog と KL1}{27}
+\contentsline {chapter}{\numberline {第2章}プロセス・ネットワーク}{28}
+\contentsline {section}{\numberline {2.1}基本的なプロセスとプロセス・ネットワークの復習}{28}
+\contentsline {subsection}{\numberline {2.1.1}木構造}{28}
+\contentsline {subsection}{\numberline {2.1.2}要求駆動とサーバプロセス}{30}
+\contentsline {section}{\numberline {2.2}解の回収と計算終了判定}{32}
+\contentsline {section}{\numberline {2.3}プロセス・ネットワーク構築上の注意点}{32}
+\contentsline {subsection}{\numberline {2.3.1}入出力を分ける}{33}
+\contentsline {subsection}{\numberline {2.3.2}各ノードの役割は単純に}{33}
+\contentsline {subsection}{\numberline {2.3.3}部分木は直接通信させない}{34}
+\contentsline {subsection}{\numberline {2.3.4}ループは避ける}{35}
+\contentsline {subsection}{\numberline {2.3.5}カオスなネットワークはやめよう}{35}
+\contentsline {subsection}{\numberline {2.3.6}マージャ}{36}
+\contentsline {section}{\numberline {2.4}やや高度なネットワークの組み方}{36}
+\contentsline {section}{\numberline {2.5}演習問題}{38}
+\contentsline {chapter}{\numberline {第3章}差分リストの使い方}{41}
+\contentsline {section}{\numberline {3.1}クイックソートの原理}{41}
+\contentsline {section}{\numberline {3.2}差分リスト}{44}
+\contentsline {section}{\numberline {3.3}ショートサーキット}{45}
+\contentsline {section}{\numberline {3.4}出力ストリーム}{46}
+\contentsline {chapter}{\numberline {第4章}優先度と負荷分散}{49}
+\contentsline {section}{\numberline {4.1}優先度制御の利用目的}{49}
+\contentsline {section}{\numberline {4.2}基本プログラミング}{50}
+\contentsline {subsection}{\numberline {4.2.1}プログラムの実行とスケジューリング}{50}
+\contentsline {subsubsection}{簡単なプログラム実行}{50}
+\contentsline {subsubsection}{過剰生産とその抑制}{50}
+\contentsline {subsubsection}{要求駆動型プログラミングによる解決}{52}
+\contentsline {section}{\numberline {4.3}KL1 のゴール優先度指定方法}{54}
+\contentsline {subsection}{\numberline {4.3.1}再び生産者と消費者の問題}{54}
+\contentsline {subsection}{\numberline {4.3.2}ゴール優先度指定の文法}{55}
+\contentsline {subsection}{\numberline {4.3.3}優先度指定使用上の注意}{55}
+\contentsline {section}{\numberline {4.4}もうひとつの優先度}{56}
+\contentsline {section}{\numberline {4.5}応用: 幅優先評価の実現}{57}
+\contentsline {subsection}{\numberline {4.5.1}すべてのノードを評価する方法}{58}
+\contentsline {subsection}{\numberline {4.5.2}不要なノード評価を始めない方法}{59}
+\contentsline {subsection}{\numberline {4.5.3}不要なノード評価を打ち切る方法}{60}
+\contentsline {subsection}{\numberline {4.5.4}優先度を用いて幅優先に評価を行なう方法}{63}
+\contentsline {section}{\numberline {4.6}応用: 簡単な探索問題}{64}
+\contentsline {section}{\numberline {4.7}負荷分散制御の利用目的}{69}
+\contentsline {section}{\numberline {4.8}ゴール分散の指定方法}{71}
+\contentsline {section}{\numberline {4.9}応用: 簡単な探索問題}{73}
+\contentsline {chapter}{\numberline {第5章}総合演習問題}{77}
+\contentsline {chapter}{\numberline {付録A}演習問題の解答例}{80}
+\contentsline {chapter}{参考文献}{91}

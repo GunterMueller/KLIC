@@ -1,0 +1,37 @@
+- Enviar REFRESH apenas depois de um tempo sem enviar dados
+    DICA: atualizar var last_data_sent_time sempre q enviar dados
+          ao disparar o evento REFRESH: 
+          if(current_time - last_data_sent_time >= refresh_timer)
+            send refresh
+            escalona novo refresh para daqui a refresh_timer
+          else
+            escalona novo REFRESH para 
+               refresh_timer - (current_time - last_data_sent_time)
+
+- Remover nó da lista de NAKs qdo receber retransmissão.
+
+- Mudar mensagem REFRESH para que inclua a lista dos sns dos ultimos pacotes de
+  dados enviados por fontes conhecidas e não apenas do emissor da mensagem
+  REFRESH.
+
+- Otimizar a busca na cache.
+- Diminuir o escopo dos mutexs
+
+- A forma como foram implementadas as rotinas e a estrutura da cache nao sao
+  muito otimizadas.  O tempo de processamento dos pacotes cresce linearmente até
+  a cache ficar cheia.
+  
+  
+- Implementar rotina para que usuarios possam entrar e sair a qq momento da
+  sessao multicast.
+
+OBS: qd for implementar a entrada de usuario sem suporte, retirar o obrigacao do primeiro pacote ser o 0.
+
+    04/02/2002 - aguardando rotina do Bill para empacotar/desempacotar o estado atual
+
+    25/04/2002 - primeiros testes com a saida de usuarios (Daniel)
+
+    02/07/2002 - Ainda aguardando resposta do Bill
+    
+- Implementar rotinas para gerar estatisticas da sessao. Mostrar "on the fly"
+ou gerar arquivo com os resultados no final.

@@ -1,0 +1,72 @@
+/*
+ * Author:	William Chia-Wei Cheng (bill.cheng@acm.org)
+ *
+ * @(#)$Header: /mm2/home/cvs/bc-src/tgif/po/README,v 1.1 2004/06/18 23:12:02 william Exp $
+ */
+
+This is the README file for tgifintl -- tgif's native language support (NLS)
+message catalogs.  The current release of tgif only supports native
+language in the menus (strings obtained from "menuinfo.c").
+
+1)  Tgifintl is only useful for tgif-4.1.5 and above, and it is to be
+    installed in the tgif source directory.  For example, if your tgif
+    is installed in ~/src/tgif/tgif-4.1.5 and you have tgifintl-1.0.0,
+    do:
+
+        cd ~/src/tgif/tgif-4.1.5
+        gunzip -c tgifintl-1.0.0.tar.gz | tar xvf -
+        cd tgifintl-1.0.0
+
+    If you don't have tgif, please download tgif source from tgif's
+    download link mentioned below.
+
+2)  Although Tgifintl-1.0.0 is release as part of tgif-4.1.5 (in the po
+    subdirectory), tgifintl is maintained separately.  The home page of
+    tgifintl is:
+
+        http://bourbon.cs.umd.edu:8001/tgif/tgifintl/
+
+3)  Please copy Po.tmpl-PLATFORM to Po.tmpl (where PLATFORM
+    depends on the platform you are on).  For example, if you are on a
+    Solaris platform, do:
+
+        rm Po.tmpl
+        cp Po.tmpl-solaris Po.tmpl
+
+    The default Po.tmpl is identical to Po.tmpl-linux.  There's only a few
+    Po.tmpl-* files in the current release of tgifintl.  More will be added
+    when they become available.  I only have access to limited number of
+    platforms, so if you don't find your platform listed, please ask a local
+    expert to modify Po.tmpl and send a working version to me so I can create
+    new Po.tmpl-* files.
+
+4)  Modify lines in Po.tmpl to match your configuration.
+
+5)  If you want to compile all message catalogs, do:
+
+        xmkmf
+        make Makefile
+        make Makefiles
+        make depend
+        make all
+        make install
+
+    If you only want to make one message catalog, say, the "ja" catalog, do:
+
+        xmkmf
+        make Makefile
+        make Makefiles
+        make depend
+        cd ja
+        make all
+        make install
+        cd ..
+
+6)  Tgif resources:
+
+                     Home Page: http://bourbon.cs.umd.edu:8001/tgif/
+                           FAQ: http://bourbon.cs.umd.edu:8001/tgif/faq/
+    Current Release & Download: http://bourbon.cs.umd.edu:8001/tgif/current.html
+          Join to Mailing List: kragen-tgif-subscribe@kragen.dnaco.net
+                  Mailing List: kragen-tgif@kragen.dnaco.net
+           Bug Reports Send To: bill.cheng@acm.org

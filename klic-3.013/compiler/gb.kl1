@@ -1,0 +1,105 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1993,1995 Institute for New Generation Computer Technology 
+% %	(Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+% ----------------------------------------------------------- */
+:- module klic_comp_gb.
+
+is_guard_builtin(hash(A,B),Ans) :-
+	builtin([A:bound],B:int,gblt_hash,Ans).
+is_guard_builtin(hash(A,B,C),Ans) :-
+	builtin([A:bound,B:int],C:int,gblt_deep_hash,Ans).
+is_guard_builtin(compare(A,B,C),Ans) :-
+	builtin([A:bound,B:bound],C:int,gblt_compare,Ans).
+is_guard_builtin(current_priority(A),Ans) :-
+	builtin([],A:int,gblt_current_prio,Ans).
+is_guard_builtin(wait(A),Ans) :-
+	builtin([A:bound],none,gblt_wait,Ans).
+is_guard_builtin(list(A),Ans) :-
+	builtin([A:list],none,gblt_list,Ans).
+is_guard_builtin(atom(A),Ans) :-
+	builtin([A:atom],none,gblt_atom,Ans).
+is_guard_builtin(integer(A),Ans) :-
+	builtin([A:int],none,gblt_integer,Ans).
+is_guard_builtin(atomic(A),Ans) :-
+	builtin([A:atomic],none,gblt_atomic,Ans).
+is_guard_builtin(float(A),Ans) :-
+	builtin([A:object(float)],none,gblt_float,Ans).
+is_guard_builtin(vector(A,B),Ans) :-
+	builtin([A:object(vector)],B:int,gblt_size_of_vector,Ans).
+is_guard_builtin(vector_element(A,B,C),Ans) :-
+	builtin([A:object(vector),B:int],C:any,
+	gblt_element_of_vector,Ans).
+is_guard_builtin(string(A,B,C),Ans) :-
+	Ans = yes([$([A:object],none,gblt_is_string),
+	$([A:object],B:int,gblt_size_of_string),
+	$([A:object],C:int,gblt_element_size_of_string)]).
+is_guard_builtin(string_element(A,B,C),Ans) :-
+	Ans = yes([$([A:object],none,gblt_is_string),
+	$([A:object,B:int],C:int,gblt_element_of_string)]).
+is_guard_builtin(functor(A,B,C),Ans) :-
+	Ans = yes([$([A:bound],B:atom,gblt_pfunctor),
+	$([A:bound],C:int,gblt_arity)]).
+is_guard_builtin(arg(A,B,C),Ans) :-
+	builtin([A:int,B:bound],C:any,gblt_arg,Ans).
+is_guard_builtin(less_than(A,B),Ans) :-
+	int_compare(A,B,gblt_less,Ans).
+is_guard_builtin(not_less_than(A,B),Ans) :-
+	int_compare(A,B,gblt_greater_or_eq,Ans).
+is_guard_builtin(greater_than(A,B),Ans) :-
+	int_compare(A,B,gblt_greater,Ans).
+is_guard_builtin(not_greater_than(A,B),Ans) :-
+	int_compare(A,B,gblt_less_or_eq,Ans).
+is_guard_builtin(equal(A,B),Ans) :-
+	int_compare(A,B,gblt_eq,Ans).
+is_guard_builtin(not_equal(A,B),Ans) :-
+	int_compare(A,B,gblt_not_eq,Ans).
+is_guard_builtin(diff(A,B),Ans) :-
+	builtin([A:bound,B:bound],none,gblt_diff,Ans).
+is_guard_builtin(and(A,B,C),Ans) :-
+	int_binary(A,B,C,gblt_and,Ans).
+is_guard_builtin(or(A,B,C),Ans) :-
+	int_binary(A,B,C,gblt_or,Ans).
+is_guard_builtin(exclusive_or(A,B,C),Ans) :-
+	int_binary(A,B,C,gblt_exclusive_or,Ans).
+is_guard_builtin(shift_right(A,B,C),Ans) :-
+	int_binary(A,B,C,gblt_rshift,Ans).
+is_guard_builtin(shift_left(A,B,C),Ans) :-
+	int_binary(A,B,C,gblt_lshift,Ans).
+is_guard_builtin(add(A,B,C),Ans) :-
+	int_binary(A,B,C,gblt_add,Ans).
+is_guard_builtin(subtract(A,B,C),Ans) :-
+	int_binary(A,B,C,gblt_subtract,Ans).
+is_guard_builtin(multiply(A,B,C),Ans) :-
+	int_binary(A,B,C,gblt_multiply,Ans).
+is_guard_builtin(divide(A,B,C),Ans) :-
+	int_binary(A,B,C,gblt_divide,Ans).
+is_guard_builtin(modulo(A,B,C),Ans) :-
+	int_binary(A,B,C,gblt_modulo,Ans).
+is_guard_builtin(complement(A,B),Ans) :-
+	int_unary(A,B,gblt_complement,Ans).
+is_guard_builtin(plus(A,B),Ans) :-
+	int_unary(A,B,gblt_plus,Ans).
+is_guard_builtin(minus(A,B),Ans) :-
+	int_unary(A,B,gblt_minus,Ans).
+is_guard_builtin(floating_point_to_integer(A,B),Ans) :-
+	builtin([A:object(float)],B:int,gblt_fix,Ans).
+
+is_guard_builtin(tag_and_value(A,B,C),Ans) :-
+	Ans = yes([$([A:bound],B:int,gblt_tag),
+	 $([A:bound],C:int,gblt_value)]).
+
+is_guard_builtin(display_console(A),Ans) :-
+	builtin([A:bound],none,gblt_display_console,Ans).
+is_guard_builtin(put_console(A),Ans) :-
+	builtin([A:bound],none,gblt_display_console,Ans).
+
+otherwise.
+is_guard_builtin(X,Ans) :- Ans = no(X).
+
+int_compare(A,B,Blt,Ans) :- Ans = yes([$([A:int,B:int],none,Blt)]).
+int_binary(A,B,C,Blt,Ans) :- Ans = yes([$([A:int,B:int],C:int,Blt)]).
+int_unary(A,B,Blt,Ans) :- Ans = yes([$([A:int],B:int,Blt)]).
+
+builtin(In,Out,Blt,Ans) :- Ans = yes([$(In,Out,Blt)]).

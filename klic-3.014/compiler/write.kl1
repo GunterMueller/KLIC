@@ -1,0 +1,421 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+% %       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+% ----------------------------------------------------------- */
+%
+%  referring modules
+%       klic_comp_util, klic_comp_obj, klic_comp_extern,
+%       klic_comp_kl1cmp
+
+:- inline:"#include <ctype.h>".
+
+:- module klic_comp_write.
+
+write_out(module(Name,Preds,Info))-Out :-
+    /* write head part */
+    klic_comp_obj:klicformat("module module_~q();\n", [Name])-Out,
+    write_pred_structs(Preds, Name)-Out,
+    sort_info(Info,InfoSorted),
+    declare_externals(InfoSorted)-Out,
+    Out <= #"\n",
+    klic_comp_obj:klicformat(
+	"module module_~q(glbl, qp, allocp, toppred)\n"
+	"  struct global_variables *glbl;\n"
+	"  struct goalrec *qp;\n"
+	"  register q *allocp;\n"
+	"  Const struct predicate *toppred;\n{\n",
+	[Name])-Out,
+    declare_const(InfoSorted)+0+_-Out,
+    pred_min_max(Preds,99999,MinArity,0,MaxArity),
+    declare_registers(MaxArity, "a")-Out,
+    klic_comp_obj:klicformat(
+	"\n"
+	"  q *reasonp;\n"
+	" module_top:\n")-Out,
+    write_get_args(0, MinArity)-Out,
+    klic_comp_obj:klicformat("  switch_on_pred() {\n")-Out,
+    write_pred_dispatch(Preds)-Out,
+    klic_comp_obj:klicformat("  }\n")-Out,
+
+    /* write all predicates */
+    write_predicates(Preds,Name,MinArity,Info)-Out,
+
+    /* write tail part */
+    write_interrupt_call(MaxArity, MaxArity)-Out,
+    klic_comp_obj:klicformat(
+	" proceed_label:\n"
+	"  loop_within_module(module_~q);\n"
+	"}\n",
+	[Name])-Out.
+
+
+declare_const([])-K-Out.
+declare_const([const(Id,Struct)|T])-K-Out :-
+    declare_const(Struct,Id)-K-Out,
+    declare_const(T)-K-Out.
+otherwise.
+declare_const([_|T])-K-Out :- declare_const(T)-K-Out.
+
+declare_const(string(S),Id)-K-Out :- string(S,L,E), L=<0 |
+    Id=string(K),
+    klic_comp_obj:klicformat(
+	"  declare_method_table_of(byte__string);\n"
+	"  static Const string_structure_type_~d string_const_~d =\n"
+	"      declare_string_constant_~d(0,0);\n",
+	[E,K, E])-Out,
+    K += 1.
+declare_const(string(S),Id)-K-Out :- string(S,L,E), L>0 |
+    Id=string(K),
+    L4 := (L+3)/4*4,
+    klic_comp_obj:klicformat(
+	"  static Const unsigned char strconst_body_~d[~d] =\n    ",
+	[K,L4])-Out,
+    write_string_body(L,S)-Out,
+    Out <= fwrite(";\n"),
+    klic_comp_obj:klicformat(
+	"  declare_method_table_of(byte__string);\n"
+	"  static Const string_structure_type_~d string_const_~d =\n"
+	"      declare_string_constant_~d(strconst_body_~d,~d);\n",
+	[E,K, E,K,L])-Out,
+    K += 1.
+declare_const(vector(V),Id)-K-Out :- vector(V,L), L=<0 |
+    Id=vector(K),
+    klic_comp_obj:klicformat(
+	"  declare_method_table_of(vector);\n"
+	"  static Const vector_structure_type vector_const_~d =\n"
+	"      declare_vector_constant(0,0);\n",
+	[K])-Out,
+    K += 1.
+declare_const(vector(V),Id)-K-Out :- vector(V,L), L>0 |
+    klic_comp_util:vector_to_list(V,Elems0),
+    declare_const_list(Elems0,Elems)-K-Out,
+    Id=vector(K),
+    klic_comp_obj:klicformat(
+	"  static Const q vectconst_body_~d[] = {\n",
+	[K])-Out,
+    write_const_elems(Elems)-Out,
+    Out <= fwrite("  };\n"),
+    klic_comp_obj:klicformat(
+	"  declare_method_table_of(vector);\n"
+	"  static Const vector_structure_type vector_const_~d =\n"
+	"      declare_vector_constant(vectconst_body_~d,~d);\n",
+	[K, K,L])-Out,
+    K += 1.
+declare_const(float(X),Id)-K-Out :-
+    Id=float(K),
+    klic_comp_obj:klicformat(
+	"  declare_method_table_of(float);\n"
+	"  static Const float_structure_type float_const_~d =\n"
+	"    declare_float_constant(~g);\n",
+	[K, X])-Out,
+    K += 1.
+declare_const(module(M),Id)-K-Out :-
+    Id=module(K),
+    klic_comp_obj:klicformat(
+	"  declare_method_table_of(module);\n"
+	"  extern module module_~q();\n"
+	"  static Const module_structure_type mod_const_~d =\n"
+	"    declare_module_constant(module_~q, ~a);\n",
+	[M, K, M,M])-Out,
+    K += 1.
+declare_const(predicate(M,F,A),Id)-K-Out :-
+    declare_const(module(M),module(Mid))-K-Out,
+    Id=predicate(K),
+    klic_comp_obj:klicformat(
+	"  declare_method_table_of(predicate);\n"
+	"  static Const predicate_structure_type pred_const_~d =\n"
+	"    declare_pred_constant(~p, mod_const_~d, ~a);\n",
+	[K, M,F,A,Mid,F])-Out,
+    K += 1.
+declare_const(list([H0|T0]),Id)-K-Out :-
+    declare_const(T0,T)-K-Out,
+    declare_const(H0,H)-K-Out,
+    Id=list(K),
+    klic_comp_obj:klicformat(
+	"  static Const q cons_const_~d[] = {\n",
+	[K])-Out,
+    write_const_elems([T,H])-Out,
+    klic_comp_obj:klicformat("  };\n")-Out,
+    K += 1.
+declare_const(functor(X0),Id)-K-Out :- functor(X0,F,A) |
+    klic_comp_util:univ(X0,[F|Args]),
+    declare_const_list(Args,Elems)-K-Out,
+    Id=functor(K),
+    klic_comp_obj:klicformat(
+	"  static Const q funct_const_~d[] = {\n"
+	"    makesym(~f),\n",
+	[K, F/A])-Out,
+    write_const_elems(Elems)-Out,
+    klic_comp_obj:klicformat("  };\n")-Out,
+    K += 1.
+otherwise.
+declare_const(X,Id)-K-Out :- Id=X.
+
+declare_const_list([],L)-K-Out :- L=[].
+declare_const_list([H0|T0],L)-K-Out :-
+    L=[H|T],
+    declare_const(H0,H)-K-Out,
+    declare_const_list(T0,T)-K-Out.
+
+write_const_elems([])-Out.
+write_const_elems([H|T])-Out :-
+    write_const_elem(H)-Out,
+    write_const_elems(T)-Out.
+
+write_const_elem(atom(A))-Out :-
+    klic_comp_obj:klicformat("    ~a,\n",[A])-Out.
+write_const_elem(integer(N))-Out :-
+    klic_comp_obj:klicformat("    makeint(~d),\n",[N])-Out.
+write_const_elem(float(K))-Out :-
+    klic_comp_obj:klicformat("    makefloat(float_const_~d),\n",[K])-Out.
+write_const_elem(predicate(K))-Out :-
+    klic_comp_obj:klicformat("    makepred(pred_const_~d),\n",[K])-Out.
+write_const_elem(module(K))-Out :-
+    klic_comp_obj:klicformat("    makepred(mod_const_~d),\n",[K])-Out.
+write_const_elem(list(K))-Out :-
+    klic_comp_obj:klicformat("    makecons(cons_const_~d),\n",[K])-Out.
+write_const_elem(functor(K))-Out :-
+    klic_comp_obj:klicformat("    makefunctor(funct_const_~d),\n",[K])-Out.
+write_const_elem(string(K))-Out :-
+    klic_comp_obj:klicformat("    makefunctor(&string_const_~d),\n",[K])-Out.
+write_const_elem(vector(K))-Out :-
+    klic_comp_obj:klicformat("    makefunctor(&vector_const_~d),\n",[K])-Out.
+
+/* Some C compilers give an error to something like:
+	char *str[4] = "abcd";
+   that there are too many initializers */
+write_string_body(L,S)-Out :- L mod 4 =\= 0 |
+	Out <= fwrite("\""),
+	write_string_elements(0,L,S)-Out,
+	Out <= fwrite("\"").
+write_string_body(L,S)-Out :- L mod 4 =:= 0 |
+	Out <= fwrite("{"),
+	write_character_constants(0,L,S)-Out,
+	Out <= fwrite("}").
+
+write_character_constants(K,N,_S)-Out :- K>=N | true.
+write_character_constants(K,N,S)-Out :- K<N, string_element(S,K,E), K1:=K+1 |
+        Out <= fwrite("'"),
+	write_string_element(E)-Out,
+        Out <= fwrite("',"),
+	write_character_constants(K1,N,S)-Out.
+
+write_string_elements(K,N,_S)-Out :- K>=N | true.
+write_string_elements(K,N,S)-Out :- K<N, string_element(S,K,E), K1:=K+1 |
+	write_string_element(E)-Out,
+	write_string_elements(K1,N,S)-Out.
+
+write_string_element(#"\"")-Out :- Out <= fwrite("\\\"").
+write_string_element(#"\'")-Out :- Out <= fwrite("\\\'").
+write_string_element(#"\\")-Out :- Out <= fwrite("\\\\").
+write_string_element(#"\n")-Out :- Out <= fwrite("\\n").
+write_string_element(#"\t")-Out :- Out <= fwrite("\\t").
+write_string_element(#" " )-Out :- Out <= fwrite(" ").
+otherwise.
+write_string_element(E)-Out :- inline:"
+{
+   long c = intval(%0);
+   if (!isgraph(c)) goto %f;
+}":[E+int] |
+	Out <= E.
+otherwise.
+write_string_element(E)-Out :-
+	E0 := (E>>6) + 0'0,
+	E1 := ((E>>3) /\ 7) + 0'0,
+	E2 := (E /\ 7) + 0'0 |
+	Out = [0'\,E0,E1,E2|OutT], Out <== OutT.
+
+% Predicate information:
+%	pred(Name, Arity, SeqNum, Works, Object)
+
+write_pred_structs([], _)-Out.
+write_pred_structs([pred(Name, Arity, SeqNum, _, _)|Rest], Module)-Out :-
+    klic_comp_obj:klicformat(
+	"Const struct predicate ~p =\n"
+	"   { module_~q, ~d, ~d };\n", 
+	[Module,Name,Arity, Module, SeqNum, Arity])-Out,
+    write_pred_structs(Rest, Module)-Out.
+
+declare_externals([])-Out.
+declare_externals([H|T])-Out :-
+    declare_one_external(H)-Out,
+    declare_externals(T)-Out.
+
+declare_one_external(ext(M,P,A))-Out :-
+    klic_comp_obj:klicformat("extern Const struct predicate ~p;\n",
+	[M,P,A])-Out.
+declare_one_external(gnew(Class))-Out :-
+    klic_comp_obj:klicformat("extern q ~q_g_new();\n",[Class])-Out.
+declare_one_external(guse(Class))-Out :-
+    klic_comp_obj:klicformat("declare_method_table_of(~q);\n",[Class])-Out.
+otherwise.
+declare_one_external(_)-Out.
+
+pred_min_max([], MinA0, MinA, MaxA0, MaxA) :-
+    MinA = MinA0, MaxA = MaxA0.
+pred_min_max([pred(_,Arity,_,_,_)|Rest], MinA0, MinA, MaxA0, MaxA) :-
+    klic_comp_util:min(Arity, MinA0, MinA1),
+    klic_comp_util:max(Arity, MaxA0, MaxA1),
+    pred_min_max(Rest, MinA1, MinA, MaxA1, MaxA).
+
+declare_registers(N, _)-Out :- N=<0 | true.
+declare_registers(N, S)-Out :- N>0 |
+    write_comma_list(N, S, "  q ")-Out,
+    Out <= fwrite(";\n").
+
+write_comma_list(N, _, _)-Out :- N=<0 | true.
+write_comma_list(N, S, Header)-Out :- N>0 |
+    N1 := N-1,
+    klic_comp_obj:klicformat("~s", [Header])-Out,
+    write_comma_list1(0, N1, S)-Out,
+    klic_comp_obj:klicformat("~s~d", [S,N1])-Out.
+
+write_comma_list1(K, N, _)-Out :- K>= N | true.
+write_comma_list1(K, N, S)-Out :- K<N |
+    K1 := K+1,
+    klic_comp_obj:klicformat("~s~d, ", [S,K])-Out,
+    write_comma_list1(K1, N, S)-Out.
+
+write_pred_dispatch([pred(Name, Arity, SeqNum, _, _)|Rest])-Out :- Rest=[] |
+    klic_comp_obj:klicformat("    last_case_pred(~d, ~q_~d_top);\n",
+			     [SeqNum, Name, Arity])-Out.
+write_pred_dispatch([pred(Name, Arity, SeqNum, _, _)|Rest])-Out :- Rest\=[] |
+    klic_comp_obj:klicformat("    case_pred(~d, ~q_~d_top);\n",
+			     [SeqNum, Name, Arity])-Out,
+    write_pred_dispatch(Rest)-Out.
+
+write_predicates([],_,_,_)-Out.
+write_predicates([pred(Name,Arity,_,Works,Object)|Rest],Module,Min,Info)-Out :-
+    Out <= fwrite(	     "\n"),
+    klic_comp_obj:klicformat(" ~q_~d_top: {\n", [Name, Arity])-Out,
+    declare_registers(Works, "x")-Out,
+    write_get_args(Min, Arity)-Out,
+    klic_comp_obj:klicformat(
+	"  qp = qp->next;\n"
+	" ~q_~d_clear_reason:\n"
+	"  reasonp = reasons;\n",
+	[Name, Arity])-Out,
+    klic_comp_obj:write_object(Object, info(Module,Name,Arity))-Out,
+    klic_comp_obj:klicformat(
+	" ~q_~d_ext_interrupt:\n"
+	"  reasonp = 0l;\n"
+	" ~q_~d_interrupt:\n",
+	[Name,Arity, Name,Arity])-Out,
+    klic_comp_util:member(Info,exec(Name/Arity),Ans),
+    write_predicates_1(Ans,Module,Name,Arity)-Out,
+    klic_comp_obj:klicformat(
+	"  goto interrupt_~d;\n"
+	" }\n",
+	[Arity])-Out,
+    write_predicates(Rest,Module,Min,Info)-Out.
+
+write_predicates_1(yes,M,P,A)-Out :-
+    klic_comp_obj:klicformat("  toppred = &~p;\n", [M,P,A])-Out.
+write_predicates_1(no,_Mod,_Name,_Arit)-Out.
+
+write_get_args(K,N)-Out :- K=:=N | true.
+write_get_args(K,N)-Out :- K<N |
+    klic_comp_obj:klicformat("  a~d = qp->args[~d];\n", [K,K])-Out,
+    K1 := K+1,
+    write_get_args(K1, N)-Out.
+
+% /*
+%   Interrupt labels have the following structure.
+% 
+%   interrupt_N_cont:
+%     Entry for continued from N+1 argument case;
+%     If at the boundary,
+%       Store argument #(N-1) to goal record extension;
+%       Allocate goal record extension if needed;
+%       Store pointer to extension to qp or newly allocated extension;
+%       goto interrupt_(N-1)_cont;
+%     Otherwise,
+%       goto interrupt_N_common;
+%   interrupt_N:
+%     Entry for N argumeng case;
+%     Allocate goal record extension, if needed;
+%   interrupt_N_common:
+%     Store argument #(N-1) to goal record;
+% */
+
+write_interrupt_call(N, _)-Out :- N=<0 |
+    klic_comp_obj:klicformat(
+	" interrupt_0:\n"
+	"  allocp = interrupt_goal(allocp, toppred, reasonp);\n")-Out.
+write_interrupt_call(N, Max)-Out :- N>0 |
+    N1 := N-1,
+    Off := N1+2,
+    klic_comp_obj:klicformat(
+	" interrupt_~d:\n"
+	"  allocp[~d] = a~d;\n",
+	[N, Off,N1])-Out,
+    write_interrupt_call(N1, Max)-Out.
+
+% Writing out inter-module info to the header file
+
+write_header_file(module(Mod,Preds,Info))-Out :-
+    klic_comp_obj:klicformat("module_~q\n",[Mod])-Out,
+    write_defined_preds(Preds,Mod)-Out,
+    klic_comp_extern:make_ext_table(Info,E,[]),
+    klic_comp_util:qsort(E,ES),
+    write_ext_entries(ES)-Out.
+
+write_ext_entries([])-Out.
+write_ext_entries([E|T])-Out :-
+    write_ext_entry(E)-Out,
+    write_ext_entries(T)-Out.
+
+write_ext_entry(atom(A))-Out :-
+    klic_comp_obj:klicformat("atom_~q\n",[A])-Out.
+write_ext_entry(funct(F/A))-Out :-
+    write_funct_name(F,A)-Out,
+    Out<= #"\n".
+write_ext_entry(module(C))-Out :-
+    klic_comp_obj:klicformat("ref_module_~q\n",[C])-Out.
+write_ext_entry(class(C))-Out :-
+    klic_comp_obj:klicformat("ref_class_~q\n",[C])-Out.
+
+write_defined_preds([],_)-Out.
+write_defined_preds([pred(Name,Arity,_,_,_)|Rest],Module)-Out :- 
+    klic_comp_obj:klicformat("~p\n", [Module,Name,Arity])-Out,
+    write_defined_preds(Rest,Module)-Out.
+
+% Subroutines for writing atom and functor names in a canonical manner
+
+write_atom([])-Out :- Out <= fwrite("NILATOM").
+write_atom('.')-Out:- Out <= fwrite("PERIODATOM").
+write_atom(N )-Out :- integer(N) | 
+	klic_comp_obj:klicformat("makeint(~dL)", [N])-Out.
+otherwise.
+write_atom(Atom)-Out :-
+    klic_comp_obj:klicformat("makesym(atom_~q)", [Atom])-Out.
+
+write_funct_name(Funct,Arity)-Out :-
+    klic_comp_obj:klicformat("functor_~q_~d", [Funct,Arity])-Out.
+
+write_pred_name(Module,Pred,Arity)-Out :-
+  klic_comp_obj:klicformat("predicate_~q_x~q_~d",[Module,Pred,Arity])-Out.
+
+sort_info(L, R) :- sort_info(L, R, []).
+
+sort_info([X|L],R,R0) :-
+    partition(L, X, L1, L2),
+    sort_info(L2, R1, R0),
+    sort_info(L1, R, [X|R1]).
+sort_info([],R,R0) :- true | R = R0.
+
+partition([X|L],Y,L1,L2) :- X=Y | partition(L,Y,L1,L2).
+partition([X|L],Y,XL1,L2) :- X@<Y | XL1 = [X|L1], partition(L,Y,L1,L2).
+partition([X|L],Y,L1,XL2) :- X@>Y | XL2 = [X|L2], partition(L,Y,L1,L2).
+partition([X|L],Y,L1,L2) :- X=const(IdX,StructX), Y=const(IdY,StructY),
+	StructX=StructY |
+    IdX=IdY, partition(L,Y,L1,L2).
+partition([X|L],Y,XL1,L2) :- X=const(IdX,StructX), Y=const(IdY,StructY),
+	StructX@<StructY |
+    XL1 = [X|L1], partition(L,Y,L1,L2).
+partition([X|L],Y,L1,XL2) :- X=const(IdX,StructX), Y=const(IdY,StructY),
+	StructX@>StructY |
+    XL2 = [X|L2], partition(L,Y,L1,L2).
+partition([],_,L1,L2) :- L1 = [], L2 = [].

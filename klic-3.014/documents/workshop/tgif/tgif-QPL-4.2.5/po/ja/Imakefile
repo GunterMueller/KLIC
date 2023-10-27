@@ -1,0 +1,59 @@
+#ifndef XCOMM
+#define XCOMM #
+#endif
+
+#ifndef NullParameter
+#define NullParameter
+#endif
+
+XCOMM 
+XCOMM  Author:      Jun Nishii, Project Vine <jun@flatout.org>, 1999
+XCOMM 
+XCOMM  @(#)$Header: /mm2/home/cvs/bc-src/tgif/po/ja/Imakefile,v 1.1 2004/06/18 23:12:02 william Exp $
+XCOMM 
+
+#include <../Po.tmpl>
+
+CURRENTDIR =./
+
+SRCS = $(CURRENTDIR)*.po
+
+PACKAGE = tgif
+CATALOGS = ja.mo
+POFILES = ja.po
+
+POTFILES=../../menuinfo.c ../../strtbl.c
+
+.SUFFIXES:
+.SUFFIXES: .mo .po
+
+.po.mo:
+	msgfmt -o $@ $<
+
+all:: $(CATALOGS)
+
+$(PACKAGE).pot: $(POTFILES)
+	xgettext --default-domain=$(PACKAGE) \
+	    --add-comments --keyword=_ --keyword=N_ $(POTFILES)
+	if cmp -s $(PACKAGE).po $(PACKAGE).pot; then \
+	    rm -f $(PACKAGE).po; \
+	else \
+	    mv -f $(PACKAGE).po $(PACKAGE).pot; \
+	fi
+
+install::  $(CATALOGS)
+	$(MKINSTALLDIRS) $(NLSDIR) 
+	chmod 755 $(NLSDIR) 
+	for n in $(CATALOGS) __DuMmY ; do \
+	    if test "$$n" -a "$$n" != "__DuMmY" ; then \
+		l=`basename $$n .mo`; \
+		$(MKINSTALLDIRS) $(NLSDIR)/$$l/LC_MESSAGES; \
+		chmod 755 $(NLSDIR)/$$l; \
+		chmod 755 $(NLSDIR)/$$l/LC_MESSAGES; \
+		$(INSTALL) -m 644 $$n $(NLSDIR)/$$l/LC_MESSAGES/$(PACKAGE).mo; \
+	    fi; \
+	done
+
+clean::
+	rm -f $(CATALOGS)
+

@@ -1,0 +1,132 @@
+!  Resource file to use Japanese characters and kinput2/xim
+!
+!                                          Jun Nishii, Project Vine
+!                             Time-stamp: <05/01/17 23:03:15 daisuke>
+!                                                <jun@vinelinux.org>
+!						 Modified by Shoji Matsumoto <shom@vinelinux.org>
+!						 Modified by Daisuke SUZUKI <daisuke@vinelinux.org>
+
+Tgif.MenuFontSet:		-*-helvetica-medium-r-normal--12-*-*-*-*-*-*-*,-alias-*-medium-r-normal--12-*-*-*-*-*-*-*
+Tgif.BoldMsgFont:               -*-helvetica-bold-r-normal--12-*-*-*-*-*-*-*
+Tgif.MsgFont:                   -*-helvetica-medium-r-normal--12-*-*-*-*-*-*-*
+
+Tgif.FontSizes:                  8 9 10 11 12 13 14 15 16 17 18 20 24 32 34 36 40 44 60 70 100 200 250 300
+Tgif.DefaultSingleByteFont:	Helvetica
+
+Tgif.AdditionalFonts:           \n\
+        lucidabright-medium-r-normal,iso8859-1,ZapfChancery-MediumItalic\n\
+        lucidabright-demibold-r-normal,iso8859-1,ZapfChancery-MediumItalic\n\
+        lucidabright-medium-i-normal,iso8859-1,ZapfChancery-MediumItalic\n\
+        lucidabright-demibold-i-normal,iso8859-1,ZapfChancery-MediumItalic\n\
+
+Tgif.ZapfChanceryShowFontChar:	ZC
+
+Tgif.SquareDoubleByteFonts: \n\
+-alias-mincho-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,Ryumin-Light-EUC-H\n\
+-alias-mincho-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,Ryumin-Light-EUC-H\n\
+-alias-mincho-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,Ryumin-Italic-EUC-H\n\
+-alias-mincho-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,Ryumin-Italic-EUC-H\n\
+\n\
+-alias-gothic-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,GothicBBB-Medium-EUC-H\n\
+-alias-gothic-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,GothicBBB-Medium-EUC-H\n\
+-alias-gothic-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,GothicBBB-Italic-EUC-H\n\
+-alias-gothic-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,GothicBBB-Italic-EUC-H\n\
+\n\
+-alias-mincho-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,Ryumin-Light-EUC-V\n\
+-alias-mincho-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,Ryumin-Light-EUC-V\n\
+-alias-mincho-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,V,Ryumin-Light-EUC-V\n\
+-alias-mincho-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,V,Ryumin-Light-EUC-V\n\
+\n\
+-alias-gothic-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,GothicBBB-Medium-EUC-V\n\
+-alias-gothic-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,GothicBBB-Medium-EUC-V\n\
+-alias-gothic-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,V,GothicBBB-Italic-EUC-V\n\
+-alias-gothic-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,V,GothicBBB-Italic-EUC-V\n\
+\n\
+-ricoh-lx marugothic-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,LX-MaruGothic--Regular-EUC-H\n\
+-ricoh-lx marugothic-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,LX-MaruGothic--Regular-EUC-H\n\
+-ricoh-lx marugothic-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,LX-MaruGothic--Italic-EUC-H\n\
+-ricoh-lx marugothic-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,LX-MaruGothic--Italic-EUC-H\n\
+\n\
+-ricoh-lx pop-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,LX-POP--Regular-EUC-H\n\
+-ricoh-lx pop-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,LX-POP--Regular-EUC-H\n\
+-ricoh-lx pop-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,LX-POP--Italic-EUC-H\n\
+-ricoh-lx pop-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,LX-POP--Italic-EUC-H\n\
+\n\
+-ricoh-lx gothic ub-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,LX-Gothic-UB--Regular-EUC-H\n\
+-ricoh-lx gothic ub-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,LX-Gothic-UB--Regular-EUC-H\n\
+-ricoh-lx gothic ub-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,LX-Gothic-UB--Italic-EUC-H\n\
+-ricoh-lx gothic ub-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,LX-Gothic-UB--Italic-EUC-H\n\
+\n\
+-ricoh-lx marugothic-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,LX-MaruGothic--Regular-EUC-V\n\
+-ricoh-lx marugothic-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,LX-MaruGothic--Regular-EUC-V\n\
+-ricoh-lx marugothic-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,V,LX-MaruGothic--Italic-EUC-V\n\
+-ricoh-lx marugothic-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,V,LX-MaruGothic--Italic-EUC-V\n\
+\n\
+-ricoh-lx pop-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,LX-POP--Regular-EUC-V\n\
+-ricoh-lx pop-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,LX-POP--Regular-EUC-V\n\
+-ricoh-lx pop-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,V,LX-POP--Italic-EUC-V\n\
+-ricoh-lx pop-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,V,LX-POP--Italic-EUC-V\n\
+\n\
+-ricoh-lx gothic ub-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,LX-Gothic-UB--Regular-EUC-V\n\
+-ricoh-lx gothic ub-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,LX-Gothic-UB--Regular-EUC-V\n\
+-ricoh-lx gothic ub-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,V,LX-Gothic-UB--Italic-EUC-V\n\
+-ricoh-lx gothic ub-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,V,LX-Gothic-UB--Italic-EUC-V\n\
+\n\
+-dynalab-dfmincho ub-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-Mincho-UB--Regular-EUC-H\n\
+-dynalab-dfmincho ub-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-Mincho-UB--Regular-EUC-H\n\
+-dynalab-dfmincho ub-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-Mincho-ubUB--Italic-EUC-H\n\
+-dynalab-dfmincho ub-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-Mincho-UB--Italic-EUC-H\n\
+\n\
+-dynalab-dfkaisho sb-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-Kaisho-Bd--Regular-EUC-H\n\
+-dynalab-dfkaisho sb-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-Kaisho-Bd--Regular-EUC-H\n\
+-dynalab-dfkaisho sb-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-Kaisho-Bd--Italic-EUC-H\n\
+-dynalab-dfkaisho sb-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-Kaisho-Bd--Italic-EUC-H\n\
+\n\
+-dynalab-dfpopstencil w7-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-POPStencil-W7--Regular-EUC-H\n\
+-dynalab-dfpopstencil w7-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-POPStencil-W7--Regular-EUC-H\n\
+-dynalab-dfpopstencil w7-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-POPStencil-W7--Italic-EUC-H\n\
+-dynalab-dfpopstencil w7-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-POPStencil-W7--Italic-EUC-H\n\
+\n\
+-dynalab-dfbrushrd w7-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-BrushRD-W7--Regular-EUC-H\n\
+-dynalab-dfbrushrd w7-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-BrushRD-W7--Regular-EUC-H\n\
+-dynalab-dfbrushrd w7-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-BrushRD-W7--Italic-EUC-H\n\
+-dynalab-dfbrushrd w7-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-BrushRD-W7--Italic-EUC-H\n\
+\n\
+-dynalab-dffreeryuyou lt-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-FreeRyuyou-Lt--Regular-EUC-H\n\
+-dynalab-dffreeryuyou lt-bold-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-FreeRyuyou-Lt--Regular-EUC-H\n\
+-dynalab-dffreeryuyou lt-medium-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-FreeRyuyou-Lt--Italic-EUC-H\n\
+-dynalab-dffreeryuyou lt-bold-i-*--%d-*-*-*-*-*-jisx0208.1983-*,H,DF-FreeRyuyou-Lt--Italic-EUC-H\n\
+
+!Tgif.DoubleByteInputMethod:	kinput2
+Tgif.DoubleByteInputMethod:	xim
+
+Tgif.UseNKF:			true
+Tgif.CopyAndPasteJIS:		true
+Tgif.PreeditType:		overthespot
+Tgif.Lang:			ja_JP.eucJP
+Tgif.ConvSelection:		JAPANESE_CONVERSION
+Tgif.IconPixmap:		/usr/share/tgif/tgificon.xpm
+
+! etc...
+Tgif.MinimalMenubar:		true
+Tgif.PSA4PaperSize:		true
+Tgif.InitialPaperSize:		21cm x 29.7cm
+Tgif.GridSystem:		Metric
+
+Tgif.InitialFont:		Ryumin
+Tgif.RyuminShowFontChar:	ÌÀ
+Tgif.GothicBBBShowFontChar:	³Ñ
+
+Tgif.DFPOPShowFontChar:	£Ä¥Ý
+Tgif.DFGyoShoShowFontChar:	£Ä¹Ô
+Tgif.DFLeiShoShowFontChar:	£ÄÎì
+
+Tgif.LX-POPShowFontChar:	£Ì¥Ý
+Tgif.LX-Gothic-UBShowFontChar:	£Ì¥´
+Tgif.LX-MaruGothicShowFontChar:	£Ì´Ý
+
+Tgif.DF-Mincho-UBShowFontChar:	ÂÀÌÀ
+Tgif.DF-Kaisho-BdShowFontChar:	Ü´
+Tgif.DF-POPStencil-W7ShowFontChar: ¥Ý¥¹
+Tgif.DF-BrushRD-W7ShowFontChar:	¥ÖRD
+Tgif.DF-FreeRyuyou-LtShowFontChar:	Î®ÍÕ

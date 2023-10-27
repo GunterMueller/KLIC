@@ -1,0 +1,13 @@
+Compiling the Reliable Multicast Library:
+
+    To compile librmcast.a:
+        ./configure
+        make
+    
+    Other options:
+    
+        make clean
+            This will clean up the rmcast directory
+       
+See the rmchat directory to learn how to create a
+multicast application with the Reliable Multicast Library.

@@ -1,0 +1,20 @@
+.\"@(#)$Header: /mm2/home/cvs/bc-src/tgif/prtgif.man,v 1.1 2004/06/18 23:20:49 william Exp $
+.TH PRTGIF n "Version 2.12-p12 or above" "PrTgif"
+.SH NAME
+\fI(OBSOLETED) prtgif\fR - Prints a \fItgif\fR object file without
+opening windows or fonts.
+.SH SYNOPSIS
+.B prtgif
+[\fB-eps\fR]
+[\fB-p\fR]
+[\fB-ps\fR]
+[\fB-f\fR]
+[\fB-gray\fR]
+[\fB-adobe\fR]
+[\fB-o\fRdir]
+[\fIfile1\fR \fIfile2\fR ...]
+.SH DESCRIPTION
+\fIPrtgif\fR is obsoleted to conserve space.  Please use the equivalent form,
+"\fItgif -print\fR", instead.  (Prtgif will still work, all it does is to
+run "tgif -print".)  Please see the man pages of tgif for a description
+of the options.

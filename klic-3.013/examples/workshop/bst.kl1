@@ -1,0 +1,25 @@
+:- module main.                                                          % 1
+
+main :- true |                                                           % 2
+     ex:search_tree2(T), search(_,T,Ps), io:outstream([print(Ps),nl]).   % 3
+
+search(abort,_,_) :- true | true.                                        % 4
+alternatively.                                                           % 5
+search(AB,n(L,R),Ps) :- true |                                           % 6
+     cont(AB,LPs,RPs,ABL,ABR,Ps),                                        % 7
+     search(ABL,L,LPs)@lower_priority, search(ABR,R,RPs)@lower_priority. % 8
+search(_,Atom,Ps) :- atom(Atom) | Ps = [Atom].                           % 9
+search(_,Int,Ps) :- integer(Int) | Ps = none.                            %10
+
+cont(abort,_,_,ABL,ABR,_) :- true | ABL = abort, ABR = abort.            %11
+alternatively.                                                           %12
+cont(AB,LPs,_,_,ABR,Ps) :- list(LPs) | Ps = [left|LPs], ABR = abort.     %13
+cont(AB,_,RPs,ABL,_,Ps) :- list(RPs) | Ps = [right|RPs], ABL = abort.    %14
+cont(_,none,none,_,_,Ps) :- true | Ps = none.                            %15
+
+%---------------------------------------------------------------------------
+
+:- module ex.                                                            %16
+
+search_tree2(T) :- T = n(n(n(n(1,n(2,3)),n(4,n(n(a,5),6))),n(b,7)),      %17
+                         n(n(n(8,n(9,c)),10),n(n(d,11),12))).            %18

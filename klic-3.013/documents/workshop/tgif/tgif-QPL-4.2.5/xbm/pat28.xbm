@@ -1,0 +1,9 @@
+/*
+ * @(#)$Header: /mm2/home/cvs/bc-src/tgif/xbm/pat28.xbm,v 1.1 2004/06/18 23:18:45 william Exp $
+ */
+#define pat28_width 8
+#define pat28_height 8
+#define pat28_x_hot 0
+#define pat28_y_hot 0
+static unsigned char pat28_bits[] = {
+   0x77, 0xbb, 0xdd, 0xee, 0x77, 0xbb, 0xdd, 0xee};

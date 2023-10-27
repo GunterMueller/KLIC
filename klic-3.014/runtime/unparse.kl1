@@ -1,0 +1,324 @@
+/* ---------------------------------------------------------- 
+%   (C) 1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- module unparser.
+
+unparse(X,Stat)-F :-
+	unparse(X,Stat,1200,predicate#(unparser:unparse/6),Tokens,[]),
+	unscan(Tokens,#" ")-F.
+
+unparse(Int,_,_,_)-T:- integer(Int) |
+	unparse_int(Int)-T.
+unparse(Float,_,_,_)-T:- generic:float(Float) |
+	unparse_float(Float)-T.
+unparse(Cons,Stat,_,P)-T :- Cons=[Car|Cdr] |
+	unparse_cons(Cons,Stat,P)-T.
+unparse(Vec,Stat,_,P)-T :- vector(Vec,_) |
+	unparse_vector(Vec,Stat,P)-T.
+unparse(Str,_,_,_)-T :- string(Str,_,_) |
+	unparse_string(Str)-T.
+otherwise.
+unparse(Funct,Stat,Prio,P)-T :-
+	unparse_general(Funct,Stat,Prio,P)-T.
+
+unwparse(X,Stat)-F :-
+	unwparse(X,Stat,1200,predicate#(unparser:unwparse/6),Tokens,[]),
+	unscan(Tokens,#" ")-F.
+
+unwparse(integer(Int),_,_,_)-T:-
+	unparse_int(Int)-T.
+unwparse(floating_point(Float),_,_,_)-T :-
+	unparse_float(Float)-T.
+unwparse(list(Cons),Stat,_,P)-T :- 
+	unwparse_cons(Cons,Stat,P)-T.
+unwparse(vector(Vec),Stat,_,P)-T :-
+	unparse_vector(Vec,Stat,P)-T.
+unwparse(string(Str),_,_,_)-T :-
+	unparse_string(Str)-T.
+unwparse(variable(Var),_,_,_)-T :- string(Var,_,_) |
+	T <= Var.
+unwparse(X,Stat,Prio,P)-T :- (X=functor(Funct); X=atom(Funct)) |
+	unparse_general(Funct,Stat,Prio,P)-T.
+%  patch for error messages of compiler
+unwparse(variable(VarNum),_,_,_)-T :- integer(VarNum) |
+        int_chars(VarNum,L,[]),
+        generic:new(string,S,[#"_"|L],8),
+        T <= S.
+
+
+% Numbers
+unparse_int(Int)-T :-
+	int_chars(Int,L,[]),
+	generic:new(string,S,L,8),
+	T<=S.
+
+int_chars(I)-L :- I>=0, I<10 | L <= ~(#"0"+I).
+int_chars(I)-L :- I>=0, I>=10 |
+	C:= #"0"+I mod 10,
+	int_chars(~(I/10))-L,
+	L <= C.
+int_chars(I)-L :- I<0, I=:= -I |	% I = 0x800...00
+	L<= #"-",
+	I1:= -(I/10), I2:= -(I+I1*10), C:= ~(#"0"+I2),
+	int_chars(I1)-L, L <= C.
+int_chars(I)-L :- I<0, I=\= -I |
+	L<= #"-", int_chars(~(-I))-L.
+
+unparse_float(Float)-T :-
+	generic:print(Float,S), T<=S.
+
+% Cons
+unparse_cons([Car|Cdr],Stat,P)-T :-
+	T <= #"[",
+	unparse_comma_list_elem(Car,Stat,P)-T,
+	unparse_cdr(Cdr,Stat,P)-T,
+	T <= #"]".
+
+unparse_cdr([Car|Cdr],Stat,P)-T :-
+	T <= #",",
+	unparse_comma_list_elem(Car,Stat,P)-T,
+	unparse_cdr(Cdr,Stat,P)-T.
+unparse_cdr([],_,_)-T.
+otherwise.
+unparse_cdr(Cdr,Stat,P)-T :-
+	T <= #"|",
+	unparse_comma_list_elem(Cdr,Stat,P)-T.
+
+unwparse_cons([Car|Cdr],Stat,P)-T :-
+	T <= #"[",
+	unparse_comma_list_elem(Car,Stat,P)-T,
+	unwparse_cdr(Cdr,Stat,P)-T,
+	T <= #"]".
+
+unwparse_cdr(list([Car|Cdr]),Stat,P)-T :-
+	T <= #",",
+	unparse_comma_list_elem(Car,Stat,P)-T,
+	unwparse_cdr(Cdr,Stat,P)-T.
+unwparse_cdr(atom([]),_,_)-T.
+otherwise.
+unwparse_cdr(Cdr,Stat,P)-T :-
+	T <= #"|",
+	unparse_comma_list_elem(Cdr,Stat,P)-T.
+
+% Vector
+unparse_vector(Vec,Stat,P)-T :- vector(Vec,N) |
+	N1:= N-1,
+	T <= #"{",
+	unparse_vecelems(0,N1,Vec,Stat,P)-T,
+	T <= #"}".
+
+unparse_vecelems(M,N,_Vec,_,_)-T :- N<M | true.
+unparse_vecelems(M,N,Vec,Stat,P)-T :- vector_element(Vec,M,E), N=:=M |
+	unparse_comma_list_elem(E,Stat,P)-T.
+unparse_vecelems(M,N,Vec,Stat,P)-T :- vector_element(Vec,M,E), N>M |
+	M1 := M + 1,
+	unparse_comma_list_elem(E,Stat,P)-T,
+	T <= #",",
+	unparse_vecelems(M1,N,Vec,Stat,P)-T.
+
+% String
+unparse_string(Str)-T :- string(Str,N,_) |
+	str_chars(0,N,Str,L,[#"\""]),
+	generic:new(string,Str1,[#"\""|L],8),
+	T <= Str1.
+
+str_chars(K,N,Str)-L :- K=:=N | true.
+str_chars(K,N,Str)-L :- K=\=N, string_element(Str,K,E), K1:=K+1 |
+	str_elem_chars(E)-L,
+	str_chars(K1,N,Str)-L.
+
+str_elem_chars(E)-L :- E>= #" " |
+	ins_backslash(E)-L, L<=E.
+str_elem_chars(E)-L :- E< #" ", E=:= #"\n" |
+	L = [#"\\", #"n"|L1],
+	L <== L1.
+str_elem_chars(E)-L :- E< #" ", E=\= #"\n" |
+	L = [#"\\", ~(#"0"+E/64), ~(#"0"+((E/8)/\7)), ~(#"0"+(E/\7))|L1],
+	L <== L1.
+
+ins_backslash(C)-L :- C=\= #"\"", C=\= #"\\" | true.
+otherwise.
+ins_backslash(_)-L :- L<= #"\\".
+
+% Others
+unparse_general(Funct,Stat,Prio,P)-T :-
+    functor(Funct,PF,N), Stat=s(ops(Pre,In,Pos),_) |
+	find_operator(Pre,PF,Prefix),
+	find_operator(In,PF,Infix),
+	find_operator(Pos,PF,Postfix),
+	max_op(Prefix,Infix,Postfix,Max),
+	ins_if_greater_than(Max,Prio,#"(")-T,
+	unparse_with_op(N,PF,Funct,Stat,Prefix,Infix,Postfix,P)-T,
+	ins_if_greater_than(Max,Prio,#")")-T.
+
+ins_if_greater_than(X,Y,S)-T :- X>Y | T <= S.
+ins_if_greater_than(X,Y,S)-T :- X=<Y | true.
+
+unparse_with_op(0,PF,_,Stat,_,_,_,_)-T:-
+	unparse_atom(PF)-T.
+unparse_with_op(1,PF,Funct,Stat,Pre,_,Post,P)-T :-
+		arg(1,Funct,X), Pre=fx(Prio) |
+	Prio1 := Prio-1,
+	unparse_atom(PF)-T, T<=0,
+	call_unparser(P,X,Stat,Prio1)-T.
+unparse_with_op(1,PF,Funct,Stat,Pre,_,Post,P)-T :-
+		arg(1,Funct,X), Pre=fy(Prio) |
+	unparse_atom(PF)-T, T<=0,
+	call_unparser(P,X,Stat,Prio)-T.
+unparse_with_op(1,PF,Funct,Stat,Pre,_,Post,P)-T :-
+		arg(1,Funct,X), Post=xf(Prio) |
+	Prio1 := Prio-1,
+	call_unparser(P,X,Stat,Prio1)-T,
+	unparse_atom(PF)-T.
+unparse_with_op(1,PF,Funct,Stat,Pre,_,Post,P)-T :-
+		arg(1,Funct,X), Post=yf(Prio) |
+	call_unparser(P,X,Stat,Prio)-T,
+	unparse_atom(PF)-T.
+unparse_with_op(2,PF,Funct,Stat,_,In,_,P)-T :-
+		arg(1,Funct,X), arg(2,Funct,Y), In=xfx(Prio) |
+	Prio1 := Prio-1,
+	call_unparser(P,X,Stat,Prio1)-T,
+	unparse_bin_op(PF)-T,
+	call_unparser(P,Y,Stat,Prio1)-T.
+unparse_with_op(2,PF,Funct,Stat,_,In,_,P)-T :-
+		arg(1,Funct,X), arg(2,Funct,Y), In=xfy(Prio) |
+	Prio1 := Prio-1,
+	call_unparser(P,X,Stat,Prio1)-T,
+	unparse_bin_op(PF)-T,
+	call_unparser(P,Y,Stat,Prio)-T.
+unparse_with_op(2,PF,Funct,Stat,_,In,_,P)-T :-
+		arg(1,Funct,X), arg(2,Funct,Y), In=yfx(Prio) |
+	Prio1 := Prio-1,
+	call_unparser(P,X,Stat,Prio)-T,
+	unparse_bin_op(PF)-T,
+	call_unparser(P,Y,Stat,Prio1)-T.
+otherwise.
+unparse_with_op(N,PF,Funct,Stat,_,_,_,P)-T :-
+	unparse_atom(PF)-T,
+	T <= #"(",
+	unparse_elems(1,N,Funct,Stat,P)-T,
+	T <= #")".
+
+unparse_elems(M,N,Funct,Stat,P)-T :- arg(M,Funct,E), M =:= N |
+	unparse_comma_list_elem(E,Stat,P)-T.
+unparse_elems(M,N,Funct,Stat,P)-T :- arg(M,Funct,E), M =\= N |
+	M1:= M+1,
+	unparse_comma_list_elem(E,Stat,P)-T,
+	T <= #",",
+	unparse_elems(M1,N,Funct,Stat,P)-T.
+
+% Atoms
+unparse_atom([])-T :- T <= "[]".
+unparse_atom((!))-T :- T <= #"!".
+unparse_atom((.))-T :- T <= "'.'".
+otherwise.
+unparse_atom(Atom)-T :-
+	atom_table:get_atom_string(Atom,Str),
+	generic:size(Str,N),
+	atom_kind(Str,N,Kind),
+	make_atom_string(Kind,Str)-T.
+
+atom_kind(_,0,Kind) :- Kind=qtd.
+atom_kind(Str,N,Kind) :- N>0, string_element(Str,0,E) |
+	scanner:chartype(E,T),
+	first_char_kind(T,Kind0),
+	( Kind0=qtd -> Kind=qtd
+	; otherwise
+	; true -> judge_quoted(Kind0,Kind0,1,N,Str,Kind) ).
+
+first_char_kind(0,Kind) :- Kind=alf.
+first_char_kind(4,Kind) :- Kind=sym.
+otherwise.
+first_char_kind(_,Kind) :- Kind=qtd.
+
+judge_quoted(Kind0,Kind1,_K,_N,_Str,Kind) :- Kind0\=Kind1 | Kind=qtd.
+judge_quoted(Kind0,Kind0, K, N, Str,Kind) :- K=:=N | Kind=Kind0.
+judge_quoted(Kind0,Kind0, K, N, Str,Kind) :- K<N, string_element(Str,K,E) |
+	K1 := K+1,
+	scanner:chartype(E,T),
+	char_kind(T,Kind1),
+	judge_quoted(Kind0,Kind1,K1,N,Str,Kind).
+
+char_kind(T,Kind) :- T < 4 | Kind=alf.
+char_kind(T,Kind) :- T=:=4 | Kind=sym.
+char_kind(T,Kind) :- T > 4 | Kind=qtd.
+
+make_atom_string(alf,Str)-T :- T<=Str.
+make_atom_string(sym,Str)-T :- T<=Str.
+make_atom_string(qtd,Str)-T :- string(Str,N,_) |
+	quoted_atom_chars(0,N,Str,L),
+	generic:new(string,Str1,[#"'"|L],8),
+	T<=Str1.
+
+quoted_atom_chars(K,N,_Str,L) :- K=:=N | L=[#"'"].
+quoted_atom_chars(K,N,Str,L) :- K<N, string_element(Str,K,E) |
+	K1 := K+1,
+	LT=[E|LT1],
+	( E=\= #"'", E=\= #"\\" -> L=LT
+	; otherwise
+	; true -> L=[E|LT] ),
+	quoted_atom_chars(K1,N,Str,LT1).
+
+% Operators
+
+find_operator(_,(|),Op) :- Op=xfy(1100).
+find_operator([],X,Op) :- Op=none(0).
+find_operator([op(X,Kind,Prio)|_],X,Op) :-
+	functor_table:(Op=..[Kind,Prio]).
+otherwise.
+find_operator([_|T],X,Op) :- find_operator(T,X,Op).
+
+max_op(X,Y,Z,Max) :- arg(1,X,Px), arg(1,Y,Py), arg(1,Z,Pz) |
+	max(Px,Py,Pxy), max(Pxy,Pz,Max).
+
+max(X,Y,Z) :- X>=Y | Z=X.
+max(X,Y,Z) :- X<Y | Z=Y.
+
+unparse_bin_op((','))-T :- T<= #",".
+unparse_bin_op((;))-T :- T<= #";".
+unparse_bin_op((|))-T :- T<= #"|".
+otherwise.
+unparse_bin_op(X)-T :- unparse_atom(X)-T.
+
+% Utility
+
+unparse_comma_list_elem(E,Stat,P)-T :-
+	call_unparser(P,E,Stat,999)-T.
+
+call_unparser(P,X,Stat,Prio)-T :-
+	generic:call(P,X,Stat,Prio,P)-T.
+
+
+% Unscanner
+
+unscan([],_)-F.
+unscan([H|T],Pre)-F :- H=:=0 | unscan_after_op(T,Pre)-F.
+unscan([H|T],_)-F :- H=\=0 |
+	F<=H, unscan(T,H)-F.
+unscan([H|T],Pre)-F :-
+    string(H,N,_), string_element(H,0,Head), string_element(H,~(N-1),Tail) |
+	chartype(Pre,PreType),
+	chartype(Head,HeadType),
+	delimit(PreType,HeadType)-F,
+	F<=fwrite(H),
+	unscan(T,Tail)-F.
+
+unscan_after_op([#"("|T],_)-F :- F<=fwrite(" ("), unscan(T,#"(")-F.
+otherwise.
+unscan_after_op(X,Pre)-F :- unscan(X,Pre)-F.
+
+chartype(C,Kind) :-
+	scanner:chartype(C,T),
+	( T =<3 -> Kind = 0
+	; T=:=4 -> Kind = 1
+	; T=:=6 -> Kind = 2
+	; otherwise
+	; true -> Kind = -1 ).
+
+delimit(X,X)-F :- X>=0 | F <= #" ".
+otherwise.
+delimit(_,_)-F.

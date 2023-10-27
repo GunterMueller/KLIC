@@ -1,0 +1,62 @@
+:- module main.
+
+main :- unix:argv(ISL), rlib:isltoi(ISL,N), 
+	current_node(Node,NNodes), 
+	generate(N,[],L), queen(1,1,_,NNodes,L,[],[],NRv), merge(NRv,NRs), 
+	sumNR(NRs,0,NumberOfResults), stop_measure(NumberOfResults).  
+
+stop_measure(NumberOfResults) :- wait(NumberOfResults) | 
+	klicio:klicio([stdout(normal([putt(NumberOfResults),nl]))]).
+
+sumNR([NR|NRs],WSum,Sum) :- wait(NR)|sumNR(NRs,~(WSum+NR),Sum).  
+sumNR([],WSum,Sum) :- WSum = Sum.  
+
+generate(N,T,L) :- N > 0 | T2=[N|T], generate(~(N-1),T2,L).
+generate(N,T,L) :- N =< 0 | L=T.
+
+append([A|X],Y,Z) :- Z=[A|Z1], append(X,Y,Z1).
+append([],   Y,Z) :- Z=Y.
+
+%-------------------------------------------------------------------------
+queen(CL,Num,Num3,NNodes,[P|U],C,L,NRv) :- 
+	append(U,C,N), NRv = {NRv1,NRv2}, 
+	c1(CL,Num,Num2,NNodes,P,1,N,L,L,NRv1), 
+	queen(CL,Num2,Num3,NNodes,U,[P|C],L,NRv2).	 
+queen(_,Num,Num3,_,[],[_|_],_,NRv) :- Num = Num3, NRv = [].  
+
+c1(CL,Num,Num2,NNodes,T,D,N,[P|R],B,NRv) :- T=\= P+D, T=\=P-D, D1:=D+1 | 
+	c1(CL,Num,Num2,NNodes,T,D1,N,R,B,NRv).
+c1(CL,Num,Num2,NNodes,T,D,N,[P|_],B,NRv) :- T=:=P+D | 
+	NRv = [], Num = Num2.  
+c1(CL,Num,Num2,NNodes,T,D,N,[P|_],B,NRv) :- T=:=P-D | 
+	NRv = [], Num = Num2.  
+c1(CL,Num,Num2,NNodes,T,D,N,[],   B,NRv) :- CL =\= 2 | 
+	queen(~(CL+1),Num,Num2,NNodes,N,[],[T|B],NRv).  
+c1(CL,Num,Num2,NNodes,T,D,N,[],   B,NRv) :- CL =:= 2 | 
+	Num2 := Num + 1, Node := Num mod NNodes, 
+	queen_dist(N,[],[T|B],NRv,Node).  
+
+%-------------------------------------------------------------------------
+queen_dist(PU,C,L,NRv,Node) :- Node =\= 0 | 
+	queen_dist(PU,C,L,NRv)@node(Node).  
+queen_dist(PU,C,L,NRv,Node) :- Node =:= 0 | 
+	queen_dist(PU,C,L,NRv)@lower_priority.  
+
+%-------------------------------------------------------------------------
+queen_dist(PU,C,L,NRv) :- 
+	queen(PU,C,L,Rs,[]), count(Rs,0,NR), NRv = [NR].  
+
+count([_|Rs],WNR,NR) :- count(Rs,~(WNR+1),NR).  
+count([],WNR,NR) :- WNR = NR.  
+
+queen([P|U],C,L,I,O) :- 
+	append(U,C,N), c1(P,1,N,L,L,I,X), queen(U,[P|C],L,X,O).	 
+queen([],[_|_],_,I,O) :- I=O.  
+queen([],[],   L,I,O) :- I=[L|O].  
+
+c1(T,D,N,[P|R],B,I,O) :- T=\= P+D, T=\=P-D, D1:=D+1 | 
+	c1(T,D1,N,R,B,I,O).
+c1(T,D,N,[P|_],B,I,O) :- T=:=P+D | I=O.  
+c1(T,D,N,[P|_],B,I,O) :- T=:=P-D | I=O.  
+c1(T,D,N,[],   B,I,O) :- queen(N,[],[T|B],I,O).  
+

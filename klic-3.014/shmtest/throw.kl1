@@ -1,0 +1,27 @@
+% % throw -dp2 N<CR>
+
+%  PEi  --- %throw ---> PEj   (1)
+%  PEi <--- %throw ---  PEj   (2)
+%  PEi  --- %throw ---> PEj   (3)
+%  PEi <--- %throw ---  PEj   (4)
+%  PEi  --- %throw ---> PEj   (5)
+%  PEi <--- %throw ---  PEj   (6)
+%		:
+%  PEi  --- %throw ---> PEj   (N-1)
+%  PEi <--- %throw ---  PEj   (N)
+
+:- module main. 
+
+main:- unix:argv(ISL), rlib:isltoi(ISL,N), 
+	current_node(Current,Number), Dest:=(Current+1) mod Number, 
+	resident(Done,ReadyC), resident(Done,ReadyD,Dest), 
+	throw(ReadyC,ReadyD,~(N-1),Dest,Current,Done). 
+
+throw(ready,ready,N,Dest,Current,Done):- throw(N,Dest,Current,Done). 
+throw(N,Dest,Current,Done):- N > 0, wait(Dest), wait(Current) | 
+	throw(~(N-1),Current,Dest,Done)@node(Dest). 
+throw(N,_,_,Done):- N=:=0 | Done=done. 
+
+resident(Done,Ready,Node):- wait(Node) | resident(Done,Ready)@node(Node). 
+resident(Done,Ready):- resident(Done), Ready=ready. 
+resident(done). 

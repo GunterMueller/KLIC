@@ -1,0 +1,7 @@
+/*
+ * @(#)$Header: /mm2/home/cvs/bc-src/tgif/xbm/pat31.xbm,v 1.1 2004/06/18 23:18:45 william Exp $
+ */
+#define pat31_width 8
+#define pat31_height 8
+static unsigned char pat31_bits[] = {
+   0x3e, 0x1f, 0x8f, 0xc7, 0xe3, 0xf1, 0xf8, 0x7c};

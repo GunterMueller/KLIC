@@ -1,0 +1,126 @@
+/* ---------------------------------------------------------- 
+%   (C)1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- inline:"
+#include <sys/time.h>
+#include <klic/timer.h>
+#define Twotime2time(X,Y) (((X) * 86400 + (Y)))
+
+extern q *reserve_klic_timer_interrupt();
+".
+
+:- module timer.
+
+add(time(Day0,Sec0,Usec0),time(Day1,Sec1,Usec1),Time) :-
+	inline:"
+{
+  struct timeval time0, time1;
+  TimeSet(time0,Twotime2time(intval(%0),intval(%1)), intval(%2));
+  TimeSet(time1,Twotime2time(intval(%3),intval(%4)), intval(%5));
+  TimeAdd(time0,time1,time0);
+  %6=makeint((unsigned long)time0.tv_sec / 86400L);
+  %7=makeint((unsigned long)time0.tv_sec %% 86400L);
+  %8=makeint(time0.tv_usec);
+}":[Day0+int,Sec0+int,Usec0+int,
+    Day1+int,Sec1+int,Usec1+int,Day-int,Sec-int,Usec-int] |
+    Time=time(Day,Sec,Usec).
+
+sub(time(Day0,Sec0,Usec0),time(Day1,Sec1,Usec1),Time) :-
+	inline:"
+{
+  struct timeval time0, time1;
+  TimeSet(time0,Twotime2time(intval(%0),intval(%1)), intval(%2));
+  TimeSet(time1,Twotime2time(intval(%3),intval(%4)), intval(%5));
+  TimeSub(time0,time1,time0);
+  %6=makeint((unsigned long)time0.tv_sec / 86400);
+  %7=makeint((unsigned long)time0.tv_sec %% 86400);
+  %8=makeint(time0.tv_usec);
+}":[Day0+int,Sec0+int,Usec0+int,
+    Day1+int,Sec1+int,Usec1+int,Day-int,Sec-int,Usec-int] |
+    Time=time(Day,Sec,Usec).
+
+compare(time(Day0,Sec0,Usec0),time(Day1,Sec1,Usec1),Result) :-
+    Day0>Day1 | Result=(>).
+compare(time(Day0,Sec0,Usec0),time(Day1,Sec1,Usec1),Result) :-
+    Day0<Day1 | Result=(<).
+compare(time(Day0,Sec0,Usec0),time(Day1,Sec1,Usec1),Result) :-
+    Day0=:=Day1, Sec0>Sec1 | Result=(>).
+compare(time(Day0,Sec0,Usec0),time(Day1,Sec1,Usec1),Result) :-
+    Day0=:=Day1, Sec0<Sec1 | Result=(<).
+compare(time(Day0,Sec0,Usec0),time(Day1,Sec1,Usec1),Result) :-
+    Day0=:=Day1, Sec0=:=Sec1, Usec0<Usec1 | Result=(<).
+compare(time(Day0,Sec0,Usec0),time(Day1,Sec1,Usec1),Result) :-
+    Day0=:=Day1, Sec0=:=Sec1, Usec0=:=Usec1 | Result=(=).
+compare(time(Day0,Sec0,Usec0),time(Day1,Sec1,Usec1),Result) :-
+    Day0=:=Day1, Sec0=:=Sec1, Usec0>Usec1 | Result=(>).
+
+get_time_of_day(Time) :-
+	inline:"
+{
+  struct timeval now;
+#ifdef USETIMER
+  klic_gettod(&now);
+  %0 = makeint((unsigned)now.tv_sec / 86400);
+  %1 = makeint((unsigned)now.tv_sec %% 86400);
+  %2 = makeint(now.tv_usec);
+#else
+  %0 = 0;
+  %1 = 0;
+  %2 = 0;
+#endif
+}":[Day-int, Sec-int,Usec-int] |
+    Time=time(Day,Sec,Usec).
+
+instantiate_at(time(Day,Sec,Usec),X) :-
+	Day>=0, Sec>=0, Sec<86400, Usec>=0, Usec<1000000,
+	inline:"
+{
+#ifdef USETIMER
+  allocp =
+    reserve_klic_timer_interrupt(allocp,
+				 Twotime2time(intval(%0), intval(%1)),
+				 intval(%2), %3);
+#endif
+}":[Day+int, Sec+int, Usec+int, X+any] | true.
+
+instantiate_after(time(Sec,Usec),Stop,L) :-
+    Day:=Sec/86400,
+    Sec:=Sec mod 86400,
+    instantiate_after(time(Day,Sec,Usec),Stop,L).
+instantiate_after(time(Day,Sec,Usec),X) :-
+	Day>=0, Sec>=0, Sec<86400, Usec>=0, Usec<1000000,
+	inline:"
+{
+#ifdef USETIMER
+  struct timeval now, intvl, at;
+  klic_gettod(&now);
+  TimeSet(intvl, Twotime2time(intval(%0), intval(%1)), intval(%2));
+  TimeAdd(now, intvl, at);
+  allocp = reserve_klic_timer_interrupt(allocp, at.tv_sec, at.tv_usec, %3);
+#endif
+}":[Day+int, Sec+int, Usec+int, X+any] | true.
+
+instantiate_every(time(Sec,Usec),Stop,L) :-
+    Day:=Sec/86400,
+    Sec:=Sec mod 86400,
+    instantiate_every(time(Day,Sec,Usec),Stop,L).
+instantiate_every(Interval,Stop,L) :-
+	Interval=time(Day,Sec,Usec),
+	Day>=0, Sec>=0, Sec<86400, Usec>=0, Usec<1000000 |
+    get_time_of_day(Now),
+    timer:add(Now, Interval,At),
+    instantiate_at(At,X),
+    timer_loop(X,At,Interval,L,Stop).
+
+timer_loop(X,At,Interval,L,Stop) :- wait(Stop) |
+    L=[].
+alternatively.
+timer_loop(X,At,Interval,L,Stop) :- wait(X) |
+    L=[X|T],
+    timer:add(At,Interval,NewAt),
+    instantiate_at(NewAt,Y),
+    timer_loop(Y,NewAt,Interval,T,Stop).

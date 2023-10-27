@@ -1,0 +1,48 @@
+
+There are two ways for an application to customize the Reliable Multicast Library options:
+
+   - Using the RM_setOption(int OPTION_ID, void *OPTION_VALUE) function
+     
+      Where:   
+        OPTION_ID: indicates what option you want to set. You can found the
+                   option list in the rmcast.h header file.
+        OPTION_VALUE: the value you want to set the option to
+        
+      Example:
+        
+        ...
+        
+        /* Setting REFRESH_TIMER */
+        int refresh_timer=10;
+        
+        RM_setOption(REFRESH_TIMER,(void *) refresh_timer);
+        ...
+        
+   - Using RM_readConfigFile(char *FILENAME)
+   
+      This function will tell the Reliable Multicast Library to read the user's
+      options from FILENAME. A sample config file is available in this 
+      directory, where you will find the list of options and their default values.
+      
+      Example:
+      
+      /* Read the config file from /etc/rmcast.config */
+      ...
+      
+      char config_file[50];
+      
+      strcpy(config_file,"/etc/rmcast.config");
+      
+      RM_readConfigFile(config_file);
+      
+      ...
+      
+
+NOTE: There is a constant, RM_USE_CURRENT_CONFIG, that can replace functions 
+parameters
+
+In those situations, the RM_USE_CURRENT_CONFIG will indicate that the default 
+values must be used.(e.g. RM_joinGroup()).
+
+To retrieve the current value of an option from the Reliable Multicast Library
+you must use the RM_getOption() function.

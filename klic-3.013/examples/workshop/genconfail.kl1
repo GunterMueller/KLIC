@@ -1,0 +1,8 @@
+:-module main.
+
+main:- true | gen(X), con(X).
+
+gen(X):- true | X = a.
+
+con(b):- true | true.
+con(c):- true | true.

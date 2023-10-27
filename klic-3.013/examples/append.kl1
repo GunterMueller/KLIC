@@ -1,0 +1,8 @@
+% klic append.kl1 tty.kl1
+
+:- module main.
+main :- true | append([1,2,3],[4,5],Y),
+               tty:ttystream([putt(Y),nl]).
+
+append([],   Y,Z ) :- true | Y=Z.
+append([A|X],Y,Z0) :- true | Z0=[A|Z], append(X,Y,Z).

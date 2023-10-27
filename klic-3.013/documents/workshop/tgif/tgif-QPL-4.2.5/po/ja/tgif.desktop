@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Tgif
+Comment=2-D drawling tool
+Comment[ja]=2次元ドローイングソフト
+Exec=tgif %f
+Icon=tgif
+Terminal=false
+Type=Application
+StartupNotify=false
+MimeType=application/x-tgif;
+Categories=Application;Graphics;VectorGraphics;X-Fedora;

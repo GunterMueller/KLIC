@@ -1,0 +1,7 @@
+/*
+ * @(#)$Header: /mm2/home/cvs/bc-src/tgif/xbm/pat20.xbm,v 1.1 2004/06/18 23:18:45 william Exp $
+ */
+#define pat20_width 8
+#define pat20_height 8
+static unsigned char pat20_bits[] = {
+   0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};

@@ -1,0 +1,30 @@
+% Counter server.
+% Start the program and input (from stdin) either of the following messages:
+%   up.     (to increment the counter)
+%   up(N).  (such as up(5) to increment by N)
+%   reset.  (to reset the counter)
+%   show.   (to print the current value)
+%   done.   (to terminate)
+%
+% klic counter.kl1 tty.kl1
+
+:- module main.
+
+main :- true |
+    counter(S), driver(S,IOs), tty:ttystream(IOs).
+
+counter(S) :- true | counter(S,0).
+counter([],         C)  :- true | true.
+counter([up     |S],C0) :- true | C:=C0+1, counter(S,C).
+counter([up(N)  |S],C0) :- true | C:=C0+N, counter(S,C).
+counter([reset  |S],C)  :- true | counter(S,0).
+counter([show(V)|S],C)  :- true | V:=C, counter(S,C).
+
+driver(Fs,IOs0) :- true |
+    IOs0=[gett(X)|IOs], checkinput(Fs,IOs,X).
+checkinput(Fs, IOs, done) :- true | Fs=[], IOs=[].
+checkinput(Fs0,IOs0,show) :- true |
+    Fs0=[show(V)|Fs], IOs0=[putt(V),nl|IOs],
+    driver(Fs,IOs).
+checkinput(Fs0,IOs,M) :- M\=show(*), M\=done |
+    Fs0=[M|Fs], driver(Fs,IOs).

@@ -1,0 +1,223 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1995 Institute for New Generation Computer Technology 
+% %       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+% ----------------------------------------------------------- */
+
+:- module klic_comp_macro_interface.
+
+expand_macro(InTerms, ExpTerms0) :- true |
+    expMacro(InTerms, ExpTerms0, ExpTerms, Ext0, []),
+    mergeExt(Ext0, ExpTerms, 0, _).
+
+expMacro([], Exp0, Exp, Ext0, Ext) :- Exp0=Exp, Ext0=Ext.
+expMacro([T|Rest], Exp0, Exp, Ext0, Ext) :- true |
+    macro(T, R, E),
+    Exp0=[R|Exp1],
+    Ext0=[E|Ext1],
+    expMacro(Rest, Exp1, Exp, Ext1, Ext).
+
+macro(functor(':-'(X)), R, E) :- R=functor(':-'(X)), E=[].
+otherwise.
+macro(T, R, E) :-
+    klic_comp_macro:macro(T, R0, Tbl),
+    convVars(R0, R, Tbl, E).
+
+mergeExt([], Exp)-N :- true | Exp=[].
+otherwise.
+mergeExt(Srcs, Exp0)-N :- true |
+    mergeExt(Srcs, NewExp, Exp0, Exp1)-N,
+    mergeExt(NewExp, Exp1)-N.
+
+mergeExt([], ExpTerms, Ext0, Ext)-N :- ExpTerms=[], Ext0=Ext.
+mergeExt([Cls0|Rest], ExpTerms0, Ext0, Ext)-N :- true |
+    convExp(Cls0, ExpTerms0, ExpTerms1, Ext0, Ext1)-N,
+    mergeExt(Rest, ExpTerms1, Ext1, Ext)-N.
+
+convExp([], Exp0, Exp, Ext0, Ext)-N :- true |
+    Exp0=Exp, Ext0=Ext.
+convExp([[]-_|Rest], Exp0, Exp, Ext0, Ext)-N :- true |
+    convExp(Rest, Exp0, Exp, Ext0, Ext)-N.
+convExp([expanded(Cls0,Name)-Prefix|Rest], Exp0, Exp, Ext0, Ext)-N :- true |
+    klic_comp_util:name(N,NS),
+    klic_comp_util:append(Prefix,[#"$"|NS],NameS),
+    klic_comp_util:make_atom(NameS, Name),
+    N += 1,
+    convNewVars(Cls0, Exp0, Exp1, Ext0, Ext1),
+    convExp(Rest, Exp1, Exp, Ext1, Ext)-N.
+
+convNewVars([], ExpTerms0, ExpTerms, Ext0, Ext) :-
+    ExpTerms0=ExpTerms, Ext0=Ext.
+convNewVars([[]|Rest], ExpTerms0, ExpTerms, Ext0, Ext) :- true |
+    convNewVars(Rest, ExpTerms0, ExpTerms, Ext0, Ext).
+convNewVars([clause(H0,G0,B0,Cls)|Rest], ExpTerms0, ExpTerms,
+    Ext0, Ext) :- true |
+    convNewVars(H0, H),
+    convNewVarsList(G0, G),
+    convNewVarsList(B0, B),
+    Ext0=[functor(':-'(H,functor('|'(G,B))))|Ext1],
+    ExpTerms0=[Cls|ExpTerms1],
+    convNewVars(Rest, ExpTerms1, ExpTerms, Ext1, Ext).
+convNewVars([otherwise|Rest], ExpTerms0, ExpTerms,
+    Ext0, Ext) :- true |
+    Ext0=[atom(otherwise)|Ext1],
+    convNewVars(Rest, ExpTerms0, ExpTerms, Ext1, Ext).
+
+convNewVarsList([], Gs) :- true | Gs=atom(true).
+convNewVarsList([G0], Gs) :- true | convNewVars(G0, G), Gs=G.
+otherwise.
+convNewVarsList([G0|Rest], Gs0) :- true |
+    convNewVars(G0, G),
+    Gs0=functor(','(G,Gs)),
+    convNewVarsList(Rest, Gs).
+
+convNewVars(functor(Func0), NewFunc) :- functor(Func0, F, A) |
+    convNewVars(1, A, Func0, Args),
+    functor_table:(Func=..[F|Args]),
+    NewFunc=functor(Func).
+convNewVars(Func0, NewFunc) :- functor(Func0, '$macroexpanded', A) |
+    arg(1, Func0, Name),
+    convNewVars(2, A, Func0, Args),
+    functor_table:(Func=..[Name|Args]),
+    NewFunc=functor(Func).
+convNewVars(list([H0|T0]), NewCons) :- true |
+    convNewVars(H0, H),
+    convNewVars(T0, T),
+    NewCons=list([H|T]).
+convNewVars(variable(N), Var) :- true |
+    numberToString(N, Str),
+    Var=variable(Str).
+otherwise.
+convNewVars(Term0, Term) :- Term0=Term.
+
+convNewVars(A, N, _, Args) :- A>N | Args=[].
+convNewVars(A, N, Func0, Args0) :- A=<N |
+    arg(A, Func0, Arg0),
+    convNewVars(Arg0, Arg),
+    Args0=[Arg|Args1],
+    A1 := A+1,
+    convNewVars(A1, N, Func0, Args1).
+
+convVars(clause(H0,G0,B0,Ext0), R, V0-Tbl0, Ext) :- true |
+    convVars(H0, H, V0, V1, Tbl0, Tbl1),
+    convVarsTop(G0, G, V1, V2, Tbl1, Tbl2),
+    convVarsTop(B0, B, V2, _, Tbl2, _),
+    R=functor(':-'(H,functor('|'(G,B)))),
+    getClauseName(H0, Name, Arity),
+    klic_comp_util:name(Name, NameS),
+    klic_comp_util:name(Arity,ArityS),
+    klic_comp_util:append(NameS,[#"/"|ArityS], Prefix),
+    addPrefix(Ext0, Ext, Prefix).
+convVars(otherwise, R, _, Ext) :- R=atom(otherwise), Ext=[].
+convVars(alternatively, R, _, Ext) :- R=atom(alternatively), Ext=[].
+
+addPrefix([], Ext, _) :- true | Ext=[].
+addPrefix([Clauses|Rest], Ext0, Pref) :-
+   Ext0=[Clauses-Pref|Ext],
+   addPrefix(Rest, Ext, Pref).
+
+convVarsTop([], R)-V-T :- R=atom(true).
+convVarsTop([H|Rest], R)-V-T :-
+   convVarsTop_([H|Rest], R)-V-T.
+
+convVarsTop_([H0], R)-V-T :- 
+    convVars(H0, H)-V-T,
+    R=H.
+otherwise.
+convVarsTop_([H0|Rest], R0)-V-T :-
+    convVars(H0, H)-V-T,
+    R0=functor(','(H,R)),
+    convVarsTop_(Rest, R)-V-T.
+
+convVars(functor(Func0), WFunc)-V-T :- atom(Func0) |
+    WFunc=atom(Func0).
+convVars('$macroexpanded'(Name, []), WFunc)-V-T :- true |
+    Wfunc=atom(Name).
+convVars(functor(([H0|T0];[H1|T1])), WF)-V-T :- true |
+    reconstGoals([H0|T0], G0),
+    reconstGoals([H1|T1], G1),
+    WF = functor((G0;G1)).
+otherwise.
+convVars(functor(Func0), WFunc)-V-T :- true |
+    functor(Func0, F, A),
+    WFunc=functor(Func),
+    convVars(1, A, Func0, Func)-V-T.
+convVars('$macroexpanded'(Name, [H0|T0]), WFunc)-V-T :- true |
+    convVars(H0, H1)-V-T,
+    convVars(T0, T1)-V-T,
+    functor_table:(Func=..[Name,H1|T1]),
+    WFunc=functor(Func).
+convVars(variable(N), WV)-V-T :- true |
+%    vassoc(N, T, Ans0),
+    vassocString(N, N, V, NN),
+    WV=variable(NN).
+convVars(list([H0|R0]), WCons)-V-T :- true |
+    convVars(H0, H)-V-T,
+    convVars(R0, R)-V-T,
+    WCons=list([H|R]).
+otherwise.
+convVars(In, Out)-V-T :- true | In=Out.
+
+convVars(A, N, Func0, Func)-V-T :- A>N | Func0=Func.
+convVars(A, N, Func0, Func)-V-T :- A=<N |
+    setarg(A, Func0, Arg0, Arg, Func1),
+    convVars(Arg0, Arg)-V-T,
+    A1 := A+1,
+    convVars(A1, N, Func1, Func)-V-T.
+
+vassoc(N, [K=N|_], Ans) :- Ans=K.
+vassoc(N, [], Ans) :- Ans=no.
+otherwise.
+vassoc(N, [_|Rest], Ans) :- vassoc(N, Rest, Ans).
+
+vassocString(N, _, V, S) :- integer(N) |
+      vassocString_(N, V, S).
+vassocString(no, ON, _, S) :- true |
+      numberToString(ON, [0'_, 0'_], S).
+
+vassocString_(N, [S=N|_], OS) :- true |
+      OS=S.
+vassocString_(N, [], OS) :- true |
+      numberToString(N, OS).
+otherwise.
+vassocString_(N, [_|Rest], OS) :- true |
+      vassocString_(N, Rest, OS).
+
+newName(no, N, NN)-V-T :- true |
+   numberToString(N, NN0),
+   waitString(NN0, NN).
+newName(X, N, NN)-V-T :- integer(N) | numberToString(N, NN).
+newName(yes(S), _, NN)-V-T :- true | S=NN.
+
+waitString(NN0, NN) :- wait(NN0) | NN0=NN.
+
+numberToString(N, NN) :- true |
+   numberToString(N, [0'_], NN).
+
+numberToString(N, Pre, NN) :-
+   makeNumList(N, [], NList),
+   append(Pre, NList, O),
+   new_string(NN, O, 8).
+
+append([], Y, Z) :- Y=Z.
+append([A|X], Y, Z0) :- Z0=[A|Z1], append(X, Y, Z1).
+
+
+makeNumList(N, NL0, NL) :- N<10 | C := N + 0'0, NL=[C|NL0].
+makeNumList(N, NL0, NL) :- N>=10 |
+   R := N mod 10,
+   N1 := N / 10,
+   C := R + 0'0,
+   makeNumList(N1, [C|NL0], NL). 
+
+getClauseName(functor(F), Name, Arity) :- functor(F, Name0, Arity0) |
+   Name=Name0, Arity=Arity0.
+getClaseName(atom(A), Name, Arity) :- Name=A, Arity=0.
+
+reconstGoals([], Goals) :- true | Goals = atom(true).
+reconstGoals([G], Goals) :- true | Goals = G.
+otherwise.
+reconstGoals([G|Rest], Goals) :- true |
+   Goals=functor(G, Goals1),
+   reconstGoals(Rest, Goals1).

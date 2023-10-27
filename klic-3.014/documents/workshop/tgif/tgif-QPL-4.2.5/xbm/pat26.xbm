@@ -1,0 +1,7 @@
+/*
+ * @(#)$Header: /mm2/home/cvs/bc-src/tgif/xbm/pat26.xbm,v 1.1 2004/06/18 23:18:45 william Exp $
+ */
+#define pat26_width 8
+#define pat26_height 8
+static unsigned char pat26_bits[] = {
+   0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};

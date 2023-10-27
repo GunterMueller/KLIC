@@ -1,0 +1,23 @@
+% % unify -dp2 N<CR>
+
+%  PEi  --- %unify ---> PEj   (1)
+%  PEi <--- %unify ---  PEj   (2)
+%  PEi  --- %unify ---> PEj   (3)
+%  PEi <--- %unify ---  PEj   (4)
+%  PEi  --- %unify ---> PEj   (5)
+%  PEi <--- %unify ---  PEj   (6)
+%		:
+%  PEi  --- %unify ---> PEj   (M*2-1)
+%  PEi <--- %unify ---  PEj   (M*2)     (M = N/2)
+
+:- module main. 
+
+main:- unix:argv(ISL), rlib:isltoi(ISL,N), 
+	current_node(Current,Number), Node:=(Current+1) mod Number, 
+	master(~(N/2-1),X), slave(f(X))@node(Node). 
+
+master(N,f(EX)):- N > 0 | EX=f(Var), master(~(N-1),Var). 
+master(N,f(EX)):- N=:=0 | EX=eof. 
+
+slave(f(EX)):- EX=f(Var), slave(Var). 
+slave(eof). 

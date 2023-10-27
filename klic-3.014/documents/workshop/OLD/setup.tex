@@ -1,0 +1,51 @@
+\documentstyle[a4]{jarticle}
+\title{KLIC 講習会のソフトウェア設定について (案)}
+\author{近山 隆}
+\date{1993/11/24}
+\begin{document}
+\maketitle
+
+\section{端末の設定}
+\begin{itemize}
+\item 各端末には講習会開始以前から xterm が表示されている状態にする.
+\item 各端末はそれぞれ異なるIDでログイン済み, csh, twm が立ち上がって
+いる状態にする.
+\end{itemize}
+
+\section{環境の設定}
+\begin{itemize}
+\item 環境変数 DISPLAY は各端末になるように設定しておく.
+\item 共通の .cshrc で環境変数 PATH, LD\_LIBRARY\_PATH などの設定を行
+なっておき, mule, vi, klic などはそれらのコマンドの入力だけで立ち上が
+るようにしておく.
+\item 共通の .twmrc を作っておく.  内容はあまり複雑にせず, xterm, mule
+ぐらいが作れるようにしておけば良い.
+\item 環境変数 PRINTER は講習会場設置のプリンタとなるように設定してお
+く.
+\item 各ユーザは limit を設定した状態にする (-h で hard limit をかける).
+たとえば filesize 1m, data 1m, stack 64k, core 0 ぐらい?
+\item exit が効かないように alias しておく.
+\end{itemize}
+
+\section{ディレクトリとファイルの設定}
+\begin{itemize}
+\item 各端末のユーザIDごとのホームディレクトリに cd しておく.
+\item 実習に必要なソース (データ) ファイルへのシンボリックリンクを張っ
+ておく.\\
+→ 各講師は必要なものをリストアップすること
+\end{itemize}
+
+\section{必要な準備}
+\begin{itemize}
+\item 各端末に対応するユーザ・アカウントの作成
+\item 各端末に対応するユーザ・アカウントを単一のグループに設定
+\item 各端末に対応するユーザに su して xterm などを一斉に立ち上げるス
+クリプトの用意
+\item 異常自体に備えて単一の端末に対応するプロセスを立ち上げるスクリプ
+トの用意 (上述の一斉立ち上げはこれを用いれば良い)
+\item 各端末に対応するユーザ・ディレクトリの全消去・初期化のためスクリ
+プトの用意
+\item 必要なファイルに各ユーザ・ディレクトリから一斉に symbolic link 
+を張るスクリプトの用意
+\end{itemize}
+\end{document}

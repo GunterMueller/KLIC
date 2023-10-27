@@ -1,0 +1,520 @@
+%!PS-Adobe-3.0 EPSF-3.0
+%%BoundingBox: 43 671 480 757
+%%Title: dlt9
+%%CreationDate: Fri Aug  2 00:59:43 2019
+%%Creator: Tgif-4.2.5-QPL written by William Chia-Wei Cheng (bill.cheng@acm.org)
+%%ProducedBy: (unknown)
+%%Pages: 1
+%%DocumentFonts: (atend)
+%%EndComments
+%%BeginProlog
+
+/tgifdict 59 dict def
+tgifdict begin
+
+/tgifellipsedict 6 dict def
+tgifellipsedict /mtrx matrix put
+
+/TGEL % tgifellipse
+ { tgifellipsedict begin
+      /yrad exch def
+      /xrad exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      xrad yrad scale
+      0 0 1 0 360 arc
+      savematrix setmatrix
+   end
+ } def
+
+/tgifarrowtipdict 8 dict def
+tgifarrowtipdict /mtrx matrix put
+
+/TGAT % tgifarrowtip
+ { tgifarrowtipdict begin
+      /dy exch def
+      /dx exch def
+      /h exch def
+      /w exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      dy dx atan rotate
+      0 0 moveto
+      w neg h lineto
+      w neg h neg lineto
+      savematrix setmatrix
+   end
+ } def
+
+/tgifarcdict 8 dict def
+tgifarcdict /mtrx matrix put
+
+/TGAN % tgifarcn
+ { tgifarcdict begin
+      /endangle exch def
+      /startangle exch def
+      /yrad exch def
+      /xrad exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      xrad yrad scale
+      0 0 1 startangle endangle arc
+      savematrix setmatrix
+   end
+ } def
+
+/TGAR % tgifarc
+ { tgifarcdict begin
+      /endangle exch def
+      /startangle exch def
+      /yrad exch def
+      /xrad exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      xrad yrad scale
+      0 0 1 startangle endangle arcn
+      savematrix setmatrix
+   end
+ } def
+
+/TGMAX
+ { exch dup 3 1 roll exch dup 3 1 roll gt { pop } { exch pop } ifelse
+ } def
+/TGMIN
+ { exch dup 3 1 roll exch dup 3 1 roll lt { pop } { exch pop } ifelse
+ } def
+/TGSW { stringwidth pop } def
+/tgifstrw 0 def
+
+/bd { bind def } bind def
+
+/GS { gsave } bd
+/GR { grestore } bd
+/NP { newpath } bd
+/CP { closepath } bd
+/CHP { charpath } bd
+/CT { curveto } bd
+/L { lineto } bd
+/RL { rlineto } bd
+/M { moveto } bd
+/RM { rmoveto } bd
+/S { stroke } bd
+/F { fill } bd
+/TR { translate } bd
+/RO { rotate } bd
+/SC { scale } bd
+/MU { mul } bd
+/DI { div } bd
+/DU { dup } bd
+/NE { neg } bd
+/AD { add } bd
+/SU { sub } bd
+/PO { pop } bd
+/EX { exch } bd
+/CO { concat } bd
+/CL { clip } bd
+/EC { eoclip } bd
+/EF { eofill } bd
+/IM { image } bd
+/IMM { imagemask } bd
+/ARY { array } bd
+/SG { setgray } bd
+/RG { setrgbcolor } bd
+/SD { setdash } bd
+/W { setlinewidth } bd
+/SM { setmiterlimit } bd
+/SLC { setlinecap } bd
+/SLJ { setlinejoin } bd
+/SH { show } bd
+/FF { findfont } bd
+/MS { makefont setfont } bd
+/AR { arcto 4 {pop} repeat } bd
+/CURP { currentpoint } bd
+/FLAT { flattenpath strokepath clip newpath } bd
+/TGSM { tgiforigctm setmatrix } def
+/TGRM { savematrix setmatrix } def
+
+end
+
+%%EndProlog
+%%Page: 1 1
+
+%%PageBoundingBox: 43 671 480 757
+tgifdict begin
+/tgifsavedpage save def
+
+1 SM
+1 W
+
+0 SG
+
+72 0 MU 72 11 MU TR
+72 128 DI 100.000 MU 100 DI DU NE SC
+
+GS
+
+/tgiforigctm matrix currentmatrix def
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 128 64 M 192 64 L 192 160 L 128 160 L CP
+      2 W
+      S
+   GR
+GR
+
+% ARC
+0 SG
+GS
+   GS
+      NP
+         160 128 35 35 -116 -74 TGAN
+      S
+   GR
+GR
+GS
+   TGSM
+   NP
+      176 97 8.000 3.000 62 32 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      176 97 8.000 3.000 62 32 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      144 96 M
+      160 128 L
+   TGSM
+   1 W
+   S
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      192 144 M
+      272 144 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% OVAL
+0 SG
+GS
+   GS
+      NP 288 144 32 32 TGEL
+      S
+   GR
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      272 128 M
+      304 144 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      304 144 M
+      384 144 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% OVAL
+0 SG
+GS
+   GS
+      NP 400 144 32 32 TGEL
+      S
+   GR
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      384 128 M
+      416 144 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      416 144 M
+      496 144 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% OVAL
+0 SG
+GS
+   GS
+      NP 512 144 32 32 TGEL
+      S
+   GR
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      496 128 M
+      528 144 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      528 144 M
+      608 144 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% OVAL
+0 SG
+GS
+   GS
+      NP 624 144 32 32 TGEL
+      S
+   GR
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      608 128 M
+      640 144 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      640 144 M
+      720 144 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 720 96 M 784 96 L 784 176 L 720 176 L CP
+      2 W
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      736 128 M
+      GS
+            0 SG
+            /Ryumin-Light-EUC-H FF dup /WMode known {dup /WMode get 1 eq {[0 1 -1 0 0 0.3] makefont} if} if
+[18 0 0 -18 0 0] MS
+            (\305\305) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      736 160 M
+      GS
+            0 SG
+            /Ryumin-Light-EUC-H FF dup /WMode known {dup /WMode get 1 eq {[0 1 -1 0 0 0.3] makefont} if} if
+[18 0 0 -18 0 0] MS
+            (\270\273) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      80 208 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (\() SH
+            0 SG
+            /Ryumin-Light-EUC-H FF dup /WMode known {dup /WMode get 1 eq {[0 1 -1 0 0 0.3] makefont} if} if
+[18 0 0 -18 0 0] MS
+            (\266\361\302\316\262\275\244\336\244\307\302\324\244\304) SH
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (\)) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      256 208 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (\() SH
+            0 SG
+            /Ryumin-Light-EUC-H FF dup /WMode known {dup /WMode get 1 eq {[0 1 -1 0 0 0.3] makefont} if} if
+[18 0 0 -18 0 0] MS
+            (\303\261\260\354\262\275) SH
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (\)) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      368 208 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (\() SH
+            0 SG
+            /Ryumin-Light-EUC-H FF dup /WMode known {dup /WMode get 1 eq {[0 1 -1 0 0 0.3] makefont} if} if
+[18 0 0 -18 0 0] MS
+            (\303\261\260\354\262\275) SH
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (\)) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      480 208 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (\() SH
+            0 SG
+            /Ryumin-Light-EUC-H FF dup /WMode known {dup /WMode get 1 eq {[0 1 -1 0 0 0.3] makefont} if} if
+[18 0 0 -18 0 0] MS
+            (\303\261\260\354\262\275) SH
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (\)) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      592 208 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (\() SH
+            0 SG
+            /Ryumin-Light-EUC-H FF dup /WMode known {dup /WMode get 1 eq {[0 1 -1 0 0 0.3] makefont} if} if
+[18 0 0 -18 0 0] MS
+            (\303\261\260\354\262\275) SH
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (\)) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      704 208 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (\() SH
+            0 SG
+            /Ryumin-Light-EUC-H FF dup /WMode known {dup /WMode get 1 eq {[0 1 -1 0 0 0.3] makefont} if} if
+[18 0 0 -18 0 0] MS
+            (\266\361\302\316\262\275\244\267\244\277\244\342\244\316) SH
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (\)) SH
+      GR
+   GR
+
+GR
+tgifsavedpage restore
+end
+showpage
+
+%%Trailer
+%MatchingCreationDate: Fri Aug  2 00:59:43 2019
+%%DocumentFonts: Courier
+%%+ Ryumin-Light-EUC-H
+%%EOF

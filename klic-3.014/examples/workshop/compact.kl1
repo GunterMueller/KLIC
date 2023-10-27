@@ -1,0 +1,14 @@
+:- module main.
+
+main :- true|
+    data(List), compact(List,Out), io:outstream([print(Out),nl]).
+
+compact([X|List],Out) :- true|
+    Out=[X|OutN], remove(X,List,ListN), compact(ListN,OutN).
+compact([],      Out) :- true| Out=[].
+
+remove(_,[],      Out) :- true   | Out=[].
+remove(X,[X|List],Out) :- true   | remove(X,List,Out).
+remove(X,[Y|List],Out) :- X \= Y | Out=[Y|OutN], remove(X,List,OutN).
+
+data(List) :- true| List=[1,2,3,4,5,4,3,2,1].

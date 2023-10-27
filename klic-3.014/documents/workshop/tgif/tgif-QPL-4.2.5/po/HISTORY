@@ -1,0 +1,17 @@
+-----------------------> tgifnls-1.0.3 => tgifnls-1.0.4 <-----------------------
+1)  Added French support in the "fr" subdirectory.  Thanks to
+    Roland Baudin <roland.baudin@cnet.francetelecom.fr> for the
+    contribution.
+
+-----------------------> tgifnls-1.0.0 => tgifnls-1.0.3 <-----------------------
+1)  Added Russian support in the "ru" subdirectory.  Thanks to
+    Vladimir Ignatov <gazett@mail.ru> for the contribution.
+2)  Update ja/ja.po for tgif-4.1.22.
+
+-----------------------> tgifnls-1.0.0 <-----------------------
+Initial release as part of tgif-4.1.5.  Thanks to Jun Nishii
+<jun@flatout.org> of Project Vine for the contribution.
+
+/*
+ *  @(#)$Header: /mm2/home/cvs/bc-src/tgif/po/HISTORY,v 1.1 2004/06/18 23:12:02 william Exp $
+ */

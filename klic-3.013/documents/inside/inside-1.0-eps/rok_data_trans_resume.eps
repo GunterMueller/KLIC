@@ -1,0 +1,692 @@
+%!
+%%BoundingBox: 8.438 -175.811 540.312 -32.062
+
+%% @(#)$Header: /misc/cvsroot/KLIC/inside/rok_data_trans_resume.eps,v 1.1 1998/01/22 08:11:43 sekita Exp $
+/ellipsedict 6 dict def
+ellipsedict /mtrx matrix put
+
+/ellipse
+ { ellipsedict begin
+      /yrad exch def
+      /xrad exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      xrad yrad scale
+      0 0 1 0 360 arc
+      savematrix setmatrix
+   end
+ } def
+
+/arrowtipdict 8 dict def
+arrowtipdict /mtrx matrix put
+
+/arrowtip
+ { arrowtipdict begin
+      /dy exch def
+      /dx exch def
+      /h exch def
+      /w exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      dy dx atan rotate
+      0 0 moveto
+      w neg h lineto
+      w neg h neg lineto
+      savematrix setmatrix
+   end
+ } def
+
+/tgifarcdict 8 dict def
+tgifarcdict /mtrx matrix put
+
+/tgifarcn
+ { tgifarcdict begin
+      /endangle exch def
+      /startangle exch def
+      /yrad exch def
+      /xrad exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      xrad yrad scale
+      0 0 1 startangle endangle arc
+      savematrix setmatrix
+   end
+ } def
+
+/tgifarc
+ { tgifarcdict begin
+      /endangle exch def
+      /startangle exch def
+      /yrad exch def
+      /xrad exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      xrad yrad scale
+      0 0 1 startangle endangle arcn
+      savematrix setmatrix
+   end
+ } def
+
+/setuserscreendict 22 dict def
+setuserscreendict begin
+   /tempctm matrix def
+   /temprot matrix def
+   /tempscale matrix def
+
+   /concatprocs
+    { /proc2 exch cvlit def
+      /proc1 exch cvlit def
+      /newproc proc1 length proc2 length add array def
+      newproc 0 proc1 putinterval
+      newproc proc1 length proc2 putinterval
+      newproc cvx
+    } def
+   /resmatrix matrix def
+   /findresolution
+    { 72 0 resmatrix defaultmatrix dtransform
+      /yres exch def /xres exch def
+      xres dup mul yres dup mul add sqrt
+    } def
+end
+
+/setuserscreen
+ { setuserscreendict begin
+      /spotfunction exch def
+      /screenangle exch def
+      /cellsize exch def
+
+      /m tempctm currentmatrix def
+      /rm screenangle temprot rotate def
+      /sm cellsize dup tempscale scale def
+
+      sm rm m m concatmatrix m concatmatrix pop
+
+      1 0 m dtransform /y1 exch def /x1 exch def
+
+      /veclength x1 dup mul y1 dup mul add sqrt def
+      /frequency findresolution veclength div def
+
+      /newscreenangle y1 x1 atan def
+
+      m 2 get m 1 get mul m 0 get m 3 get mul sub 0 gt
+
+      {{neg} /spotfunction load concatprocs
+         /spotfunction exch def
+      } if
+
+      frequency newscreenangle /spotfunction load setscreen
+   end
+ } def
+
+/setpatterndict 18 dict def
+setpatterndict begin
+   /bitison
+    { /ybit exch def /xbit exch def
+      /bytevalue bstring ybit bwidth mul xbit 8 idiv add get def
+
+      /mask 1 7 xbit 8 mod sub bitshift def
+      bytevalue mask and 0 ne
+    } def
+end
+
+/bitpatternspotfunction
+ { setpatterndict begin
+      /y exch def /x exch def
+
+      /xindex x 1 add 2 div bpside mul cvi def
+      /yindex y 1 add 2 div bpside mul cvi def
+
+      xindex yindex bitison
+       { /onbits onbits 1 add def 1 }
+       { /offbits offbits 1 add def 0 }
+       ifelse
+   end
+ } def
+
+/setpattern
+ { setpatterndict begin
+      /cellsz exch def
+      /angle exch def
+      /bwidth exch def
+      /bpside exch def
+      /bstring exch def
+
+      /onbits 0 def /offbits 0 def
+      cellsz angle /bitpatternspotfunction load setuserscreen
+      {} settransfer
+      offbits offbits onbits add div setgray
+   end
+ } def
+
+/inch {72 mul} def
+
+/showpattern
+ { /ang exch def
+   /pat exch def
+   pat 8 1 ang 72 300 32 div div setpattern
+
+   newpath
+      0 0 moveto 1 inch 0 lineto
+      1 inch dup lineto 0 1 inch lineto
+   closepath fill
+ } def
+
+/patdict 10 dict def
+
+/patbyte
+ { currentdict /retstr get exch
+   pat i cellsz mod get put
+ } def
+
+/patproc
+ { 0 1 widthlim {patbyte} for retstr
+   /i i 1 add def
+ } def
+
+/patfill
+ { patdict begin
+      /h exch def
+      /w exch def
+      /lty exch def
+      /ltx exch def
+      /cellsz exch def
+      /pat exch def
+
+      /widthlim w cellsz div cvi 1 sub def
+      /retstr widthlim 1 add string def
+      /i 0 def
+
+      ltx lty translate
+      w h true [1 0 0 1 0 0] {patproc} imagemask
+      ltx neg lty neg translate
+   end
+ } def
+
+/pat1 <ffffffffffffffff> def
+/pat2 <0000000000000000> def
+/pat3 <8000000008000000> def
+/pat4 <8800000022000000> def
+/pat5 <8800220088002200> def
+/pat6 <8822882288228822> def
+/pat7 <aa55aa55aa55aa55> def
+/pat8 <8040201008040201> def
+/pat9 <8844221188442211> def
+/pat10 <77bbddee77bbddee> def
+/pat11 <c1e070381c0e0783> def
+/pat12 <8040200002040800> def
+/pat13 <40a00000040a0000> def
+/pat14 <ff888888ff888888> def
+/pat15 <ff808080ff080808> def
+/pat16 <f87422478f172271> def
+/pat17 <038448300c020101> def
+/pat18 <081c22c180010204> def
+/pat19 <8080413e080814e3> def
+
+/centertext { dup stringwidth pop 2 div neg 0 rmoveto } def
+
+/righttext { dup stringwidth pop neg 0 rmoveto } def
+
+1.415 setmiterlimit
+
+%####### .pskanjiEXT ############################
+% define Ryumin-Times-H font
+12 dict begin
+  /FontName /Ryumin-Times-H def
+  /FontType 0 def
+  /WMode 0 def
+  /FMapType 3 def
+  /FontMatrix matrix def
+  /Encoding [0 1] def
+  /FDepVector
+  [/Times-Roman findfont [1 0 0 1 0 0.01] makefont
+    /Ryumin-Light-Ext-H findfont
+  ] def
+  FontName currentdict
+end
+definefont pop
+
+% define Gothic-Helvetica-H font
+12 dict begin
+  /FontName /Gothic-Helvetica-H def
+  /FontType 0 def
+  /WMode 0 def
+  /FMapType 3 def
+  /FontMatrix matrix def
+  /Encoding [0 1] def
+  /FDepVector
+  [/Helvetica findfont [1 0 0 1 0 0.01] makefont
+    /GothicBBB-Medium-Ext-H findfont
+  ] def
+  FontName currentdict
+end
+definefont pop
+
+gsave
+
+0.565 -0.565 scale
+
+/Courier-Bold findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      726 153 moveto (%release\( \)) show
+   grestore
+
+gsave
+   2 setlinewidth
+   newpath
+      852 150 moveto
+      0 42 atan dup cos 10 mul 894 exch sub
+      exch sin 10 mul 150 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      894 150 10 4 42 0 arrowtip
+   closepath fill
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      828 144 moveto
+      828.00 132.00 828.00 124.00 828.00 120.00 curveto
+      828.00 116.00 830.00 114.00 834.00 114.00 curveto
+      838.00 114.00 878.00 114.00
+      0 114 atan dup cos 8 mul 954 exch sub
+      exch sin 8 mul 114 exch sub curveto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      954 114 8 3 114 0 arrowtip
+   closepath fill
+grestore
+
+newpath 831 147 3 3 ellipse fill
+1 setlinewidth
+newpath 831 147 3 3 ellipse stroke
+1 setlinewidth
+
+gsave
+   1 setlinewidth [8 8] 0 setdash
+   newpath
+      354 90 moveto
+      0 18 atan dup cos 8 mul 372 exch sub
+      exch sin 8 mul 90 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      372 90 8 3 18 0 arrowtip
+   closepath fill
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      246 306 moveto
+      246 60 lineto
+      690 60 lineto
+      690 306 lineto
+   stroke
+grestore
+
+1 setlinewidth
+newpath
+   288 78 moveto
+   354 78 lineto
+   354 102 lineto
+   288 102 lineto
+closepath stroke
+1 setlinewidth
+
+1 setlinewidth
+newpath
+   398 78 moveto
+   414 78 414 120 16 arcto 4 {pop} repeat
+   414 104 lineto
+   414 120 372 120 16 arcto 4 {pop} repeat
+   388 120 lineto
+   372 120 372 78 16 arcto 4 {pop} repeat
+   372 94 lineto
+   372 78 414 78 16 arcto 4 {pop} repeat
+closepath stroke
+1 setlinewidth
+
+/Courier-Bold findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      388 104 moveto (p) show
+   grestore
+
+1 setlinewidth
+[8 8] 0 setdash
+newpath
+   606 78 moveto
+   672 78 lineto
+   672 144 lineto
+   606 144 lineto
+closepath stroke
+[] 0 setdash
+1 setlinewidth
+
+gsave
+   1 setlinewidth [4 12] 0 setdash
+   newpath
+      552 90 moveto
+      0 54 atan dup cos 8 mul 606 exch sub
+      exch sin 8 mul 90 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      606 90 8 3 54 0 arrowtip
+   closepath fill
+grestore
+
+/Courier-Bold findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      612 99 moveto (EX) show
+   grestore
+
+gsave
+   1 setlinewidth [8 8] 0 setdash
+   newpath
+      660 114 moveto
+      846 114 lineto
+   stroke
+grestore
+
+/Courier-Bold findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      294 96 moveto (value) show
+   grestore
+
+/NewCenturySchlbk-Italic findfont [14 0 0 -14 0 0] makefont setfont
+   gsave
+      366 134 moveto (resumed) show
+   grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      606 228 moveto
+      606 294 lineto
+   stroke
+grestore
+
+gsave
+   1 setlinewidth [8 8] 0 setdash
+   newpath
+      672 246 moveto
+      606 246 lineto
+   stroke
+grestore
+
+gsave
+   1 setlinewidth [8 8] 0 setdash
+   newpath
+      672 270 moveto
+      606 270 lineto
+   stroke
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      672 228 moveto
+      672 294 lineto
+   stroke
+grestore
+
+gsave
+   1 setlinewidth [8 8] 0 setdash
+   newpath
+      618 258 moveto
+      390.00 258.00 274.00 258.00 270.00 258.00 curveto
+      266.00 258.00 264.00 256.00 264.00 252.00 curveto
+      264.00 248.00 264.00 222.00 264.00 174.00 curveto
+      264.00 126.00 264.00 100.00 264.00 96.00 curveto
+      264.00 92.00 266.00 90.00 270.00 90.00 curveto
+      274.00 90.00 280.00 90.00
+      0 12 atan dup cos 8 mul 288 exch sub
+      exch sin 8 mul 90 exch sub curveto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      288 90 8 3 12 0 arrowtip
+   closepath fill
+grestore
+
+/Ryumin-Times-H findfont [14 0 0 -14 0 0] makefont setfont
+   gsave
+      618 224 moveto (\377\001M"=PI=) show
+   grestore
+
+/Courier-Oblique findfont [14 0 0 -14 0 0] makefont setfont
+   gsave
+      606 157 moveto (consumer) show
+   grestore
+
+/Courier-Bold findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      612 135 moveto (Ret') show
+   grestore
+
+gsave
+   1 setlinewidth [8 8] 0 setdash
+   newpath
+      744 258 moveto
+      0 -72 atan dup cos 8 mul 672 exch sub
+      exch sin 8 mul 258 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      672 258 8 3 -72 0 arrowtip
+   closepath fill
+grestore
+
+/Courier-Bold findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      756 267 moveto (Ret') show
+   grestore
+
+1 setlinewidth
+[8 8] 0 setdash
+newpath
+   498 78 moveto
+   564 78 lineto
+   564 144 lineto
+   498 144 lineto
+closepath stroke
+[] 0 setdash
+1 setlinewidth
+
+gsave
+   1 setlinewidth [8 8] 0 setdash
+   newpath
+      408 90 moveto
+      0 24 atan dup cos 8 mul 432 exch sub
+      exch sin 8 mul 90 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      432 90 8 3 24 0 arrowtip
+   closepath fill
+grestore
+
+/Courier-Bold findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      504 99 moveto (EX) show
+   grestore
+
+/Courier-Oblique findfont [14 0 0 -14 0 0] makefont setfont
+   gsave
+      498 157 moveto (consumer) show
+   grestore
+
+/Courier-Bold findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      504 135 moveto (Ret") show
+   grestore
+
+gsave
+   1 setlinewidth [8 8] 0 setdash
+   newpath
+      552 114 moveto
+      564.00 114.00 572.00 114.00 576.00 114.00 curveto
+      580.00 114.00 582.00 116.00 582.00 120.00 curveto
+      582.00 124.00 582.00 134.00 582.00 150.00 curveto
+      582.00 166.00 582.00 176.00 582.00 180.00 curveto
+      582.00 184.00 584.00 186.00 588.00 186.00 curveto
+      592.00 186.00 670.00 186.00
+      822 186 curveto
+   stroke
+grestore
+
+/Courier-Bold findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      702 219 moveto (%unify\(Tn, ,value\)) show
+   grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      816 210 moveto
+      816.00 202.00 816.00 196.00 816.00 192.00 curveto
+      816.00 188.00 818.00 186.00 822.00 186.00 curveto
+      826.00 186.00 870.00 186.00
+      0 126 atan dup cos 8 mul 954 exch sub
+      exch sin 8 mul 186 exch sub curveto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      954 186 8 3 126 0 arrowtip
+   closepath fill
+grestore
+
+newpath 819 213 3 3 ellipse fill
+1 setlinewidth
+newpath 819 213 3 3 ellipse stroke
+1 setlinewidth
+
+gsave
+   2 setlinewidth
+   newpath
+      906 216 moveto
+      0 42 atan dup cos 10 mul 948 exch sub
+      exch sin 10 mul 216 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      948 216 10 4 42 0 arrowtip
+   closepath fill
+grestore
+
+1 setlinewidth
+[8 8] 0 setdash
+newpath
+   464 78 moveto
+   480 78 480 120 16 arcto 4 {pop} repeat
+   480 104 lineto
+   480 120 432 120 16 arcto 4 {pop} repeat
+   448 120 lineto
+   432 120 432 78 16 arcto 4 {pop} repeat
+   432 94 lineto
+   432 78 480 78 16 arcto 4 {pop} repeat
+closepath stroke
+[] 0 setdash
+1 setlinewidth
+
+/Courier-Bold findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      440 104 moveto (Ret) show
+   grestore
+
+gsave
+   1 setlinewidth [8 8] 0 setdash
+   newpath
+      462 114 moveto
+      462.00 166.00 462.00 195.00 462.00 201.00 curveto
+      462.00 207.00 460.00 210.00 456.00 210.00 curveto
+      452.00 210.00 346.00 210.00
+      138 210 curveto
+   stroke
+grestore
+
+gsave
+   1 setlinewidth [8 8] 0 setdash
+   newpath
+      474 90 moveto
+      0 24 atan dup cos 8 mul 498 exch sub
+      exch sin 8 mul 90 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      498 90 8 3 24 0 arrowtip
+   closepath fill
+grestore
+
+/Courier-Bold findfont [18 0 0 -18 0 0] makefont setfont
+   gsave
+      66 165 moveto (%answer_value) show
+      66 185 moveto (     \(Ret,value\)) show
+   grestore
+
+gsave
+   2 setlinewidth
+   newpath
+      54 162 moveto
+      0 -30 atan dup cos 10 mul 24 exch sub
+      exch sin 10 mul 162 exch sub lineto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      24 162 10 4 -30 0 arrowtip
+   closepath fill
+grestore
+
+gsave
+   1 setlinewidth
+   newpath
+      150 186 moveto
+      150.00 190.00 150.00 195.00 150.00 201.00 curveto
+      150.00 207.00 148.00 210.00 144.00 210.00 curveto
+      140.00 210.00 98.00 210.00
+      0 -120 atan dup cos 8 mul 18 exch sub
+      exch sin 8 mul 210 exch sub curveto
+   stroke
+grestore
+gsave
+   pat1 8 1 0 72 300 32 div div setpattern
+   newpath
+      18 210 8 3 -120 0 arrowtip
+   closepath fill
+grestore
+
+grestore
+

@@ -1,0 +1,81 @@
+% test for "general unification" (2)
+
+:- module main.
+main :- lib:io(Os), 
+	lib:prsl(Os,Os2,'### InterNode Test [General Unification (2)] Begin ###',_), 
+	f1v1(Os2,Os3), 
+	f2v2(Os3,Os4), 
+	lib:prsl(Os4,[],'### InterNode Test [General Unification (2)] End ###',_). 
+
+%---------------------------------------------------------------------------
+f1v1(Os,OsE):- 
+	lib:prs(Os,Os2,'F=f(V), V={F} : (a-d) : ',_),
+	f1v1(Os2,OsE,Us), 
+	Us = [u(0,f({}),1,a),
+	      u(1,f({f({})}),3,b),
+	      u(2,f({f({f({})})}),2,c),
+	      u(3,f({f({f({{f({})}})})}),5,d)]. 
+
+f1v1(Os,OsE,[u(N,Func,Add,Out)|Us]):- 
+	nextNode(Add,Node), fork_f1v1(Os,Os2,N,Func,Out,Node), 
+	f1v1(Os2,OsE,Us). 
+f1v1(Os,OsE,[]):- lib:prsl(Os,OsE,'...done',_). 
+
+fork_f1v1(Os,Os2,N,Func,Out,Node):- wait(Node) | 
+	fork_exe_f1v1(N,Var,Done,done,Ack)@node(Node), 
+	wait_ufy(Ack,Var,Func), pr(Os,Os2,Done,Out). 
+
+fork_exe_f1v1(N,Func,Da,Db,Ack):- Ack=ack, uf1(N,Func,Da,Db). 
+
+%---------------------------------------------------------------------------
+f2v2(Os,OsE):- 
+	lib:prs(Os,Os2,'F=f(V,V), V={F,F} : (a-c) : ',_),
+	f2v2(Os2,OsE,Us), 
+	Us = [u(0,f({},{}),1,a),
+	         u(1,f({f({},{}),f({},{})},{f({},{}),f({},{})}),3,b),
+	      u(2,f({f({f({},{}),f({},{})},{f({},{}),f({},{})}),
+		     f({f({},{}),f({},{})},{f({},{}),f({},{})})},
+	            {f({f({},{}),f({},{})},{f({},{}),f({},{})}),
+		     f({f({},{}),f({},{})},{f({},{}),f({},{})})}),4,c)]. 
+f2v2(Os,OsE,[u(N,Func,Add,Out)|Us]):- 
+	nextNode(Add,Node), fork_f2v2(Os,Os2,N,Func,Out,Node), 
+	f2v2(Os2,OsE,Us). 
+f2v2(Os,OsE,[]):- lib:prsl(Os,OsE,'...done',_). 
+
+fork_f2v2(Os,Os2,N,Func,Out,Node):- wait(Node) | 
+	fork_exe_f2v2(N,Var,Done,done,Ack)@node(Node), 
+	wait_ufy(Ack,Var,Func), pr(Os,Os2,Done,Out). 
+
+fork_exe_f2v2(N,Func,Da,Db,Ack):- Ack=ack, uf2(N,Func,Da,Db). 
+
+%---------------------------------------------------------------------------
+uf1(N,Func,Da,Db):- N > 0 | 
+	Func = f(V), set_vector_element(V,0,F,_,_), uf1(~(N-1),F,Da,Db). 
+uf1(N,Fund,Da,Db):- N=:=0 | Func = f({}), Da=Db. 
+
+%---------------------------------------------------------------------------
+uf2(N,Func,Da,De):- N > 0 | 
+	Func = f(V1,V2), 
+	set_vector_element(V1,0,F11,_,_), uf2(~(N-1),F11,Da,Db), 
+	set_vector_element(V1,1,F21,_,_), uf2(~(N-1),F21,Db,Dc), 
+	set_vector_element(V2,0,F12,_,_), uf2(~(N-1),F12,Dc,Dd), 
+	set_vector_element(V2,1,F22,_,_), uf2(~(N-1),F22,Dd,De). 
+uf2(N,Func,Da,Db):- N=:=0 | Func = f({},{}), Da=Db. 
+
+%===========================================================================
+wait_ufy(Wait,DataA,DataB):- wait(Wait) | DataA = DataB. 
+
+nextNode(Add,Node):- 
+	current_node(CurrentNode,NumberOfNodes), 
+	modNode(~(CurrentNode+Add),NumberOfNodes,Node).  
+
+modNode(CalNode,NumberOfNodes,Node) :- CalNode >= 0 | 
+	Node := CalNode mod NumberOfNodes.
+modNode(CalNode,NumberOfNodes,Node) :- CalNode <  0 | 
+	CalNode2 := CalNode + NumberOfNodes, 
+	modNode(CalNode2,NumberOfNodes,Node).
+
+pr(Os,Os2,done,Out):- lib:prs(Os,Os2,Out,_). 
+otherwise. 
+pr(Os,Os2,_,Out):- lib:prs_err(Os,Os2,Out,_). 
+

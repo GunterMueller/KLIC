@@ -1,0 +1,27 @@
+Reliable Multicast Library: RML
+
+The RML is a C library developed under QPL. It is intended to guarantee 
+reliable transmission over IP Multicast. We try to develop it in a way that it 
+can be used in a large set of applications.
+
+The library runs on GNU/Linux and only require a full functional IP Multicast 
+network to work properly.
+
+We provide a simple multicast chat application to test the library and you can 
+found it in the rmchat directory. That is the simple way to learn how to build
+a multicast application with the Reliable Multicast Library.  
+
+The Tangram-II Whiteboard (TGWB) is an application built on tgif that uses RML.
+Further information about TGWB can be found at README.tgwb file.
+You can download tgif at http://bourbon.usc.edu/tgif/index.html.
+
+Documentation is available in the doc/ directory.
+
+See AUTHORS for authors' emails and/or homepages.
+See LICENSE.QPL for information about QPL.
+See INSTALL file for information on compiling the librmcast.
+
+Enjoy it.
+
+RML team at LAND (http://www.land.ufrj.br)
+

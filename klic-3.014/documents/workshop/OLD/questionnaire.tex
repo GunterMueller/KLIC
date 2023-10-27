@@ -1,0 +1,97 @@
+\documentstyle[11pt]{jarticle}
+\textwidth17cm
+\textheight26cm
+\topmargin-1cm
+\oddsidemargin0cm
+\evensidemargin0cm
+\newcommand{\chooseone}[5]{\goodbreak\vspace*{4mm plus 2mm}
+\stepcounter{section}
+\hangindent6.4mm\noindent\arabic{section}.\hspace{3mm}#1\par
+\vspace{2mm}
+\noindent\hspace*{2cm}\begin{tabular}{p{6.5cm}p{6.5cm}}
+□ #2&□ #4\\
+□ #3&□ #5\end{tabular}\par}
+\newcommand{\free}[1]{\goodbreak\vspace*{4mm plus 2mm}
+\stepcounter{section}
+\hangindent6.4mm\noindent\arabic{section}.\hspace{3mm}#1\par\noindent
+\hspace*{3mm}
+\(\left[\hbox{\vrule height 1.2cm width 0cm}\hspace*{16cm}\right]\)}
+
+\begin{document}
+\pagestyle{empty}
+\centerline{\framebox{\Large\bf\dg ~KLIC 講習会 アンケート~}}
+
+\bf\dg
+\vspace{5mm}
+\begin{center}
+\begin{minipage}{14cm}
+今回は KLIC 講習会を受講いただきありがとうございました.  今後の講習会
+開催や KLIC の開発方針策定の参考にさせていただきたいと存じますので, 以
+下の設問にお答えいただければ幸いです.  最終日のお帰りの際に受け付けに
+お渡し下さい.
+\end{minipage}
+\end{center}
+
+\chooseone{今回の講習会受講前からKL1の言語仕様とプログラミングについて
+の知識はお持ちでしたか.} {ほとんどなにも知らなかった}{少しは知っていた}
+{ひと通りの知識はあった}{かなりプログラム経験もあった}
+
+\chooseone{KL1言語についての講習はわかりやすかったですか.}
+{わかりづらかった}{ややわかりづらかった}{わかりやすかった}{簡単過ぎた}
+\label{KL1-lang}
+
+\free{設問2で「わかりづらかった」または「ややわかりづらかった」とお答
+えの方にお聞きします.\\特にわかりづらかったのはどこでしたか.}
+
+\free{KL1言語について, もっと詳しい説明をお聞ききになりたかった部分は
+おありですか.}
+
+\chooseone{KLICシステムの使い方についての講習は難しかったですか}
+{わかりづらかった}{ややわかりづらかった}{わかりやすかった}{簡単過ぎた}
+\label{KLIC-sys}
+
+\free{設問5で「わかりづらかった」または「ややわかりづらかった」とお答
+えの方にお聞きします.\\特にわかりづらかったのはどこでしたか.}
+
+\free{KLICシステムについて, もっと詳しい説明をお聞ききになりたかった部
+分はありますか.}
+
+\chooseone{演習問題は時間内に解けたでしょうか.}
+{まったく解けなかった}{一部は解けた}{ほとんど解けた}{全部解けた}
+
+\chooseone{時間内に解けなかった問題について, もっと時間があれば解
+けたでしょうか.}
+{まったく解けないだろう}{一部は解けるだろう}{ほとんど解けるだろう}{全部
+解けるだろう}
+
+\free{特に難しかったのはどの問題ですか.}
+
+\free{実習の環境 (機器, ソフトウェアなど) について, 改善すべき点があり
+ますでしょうか.}
+
+\free{時間配分 (講義と実習の割合, 休憩のとり方など) について, 改善すべ
+き点がありますでしょうか.}
+
+\chooseone{今後 KLIC をご利用になるおつもりですか.}
+{まったく使うつもりはない}{たぶん使わないだろう}{たぶん使うだろう}{ぜ
+ひ使いたい}
+
+\free{ご利用を予定の方は, できればご利用目的と機器・OSなどのご予定を簡
+単にご記入下さい.}
+
+\free{上記の設問以外, なんでもお気づきの点をご記入ください.}
+
+\vspace{1cm}\noindent
+お差し支えなければご氏名とご所属をご記入ください.\par
+\vspace{5mm}
+\begin{tabular}{l}
+ご氏名:\vrule width0pt depth8mm\\
+ご所属:\vrule width0pt depth8mm\\
+\end{tabular}
+
+\vspace{2cm minus 1.5cm}
+\begin{flushright}
+御協力ありがとうございました
+\end{flushright}
+
+\end{document}

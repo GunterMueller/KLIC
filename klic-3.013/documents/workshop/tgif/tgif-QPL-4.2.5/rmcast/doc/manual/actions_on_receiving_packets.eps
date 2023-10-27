@@ -1,0 +1,1602 @@
+%!PS-Adobe-3.0 EPSF-3.0
+%%BoundingBox: 2 15 561 782
+%%Title: actions_on_receiving_packets
+%%CreationDate: Tue May 21 10:00:23 2002
+%%Creator: Tgif-4.1.41 by William Chia-Wei Cheng (william@cs.UCLA.edu)
+%%ProducedBy: (unknown)
+%%Pages: 1
+%%DocumentFonts: (atend)
+%%EndComments
+%%BeginProlog
+
+/tgifdict 53 dict def
+tgifdict begin
+
+/tgifarrowtipdict 8 dict def
+tgifarrowtipdict /mtrx matrix put
+
+/TGAT % tgifarrowtip
+ { tgifarrowtipdict begin
+      /dy exch def
+      /dx exch def
+      /h exch def
+      /w exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      dy dx atan rotate
+      0 0 moveto
+      w neg h lineto
+      w neg h neg lineto
+      savematrix setmatrix
+   end
+ } def
+
+/TGMAX
+ { exch dup 3 1 roll exch dup 3 1 roll gt { pop } { exch pop } ifelse
+ } def
+/TGMIN
+ { exch dup 3 1 roll exch dup 3 1 roll lt { pop } { exch pop } ifelse
+ } def
+/TGSW { stringwidth pop } def
+
+/bd { bind def } bind def
+
+/GS { gsave } bd
+/GR { grestore } bd
+/NP { newpath } bd
+/CP { closepath } bd
+/CHP { charpath } bd
+/CT { curveto } bd
+/L { lineto } bd
+/RL { rlineto } bd
+/M { moveto } bd
+/RM { rmoveto } bd
+/S { stroke } bd
+/F { fill } bd
+/TR { translate } bd
+/RO { rotate } bd
+/SC { scale } bd
+/MU { mul } bd
+/DI { div } bd
+/DU { dup } bd
+/NE { neg } bd
+/AD { add } bd
+/SU { sub } bd
+/PO { pop } bd
+/EX { exch } bd
+/CO { concat } bd
+/CL { clip } bd
+/EC { eoclip } bd
+/EF { eofill } bd
+/IM { image } bd
+/IMM { imagemask } bd
+/ARY { array } bd
+/SG { setgray } bd
+/RG { setrgbcolor } bd
+/SD { setdash } bd
+/W { setlinewidth } bd
+/SM { setmiterlimit } bd
+/SLC { setlinecap } bd
+/SLJ { setlinejoin } bd
+/SH { show } bd
+/FF { findfont } bd
+/MS { makefont setfont } bd
+/AR { arcto 4 {pop} repeat } bd
+/CURP { currentpoint } bd
+/FLAT { flattenpath strokepath clip newpath } bd
+/TGSM { tgiforigctm setmatrix } def
+/TGRM { savematrix setmatrix } def
+
+end
+
+%%EndProlog
+%%Page: 1 1
+
+%%PageBoundingBox: 2 15 561 782
+tgifdict begin
+/tgifsavedpage save def
+
+1 SM
+1 W
+
+0 SG
+
+72 0 MU 72 11 MU TR
+72 128 DI 100.000 MU 100 DI DU NE SC
+
+GS
+
+/tgiforigctm matrix currentmatrix def
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      217 90 M
+      GS
+        GS
+        0
+            /Courier-Bold FF [20 0 0 -20 0 0] MS
+            (NACK) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier-Bold FF [20 0 0 -20 0 0] MS
+            (NACK) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      411 57 M
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Are we) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Are we) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (waiting) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (waiting) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (to send a) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (to send a) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (NACK for these) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (NACK for these) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            ( pckts?) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            ( pckts?) SH
+      GR
+   GR
+
+% POLYGON/CLOSED-SPLINE
+0 SG
+NP
+   411 20 M
+   313 96 L
+   411 173 L
+   509 96 L
+CP
+GS
+GR
+GS
+   S
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      411 101 M
+      GS
+        GS
+        0
+            0
+        AD
+        GR
+      2 DI NE 0 RM
+      GR
+   GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 544 53 M 782 53 L 782 140 L 544 140 L CP
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      556 76 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Cancel the sending) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (of the NACK and wait) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (to receive a ) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (retransmission.) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      509 96 M
+      0 34 atan DU cos 8.000 MU 543 exch SU
+      exch sin 8.000 MU 96 exch SU L
+   TGSM
+   1 W
+   S
+GR
+GS
+   TGSM
+   NP
+      543 96 8.000 3.000 34 0 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      543 96 8.000 3.000 34 0 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      411 175 M
+      37 0 atan DU cos 8.000 MU 411 exch SU
+      exch sin 8.000 MU 212 exch SU L
+   TGSM
+   1 W
+   S
+GR
+GS
+   TGSM
+   NP
+      411 212 8.000 3.000 0 37 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      411 212 8.000 3.000 0 37 TGAT
+   CP F
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      411 259 M
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Is there a) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Is there a) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (scheduled) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (scheduled) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (retransmission) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (retransmission) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (?) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (?) SH
+      GR
+   GR
+
+% POLYGON/CLOSED-SPLINE
+0 SG
+NP
+   411 210 M
+   311 281 L
+   411 353 L
+   511 281 L
+CP
+GS
+GR
+GS
+   S
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      411 286 M
+      GS
+        GS
+        0
+            0
+        AD
+        GR
+      2 DI NE 0 RM
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      410 429 M
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Do we) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Do we) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (have the) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (have the) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (requested) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (requested) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (packets?) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (packets?) SH
+      GR
+   GR
+
+% POLYGON/CLOSED-SPLINE
+0 SG
+NP
+   410 389 M
+   323 458 L
+   410 527 L
+   497 458 L
+CP
+GS
+GR
+GS
+   S
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      410 463 M
+      GS
+        GS
+        0
+            0
+        AD
+        GR
+      2 DI NE 0 RM
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      410 353 M
+      37 0 atan DU cos 8.000 MU 410 exch SU
+      exch sin 8.000 MU 390 exch SU L
+   TGSM
+   1 W
+   S
+GR
+GS
+   TGSM
+   NP
+      410 390 8.000 3.000 0 37 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      410 390 8.000 3.000 0 37 TGAT
+   CP F
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 530 413 M 730 413 L 730 502 L 530 502 L CP
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      539 436 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Schedule the) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (retransmission) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (of the requested) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (packets.) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      495 458 M
+      0 34 atan DU cos 8.000 MU 529 exch SU
+      exch sin 8.000 MU 458 exch SU L
+   TGSM
+   1 W
+   S
+GR
+GS
+   TGSM
+   NP
+      529 458 8.000 3.000 34 0 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      529 458 8.000 3.000 34 0 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      9 623 M
+      0 185 atan DU cos 12.000 MU 194 exch SU
+      exch sin 12.000 MU 623 exch SU L
+   TGSM
+   3 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      194 623 12.000 5.000 185 0 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      194 623 12.000 5.000 185 0 TGAT
+   CP F
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      8 614 M
+      GS
+            0 SG
+            /Courier-Bold FF [20 0 0 -20 0 0] MS
+            (retransmission) SH
+      GR
+   GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 202 577 M 445 577 L 445 660 L 202 660 L CP
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      211 607 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Cancel a scheduled) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (retransmission for) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (that packet, if any.) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      323 663 M
+      37 0 atan DU cos 8.000 MU 323 exch SU
+      exch sin 8.000 MU 700 exch SU L
+   TGSM
+   1 W
+   S
+GR
+GS
+   TGSM
+   NP
+      323 700 8.000 3.000 0 37 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      323 700 8.000 3.000 0 37 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      321 976 M
+      37 0 atan DU cos 8.000 MU 321 exch SU
+      exch sin 8.000 MU 1013 exch SU L
+   TGSM
+   1 W
+   S
+GR
+GS
+   TGSM
+   NP
+      321 1013 8.000 3.000 0 37 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      321 1013 8.000 3.000 0 37 TGAT
+   CP F
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      81 1047 M
+      GS
+            0 SG
+            /Courier-Bold FF [20 0 0 -20 0 0] MS
+            (data ) SH
+      GR
+   GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 206 1014 M 474 1014 L 474 1105 L 206 1105 L CP
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      216 1038 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Insert the data in) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (the cache, and) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (cancel any event ) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (related to this packet) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      321 1105 M
+      37 0 atan DU cos 8.000 MU 321 exch SU
+      exch sin 8.000 MU 1142 exch SU L
+   TGSM
+   1 W
+   S
+GR
+GS
+   TGSM
+   NP
+      321 1142 8.000 3.000 0 37 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      321 1142 8.000 3.000 0 37 TGAT
+   CP F
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 434 1159 M 630 1159 L 630 1242 L 434 1242 L CP
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      462 1194 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Send data to ) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (application.) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      399 1199 M
+      0 34 atan DU cos 8.000 MU 433 exch SU
+      exch sin 8.000 MU 1199 exch SU L
+   TGSM
+   1 W
+   S
+GR
+GS
+   TGSM
+   NP
+      433 1199 8.000 3.000 34 0 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      433 1199 8.000 3.000 34 0 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      321 1255 M
+      37 0 atan DU cos 8.000 MU 321 exch SU
+      exch sin 8.000 MU 1292 exch SU L
+   TGSM
+   1 W
+   S
+GR
+GS
+   TGSM
+   NP
+      321 1292 8.000 3.000 0 37 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      321 1292 8.000 3.000 0 37 TGAT
+   CP F
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      518 85 M
+      GS
+            0 SG
+            /Courier-Bold FF [18 0 0 -18 0 0] MS
+            (Y) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      422 191 M
+      GS
+            0 SG
+            /Courier-Bold FF [18 0 0 -18 0 0] MS
+            (N) SH
+      GR
+   GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 203 701 M 467 701 L 467 825 L 203 825 L CP
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      211 723 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Cancel a scheduled) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (event of sending of) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (NACK or waiting for) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (retransmission, ) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (related to this packet,) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (if any.) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      323 826 M
+      37 0 atan DU cos 8.000 MU 323 exch SU
+      exch sin 8.000 MU 863 exch SU L
+   TGSM
+   1 W
+   S
+GR
+GS
+   TGSM
+   NP
+      323 863 8.000 3.000 0 37 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      323 863 8.000 3.000 0 37 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      125 98 M
+      0 183 atan DU cos 12.000 MU 308 exch SU
+      exch sin 12.000 MU 98 exch SU L
+   TGSM
+   3 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      308 98 12.000 5.000 183 0 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      308 98 12.000 5.000 183 0 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      34 1060 M
+      0 159 atan DU cos 12.000 MU 193 exch SU
+      exch sin 12.000 MU 1060 exch SU L
+   TGSM
+   3 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      193 1060 12.000 5.000 159 0 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      193 1060 12.000 5.000 159 0 TGAT
+   CP F
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      324 903 M
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Do we) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Do we) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (have this) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (have this) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (packet?) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (packet?) SH
+      GR
+   GR
+
+% POLYGON/CLOSED-SPLINE
+0 SG
+NP
+   322 863 M
+   242 919 L
+   322 975 L
+   402 919 L
+CP
+GS
+GR
+GS
+   S
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      322 923 M
+      GS
+        GS
+        0
+            0
+        AD
+        GR
+      2 DI NE 0 RM
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      505 447 M
+      GS
+            0 SG
+            /Courier-Bold FF [18 0 0 -18 0 0] MS
+            (Y) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      417 373 M
+      GS
+            0 SG
+            /Courier-Bold FF [18 0 0 -18 0 0] MS
+            (N) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      329 994 M
+      GS
+            0 SG
+            /Courier-Bold FF [18 0 0 -18 0 0] MS
+            (N) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      323 1181 M
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Is the) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Is the) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (packet) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (packet) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (in order?) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (in order?) SH
+      GR
+   GR
+
+% POLYGON/CLOSED-SPLINE
+0 SG
+NP
+   321 1143 M
+   241 1199 L
+   321 1255 L
+   401 1199 L
+CP
+GS
+GR
+GS
+   S
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      321 1203 M
+      GS
+        GS
+        0
+            0
+        AD
+        GR
+      2 DI NE 0 RM
+      GR
+   GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 216 1293 M 458 1293 L 458 1378 L 216 1378 L CP
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      229 1314 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (A gap was detected.) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Schedule the sending) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (of NACKs for the) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (lost packets) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      328 1272 M
+      GS
+            0 SG
+            /Courier-Bold FF [18 0 0 -18 0 0] MS
+            (N) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      408 1187 M
+      GS
+            0 SG
+            /Courier-Bold FF [18 0 0 -18 0 0] MS
+            (Y) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      628 902 M
+      GS
+            0 SG
+            /Courier-Bold FF [20 0 0 -20 0 0] MS
+            (leave group ) SH
+      GR
+   GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 793 867 M 989 867 L 989 950 L 793 950 L CP
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      823 904 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Deactivate the) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (member.) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      627 1055 M
+      GS
+            0 SG
+            /Courier-Bold FF [20 0 0 -20 0 0] MS
+            (join request) SH
+      GR
+   GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 794 1017 M 990 1017 L 990 1100 L 794 1100 L CP
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      816 1054 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Send a join) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (accept message.) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      621 912 M
+      0 159 atan DU cos 12.000 MU 780 exch SU
+      exch sin 12.000 MU 912 exch SU L
+   TGSM
+   3 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      780 912 12.000 5.000 159 0 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      780 912 12.000 5.000 159 0 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      623 1065 M
+      0 159 atan DU cos 12.000 MU 782 exch SU
+      exch sin 12.000 MU 1065 exch SU L
+   TGSM
+   3 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      782 1065 12.000 5.000 159 0 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      782 1065 12.000 5.000 159 0 TGAT
+   CP F
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      657 610 M
+      GS
+            0 SG
+            /Courier-Bold FF [20 0 0 -20 0 0] MS
+            (refresh ) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      877 591 M
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Do we) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Do we) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (have the) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (have the) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (advertised) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (advertised) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            /Courier FF [18 0 0 -18 0 0] MS
+            (packet?) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (packet?) SH
+      GR
+      0 19 RM
+      GS
+        GS
+        0
+            0
+        AD
+        GR
+      2 DI NE 0 RM
+      GR
+   GR
+
+% POLYGON/CLOSED-SPLINE
+0 SG
+NP
+   875 556 M
+   791 619 L
+   875 681 L
+   960 619 L
+CP
+GS
+GR
+GS
+   S
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      875 623 M
+      GS
+        GS
+        0
+            0
+        AD
+        GR
+      2 DI NE 0 RM
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      875 681 M
+      27 0 atan DU cos 8.000 MU 875 exch SU
+      exch sin 8.000 MU 708 exch SU L
+   TGSM
+   1 W
+   S
+GR
+GS
+   TGSM
+   NP
+      875 708 8.000 3.000 0 27 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      875 708 8.000 3.000 0 27 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      624 622 M
+      0 159 atan DU cos 12.000 MU 783 exch SU
+      exch sin 12.000 MU 622 exch SU L
+   TGSM
+   3 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      783 622 12.000 5.000 159 0 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      783 622 12.000 5.000 159 0 TGAT
+   CP F
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      884 696 M
+      GS
+            0 SG
+            /Courier-Bold FF [18 0 0 -18 0 0] MS
+            (N) SH
+      GR
+   GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 755 708 M 995 708 L 995 800 L 755 800 L CP
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      768 730 M
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (A gap was detected.) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (Schedule the sending) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (of NACKs for the) SH
+      GR
+      0 19 RM
+      GS
+            0 SG
+            /Courier FF [18 0 0 -18 0 0] MS
+            (lost packets.) SH
+      GR
+   GR
+
+GR
+tgifsavedpage restore
+end
+showpage
+
+%%Trailer
+%MatchingCreationDate: Tue May 21 10:00:23 2002
+%%DocumentFonts: Courier
+%%+ Courier-Bold
+%%EOF
+

@@ -1,0 +1,668 @@
+!
+! This file is for reference only; that's why everything is commented out!
+!	You can uncomment lines and add them to your own resource file (such
+!	as ~/.Xdefaults if so desired.
+!
+! You can run tgif without this file.  The values in this file are NOT
+!	identical to the default values used in tgif.  You should use
+!	as few of these as possible!
+!
+! @(#)$Header: /mm2/home/cvs/bc-src/tgif/tgif.Xdefaults,v 1.77 2011/05/13 15:06:30 william Exp $
+!
+!Tgif.Geometry:			640x512-40+20
+!Tgif.IconGeometry:		-224+82
+!Tgif.Foreground:		Black
+!Tgif.Background:		White
+!Tgif.BorderColor:		White
+!Tgif.ReverseVideo:		off
+!
+!Tgif.InitialFont:		Times
+!Tgif.InitialFont:		Courier
+!Tgif.InitialFont:		Helvetica
+!Tgif.InitialFont:		NewCentury
+!Tgif.InitialFont:		Symbol
+!
+!Tgif.InitialFontStyle:		Roman
+!Tgif.InitialFontStyle:		Bold
+!Tgif.InitialFontStyle:		Italic
+!Tgif.InitialFontStyle:		BoldItalic
+!
+!Tgif.InitialFontJust:		Left
+!Tgif.InitialFontJust:		Center
+!Tgif.InitialFontJust:		Right
+!
+! The next 3 are obsoleted
+!
+!Tgif.InitialFontDPI:		75
+!Tgif.InitialFontSizeIndex:	3
+!Tgif.MsgFontSizeIndex:		3
+!Tgif.InitialFontSize:		20
+!Tgif.MsgFontSize:		14
+!Tgif.RulerFontSize:		10
+!Tgif.DefaultFontSize:		14
+!
+!Tgif.FontSizes:		8 10 11 12 14 17 18 20 24 25 34
+!Tgif.AdditionalFonts:		\n\
+!	lucidabright-medium-r-normal,iso8859-1,ZapfChancery-MediumItalic\n\
+!	lucidabright-demibold-r-normal,iso8859-1,ZapfChancery-MediumItalic\n\
+!	lucidabright-medium-i-normal,iso8859-1,ZapfChancery-MediumItalic\n\
+!	lucidabright-demibold-i-normal,iso8859-1,ZapfChancery-MediumItalic
+!Tgif.AdditionalFonts:		\n\
+!	lucidasans-%d,iso8859-1,ZapfChancery-MediumItalic\n\
+!	lucidasans-bold-%d,iso8859-1,ZapfChancery-MediumItalic\n\
+!	lucidasans-italic-%d,iso8859-1,ZapfChancery-MediumItalic\n\
+!	lucidasans-bolditalic-%d,iso8859-1,ZapfChancery-MediumItalic
+!Tgif.FontNamePrefix:		-*
+!
+! To get around font problems...  If all you have are
+!	-*-fixed-medium-r-normal--%d-* fonts, you can set
+!	Tgif.HasAlternateDefaultFonts to "true" and use the following.
+!	This will all fonts with the -*-fixed-medium-r-normal--%d-* fonts.
+!	(You should probably set Tgif.DefFixedWidthFont and
+!	Tgif.DefFixedWidthRulerFont.)
+!
+!Tgif.HasAlternateDefaultFonts:	true
+!Tgif.Times-Roman:			-*-fixed-medium-r-normal--%d-*
+!Tgif.Times-Bold:			-*-fixed-bold-r-normal--%d-*
+!Tgif.Times-Italic:			-*-fixed-medium-r-semicondensed--%d-*
+!Tgif.Times-BoldItalic:			-*-fixed-bold-r-semicondensed--%d-*
+!Tgif.Courier:				-*-fixed-medium-r-normal--%d-*
+!Tgif.Courier-Bold:			-*-fixed-bold-r-normal--%d-*
+!Tgif.Courier-Oblique:			-*-fixed-medium-r-semicondensed--%d-*
+!Tgif.Courier-BoldOblique:		-*-fixed-bold-r-semicondensed--%d-*
+!Tgif.Helvetica:			-*-fixed-medium-r-normal--%d-*
+!Tgif.Helvetica-Bold:			-*-fixed-bold-r-normal--%d-*
+!Tgif.Helvetica-Oblique:		-*-fixed-medium-r-semicondensed--%d-*
+!Tgif.Helvetica-BoldOblique:		-*-fixed-bold-r-semicondensed--%d-*
+!Tgif.NewCenturySchlbk-Roman:		-*-fixed-medium-r-normal--%d-*
+!Tgif.NewCenturySchlbk-Bold:		-*-fixed-bold-r-normal--%d-*
+!Tgif.NewCenturySchlbk-Italic:		-*-fixed-medium-r-semicondensed--%d-*
+!Tgif.NewCenturySchlbk-BoldItalic:	-*-fixed-bold-r-semicondensed--%d-*
+!Tgif.Symbol:				-*-fixed-medium-r-normal--%d-*
+!
+! Example for Turkish alternate default fonts:
+!
+!Tgif.HasAlternateDefaultFonts:	true
+!Tgif.Times-Roman:	     -urw-times-medium-r-*-*-%d-*-*-*-*-*-iso8859-9
+!Tgif.Times-Bold:	     -urw-times-bold-r-*-*-%d-*-*-*-*-*-iso8859-9
+!Tgif.Times-Italic:	     -urw-times-medium-i-*-*-%d-*-*-*-*-*-iso8859-9
+!Tgif.Times-BoldItalic:	     -urw-times-bold-i-*-*-%d-*-*-*-*-*-iso8859-9
+!Tgif.Courier:		     -urw-courier-medium-r-*-*-%d-*-*-*-*-*-iso8859-9
+!Tgif.Courier-Bold:	     -urw-courier-bold-r-*-*-%d-*-*-*-*-*-iso8859-9
+!Tgif.Courier-Oblique:	     -urw-courier-medium-o-*-*-%d-*-*-*-*-*-iso8859-9
+!Tgif.Courier-BoldOblique:   -urw-courier-bold-o-*-*-%d-*-*-*-*-*-iso8859-9
+!Tgif.Helvetica:	     -urw-helvetica-medium-r-*-*-%d-*-*-*-*-*-iso8859-9
+!Tgif.Helvetica-Bold:	     -urw-helvetica-bold-r-*-*-%d-*-*-*-*-*-iso8859-9
+!Tgif.Helvetica-Oblique:     -urw-helvetica-medium-o-*-*-%d-*-*-*-*-*-iso8859-9
+!Tgif.Helvetica-BoldOblique: -urw-helvetica-bold-o-*-*-%d-*-*-*-*-*-iso8859-9
+!
+!Tgif.DefaultCursor:		arrow
+!Tgif.DrawCursor:		arrow
+!Tgif.DragCursor:		hand2
+!Tgif.VertexCursor:		dotbox
+!Tgif.FreeHandCursor:		pencil
+!Tgif.RubberBandColor:		Aquamarine
+!
+!Tgif.MaxColors:		11
+!Tgif.Color0:			magenta
+!Tgif.Color1:			red
+!Tgif.Color2:			green
+!Tgif.Color3:			blue
+!Tgif.Color4:			yellow
+!Tgif.Color5:			pink
+!Tgif.Color6:			cyan
+!Tgif.Color7:			CadetBlue
+!Tgif.Color8:			white
+!Tgif.Color9:			black
+!Tgif.Color10:			DarkSlateGray
+!Tgif.DefaultColorIndex:	0
+!
+!Tgif.ShortCuts:		!<Key>A:SelectAll() \n\
+!				!<Key>U:Undo() \n\
+!				!<Key>R:Redo() \n\
+!				!<Key>X:Delete() \n\
+!				!<Key>F:FlushUndoBuffer() \n\
+!				!<Key>T:ToggleNamedAttrShown(eq=) \n\
+!				!<Key>Q:Quit()
+!
+!Tgif.MaxLineWidths:		7
+!Tgif.DefaultLineWidth:		0
+!Tgif.LineWidth0:		1
+!Tgif.LineWidth1:		2
+!Tgif.LineWidth2:		3
+!Tgif.LineWidth3:		4
+!Tgif.LineWidth4:		5
+!Tgif.LineWidth5:		6
+!Tgif.LineWidth6:		7
+!Tgif.ArrowWidth0:		8
+!Tgif.ArrowWidth1:		10
+!Tgif.ArrowWidth2:		12
+!Tgif.ArrowWidth3:		14
+!Tgif.ArrowWidth4:		18
+!Tgif.ArrowWidth5:		20
+!Tgif.ArrowWidth6:		22
+!Tgif.ArrowHeight0:		3
+!Tgif.ArrowHeight1:		4
+!Tgif.ArrowHeight2:		5
+!Tgif.ArrowHeight3:		6
+!Tgif.ArrowHeight4:		7
+!Tgif.ArrowHeight5:		8
+!Tgif.ArrowHeight6:		9
+!Tgif.MaxDomains:		1
+!Tgif.DomainPath0:		DRAWING:\n\
+!					/usr/local/lib/tgif/drawing:\n\
+!					/usr/local/lib/tgif/msic
+!Tgif.DefaultDomain:		0
+!	Don't need to set the TGIF_DRAWING environment variable any more.
+!
+!Tgif.PrintCommand:		lpr
+!
+! For Epson Stylux 800
+!
+!Tgif.PrintCommand: gs -q -sDEVICE=escp2 -sOutputFile=- -dNOPAUSE -- %s | lpr
+!
+!Tgif.WhereToPrint:		Printer
+!Tgif.WhereToPrint:		EPS
+!Tgif.WhereToPrint:		PS
+!Tgif.WhereToPrint:		Bitmap
+!Tgif.WhereToPrint:		Text
+!Tgif.WhereToPrint:		EPSI
+!Tgif.WhereToPrint:		GIF
+!Tgif.WhereToPrint:		HTML
+!
+!Tgif.PrintDirectory:		/tmp
+!Tgif.NoTgifIcon:		false
+!Tgif.UseWMIconPixmap:		false
+!Tgif.DontShowVersion:		true
+!Tgif.XBmReverseVideo:		false
+!Tgif.AskForXBmSpec:		false
+!Tgif.AskForXPmSpec:		false
+!Tgif.StripEPSComments:		false	<-- obsolete!!!
+!Tgif.GuessXPmBgColor:		false
+!Tgif.XPmOutputVersion:		1
+!Tgif.XPmInXGrabSCFormat:	false
+!Tgif.UseGrayScale:		false
+!Tgif.AutoPanInEditText:	true
+!Tgif.PercentPrintReduction:	100
+!Tgif.ConstrainedMove:		false
+!Tgif.DoubleQuoteDoubleQuote:	false
+!
+!Tgif.GridSystem:		English
+!Tgif.GridSystem:		Metric
+!
+!Tgif.InitialGrid:		-1
+!Tgif.DropObsIconAttrWhenUpdate:	false
+!Tgif.UseRecentDupDistance:	true
+!Tgif.SplineTolerance:		7
+!Tgif.SplineRubberband:		true	<-- obsolete!!!
+!Tgif.Synchronize:		off
+!Tgif.DoubleClickUnIconify:	true
+!Tgif.MainMenuPinDistance:	80
+!Tgif.DoubleClickInterval:	300
+!Tgif.HandleSize:		2
+!Tgif.HistoryDepth:		10
+!Tgif.SaveTmpOnReturn:		false
+!Tgif.ImportFromLibrary:	false
+!Tgif.WarpToWinCenter:		false
+!Tgif.SaveCommentsInSaveNew:	true
+!Tgif.CanvasWindowOnly:		false
+!
+!Tgif.UsePsAdobeString:		false
+! The following will generate "%!PS-Adobe-2.0 EPSF-1.2" in EPS files
+!	which may be needed for some Windows applications.
+!Tgif.UsePsAdobeString:		2.0/1.2
+!
+!Tgif.HalfToneBitmap:		false
+!Tgif.ThresholdBitmap:		false
+!Tgif.BitmapThreshold:		0.5
+!Tgif.GroupedTextEditable:	true
+!Tgif.ForceClearAfterEPS:	false	<-- obsolete!!!
+!Tgif.DefaultEPSScaling:	1
+!Tgif.DefaultEPSScaling:	1.7778	<-- good for letter
+!Tgif.DefaultEPSScaling:	1.7639	<-- good for A4
+!Tgif.IntrCheckInterval:	10
+!Tgif.TiledPageScaling:		0.95
+!Tgif.TGIFPATH:			<must be a full path name>
+!Tgif.TGIFICON:			<a full path name or a file name under TGIFPATH>
+!Tgif.StickyMenuSelection:	true
+!Tgif.PSBopHook:		tgif-bop-hook
+!Tgif.PSEopHook:		tgif-eop-hook
+!Tgif.MinimalEPS:		true
+!Tgif.InitialPrintInColor:	true
+!Tgif.InitialShowGrid:		false
+!Tgif.InitialSnapOn:		false
+!Tgif.NoMenubar:		false
+!Tgif.NoStatusWindow:		false
+!Tgif.ReverseMouseStatusButtons:	false
+!Tgif.MinimalMenubar:		true
+!Tgif.ColorBgInPrintingColorPS:	false
+!Tgif.ScrollBarWidth:		16
+!
+!Tgif.InitialPaperSize:		8.5in x 11in
+!Tgif.InitialPaperSize:		21cm x 29.7cm
+!
+!Tgif.UpdateChildUsingAlignment:	false
+!Tgif.UpdateChildUsingAlignment:	true
+!Tgif.UpdateChildUsingAlignment:	no_overlap
+!
+!Tgif.GenerateImageMap:		false
+!Tgif.XpmToGif:			xpmtoppm %s | ppmtogif
+!Tgif.ImageMapFileExtension:	map
+!Tgif.GifFileExtension:		gif
+!Tgif.ImageMapFileFormat:	NCSA
+!Tgif.ImageMapFileFormat:	CERN
+!Tgif.UseXPmVersion1ForImageMap:	true
+!Tgif.UsePaperSizeStoredInFile:	false
+!Tgif.OneMotionSelMove:		false
+!Tgif.TiffEPSI:			false	<-- obsolete!!!
+!Tgif.XbmToTiff:		xbmtopbm %s | pnmtotiff -none > %s
+!Tgif.EPSIExportExtension:	epsi
+!Tgif.HotListFileName:		<Your home directory>/.Tgif_hotlist
+!
+! Fot the viewers below, use %S if the tool can accept URL; otherwise, use %s.
+!	If NONE is used, tgif will prompt for a local file name to save into.
+!
+!Tgif.htmlViewer:		xmosaic %S
+!Tgif.gifViewer:		xv %s
+!Tgif.tiffViewer:		NONE
+!
+!Tgif.AutoHyperSpaceOnRemote:	true
+!Tgif.AllowLaunchInHyperSpace:	false
+!Tgif.CanChangeAttrColor:	false
+!Tgif.MimeTypesFile:		/u/guest/william/.mime.types
+!Tgif.LocalRGBTxt:		/usr/local/lib/X11/rgb.txt
+!Tgif.PrintUsingRequestedColor:	false
+!
+!Tgif.ShowMeasurement:		false
+!Tgif.ShowMeasurementUnit:	pixel
+!Tgif.ShowMeasurementUnit:	inch
+!Tgif.ShowMeasurementUnit:	cm
+!
+!Tgif.PageStyleLandscape:	false
+!
+!Tgif.QueryZoomInPoint:		true
+!Tgif.QueryZoomInPoint:		always
+!Tgif.QueryZoomInPoint:		no_select
+!
+!Tgif.GZipCmd:			gzip -c
+!Tgif.GUnZipCmd:		gunzip -c
+!Tgif.HttpProxy:		<host>:<port>
+!Tgif.FtpProxy:			<host>:<port>
+!Tgif.InitialArrowStyle:	RIGHT
+!Tgif.ShowPageInEPS:		false
+!Tgif.MaxNavigateCacheBuffers:	40
+!Tgif.NumberFileInPrintOnePage:	false
+!Tgif.OneMotionTimeout:		200
+!Tgif.MinMoveInterval:		0
+!Tgif.GifToXpm:			giftopnm %s | ppmtoxpm
+!Tgif.InitExportPixelTrim:	0,0,0,0
+!
+! Version 3.0 and above
+!
+!Tgif.QuantizingLevels:		222
+!Tgif.RotateCursor:		crosshair
+!Tgif.ColorLayers:		false
+!Tgif.TiffToXbm:		tifftopnm %s | pgmtopbm | pbmtoxbm
+!Tgif.DefFixedWidthFont:	-*-courier-medium-r-normal--12-*-*-*-*-*-*-*
+!Tgif.DefFixedWidthRulerFont:	-*-courier-medium-r-normal--10-*-*-*-*-*-*-*
+!Tgif.MenuFont:			-*-helvetica-bold-r-normal--12-*-*-*-*-*-*-*
+!Tgif.BoldMsgFont:		-*-helvetica-bold-r-normal--12-*-*-*-*-*-*-*
+!Tgif.MsgFont:			-*-helvetica-medium-r-normal--12-*-*-*-*-*-*-*
+!Tgif.BggenToXpm:		bggen %s -g %s | ppmquant 64 | ppmtoxpm
+!Tgif.DefaultErrorDiffuseLevels:	2 3 2
+!Tgif.MaxImportFilters:		5
+!Tgif.ImportFilter0:	GIF-dither gif giftopnm %s | ppmdither | ppmtoxpm
+!Tgif.ImportFilter1:	GIF gif giftopnm %s | ppmquant 222 | ppmtoxpm
+!Tgif.ImportFilter2:	JPEG-dither jpg;jpeg \n\
+!			djpeg -gif %s | giftopnm | ppmdither | ppmtoxpm
+!Tgif.ImportFilter3:	JPEG jpg;jpeg \n\
+!			djpeg -gif -colors 222 %s | giftopnm | ppmtoxpm
+!Tgif.ImportFilter4:	EPStoHiResPpm ps;eps \n\
+!			convert -scale 43%% -density 288 '%s' ppm:-
+!Tgif.ShowFileNameOnBrowse:	true
+!Tgif.HtmlFileExtension:	html
+!Tgif.GenerateHtmlHref:		true
+!Tgif.RotationIncrement:	45
+!Tgif.PSA4PaperSize:		false
+!Tgif.ShapeShadowSpec:		2,2
+!Tgif.StretchableText:		true
+!Tgif.EditTextSize:		0
+!Tgif.EditTextSize:		14
+!Tgif.IconPixmap:		/usr/lib/X11/tgif/tgificon.xpm	<-- obsolete!!!
+!Tgif.WMIconPixmap:		/usr/local/lib/X11/tgif/tgificon.xpm
+!Tgif.TmpFileMode:		0664
+!Tgif.TitledPinnedMenu:		true
+!Tgif.ColorFromXPixmap:		/usr/local/lib/X11/tgif/tgificon.xpm
+!Tgif.VectorWarpSoftness:	1.5
+!Tgif.ChangePropertiesOfAttrs:	false
+!Tgif.ShiftForDiagMouseMove:	false
+!Tgif.UseRecentForDiagMouseMove:	false
+!Tgif.FlushColormapOnOpen:	true
+!Tgif.TransparentPattern:	false
+!Tgif.DontReencode:		Times:Courier:Helvetica
+!Tgif.UnsignedInXBmExport:	true
+!Tgif.CommentInBitmapExport:	true
+!Tgif.ShowFontSizeInPoints:	false
+!Tgif.DontCondensePSFile:	true
+!Tgif.StripCondensedPSComments:	false	<-- obsolete!!!
+!Tgif.PdfFileExtension:		pdf
+!Tgif.PsToPdf:			ps2pdf "%s" "%s"
+!Tgif.3DLook:			true
+!Tgif.XpmDeckToGifAnim:		gifsicle -lforever --delay 10
+!Tgif.XpmDeckToGifAnim:		whirlgif -loop -time 10
+!Tgif.GifAnimExplode:		gifsicle -eU
+!Tgif.Btn3PopupModeMenu:	false	<-- obsolete!!!
+!Tgif.ScriptFraction:		0.6
+!Tgif.DeleteNextCharWithDelKey:	true
+!
+! DoubleByte related
+!
+!Tgif.DefaultSingleByteFont:	Helvetica
+!Tgif.SquareDoubleByteFonts:	\n\
+! -hku-fixed-medium-r-normal--%d-*-*-*-*-*-big5.hku-0,*,HKU\n\
+! -hku-fixed-medium-r-normal--%d-*-*-*-*-*-big5.hku-0,*,HKU\n\
+! -hku-fixed-medium-r-normal--%d-*-*-*-*-*-big5.hku-0,*,HKU\n\
+! -hku-fixed-medium-r-normal--%d-*-*-*-*-*-big5.hku-0,*,HKU
+!
+! For zh_TW.big5
+!
+!Tgif.SquareDoubleByteFonts:	\n\
+! -taipei-fixed-medium-r-normal--%d-*-*-*-*-*-big5-0,*,ShanHeiSun-Light-B5-H\n\
+! -taipei-fixed-medium-r-normal--%d-*-*-*-*-*-big5-0,*,ZenKai-Medium-B5-H\n\
+! -taipei-fixed-medium-r-normal--%d-*-*-*-*-*-big5-0,*,ShanHeiSun-Light-B5-H\n\
+! -taipei-fixed-medium-r-normal--%d-*-*-*-*-*-big5-0,*,ZenKai-Medium-B5-H
+!
+! For zh_CN.euc
+!
+!Tgif.SquareDoubleByteFonts:	\n\
+! -isas-fangsong ti-medium-r-normal--%d-*-*-*-*-*-gb2312.1980-0,*,MSungGBK-Light-GB-H\n\
+! -isas-song ti-medium-r-normal--%d-*-*-*-*-*-gb2312.1980-0,*,GBZenKai-Medium-GB-H\n\
+! -isas-fangsong ti-medium-r-normal--%d-*-*-*-*-*-gb2312.1980-0,*,MSungGBK-Light-GB-H\n\
+! -isas-song ti-medium-r-normal--%d-*-*-*-*-*-gb2312.1980-0,*,GBZenKai-Medium-GB-H
+!Tgif.SquareDoubleByteFonts: \n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,Ryumin-Light-EUC-H\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,Ryumin-Light-EUC-H\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,Ryumin-Light-EUC-H\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,Ryumin-Light-EUC-H\n\
+!\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,GothicBBB-Medium-EUC-H\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,GothicBBB-Medium-EUC-H\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,GothicBBB-Medium-EUC-H\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,H,GothicBBB-Medium-EUC-H\n\
+!\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,Ryumin-Light-EUC-V\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,Ryumin-Light-EUC-V\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,Ryumin-Light-EUC-V\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,Ryumin-Light-EUC-V\n\
+!\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,GothicBBB-Medium-EUC-V\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,GothicBBB-Medium-EUC-V\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,GothicBBB-Medium-EUC-V\n\
+!-jis-fixed-medium-r-*--%d-*-*-*-*-*-jisx0208.1983-*,V,GothicBBB-Medium-EUC-V
+Tgif.HKUShowFontChar:		\244\244
+Tgif.MSungGBKShowFontChar:	\271\372
+Tgif.GBZenKaiShowFontChar:	\271\372
+Tgif.RyuminShowFontChar:	\244\242
+Tgif.GothicBBBShowFontChar:	\244\316
+Tgif.ShanHeiSunShowFontChar:	\244\244
+Tgif.ZenKaiShowFontChar:	\244\244
+!Tgif.DoubleByteInputMethod:	xcin
+!Tgif.DoubleByteInputMethod:	chinput
+!Tgif.DoubleByteInputMethod:	kinput2
+!Tgif.DoubleByteInputMethod:	tgtwb5,-taipei-fixed-medium-r-normal--16-150-75-75-c-160-big5-0
+!Tgif.DoubleByteInputMethod:	tgchgb,-isas-fangsong ti-medium-r-normal--16-160-72-72-c-160-gb2312.1980-0
+!Tgif.DoubleByteInputMethod:	xim
+!
+! If Tgif.DoubleByteInputMethod is set to kinput2 or xim and you are mainly
+!	operated in a Japanese environment, please try the following settings:
+!
+! Please note that the environment variables LANG and XMODIFIERS override the
+!	Tgif.Lang and Tgif.Modifiers X defaults.
+!
+Tgif.UseNKF:			true
+Tgif.CopyAndPasteJIS:		true
+Tgif.PreeditType:		root
+!Tgif.PreeditType:		overthespot
+!Tgif.Lang:			ja_JP.EUC
+!Tgif.Lang:			ja_JP.ujis
+!Tgif.Modifiers:		false
+!Tgif.ConvSelection:		_JAPANESE_CONVERSION
+!
+! After release 4.0
+!
+!Tgif.VisibleGridInSlideShow:	false
+!Tgif.SmoothScrollingCanvas:	jump
+!Tgif.SmoothScrollingCanvas:	off
+!Tgif.SmoothScrollingCanvas:	smooth
+!Tgif.LightGrayColor:		gray75
+!Tgif.DarkGrayColor:		gray50
+!Tgif.DefaultObjectBackground:	white
+!Tgif.UseImagePixelsForTrueColorExport:	false
+!Tgif.DialogboxUse3DBorder:	true
+!
+! Tgif.MenuFontSet and Tgif.LocaleDir are only useful if tgif is
+!	compiled with the ENABLE_NLS compiler option.
+!
+!Tgif.MenuFontSet:		a14,k14,r14
+!Tgif.MsgFontSet:		a14,k14,r14
+!Tgif.BoldMsgFontSet:		a14,k14,r14
+!Tgif.BoldMsgFontDoubleByte:	true
+!Tgif.LocaleDir:		/usr/share/lib
+!
+! Added in version 4.1.9
+!
+!Tgif.PsRegMarksInTiledPageMode:	false
+!Tgif.PsRegMarksGray:		0.95
+!Tgif.PSFontAliases:		\n\
+!	UtopiaSE-Regular=Utopia-Regular \n\
+!	UtopiaSE-Bold=Utopia-Bold \n\
+!	UtopiaSE-Italic=Utopia-Italic \n\
+!	UtopiaSE-BoldItalic=Utopia-BoldItalic
+!
+! Added in version 4.1.16
+!
+!Tgif.DomainInIni:		false
+!
+! Added in version 4.1.17
+!
+!Tgif.UndoRedoRestoreDrawingMode:true
+!Tgif.MenuRowsBeforeScroll:	20
+!Tgif.MenuColsBeforeScroll:	26
+!Tgif.PngToXpm:			pngtopnm %s | ppmquant 222 | ppmtoxpm
+!Tgif.XpmToPng:			xpmtoppm %s | pnmtopng
+!Tgif.PngFileExtension:		png
+!Tgif.ProducedBy:	Copyright ? 2000, your name <your-e-mail@your.org>
+!Tgif.Editor:			xemacs -title '%s' '%s'
+!Tgif.Editor:			xterm -title '%s' -e vi '%s'
+!
+! Added in version 4.1.26
+!
+!Tgif.GoHyperSpaceInSlideShow:	false
+!Tgif.LineWidthIndexInSlideShow:	4
+!Tgif.MaxRecentFiles:		10
+!Tgif.ResetOriginOnAdvancePage:	false
+!
+! Added in version 4.1.29
+!
+!Tgif.UseMeasureTooltip:	false
+!Tgif.MeasureTooltipXFollowMouse:	false
+!Tgif.MeasureTooltipYFollowMouse:	false
+!Tgif.MeasureTooltipHorizontalPosition:	left/center/right
+!Tgif.MeasureTooltipVerticalPosition:	top/middle/bottom
+!Tgif.MeasureTooltipVerbose:	true
+!
+! Added in version 4.1.30
+!
+!Tgif.NoMinWinSize:		true
+!Tgif.JpegToXpm:		djpeg -gif -color 222 %s | giftopnm | ppmtoxpm
+!
+! Added in version 4.1.31
+!
+!Tgif.AutoWrapMenubar:		false
+!
+! Added in version 4.1.34
+!
+!Tgif.XpmToJpeg:		xpmtoppm %s | cjpeg
+!Tgif.JpegFileExtension:	jpg
+!Tgif.AutoEPSPreviewBitmap:	false
+!Tgif.PsToXbm:	gs -q -dNOPAUSE -sDEVICE=pbm -sOutputFile=- -- "%s" | pbmtoxbm
+!
+! Added in version 4.1.35
+!
+!Tgif.TmpDirInHomeDir:		true
+!Tgif.TmpDir:			/somewhere/tmp	<-- try not to use this entry
+!Tgif.ThumbnailGeometry:	160x120
+!Tgif.ThumbnailPadding:		8
+!Tgif.ThumbnailXGap:		16
+!Tgif.ThumbnailYGap:		0
+!Tgif.ThumbnailX:		32
+!Tgif.ThumbnailY:		32
+!Tgif.ShowWireSignalName:	true
+!
+! Added in version 4.1.39
+!
+!Tgif.LandscapePdfSetPageDevice:	true
+!
+! Added in version 4.1.40
+!
+!Tgif.DeleteCmdAsCut:		true	<-- obsolete!!!
+!Tgif.EnableMouseWheel:		false
+!Tgif.Btn2PopupMainMenu:	false
+!
+! Added in version 4.1.41
+!
+!Tgif.PdfSetPageDevice:		true
+!Tgif.AdditionalDontReencode:	FFDingbests:ZapfDingbats
+!Tgif.NoChoiceWindow:		false
+!Tgif.UseXPmVersion1ForXPmDeck:	true
+!Tgif.SlideShowWindowOffsets:	-20,-20
+!Tgif.SlideShowBorderColor:	red
+!Tgif.ConvertToBezierSegments:	50
+!Tgif.TickMarkSize:		8
+!
+! Added in version 4.1.42
+!
+!Tgif.NoModeWindow:		false
+!Tgif.MakeUnsavableInSlideShow:	false
+!
+! Added in version 4.1.43
+!
+!Tgif.SingleByteInputMethod:	xim
+!Tgif.IgnoreSlideShowOffsetsInFile:	true
+!Tgif.ItalicMsgFont:		-*-helvetica-medium-o-normal--12-*-*-*-*-*-*-*
+!Tgif.ItalicMsgFontSet:		a14,k14,r14
+!Tgif.BoldItalicMsgFont:	-*-helvetica-bold-o-normal--12-*-*-*-*-*-*-*
+!Tgif.BoldItalicMsgFontSet:	a14,k14,r14
+!Tgif.PbmToXbm:			pbmtoxbm %s
+!Tgif.PgmToXpm:			ppmtoxpm %s
+!Tgif.PpmToXpm:			ppmquant 222 %s | ppmtoxpm
+!Tgif.ExternalPsToEpsi:		false
+!Tgif.GsPath:			gs
+!Tgif.CompoundTextStretchableForPSE:	true
+!Tgif.HideWindowsInSlideShow:	true
+!
+! Added in version 4.1.45
+!
+!Tgif.PSDistillerNoImageCompress:	false
+!Tgif.AdditionalPSSetup: \n\
+!	systemdict /setdistillerparams known \n\
+!	{ << /AutoFilterGrayImages false /AutoFilterColorImages false \n\
+!	/ColorImageFilter /FlateEncode /GrayImageFilter /FlateEncode \n\
+!	>> setdistillerparams } if
+!(for iso8859-2 encoded Courier fonts)
+!Tgif.PSFontNeedCharSubs:	\n\
+!	Courier=iso8859-2 \n\
+!	Courier-Bold=iso8859-2 \n\
+!	Courier-Oblique=iso8859-2 \n\
+!	Courier-BoldOblique=iso8859-2
+!Tgif.PSCharSubs_iso8859-2:	\n\
+!	8#241/Aogonek \n\
+!	8#243/Lslash \n\
+!	8#246/Sacute \n\
+!	8#254/Zacute \n\
+!	8#257/Zdotaccent \n\
+!	8#261/aogonek \n\
+!	8#263/lslash \n\
+!	8#266/sacute \n\
+!	8#274/zacute \n\
+!	8#277/zdotaccent \n\
+!	8#306/Cacute \n\
+!	8#312/Eogonek \n\
+!	8#321/Nacute \n\
+!	8#346/cacute \n\
+!	8#352/eogonek \n\
+!	8#361/nacute
+!(iso8859-13 fonts have the nice looking double quotation marks used in LaTeX)
+!Tgif.PSCharSubs_iso8859-13:	\n\
+!	8#241/quotedblright \n\
+!	8#264/quotedblleft
+!Tgif.DrawTextFuncKey_F2: \n\
+!	set_selected_text_style("b"); \n\
+!	set_selected_obj_color("#000000");
+!Tgif.DrawTextFuncKey_F4: call_simple_shortcut("InsertSymbol");
+!Tgif.DrawTextFuncKey_F6: \n\
+!	set_selected_text_style("bi"); \n\
+!	set_selected_obj_color("#0000ff");
+!Tgif.DrawTextFuncKey_F8: \n\
+!	set_selected_text_style("bi"); \n\
+!	set_selected_obj_color("#008000");
+!Tgif.PasteFromXSelectionOnly:	true
+!Tgif.PasteFromSelectionTimeout:	10
+!Tgif.LengthLimit256InInsertChar:	false
+!Tgif.JpegToPpm6:	djpeg -ppm "%s"
+!Tgif.ObjectShadowOffsets:	2,2
+!Tgif.ObjectShadowColor:	#c0c0c0
+!Tgif.IgnoreObjectShadowInfoInFile:	true
+!
+! Added in version 4.2
+!
+!Tgif.ReportMissingFonts:	false
+!Tgif.CustomPatternDir:		/usr/local/lib/tgif/xbm
+!Tgif.EnableTrueColorImages:	true
+!Tgif.PpmToGif:			ppmquant 222 %s | ppmtogif
+!Tgif.PpmToPng:			pnmtopng %s
+!Tgif.PpmToJpeg:		cjpeg %s
+!Tgif.Ppm6ToXpm3:		ppmtoxpm %s
+!Tgif.PngToPpm6:		pngtopnm "%s"
+!Tgif.PpmQuantize:		pnmquant %d %s
+!Tgif.PpmFSQuantize:		pnmquant -fs %d %s
+!Tgif.BggenToPpm6:		bggen %s -g %s
+!Tgif.LittleEndianPpm6:		false
+!Tgif.EPSIThresholdPreviewBitmap:	false
+!Tgif.EPSIPreviewBitmapThreshold:	0.5
+!Tgif.EpsToTmpSvg:		pstoedit -dt -f sk "%s" "%s"
+!Tgif.TmpSvgToSvg:		uniconvertor "%s" "%s"
+!Tgif.SvgFileExtension:		sk
+! Note: for cygwin, must change "utf8" to "utf-8" for the next 4 lines
+Tgif.HKUConvFromUTF8:		iconv -f utf8 -t big5
+Tgif.HKUConvToUTF8:		iconv -f big5 -t utf8
+Tgif.GBUConvFromUTF8:		iconv -f utf8 -t gb2312
+Tgif.GBUConvToUTF8:		iconv -f gb2312 -t utf8
+!Tgif.DefaultLatin1FontCharEncoding:	iso10646-1
+Tgif.AutoRotatePivot:		false
+!
+! Added in version 4.2.1
+!
+!Tgif.RightMargin:		128 pixel
+!Tgif.RightMargin:		2.5 cm
+!Tgif.RightMargin:		1 in
+!Tgif.EnableRightMargin:	false
+!
+! Added in version 4.2.3
+!
+!Tgif.NoOrientationIfPdfSetPageDevice:	true
+!Tgif.PNGExportHasTransparentColor:	false
+!Tgif.PNGExportTransparentColor:	#ffffff
+!Tgif.PpmToPngWithTransparentColor:	pnmtopng -transparent '%s' '%s'
+!Tgif.EnableThresholdFloodReplaceColor:	false
+!Tgif.FloodReplaceColorThreshold:	15,15,15
+!Tgif.UseStdPalette8:			false
+!Tgif.UseStdPalette27:			false
+!Tgif.UseStdPalette64:			false
+!Tgif.UseStdPalette216:			false
+!Tgif.UseMobileWebSafePalette:		false
+!Tgif.UseOpenOfficeGalaxyPalette:	false
+!Tgif.UseOpenOfficeGooglePalette:	false
+!Tgif.AdditionalColors:			#ff8000,#ffce00,#d02090
+!Tgif.DefaultColor:			#000000
+!Tgif.GifToPpm6:			giftopnm "%s"

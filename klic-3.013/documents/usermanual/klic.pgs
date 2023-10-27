@@ -1,0 +1,12 @@
+\initial {A}
+\entry {\code {\code {atom_table}}}{18}
+\initial {F}
+\entry {\code {\code {functor_table}}}{23}
+\initial {G}
+\entry {\code {\code {generic} (pseudo module)}}{7}
+\initial {K}
+\entry {\code {\code {klicio}}}{39}
+\initial {S}
+\entry {\code {\code {system_control}}}{42}
+\initial {U}
+\entry {\code {\code {unix}}}{32}

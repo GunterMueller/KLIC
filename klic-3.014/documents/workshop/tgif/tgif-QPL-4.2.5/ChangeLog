@@ -1,0 +1,1477 @@
+-----------------------> tgif-4.2.4 => tgif-4.2.5 <-----------------------
+1)  Fix a crashing bug when copying a string with non-simple text (e.g., has
+    superscript or subscript).
+
+-----------------------> tgif-4.2.3 => tgif-4.2.4 <-----------------------
+1)  Fix a bug that caused a crash during a Patse operation after the
+    CopyPlainTextAsObject() command has been executed.
+2)  Fix a crashing bug with GetBoundingBox() when the current linetype is
+    "structured splines".
+3)  Fix a few compiler-related bugs so that tgif can be compiled under Solaris.
+    A new compiler option (_NO_XUTF8FUNCTIONS) is added so that the
+    Xutf8TextListToTextProperty() is not referenced.
+4)  Further fix the license problem with "nkf.e", "chinput.e", and "cli_xcin.e".
+    Thanks to Carlo U. Segre <segre at iit.edu> for pointing out the additional
+    problems.
+
+-----------------------> tgif-4.2.2 => tgif-4.2.3 <-----------------------
+1)  Fix a bug with pasting garbage characters from Windows under cygwin.
+    This used to cause file corruption.
+2)  Fix a bug with double-byte characters or international characters when
+    eglibc is used.  Thanks to Gunter Frenz <guefz at freenet.de>,
+    Hiroshi TSUTSUI <tsutsui at easter.kuee.kyoto-u.ac.jp>, and Klaus Koepernik
+    <K.Koepernik at ifw-dresden.de> for pointing out the problem and
+    Hiroshi TSUTSUI <tsutsui at easter.kuee.kyoto-u.ac.jp> for the patch.
+3)  Allow Tgif.EnableTrueColorImages to be set to "true" only if tgif is
+    compiled with zlib support.  Also, starting with this version, if one has a
+    TrueColor display, Tgif.EnableTrueColorImages is set to "true" by default.
+4)  Add support a new built-in double-byte input method, tgchgb, to support the
+    input of gb2312 encoded simplified Chinese characters using a graphical
+    zhu-yin-fu-hao keypad (would also accept pinyin directly).  This input
+    method is activated by typing <Cntrl><Space> when a double-byte chinese font
+    is selected.  On Windows systems, <Cntrl><Space> may be used by a Windows
+    input method.  If this is the case, one should type <Cntrl><Shift><Space>
+    instead.
+5)  Allow Flood Fill and Replace Color to use a threshold value.  Add new
+    X defaults, Tgif.EnableThresholdFloodReplaceColor and
+    Tgif.FloodReplaceColorThreshold to set default values for this feature.
+6)  Better support for transparent pixels for X11 pixmap objects.
+7)  Add -D_NO_LOCALE_SUPPORT to CFLAGS in Makefile.am so that, by default,
+    tgif will be compiled without locale support if the configure script is
+    used to build tgif.
+8)  Add a new X default, Tgif.NoOrientationIfPdfSetPageDevice, so that
+    the "%%Orientation:" line is not used in the PostScript file if
+    "setpagedevice" is active when exporting a PS/EPS/PDF file.
+9)  Add "eq4-2x-nowin-jpg.sym" to be used instead of "eq4-2x-jpg.sym" to run
+    silently (i.e., no popup window).  This should get around the problem that
+    on cygwin, sometimes a popup window will not close by itself.
+10) Add new X defaults, Tgif.PNGExportHasTransparentColor,
+    Tgif.PNGExportTransparentColor, and Tgif.PpmToPngWithTransparentColor
+    to suppor the generation of transparent PNG files.
+11) Add new X defaults, Tgif.UseStdPalette8, Tgif.UseStdPalette27,
+    Tgif.UseStdPalette64, Tgif.UseStdPalette216/Tgif.UseMobileWebSafePalette,
+    Tgif.UseOpenOfficeGalaxyPalette, and Tgif.UseOpenOfficeGooglePalette
+    to use a standard 8-color, 27-color, 64-color, 216-color, 53-color, and
+    80-color palette as the startup colors for tgif.  Also added
+    Tgif.AdditionalColors to take effect if any of these X defaults are used.
+12) Add a new X default, Tgif.DefaultColor, so that the default tgif color
+    can be specified using a color name.
+13) Obsolete the Tgif.DeleteCmdAsCut X default.  Now Cntrl+x is bound to the
+    Cut command.  To delete something without cutting it into the cut buffer,
+    one can use the <Delete> key on the keyboard or select Delete from the
+    Edit Menu.
+14) Fix a license problem.  The files, "nkf.c", "chinput.c", and "cli_xcin.c"
+    do not have compatible license with the QPL license.  Therefore, starting
+    with this release, they will be removed (and replaced by empty files) from
+    the QPL distribution of tgif (and -D_NO_NKF -D_NO_CHINPUT -D_NO_XCIN must
+    be used in MISCDEFINES in Tgif.tmpl to avoid compiler errors).  These files
+    will only be available in the free-of-charge distribution of tgif.
+    Thanks to Carlo U. Segre <segre at iit.edu> for pointing out the problem.
+
+-----------------------> tgif-4.2.1 => tgif-4.2.2 <-----------------------
+1)  Fix a bug with parsing Tgif.AdditionalFonts.  Thanks to Thomas Sefzick
+    <t.sefzick at fz-juelich.de> for pointing out the bug.
+2)  Fix a bug with copying and pasting in cygwin.  By default, tgif no longer
+    uses the old style X cut buffer.
+3)  Fix a bug with copying UTF-8 characters in cygwin.
+4)  Fix a bug when Tgif.EnableTrueColorImages is set to "true" and positions of
+    true color (i.e., ppm_true) objects do not show up correctly.
+5)  In printing/exporting to a PS/EPS/PDF file, if a text object is simple
+    (i.e., single line with no superscript, subscript, or horizontal thin
+    space) and it has a background fill pattern, generate PostScript code to
+    draw a horizontally tighter boundingbox.
+6)  Add InsertSymbol() under the Text submenu of the Edit Menu.
+7)  Add a very simple right-margin feature when entering text.  This is far
+    from a full-featured right-margin.  It is only activated under the
+    following conditions: text cursor is at the last position in the text
+    object being edited (i.e., appending to the current text object), text
+    object is not transformed, text is left-justified, text cursor is not
+    inside a superscript or a subscript, no zoom, and Tgif.EditTextSize is not
+    used.  Tgif.RightMargin can be used to specify the right margin.
+    Tgif.EnableRightMargin can be used to enable this feature.
+    Add EnableRightMargin() and SpecifyRightMargin() under the Show/Hide
+    submenu of the Layout Menu.
+8)  Add overline for text objects.
+9)  Add "eq4jpg.sym" and "eq4-2x-jpg.sym" to be used instead of "eq4xpm.sym"
+    if "eq4xpm.sym" gives you an all-black or all-white image.  The problem
+    was that there is a bug in ImageMagick's "convert" when converting EPS
+    file to a PPM file.  With "eq4jpg.sym" and "eq4-2x-jpg.sym", "convert"
+    will be called to convert an EPS file to a JPEG file with "-scale 25%
+    -density 576" as commandline parameters.  These two new symbol files are
+    best used with Tgif.EnableTrueColorImages set to "true".
+10) Remove Tgif.TighterStructuredSplines from the documentation since this
+    X default is invalid.
+11) Add the following internal commands:
+
+        set_selected_text_overline(<overline>)
+
+-----------------------> tgif-4.2 => tgif-4.2.1 <-----------------------
+1)  Fix a bug with rotated circles.
+2)  Fix a bug with <ALT>c not working on Mac OS X.
+3)  Fix a bug in Imakefile which would fail to install some icon files during
+    "make install".
+
+-----------------------> tgif-4.1.45 => tgif-4.2 <-----------------------
+1)  Fix bugs with copy and paste.  Thanks to Dr. Ing. Dieter Jurzitza
+    <dieter.jurzitza at herrmannultraschall.com> for pointing out the bug and
+    helping to find the problem.
+2)  Fix a bug with the pstoepsi() internal command so that tgif does not crash
+    if pbmtoxbm is not installed.  Thanks to Yannick Morvan for pointing out
+    the bug.
+3)  Fix a bug with pinned shape menu.  The problem was that text cannot be
+    entered immediately after a shape is created, Thanks to Paul Lew for
+    pointing out the bug.
+4)  Fix a crashing bug which happens when Tgif.DefFixedWidthFont is used and a
+    non-existent double-byte font is specified in the X resource file.
+5)  Fix a bug with Tgif.DeleteCmdAsCut.  It was not handled like the way it
+    said in the man pages.
+6)  Incorporate the following patches from the Fedora RPM package
+    (tgif-4.1.45-5.fc8.src.rpm):
+
+        tgif-4.1.35-overthespot_fix.patch
+        tgif-4.1.44-xim-bad-focus.patch
+        tgif-4.1.45-fontcheck.patch
+        tgif-QPL-4.1.45-open-with-mode.patch
+        tgif.gif
+        tgif-4.1.41.ja.po (in po/ja)
+        tgif-4.1ja9.tar.gz (in po/ja)
+        tgif-wrapper.sh (in po/ja)
+        tgif.desktop (in po/ja)
+        tgif.spec (in po/ja)
+
+    The following patch is not applied since it did not look correct.
+
+        tgif-textcursor-a-urasim.patch
+
+    I don't understand why the most-significant-bit is cleared no matter what.
+    The original code in tgif right below this patch suppose to handle the
+    situation correctly.
+7)  Fix a bug with composing international characters.  In newer Linux
+    releases, UTF8 characters are used by default when international
+    characters are composed.  These UTF8 characters are often multi-byte
+    characters so they needed to be converted to single-byte in order to
+    use X11 fonts.  To get this to work, tgif loads "libidn" dynamically
+    and calls functions in "libidn" to do the conversion.  If your system
+    does not have "libidn", you can use the -D_NO_IDNLIB compiler option
+    so that tgif will not attempt to load "libidn".
+8)  Fix typos in "tgif.pl".  Thanks to Carlo Segre <segre at iit.edu> for
+    pointingn out the bugs.
+9)  Fix various mistakes in "tgif.man".  Thanks to Shigeharu TAKENO
+    <shige at iee.niit.ac.jp> for the patch.
+10) Rename the Tgif.IconPixmap X default to Tgif.WMIconPixmap.  If this is
+    not done, Xtoolkit will interpret this X default and display an error
+    message.  Thanks to Dr. Ing. Dieter Jurzitza
+    <dieter.jurzitza at herrmannultraschall.com> for pointing out the problem.
+11) Export in the SVG (Scalable Vector Graphics) format.  This requires
+    "uniconvertor" (which is part of the "uniconvertor" package) and "pstoedit"
+    (which is part of the "pstoedit" package).  One known limitation of
+    "uniconvertor" is that it cannot convert bitmap/pixmap patterns/objects.
+12) Add support for user-specified rotation pivot.
+13) Add support for "structured splines" where cubic Bezier curves are used.
+    The Tgif.SplineRubberband X default became obsolete.
+14) Add "eq4png.sym" to be used instead of "eq4xpm.sym" if "eq4xpm.sym"
+    gives you an all-black or all-white image.  The problem was that there
+    is a bug in ImageMagick's "convert" when converting EPS file to a PPM file.
+    With "eq4png.sym", "convert" will be called to convert an EPS file to a
+    PNG file.
+15) Integrate the Tangram Whiteboard feature into tgif on Linux machines.
+    This feature used to be experimental (enabled if compiled with the
+    -D_TGIF_WB2 option).  Now the authors of the Reliable IP-multicast Library
+    (distributed in the "rmcast" subdirectory of tgif) believe that "rmcast" is
+    mature enough, the interface to "rmcast" is now enabled by default (but not
+    activated unless you run tgif with the "-tgwb2" commandlinen optoin).
+
+    If you want to try this feature, you might want to make sure that your
+    network interface card has multicast turned on (using "ifconfig <interface>
+    multicast") and your firewall is not blocking the multicast port used by
+    the whiteboard (default address is 225.1.2.3).  You can try adding
+    "... -p udp -d 225.1.2.0/24 -s 127.0.0.1 -j ACCEPT" to
+    /etc/sysconfig/iptables.
+
+    The "libz" and "libpthread" libraries are required to interface with
+    the "rmcast" library.  Therefore, "-lz -lpthread" must be used in
+    Tgif.tmpl.  If your system does not have "libz", you can use the
+    -D_NO_LIBZ compiler option and remove "-lz" from Tgif.tmpl.  If your
+    system does not have "libpthread", you can remove "-DPTHREAD" and
+    "-lpthread" from Tgif.tmpl.
+
+    Thanks to Jorge Allyson Azevedo <allyson at land.ufrj.br> and other members
+    of the research group lead by Professor Edmundo de Souze e Silva
+    <edmundo at land.ufrj.br> at the Federal University of Rio de Janeiro.
+16) Add a new X default, Tgif.EnableTrueColorImages, so that on TrueColor
+    displays, X11 pixmap and JPEG objects can have all the colors.  Internally,
+    tgif stores them as deflated (using zlib) PPM files.  Therefore, this
+    feature requires zlib and pbmplus to be installed on your system.
+17) Add a new X default, Tgif.CustomPatternDir, so that tgif can replace the
+    default patterns for fills and pens with custom ones.  Thanks to
+    Daniel Bauer <dsbauer at gmail.com> for the patch.
+18) Add a new X default, Tgif.ReportMissingFonts, so that tgif can report
+    missing fonts when it starts.
+19) Add new X defaults, Tgif.@@@ConvFromUTF8 and Tgif.@@@ConvToUTF8, where
+    @@@ is the name of a double-byte font, to convert between UTF8-encoded
+    strings and strings of the named double-byte font.  The specified commands
+    are used in the new Copy and Paste Double Byte (UTF8) Strings operations
+    under the Edit Menu.
+20) Add a new X default, Tgif.DefaultLatin1FontCharEncoding, so that the 4
+    default fonts (Times, Courier, Helvetica, and NewCentury) can use character
+    encoding other than iso8859-1.  Newer Linux systems seem to have only a
+    small number of font sizes available for these fonts.  The scalable and
+    pre-installed version of these fonts are all iso10646-1 encoded.  This is
+    best for creating new tgif files.  There may be a slight compatibity
+    problem with existing tgif files because the iso10646-1 fonts seem to be
+    taller than their iso8859-1 counterparts.
+21) Add Tgif.tmpl-dragonfly (identical to Tgif.tmpl-netbsd) for DragonFly BSD.
+22) Enable printing for X11 pixmap objects having too many colors (as long as
+    it does not have transparent pixels).
+23) Add "configure" to the distribution so that on systems that does not have
+    "imake", a "Makefile" can be created by running "./configure".  This is new
+    and has only been tested on a few platforms.  If this does not work on
+    certain systems, please send an e-mail to the author.  Thanks!
+24) Add a dependency in the tgif.spec file to declare that tgif depends on the
+    xorg-x11-fonts-ISO8859-1-75dpi, ghostscript, and netpbm-progs packages.
+    If you install tgif using an RPM file, you must have these three packages
+    installed before you can install tgif.
+25) Add the following internal commands:
+
+        random_permute_lines_in_attr(<attr_name>)
+        find_obj_names_on_all_pages(<result_attr>,<attr_name_value>)
+
+-----------------------> tgif-4.1.44 => tgif-4.1.45 <-----------------------
+1)  Fix a bug with the create_arc_obj() internal command.  Thanks to
+    Jack Tucker for pointing out the bug.
+2)  Fix a bug with measurements in the ruler window when Tgif.ShowMeasure is
+    active.  Thanks to Olin Johnson for pointing out the bug.
+3)  Fix a bug with "tgif -print -pdf".  Thanks to Rob for pointing out the
+    problem.
+4)  Fix a bug with copy and paste in cygwin.  Thanks to Tobias Naehring for
+    fixing the bug.
+5)  Move tgif's web server to a standard web server port (80).  The new tgif
+    home page is now at:
+
+        http://bourbon.usc.edu/tgif/
+
+6)  Please note that as of 5/16/2006, postings to tgif related groups at
+    Yahoo!Groups are restricted to members only.  This is done to cut down
+    SPAM.  The affected groups are at:
+
+        http://groups.yahoo.com/group/tgif4-discuss
+        http://groups.yahoo.com/group/tgif4-howto
+        http://groups.yahoo.com/group/tgif4-bugs
+        http://groups.yahoo.com/group/tgif4-develop
+
+    If you have registered as a member in a group above, you can now only
+    post via the web interface or by sending an e-mail from your registered
+    e-mail address.  Sorry about this inconvenience.  But there have been
+    just too much SPAM on these lists.
+7)  Use the X Selections mechanism to perform copy and paste.
+8)  Add support for linking to an external JPEG file to save file size (under
+    File->Import).  Some editing operations cannot be performed on these
+    linked JPEG objects.  However, these objects do not have the color
+    limitation of X11 pixmap objects.  Therefore, when they are exported in
+    the PS/EPS formation, they will have a lot more colors.
+9)  The standard Linux distribution now use Xtoolkit by default (this is done
+    by including -DUSE_XT_INITIALIZE in the MISCDEFINES line and -lXt in the
+    SYS_LIBRARIES line of Tgif.tmpl-linux).  One advantage of this is that now
+    it's easy to override X defaults.  For example, one can use:
+
+        tgif -xrm "Tgif.Foreground: red"
+
+10) Add support for Tgif.PSDistillerNoImageCompress so that images in a
+    generated PostScript file will not be compressed by a distiller
+    program such as ps2pdf.  Thanks to Dirk Farin for supplying the PostScript
+    code.  Please use Tgif.PSDistillerNoImageCompress with care.  It has been
+    noticed that generated EPS file may not work well with LaTeX.
+11) Add support for Tgif.AdditionalPSSetup (and -pssetup commandline option)
+    so that a user can add additiional user specified PostScript code in the
+    PostScript file header (right before %%EndSetup).
+12) Support a new commandline option "-noshowpageineps" so that the "showpage"
+    PostScript command is not generated when printing/exporting in the EPS
+    format when tgif is run with "-print"..
+13) Add support for Tgif.PSFontNeedCharSubs and Tgif.PSCharSubs.* so that
+    some characters in the non-ASCII portion of a non-iso8859-1 font can be
+    replaced by user specified PostScript characters.  Thanks to Peter
+    Dembinski for the suggestion.
+14) Add a new X default, Tgif.DrawTextFuncKey_F#, so that a function key
+    can be associated with a list of internal commands (and activiated only
+    in the text drawing mode).
+15) Add the following internal commands:
+
+        set_selected_text_style(<textstyle>)
+        objs_bbox_intersect(<obj1_name>,<obj2_name>,<result_attr>)
+        delete_all_attr_from_selected_objs()
+
+-----------------------> tgif-4.1.43 => tgif-4.1.44 <-----------------------
+1)  Fix a bug with imagemap generation.  Thanks to Jerry Nicholls
+    <jerry at nightwatch.org.uk> for the patch.
+2)  Replace "eq4.sym" and "eq4-2x.sym".  These new LaTeX equation symbols
+    do *not* use pstoepsi, ps2epsi, etc.  It only requires "latex", "dvips",
+    and "gs" to function.
+3)  Add the following new internal command:
+
+        pstoepsi(<target_eps_path>,<src_ps_path>,<scale>)
+
+-----------------------> tgif-4.1.42 => tgif-4.1.43 <-----------------------
+1)  Fix <Meta> key problem with Mac OS X (Darwin).  The Apple Command Key
+    is mapped to Mod2Mask by default.  This will be treated as the <Meta>
+    (or <Alt>) key in tgif.
+2)  Fix a bug with importing an EPS file generated by ps2epsi.  Thanks to
+    Ambrose Li <acli at ada.dhs.org> for the patch.
+3)  Fix tgif to be able to import an EPS file with an 8 bit-per-sample preview
+    bitmap (such as the ones generated by ps2epsi).
+4)  Get tgif to work with out-of-the-box xcin on Red Hat Linux.  Thanks to
+    Ambrose Li <acli at ada.dhs.org> for all the help.
+5)  Add support a new built-in double-byte input method, tgtwb5, to support the
+    input of big5 encoded traditional Chinese characters using a graphical
+    zhu-yin-fu-hao keypad.  This input method is activated by typing
+    <Cntrl><Space> when a double-byte chinese font is selected.
+6)  Add chat to tgwb.
+7)  Support a new commandline option "-sbim xim" to use XIM as the input
+    method for single-byte fonts.  This is useful if the X Keyboard Extension
+    is used in inputing international characters (with dead keys).
+    Thanks to Daniel Sadoc Menasche <sadoc at land.ufrj.br> for the
+    contribution.
+8)  Add a new X default, Tgif.IgnoreSlideShowOfffsetsInFile, so that the
+    slideshow offsets stored in a file can be ignored in the slideshow mode.
+    The reason for this is that the offsets mainly depends on the display
+    and not on the content of the file.  The slideshow offsets should be set
+    using the Tgif.SlideShowWindowOffset X default.
+9)  Add a new LaTeX equation symbol file "eq4-lyx-ps2epsi.sym" in the release
+    to edit the equation with LyX.  Thanks to Ed Gatzke <gatzke at sc.edu>
+    for the contribution.
+10) Update "ru.po".  Thanks to Andrew W. Nosenko for the update.
+11) Add -D__EMX__ in Tgif.tmpl-cygwin to fix the problem with calling stat()
+    on pathnames that begins with "//".  Thanks to Dr. Ing. Dieter Jurzitza
+    <Dieter.Jurzitza at t-online.de> for pointing out the problem.
+12) Add support for importing tgif files with the import_file() internal
+    command.
+13) Add the following new internal commands:
+
+        shuffle_obj_to_bottom(<obj_name>)
+        set_file_unsavable()
+
+-----------------------> tgif-4.1.41 => tgif-4.1.42 <-----------------------
+1)  Tgif's home has moved from University of Maryland to University of Southern
+    California.  The new tgif home page is now:
+
+        http://bourbon.usc.edu:8001/tgif/
+
+2)  If there's no domain resources specified in the X resource file, tgif
+    will use the library path specified when tgif is compiled as the default.
+    This is the directory where the equation symbols are installed.  Thanks to
+    A. Sengupta <osegu at iitk.ac.in> for pointing out the problem.
+3)  For Red Hat 7.2, /usr/bin/xpmtoppm cannot handle input file whose
+    format is XPM version 1.  Suport for a new compiler option, -D_XPM3TOPPM,
+    is added so that tgif can generate XPM format version 3 by default.
+    This is has the same effect as setting Tgif.XPmOutputVersion to 3 and
+    Tgif.UseXPmVersion1ForImageMap to false.
+4)  Add more information in the tooltip when Tgif.MeasureTooltipVerbose
+    is set to true.
+5)  Add a new LaTeX equation symbol file "eq4xpm.sym" in the release.
+    Instead of generating and embedding an EPS file, this new object will
+    generate and embed an XPM file with additional controls.  Please open
+    this file with tgif for more details and check out
+    http://bourbon.usc.edu:8001/tgif/faq/eq4xpm.html.
+    Thanks to Kai Sattler <kaisat at post.tele.dk> for the contribution.
+6)  Fix a bug in tgwb when a text object is being edited.
+7)  Obsolete the Tgif.LandscapePdfSetPageDevice X default (because the name
+    was misleading) and add support for a new X default, Tgif.PdfSetPageDevice.
+    As mentioned in the release notes for tgif-4.1.39, the use of this should
+    not be necessary in the future (and is considered a bug in ps2pdf).
+    The old commandline option, "-nolandpdfspd" is also obsolete and is
+    replaced by "-pdfspd=yes" and "-pdfspd=no".
+8)  Add a new X default, Tgif.NoModeWindow, so that tgif can start without
+    a mode window.
+9)  Add a new X default, Tgif.MakeUnsavableInSlideShow, so that the current
+    file will be made unsavable when slideshow mode is entered.  (If the
+    current file contains auto page numbering objects, the file will be made
+    unsavable regardless of the setting of this X default.)
+10) Update the Reliable IP-multicast Library (distributed in the rmcast
+    subdirectory of this distribution).  The new version allows point-to-point
+    connection between 2 whiteboards.  Please see the updated README.tgwb
+    file.  Thanks to the team members of the research group lead by Professor
+    Edmundo de Souze e Silva <edmundo at land.ufrj.br> at the
+    Federal University of Rio de Janeiro.
+
+-----------------------> tgif-4.1.40 => tgif-4.1.41 <-----------------------
+1)  A QPL version of this distribution of tgif is simultaneously released.
+2)  Update the output of the About command in the Help Menu to show that
+    tgif's new mailing list address is tgif4-announce at yahoogroups.com.
+3)  Fix a bug with "on_resize=" attribute when multiple objects have the
+    same name.  Thanks to Alan M Stephenson <al at cs.york.ac.uk>
+    for pointing out the problem.
+4)  Fix a bug with Tgif.DeleteCmdAsCut.  Thanks to Ralphe Neill
+    <ran at oberon.sub.net.au> for pointing out the problem.
+5)  Fix a bug with the select_each_obj_and_exec() internal command.  Thanks to
+    Dan McMahilll <mcmahill at mtl.mit.edu> for pointing out the problem.
+6)  Fix a uninitialized variable bug.  This causes things to fail when running
+    tgif with -print -eps commandline options.  Thanks to
+    Dan McMahilll <mcmahill at mtl.mit.edu> for pointing out the problem.
+7)  Remove a redundant "a4" string in the generates PS file if A4 paper is
+    requested by using the Tgif.PSA4PaperSize X default.  This seems to
+    causes ghostscript to generate problematic pnm file.  Thanks to
+    AMAKAWA Shuhei <amakawa at sf.t.u-tokyo.ac.jp> for the patch.
+8)  Add horizontal scroll for mouse wheel.  When the <Meta> key is held
+    down, the mouse wheel can now scroll horizintall.  Thanks to
+    Shin-ichi KANNO <shin at prug.org> for the patch.
+9)  Add a compiler option -D_DONT_REENCODE in Tgif.tmpl* so that a list of
+    PostScript fonts for which reencoding is not allowed can be specified at
+    compile time.  Please see the explanation on Tgif.DontReencode in the
+    X DEFAULTS section of the man pages regarding the format of this option.
+    Tgif.DontReencode has precedence over -D_DONT_REENCODE.  At run time, if
+    you just want to add fonts to the list specified by -D_DONT_REENCODE,
+    you should use the new Tgif.AdditionalDontReencode X default.
+    A commandline option, -listdontreencode, is added to print out the value
+    of the -D_DONT_REENCODE compiler option used in compiling tgif.
+10) Add ConvertToBezier in the Poly/Polygon submenu of the Edit Menu to
+    convert a spline object to a Bezier curve.  Thanks to Jurgen Rusch
+    <jurgen.rusch at philips.com> for the conversion script.
+11) Add a bunch of commands for adding tick marks to a poly/polygon/spline
+    object.
+12) New Tgif.tmpl-darwin file for Darwin/Mac OS X (with XFree86).  Thanks to
+    Eric Cronin <ecronin at eecs.umich.edu> for providing it.
+13) Update tgwb (the tgif-based whiteboard application) to use a new Reliable
+    IP-multicast Library (distributed in the rmcast subdirectory of this
+    distribution).  Thanks to the team members of the research group lead by
+    Professor Edmundo de Souze e Silva <edmundo at land.ufrj.br> at the Federal
+    University of Rio de Janeiro.  This update fix the problem with large
+    objects mentioned in the README.tgwb file in prior releases.  However,
+    it still has the problem that there is no privison made for joining
+    a whileboard in session (escept for selecting New from the File Menu of
+    a tgwb to clear all whiteboards).  Please see the updated README.tgwb file.
+14) Add a new X default, Tgif.UseXPmVersion1ForXPmDeck, so that when converting
+    a deck of X11 pixmap objects to a GIF animation file, the XPM version
+    specified by Tgif.XPmOutputVersion X default can be used (instead of
+    using version 1 XPM format).
+15) Add new X defaults, Tgif.SlideShowWindowOffsets and
+    Tgif.SlideShowBorderColor, so that when converting to set the
+    initial window offsets and border color for the slideshow mode.
+16) Add the following new internal commands:
+
+        edit_attr_in_text_mode(<attr_name>)
+
+-----------------------> tgif-4.1.39 => tgif-4.1.40 <-----------------------
+1)  Fix a crashing bug in Specify An Arc when the input is something like
+    "0.9,-,10,20".  Thanks to Adrian Bridgett <adrian.bridgett at iname.com>
+    and Jano van Hemert <jvhemert at cs.leidenuniv.nl> for pointing out the
+    problem.
+2)  Fix a uninitialized variable bug.  This causes crashes sometimes when
+    running tgif with -print -xbm commandline options.  Thanks to
+    Alexander Tenbusch <alexander.tenbusch at masch-bau.uni-magdeburg.de>
+    for pointing out the problem.
+3)  Fix a bug with exporting landscape TiffEPSI files.  Thanks to Geert Carron
+    <gca at adc-itcl.ce.philips.com> for pointing out the bug.
+4)  Fix a bug with displaying text objects when Color Layers are used and
+    some colors are turned off.  Thanks to Johan Vromans
+    <jvromans at squirrel.nl> for pointing out the bug.
+5)  Add scroll support for mouse wheel.  By default, mouse wheel up is mapped
+    to Button4 and mouse wheel down is mapped to Button5.  A new X default,
+    Tgif.EnableMouseWheel, is added so that this can be turned off.  Some
+    mouse wheel can generate Button2 events, and this may interfere with
+    scrolling; therefore, another X default, Tgif.Btn2PopupMainMenu, is added
+    so that Button2 events will not popup the Main Menu in the canvas window.
+    Thanks to Juha Takala <juha.takala at vtt.fi> for providing the information.
+6)  New Tgif.tmpl-cgywin file.  Thanks to Simon Moore
+    <Simon.Moore at cl.cam.ac.uk> for providing it.
+7)  New Tgif.tmpl-uw7 file.  Thanks to Ron Record <rr at sco.com> for
+    providing it.
+8)  Add a new X default, Tgif.DeleteCmdAsCut so that <Cntrl>x can be used
+    Cut selected objects.  (Pressing the <DEL> key on the keyboard will still
+    perform a regular Delete in this case.)
+
+-----------------------> tgif-4.1.38 => tgif-4.1.39 <-----------------------
+1)  Add a new X default, Tgif.LandscapePdfSetPageDevice.  Currently, when
+    exporting landscape PDF files, tgif will use a PostScript
+    "setpagedevice" command to rotate the generated PostScript file 270 degrees
+    before calling ps2pdf.  This should not be necessary (and is considered a
+    bug in ps2pdf).  In the future, this X default can be used to turn off the
+    generation of the "setpagedevice" command when ps2pdf can handle landscape
+    PostScript files correctly.  A new commandline option, -nolandpdfspd, to be
+    used in conjunction with -print is also added for the same purpose.  Thanks
+    to Johan Vromans <JVromans at Squirrel.nl> for the suggestion.
+
+-----------------------> tgif-4.1.37 => tgif-4.1.38 <-----------------------
+1)  Fix a bug in Print Selected Objects that imported EPS objects are not
+    exporte.  Thanks to Ralphe Neill <ran at oberon.sub.net.au> for
+    pointing out the problem.
+2)  For a tgif file in landscape mode, generate the correct (rotated) PDF
+    file.  Thanks to Johan Vromans <JVromans at squirrel.nl> and
+    Goeran Hanke <hankeg at medizin.uni-leipzig.de> for the solutions.
+3)  Update ja.po.  Thanks to Jun Nishii <jun at vinelinux.org> for the patch.
+4)  Add a README file in the spice subdirectory to include some notes on
+    the ports and components feature of tgif.
+5)  Add a compiler option -D_PRTGIF_USE_ISO_LATIN_1_ALWAYS to always use
+    ISO 8859-1 character set for single-byte characters when running tgif
+    with the -print commandline option.  Please only use this if you are
+    sure that you will *never* use other encoding.  You can selectively
+    turn off reencoding by using either the Tgif.DontReencode X default
+    or the -dontreencode commandline option. Thanks to Ambrose Li
+    <acli at mingpaoxpress.com> for the patch.
+
+-----------------------> tgif-4.1.36 => tgif-4.1.37 <-----------------------
+1)  Fix a bug that may cause seg faults when reading tgif files.  Thanks to
+    Hiroei IMAI <imai at nisoc.or.jp> for the patch.
+
+-----------------------> tgif-4.1.35 => tgif-4.1.36 <-----------------------
+1)  Fix a bug in Latest Release Info under the Help Menu.  Thanks to
+    Dr. Ing. Dieter Jurzitza <Dieter.Jurzitza at t-online.de> for
+    pointing out the bug.
+2)  Fix a bug in handling the Edit Attribute in Editor Context Menu
+    when the edit_attrs_in_context_menu attribute is used.  Thanks to
+    Ana Paula for pointing out the problem.
+
+-----------------------> tgif-4.1.34 => tgif-4.1.35 <-----------------------
+1)  Fix a bug with Copy and Paste operations in edit text mode for
+    mixed text objects when the Edit Text Size is non-zero.  Thanks to
+    Heiko Scheit <Heiko.Scheit at mpi-hd.mpg.de> for pointing out the problem.
+2)  Propagate certain DSC comments, such as %%DocumentFonts, %%LanguageLevel,
+    %%Extensions, %%DocumentNeededFonts, and %%DocumentNeedResources, of
+    imported EPS files when printing/exporting in PS/EPS formats.  Please note
+    that this does not work with embedded EPS files (until the next major
+    release when a new file format is introduced).  Thanks to Johan Vromans
+    <JVromans at squirrel.nl> for pointing out the problem.
+3)  Support the use of tempnam() instead of mktemp() due to some security
+    considerations.  On systems that do support tempnam(), the _DONT_USE_MKTEMP
+    compiler option can be used to use tempnam() instead of mktemp().
+    Tgif.tmpl-linux (which is identical to the default Tgif.tmpl),
+    Tgif.tmpl-freebsd, Tgif.tmpl-openbsd, and Tgif.tmpl-netbsd uses
+    -D_DONT_USE_MKTEMP by default.  Thanks to Adrian Bridgett
+    <adrian.bridgett at iname.com> for pointing out the problem.
+4)  Add new X defaults: Tgif.TmpDirInHomeDir and Tgif.TmpDir.  Together with
+    the _TMP_DIR_IN_HOME_DIR compiler option, the temporary directory can be
+    specified in a flexible way.
+5)  Add Create Thumbnails in the Browse submenu of the Import submenu of the
+    File Menu.  Add new X defaults, Tgif.ThumbnailGeometry,
+    Tgif.ThumbnailPadding, Tgif.ThumbnailXGap, Tgif.ThumbnailYGap,
+    Tgif.ThumbnailX, and Tgif.ThumbnailY to control the size and placement of
+    the thumbnails.
+6)  Modify CutPoly() so that it can be used to cut polylines/polygons into
+    segments in select mode.
+7)  New Tgif.tmpl-sco file.  Thanks to Jason Moore <jason.moore at marconi.com>
+    for providing it.
+8)  Add Ports and Signals submenu to the Special Menu.  Please see the
+    CONNECTING OBJECTS section of the man pages for details.  The symbol files
+    in the spice directory is updated to use the new port symbol.
+9)  A new License file is included in this release.
+
+-----------------------> tgif-4.1.33 => tgif-4.1.34 <-----------------------
+1)  Fix a crashing bug in drawing linearly transformed arc objects.  Apparently,
+    this bug has been around for a long time.  Thanks to Hari Radhakrishnan
+    <hari at cems.umn.edu> for pointing out the problem.
+2)  Support the JPEG export format.  Add new X defaults, Tgif.XpmToJpeg and
+    Tgif.JpegFileExtension.  The default value them are "xpmtoppm %s | cjpeg"
+    and "jpg", respectively.
+3)  Add a new X default, Tgif.AutoEPSPreviewBitmap, to enable the automatic
+    generation of a preview bitmap when importing a PS/EPS file, if the file
+    does not contain a preview bitmap.  (This can be turned on and off from the
+    Import submenu of the File Menu.)  The feature also uses a new X default,
+    Tgif.PsToXbm, so that the default PS/EPS to XBM filter can be overridden.
+    The default value for Tgif.PsToXbm is:
+
+        gs -q -dNOPAUSE -sDEVICE=pbm -sOutputFile=- -- "%s" | pbmtoxbm
+
+    Please note that the above command usually generates a bitmap that's
+    much larger than image in the file.  Tgif automatically trims out the
+    blank space similar to the way pbmtoepsi works.  Thanks to Ed Vigmond
+    <evigmon at mailhost.tcs.tulane.edu> for the suggestion.
+
+-----------------------> tgif-4.1.32 => tgif-4.1.33 <-----------------------
+1)  Fix a bug that was introduced in tgif-4.1.30 (see item 3 of
+    tgif-4.1.29 => tgif-4.1.30 below).  This bug only happens if you are
+    printing black and white PS file with UseGrayScale enabled.  Thanks to
+    Dr Milos Ercegovac <milos at cs.ucla.edu> for pointing out the problem.
+2)  Fix a JoinPoly() bug in vertex mode.
+
+-----------------------> tgif-4.1.31 => tgif-4.1.32 <-----------------------
+1)  Fix a bug that was introduced in tgif-4.1.30 (see item 2 of
+    tgif-4.1.29 => tgif-4.1.30 below).  Thanks to Geert Carron
+    <carron at imec.be> for pointing out the problem.
+
+-----------------------> tgif-4.1.30 => tgif-4.1.31 <-----------------------
+1)  Fix a typo that cause link problems on Linux.
+2)  Add a new X default, Tgif.AutoWrapMenubar, so that menubar will
+    automatically wrap around.  If Tgif.MinimalMenubar is set to false,
+    menubar will always wrap around automatically.
+
+-----------------------> tgif-4.1.29 => tgif-4.1.30 <-----------------------
+1)  There's a bug with measure tooltip that certain X servers would generate
+    extra Expose events while others would not.  The result is that
+    rubber-banding does not work when measure tooltip is enabled.  The
+    simple solution here is to make the default value of
+    Tgif.UseMeasureTooltip to be false.  Also, the default values of both
+    Tgif.MeasureTooltipXFollowMouse and MeasureTooltipYFollowMouse have been
+    changed to false, also.  Thanks to Helmut Jarausch
+    <jarausch at igpm.rwth-aachen.de> for pointing out the problem.
+2)  Fix a bug with exporting text objects in PS format when the text object
+    is scales or sheared such that its width or height is 0.  This bug is
+    detectable by gs6.0.  Thanks to Ingo Jankowski
+    <janko at vlsi.informatik.tu-darmstadt.de> for pointing out the problem.
+3)  Fix a bug with printing text objects in black&white PS file with
+    UseGrayScale enabled.  Thanks to Jurgen Rusch
+    <jurgen.rusch at philips.com> for pointing out the problem.
+4)  To build "tgwb", instead of using Imakefile.tgwb, use a new and easier to
+    maintain file called Target.tmpl.
+5)  Add -usexlib commandline option to force tgif to ignore the
+    -DUSE_XT_INITIALIZE compile option and use Xlib only.  This is useful
+    when the system resource file for tgif is not installed properly or
+    messed up and needs to be bypassed.
+6)  Add a new X default, Tgif.NoMinWinSize, so that tgif can be started
+    without a minimum size when it is set to true (which is the default
+    value).  The problem with the previous tgif is that, by having a
+    minimum window size, some window managers will show the wrong window
+    size when tgif is being resized.
+7)  Support the importing of JPEG files in the Import submenu of the File
+    Menu.  Add a new X default, Tgif.JpegToXpm, so that the import filter
+    can be replaced.  By default, it is set to "djpeg -gif -color 222 %s |
+    giftopnm | ppmtoxpm".
+
+-----------------------> tgif-4.1.28 => tgif-4.1.29 <-----------------------
+1)  Fix a bug with mouse action status in the color window if Use Color
+    Layers is selected in the Layout Menu.  Thanks to Hal Snyder
+    <hal at vailsys.com> for pointing out the problem.
+2)  Add French locale in the distribution.  Thanks to Roland Baudin
+    <roland.baudin at cnet.francetelecom.fr> for the contribution.
+3)  Add ImageProc context submenu for an XPM object.
+4)  Add Get Property context submenu.
+5)  If an object has an attribute called "edit_attrs_in_context_menu=",
+    the values (starting from the 2nd line and separated by linebreaks)
+    of this attribute are treated as attribute names.  The named attributes
+    will be visible in the Edit Attribute In Editor submenu of the
+    Context Menu.
+6)  Add Replace Graphic in the Special Menu.  After you have selected
+    a graphical object and copy it into the cut buffer, you can select
+    another object and select Replace Graphic to replace the graphical
+    part of the selected object by what's in the cut buffer.  All
+    attributes of the object will be preserved.
+7)  Add tooltip support for Show Measurement.  Thanks to Raphael Dechenaux
+    <raph_d at club-internet.fr> for the contribution.  The following new X
+    defaults are supported (with their default values shown):
+
+        Tgif.UseMeasureTooltip: true
+        Tgif.MeasureTooltipXFollowMouse: true
+        Tgif.MeasureTooltipYFollowMouse: true
+        Tgif.MeasureTooltipHorizontalPosition: left
+        Tgif.MeasureTooltipVerticalPosition: top
+
+    Please see the man pages for details.
+8)  Add README.tgwb and Imakefile.tgwb to make tgif into "tgwb", which is a
+    vector-drawing coorporative whiteboard application based on tgif.
+    Tgwb is tested on Linux and Solaris platforms, and it requires
+    IP-multicast.  Thanks to the team members of the research group lead by
+    Professor Edmundo de Souze e Silva <edmundo at land.ufrj.br> at the
+    Federal University of Rio de Janeiro.
+
+    (Please note that the current release of tgwb has a few known bugs.
+    The major ones being that (1) it uses fixed size buffers in communication;
+    therefore, when you operate on a large object, you may get an error
+    message saying that the operation is canceled.  (2) There is no privison
+    made for joining a whileboard in session; the way to get around this
+    problem is to select New from the File Menu of a tgwb to clear all
+    whiteboards.)
+
+-----------------------> tgif-4.1.27 => tgif-4.1.28 <-----------------------
+1)  Fix a bug in undoing and redoing delete operations.
+
+-----------------------> tgif-4.1.26 => tgif-4.1.27 <-----------------------
+1)  Fix a divide-by-zero bug in creating an arc (of the 2nd kind).  Thanks to
+    Christoph Kukulies <kuku at gilberto.physik.RWTH-Aachen.DE>
+    for pointing out the problem.
+2)  Fix a crashing bug in exiting tgif.  Thanks to Wolfgang Glunz
+    <Wolfgang.Glunz at icn.siemens.de> for pointing out the problem.
+3)  Fix a menuing bug in using tgif with the NetManage PC X Server.  Thanks to
+    Wolfgang Glunz <Wolfgang.Glunz at icn.siemens.de> for pointing out
+    the problem.
+4)  Fix a bug in exporting to PDF format.  With the previous implementation,
+    the PDF file may be generated in the wrong directory.  The Tgif.PsToPdf
+    X default now must contain 2 "%s" substrings.  The new default value for
+    it is "ps2pdf %s %s".
+5)  Fix a bug in exporting to GIF format using Print One File Per Page
+    when page file names are specified.  Thanks to Hal Snyder
+    <hal at vailsys.com> for pointing out the problem.
+6)  The current implementation of the whiteboard has a buffer size limitation.
+    When the buffer size is exceeded, tgif will now print an error message
+    and cancel the operation that causes the buffer overflow.
+
+-----------------------> tgif-4.1.25 => tgif-4.1.26 <-----------------------
+1)  Fix a bug with special characters in the page file name.  Thanks to
+    Kyle Bateman <kyle at actarg.com> for pointing out the problem.
+2)  Fix NLS bugs for status line.  Thanks to Jun Nishii <jun at flatout.org>
+    for the patch.
+3)  Fix an offset problem for obj file generated by pstoedit.  Thanks to
+    Wolfgang Glunz <Wolfgang.Glunz at icn.siemens.de> for pointing out the
+    problem.
+4)  Precise Scale Everything now flushes undo buffer and cannot be undone.
+    Thanks to Heiko Scheit <Heiko.Scheit at mpi-hd.mpg.de> for pointing
+    out the problem.
+5)  Add context menu for the edit text box (Move Edit Text Box can be
+    select to move the edit text box).
+6)  Add Recently Used Files submenu under the File Menu.  The size can
+    be controlled by the Tgif.MaxRecentFiles X default.
+7)  Include "tgif.spec.in" for creating RPM files.  Thanks to
+    Tomasz Kloczko <kloczek at rudy.mif.pg.gda.pl> and
+    Roberto A. Oppedisano <rao at penguinpowered.com> for the contribution.
+8)  Assign Cntrl+1 and Cntrl+2 to Screen Capture and Full Screen Capture.
+9)  In a multipage drawing, will not change drawing mode when moving from
+    page to page.
+10) Freehand drawing mode will be entered automatically when entering
+    slideshow mode.  The can be overridden with the
+    Tgif.GoHyperSpaceInSlideShow X default.  A new X default,
+    Tgif.LineWidthIndexInSlideShow, is added to override the default
+    line width of 4 in slideshow mode.
+11) Add a new X default, Tgif.ResetOriginOnAdvancePage, so that tgif can
+    be forced to scroll to the left-top corner of the page with no zoom
+    when pages are advanced.
+12) Add a new X default, Tgif.FreeHandCursor, to override the default pencil
+    curosr in the freehand drawing mode.
+
+-----------------------> tgif-4.1.24 => tgif-4.1.25 <-----------------------
+1)  Fix a crashing bug in Insert Right Superscript/Subscript when the text
+    cursor is immediately to the right of a right superscript/subscript
+    string segment.  Thanks to Helmut Jarausch
+    <jarausch at igpm.rwth-aachen.de> for pointing out the problem.
+
+-----------------------> tgif-4.1.23 => tgif-4.1.24 <-----------------------
+1)  Fix a couple of bugs in Print Pages.
+2)  Fix a bug in "-print -html/-gif -o<dir>".  Thanks to Eddy De Greef
+    <degreef at imec.be> for pointing out the problem.
+3)  Assign Alt+Cntrl+5 to Insert Right Subscript.
+4)  Fix Precise Scale Everything to scale line widths, arrow widths, and
+    arrow heights.
+5)  Add NLS support for the status line.  Thanks to Jun Nishii
+    <jun at flatout.org> for the patch.
+6)  New Tgif.tmpl-openbsd.  Thanks to Hal Snyder <hal at vailsys.com>
+    for providing the patch.
+
+-----------------------> tgif-4.1.22 => tgif-4.1.23 <-----------------------
+1)  Fix a bug in handling rotated text object exported from the gnuplot tgif
+    terminal.  Thanks to Leana Golubchik <leana at cs.umd.edu> for pointing
+    out the problem.
+2)  Fix a bug in handling the if() internal command when "!*" is used.
+    Thanks to Marko Schuetz <marko at ki.informatik.uni-frankfurt.de>
+    for pointing out the problem.
+3)  If a file contains only one page, Print One File Per Page will still
+    produce a file with file name containing the page number.
+4)  Add a "-merge" commandline option to merge a list of obj files.
+5)  Add "Print Pages" to the File and Page Menu.
+6)  Print One File Page will now prompt to see if the user wants to
+    print only selected pages.
+7)  Update po/ja/ja.po.  Thanks to Jun Nishii <jun at flatout.org> for
+    the udpate.
+8)  Change all Tgif.tmpl* files to use a default of
+
+        _USE_PS_ADOBE_STRING=\"3.0/3.0\"
+
+-----------------------> tgif-4.1.21 => tgif-4.1.22 <-----------------------
+1)  Fix a crashing bug with right click on an non-existant text object.
+    Thanks to Helmut Jarausch <jarausch at igpm.rwth-aachen.de> for
+    pointing out the problem.
+2)  Make Import GIF To X Pixmap Desk under the GIF Animation Submenu of
+    the File Menu work with gifsicle-1.16.1.  Thanks to Francis Ngoh
+    <fngoh at ti.com> for pointing out the problem.
+3)  Fix a RTLD_NOW not-defined bug for FreeBSD 2.2.2.  Thanks to
+    Naofumi TSUJII <tsun at tsuki.elect.chuo-u.ac.jp> for the patch.
+4)  Force non-condensed PS export if the file contains an XPM or an EPS object.
+5)  Add the following new internal commands:
+
+        delete_eps_child(<obj_name>)
+        delete_xbm_child(<obj_name>)
+        delete_xpm_child(<obj_name>)
+
+-----------------------> tgif-4.1.20 => tgif-4.1.21 <-----------------------
+1)  Fix a crashing bug with pasting compound object into a modified text
+    object in text mode.
+2)  Fix a crashing bug with "-print -raw http://...".
+3)  Fix <Cntrl>cursorkey bug.  Thanks to Stefan Schippers
+    <kaiserst at tin.it> for pointing out the bug.
+4)  Fix arrow problems with rotated interpolated splines.  Thanks to
+    Heiko Scheit <heiko.scheit at mpi-hd.mpg.de> for pointing out
+    the problem.
+
+-----------------------> tgif-4.1.19 => tgif-4.1.20 <-----------------------
+1)  Fix a crashing bug with rotated arcs with very small angles.  Thanks to
+    Rainer Krienke <krienke at uni-koblenz.de> for pointing out this
+    ancient bug.
+2)  Fix a crashing bug when redrawing is interrupted immediately after objects
+    are transformed.
+
+-----------------------> tgif-4.1.18 => tgif-4.1.19 <-----------------------
+1)  Fix a crashing bug with the "Edit Attribute In Editor" context menu when
+    selected attribute has it's name not shown.  Thanks to Mohammad Bahathir
+    Hashim <bakhtiar at softhome.net> for pointing out the problem.
+
+-----------------------> tgif-4.1.17 => tgif-4.1.18 <-----------------------
+1)  Fix a crashing bug with PreciseScaleEverything().
+2)  Fix a bug in locating a linked EPS file.  Thanks to Ralphe Neill
+    <ran at oberon.sub.net.au> for pointing out the problem.
+3)  Fix a bug with downloading HTTP URL's.  It was waiting when it doesn't
+    need to.
+4)  Fix a bug with <Cntrl><Shift><Btn2> when zoomed all the way in.
+    Thanks to Kyle Bateman <kyle at actarg.com> for pointing out the
+    problem.
+5)  Fix a crashing bug with entering into text mode under certain text
+    editing sequence.
+6)  Fix a crashing bug with "-print -gif" when a tgif file contains
+    XPM objects.  Thanks to Eddy De Greef <degreef at imec.be>
+    for pointing out the problem.
+7)  Make a file containing auto page numbering objects unsavable after
+    it has been displayed in the slideshow mode.
+8)  Polyline drawn in the FreeHand mode will always be drawn with straight
+    line segments.  Also, use the current linewidth for creating polylines
+    in the freehand mode.  This makes creating polylines in the freehand
+    mode more natural.  Thanks to Thomas P. Witelski
+    <witelski at math.duke.edu> for the suggestion.
+
+-----------------------> tgif-4.1.16 => tgif-4.1.17 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a color bug with a depth 1 display.  Thanks to Martin Butkus
+    <m.butkus at tu-bs.de> for the patch.
+2)  Fix incorrect %%Pages: line in generated PS/EPS files when PrintOnePage()
+    or PageOneFilePerPage() is used.  Thanks to Dietrich Bartel
+    <D.Bartel at fz-juelich.de> for pointing out the problem.
+3)  Fix an offset problem for obj file generated by external tools, such as
+    pstoedit.  Thanks to Wolfgang Glunz
+    <Wolfgang.Glunz at icn.siemens.de> for pointing out the problem.
+4)  Fix a coordinate problem with polygon objects when exporting HTML files.
+    Thanks to Peter Marquardt <wwwutz at molgen.mpg.de> for pointing
+    out the problem.
+5)  Fix a bug in locating a linked EPS file.  Thanks to Ralphe Neill
+    <ran at oberon.sub.net.au> for pointing out the problem.
+6)  Move all user strings to a new file, "strtbl.c".  Now all user strings
+    (in menues, messageboxes, and dialogboxes) are either in "menuinfo.c"
+    or "strtbl.c".  This makes creating localized version of tgif easier.
+7)  Rename the compiler option _ENABLE_NLS to ENABLE_NLS.
+8)  Add context menu.  If there's an object under the mouse when right-clicked,
+    a context menu is popped up.  If there isn't, Mode Menu is popped up.
+    As a consequence, Tgif.Btn3PopupModeMenu is obsolete now.  A new X default,
+    Tgif.Editor, is added to specify a text editor to use for editing
+    attributes (when "Edit Attribute in Editor" submenu of the context menu
+    is used).
+9)  Add "Set HTML Export Template" to the File Menu.  Print/export in HTML
+    format will use the template file if it is set.  Please see
+    HTML EXPORT TEMPLATE section of the man pages for details.
+10) Add a new compiler option, _PS_SEVENBIT_DOUBLEBYTE_TEXT, to allow the
+    generation of JIS PostScript files.  Thanks to Kan Sasaki
+    <ksasaki at noc.kddnet.ad.jp> for the patch.
+11) Add new X defaults, Tgif.MenuRowsBeforeScroll and Tgif.MenuColsBeforeScroll
+    to control the size of scrollable menus.
+12) Add a new X default, Tgif.UndoRedoRestoreDrawingMode, to restore the
+    drawing mode just before an undo/redo operation.
+13) Add a new X default, Tgif.ProducedBy, to specify a text editor to use for
+    editing attributes.
+14) Allows the default PostScript fonts to be replaced.  Please see the
+    information about Tgif.HasAlternateDefaultFonts and related X defaults
+    in the X DEFAULTS section of the man pages for details.  Thanks to
+    Victor Wagner <vitus at ice.ru> for pointing out the problem with
+    the previous implementation.
+15) Switch the shortcuts for Undo() and Animate().  Now Cntrl+z is Undo()
+    and Alt+u is Animate().  Also switch the shortcuts for Redo() and
+    ChangeDomain().  Now Cntrl+y is Redo() and Alt+* is ChangeDomain().
+
+-----------------------> tgif-4.1.15 => tgif-4.1.16 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a seg fault bug in InsertRightSuperscript().  Thanks to Shiou-Jhy Ja
+    <jshiouj at radar.ecen.okstate.edu> for pointing out the problem.
+2)  Fix color bugs with a depth 1 display.  Thanks to Martin Butkus
+    <m.butkus at tu-bs.de> for pointing out the problem.
+3)  Fix a bug with inserting super/subscript while edit text size is non-zero.
+    Thanks to Heiko Scheit <Heiko.Scheit at mpi-hd.mpg.de> for
+    pointing out the problem.
+4)  Fix some grid lines redraw problems.
+5)  Fix bugs with TrueColor display for various commands in the ImageProc Menu.
+6)  Fix a bug with font names when the "-print" commandline argument is used.
+    Thanks to Ambrose Li <acli at mingpaoxpress.com>
+    for pointing out the problem.
+7)  Add screen capture under the File Menu.
+8)  Add a new X default, Tgif.DomainInIni, to allow domain info to be stored
+    in ~/.Tgif/domain.ini.  This enables all the menu items in the Domain
+    Submenu of the File Menu.
+9)  Add a new LaTeX equation symbol files "eq4-epstool.sym" in the release.
+    Thanks to LECORDIER Bertrand <lecordie at arpege.coria.fr> for the
+    contribution.
+10) Assign Alt+Cntrl+6 shortcut key for InsertRightSuperscript().
+
+-----------------------> tgif-4.1.14 => tgif-4.1.15 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix problems with multipage files that have imported complex EPS files.
+    Thanks to Dietrich Bartel <D.Bartel at fz-juelich.de> for
+    pointing out the problem.
+2)  Fix problems with moving the text cursor with the cursor keys when the
+    text object has a large vertical spacing.  Thanks to Tyson Tuttle
+    <tuttle at silabs.com> for pointing out the problem.
+3)  Switch 2 pairs of the default shortcut keys.  Now <Cntrl>c is Copy()
+    and <Cntrl>v is Paste().  ChangeDomain() now becomes <Cntrl>y and
+    Push() becomes <Cntrl><Meta>y.
+4)  Support point sizes in Tgif.FontSizes.
+5)  Change the default value for the Tgif.DontCondensePSFile X default to
+    "true" due to the problem that many EPS files generated by other tools
+    are not compatible with the previous default value of this X default.
+
+-----------------------> tgif-4.1.13 => tgif-4.1.14 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a bug that the initial import directory is the root directory on
+    Solaris and some other machines.
+
+-----------------------> tgif-4.1.12 => tgif-4.1.13 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a bug that importing a XBM/XPM/GIF file changes the working directory.
+    Thanks to Ralphe Neill <ran at oberon.sub.net.au> for
+    pointing out the problem.
+
+-----------------------> tgif-4.1.11 => tgif-4.1.12 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a seg fault bug with creating a rotated text.  Thanks to Ralphe Neill
+    <ran at oberon.sub.net.au> for pointing out the problem.
+2)  Fix some grid lines redraw problems.
+
+-----------------------> tgif-4.1.10 => tgif-4.1.11 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a bug with importing EPS file that doesn't have a preview bitmap.
+    Thanks to Marlene Busch <Ma.Busch at fz-juelich.de> for
+    pointing out the problem.
+2)  To support LaTeX equations better, 3 new LaTeX equation symbol files
+    "eq4.sym", "eq4-ps2epsi.sym", and "eq4-2x.sym" are included in this
+    release.
+
+    The only difference between "eq4.sym" and "eq4-ps2epsi.sym" is that
+    "eq4.sym" uses "pstoepsi" and "eq4-ps2epsi.sym" uses ghostscript's
+    "ps2epsi".
+
+    The "eq4-2x.sym" uses the latest "pbmtoepsi" (which uses the new
+    [ -scale value ] command line option) from "netpbm-20may1999"
+    and the latest "pstoepsi" (which knows how to handle the [ -2x ]
+    command line option) to run ghostscript at the 144dpi resolution for
+    generating the preview bitmap.  This makes LaTex equations looks good
+    in both X and PS/EPS!  Also, all 3 symbol files do not require
+    "simple.tex" which was needed in the old LaTeX Equation package.
+
+    To obtain the latest "pstoepsi" and "netpbm-20may1999", please visit
+    <URL:http://bourbon.cs.umd.edu:8001/tgif/tools.html>.
+3)  Added ToggleEqAttrShown() under the Attribute Submenu of the Special
+    Menu to toggle the "eq=" attribute for the LaTeX equation object.
+    ToggleEqAttrShown() can also be accessed via the <Alt><Cntrl>7 keyboard
+    shortcut.
+
+-----------------------> tgif-4.1.9 => tgif-4.1.10 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix the bug that after you import an EPS file, the current file name
+    is changed to the name of the EPS file.  Thanks to Geert Carron
+    <carron at imec.be> for pointing out the bug.
+2)  Fix a locale bug for HP-UX and fix Tgif.tmpl-hpux.
+3)  Set the default value of Tgif.UsePsAdobeString back to "false", and
+    the default value of Tgif.MinimalEPS back to "true".  Added support
+    to handle compiler options _USE_PS_ADOBE_STRING and _MINIMAL_EPS.
+
+-----------------------> tgif-4.1.8 => tgif-4.1.9 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a bug in handling the importing of PS files generated by xv.  Thanks
+    to Michal Bulik <mbulik at mecalog.fr> for pointing out the problem.
+2)  Fix locale bugs.  Thanks to Atsushi Shimizu
+    <shimizu at nttvdt.hil.ntt.co.jp> for pointing out the problems.
+3)  Fix a bug with "-print -gif".  Thanks to David Richerby
+    <David.Richerby at cl.cam.ac.uk> for pointing out the problem.
+4)  Fix a bug in printing/exporting condensed PS/EPS files when the drawing
+    contains certain EPS files (such as the ones generated by Adobe
+    Illustrator).  Thanks to Ambrose Li <acli at mingpaoxpress.com>
+    for the patch.
+5)  Fix a memory hogging bug when objects are moved.  Thanks to Robert Schwebel
+    <r.schwebel at tu-bs.de> for pointing out the problem and Jason White
+    <jdwhite at iastate.edu> for looking into the problem.
+6)  Fix a bug in the File Open dialogbox that if SetDir is pressed when
+    something is selected, a bad directory name is used.  Thanks to
+    Andreas Scherbaum <ads at htl.de> for pointing out the problem.
+7)  Fix a bug so that the actual directory will be used when the user
+    select "../" from a file dialogbox.  Thanks to
+    Andreas Scherbaum <ads at htl.de> for pointing out the problem.
+8)  Fix bugs with panning using <Cntrl><Shift><Btn2> and zooming using
+    <Cntrl><Shift><Btn3>.   Thanks to Kyle Bateman
+    <kyle at actarg.com> for pointing out the problems.
+9)  When in the edit text mode, dragging <Cntrl><Btn2>, will now move the
+    edit text (but not the object being edited).  Thanks to
+    Shinichiro Shiratake <shinichiro.shiratake at toshiba.co.jp> for
+    pointing out the problem with editing text at the left or top edge
+    of the paper.
+10) Allow text objects to be broken into lines in BreakUpText().
+11) Set the default stretchable text mode to TRUE.
+12) Set the default value of Tgif.UsePaperSizeStoredInFile to TRUE.
+13) Set the default print-in-color mode to TRUE (when the "-print" command
+    line option is not used).
+14) Remove the concept of a current import directory.
+15) New Tgif.tmpl-os2 for OS/2.  Also fix some OS/2 dependent stuff.  Thanks
+    to Alexander Mai <st002279 at hrzpub.tu-darmstadt.de> for the patch.
+16) Add new X defaults, Tgif.PsRegMarksInTiledPageMode and Tgif.PsRegMarksGray
+    to draw small crosshairs at the corners defining the clipping regions when
+    printing/exporting PS/EPS files in the tiled page mode.
+17) Add a new X default, Tgif.PSFontAliases to allow fake font names in
+    Tgif.AdditionalFonts.  Using this X default, different encodings of
+    the same PS font can be used.  Please see the ADDITIONAL FONTS section
+    of the man pages for details.  Thanks to Johan Vromans
+    <JVromans at squirrel.nl> for many helpful suggestions.
+18) Add the following new internal command:
+
+        set_allow_interrupt(<true_or_false>)
+        size_named_obj_absolute(<obj_name>,<abs_w>,<abs_h>)
+        get_named_obj_bbox(<obj_name>,<ltx_attr>,<lty_attr>,<rbx_attr>,
+            <rby_attr>)
+
+-----------------------> tgif-4.1.7 => tgif-4.1.8 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a seg fault bug where tgif can't ever start on machines with
+    small amount of virtual memory.  This bug was introduced in
+    tgif-4.1.5.  The solution is to move some huge data structures
+    inside the experimental #ifdef _TGIF_WB2 sections.  Thanks to
+    Dan McMahilll <mcmahill at mtl.mit.edu> and Doug Robinson
+    <dkr at freerealtime.com> for pointing out the problem.
+2)  Fix bugs with undefined XFontSet on X11R4 Ultrix machines.  Thanks to
+    Jason White <jdwhite at iastate.edu> for pointing out the problem.
+
+-----------------------> tgif-4.1.6 => tgif-4.1.7 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix bugs in using the wrong export file name when the obj file is gzipped.
+
+-----------------------> tgif-4.1.5 => tgif-4.1.6 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix typos in "menuinfo.c" and "const.h".
+
+-----------------------> tgif-4.1.4 => tgif-4.1.5 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix bugs with breaking multiple text objects.  Thanks to
+    Kouya SHIMURA <kouya at flab.fujitsu.co.jp> for the patch.
+2)  Add NLS support for menus (can be turned on by the _ENABLE_NLS compiler
+    define).  A new X default, Tgif.MenuFontSet is added to have menus in
+    a native language.  A new X default, Tgif.LocaleDir, is added to override
+    the compile time locale directory specified in Tgif.tmpl.  Japanese menu
+    support is provided in the po/ja subdirectory.  Thanks to Jun Nishii
+    <jun at flatout.org> for the patch.  Please see po/README for more
+    information about the tgifintl release.
+3)  Fix bugs with overthespot for the xim input method.  Thanks to
+    Shoji Matsumoto <shom at i.h.kyoto-u.ac.jp> for the patch.
+4)  Open/Save/Import gzipped obj files.  Add Tgif.GUnZipCmd and Tgif.GZipCmd
+    X defaults so that the user can override the default "gunzip -c" and
+    "gzip -c" commands.
+5)  Add the following internal commands to make it a little easier for
+    third party code to drive tgif.  Please see the updated man pages for
+    the details of these commands.  "Testdrive.c" is updated to show how
+    some of these internal commands can be used to create and manipulate
+    objects from the test driver when Animate() is selected from the
+    Return Submenu of the File Menu.
+
+        select_top_obj()
+        delete_selected_obj()
+        set_selected_obj_rcb_radius(<rcb_radius>)
+        set_selected_text_vspace(<vspace>)
+        set_selected_text_just(<justification>)
+        set_selected_text_font(<ps_font_name>)
+        set_selected_text_size(<size>)
+        set_selected_text_underline(<underline>)
+        copy_string_to_cut_buffer(<string>)
+        delete_attr_from_selected_obj(<attr_name>)
+        select_from_ini_section(<attr_name>,<title>,<section>,<ini_path>)
+        create_text_obj(<abs_x>,<abs_baseline_y>,<string>)
+        create_box_obj(<abs_ltx>,<abs_lty>,<abs_rbx>,<abs_rby>)
+        create_corner_oval_obj(<abs_ltx>,<abs_lty>,<abs_rbx>,<abs_rby>)
+        create_center_oval_obj(<abs_x>,<abs_y>,<radius>)
+        create_edge_oval_obj(<abs_ltx>,<abs_lty>,<abs_rbx>,<abs_rby>)
+        create_rcbox_obj(<abs_ltx>,<abs_lty>,<abs_rbx>,<abs_rby>)
+        create_arc_obj(<abs_x>,<abs_y>,<radius>,<dir>,<angle1>,<angle2>)
+        create_first_vertex(<abs_x>,<abs_y>)
+        create_next_vertex(<abs_x>,<abs_y>)
+        create_poly_obj()
+        create_polygon_obj()
+        start_create_group_obj()
+        create_group_obj()
+
+-----------------------> tgif-4.1.3 => tgif-4.1.4 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix bugs with truncated text objects in exporting to GIF files where
+    that are rotated text objects.
+2)  Fix bugs with underlined text.  Sometimes, a thick line is used to
+    draw the underline.
+3)  Add PS support the following 8-bit ISO-Latin-1 characters:
+    "onesuperior", "onequarter", "onehalf", and "threequarters".  Thanks to
+    Antonio Miguel Corbi Bellot <acorbi at altea.dlsi.ua.es> for
+    pointing out the problem.
+
+-----------------------> tgif-4.1.2 => tgif-4.1.3 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a bug with opening files in a non-existent directory.  Thanks to
+    Andreas Scherbaum <ads at htl.de> for pointing out the problem.
+2)  Add the following internal commands:
+
+        append_line_into_attr(<attr_name>,<string>)
+        insert_line_into_attr(<attr_name>,<string>,<line_number>)
+        clear_attr(<attr_name>)
+
+-----------------------> tgif-4.1.1 => tgif-4.1.2 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix another bug with the File Menu flashing.  Thanks to Andrew Sapuntzakis
+    <andrewsa at cc701.comm.mot.com> for pointing out the problem.
+2)  Fix a bug with CopyProperties().  Thanks to Kouya SHIMURA
+    <kouya at flab.fujitsu.co.jp> for the patch.
+3)  Fix bugs when no file name and only a file extension is specified as
+    an input file name.  Thanks to Holger Huesing <H.Huesing at tu-bs.de>
+    for the patch.
+4)  Fix a locale bug.  Should not #include <local.h> if _NO_LOCALE_SUPPORT
+    is defined.  Thanks to Ralphe Neill <ran at oberon.sub.net.au> for
+    pointing out the problem.
+5)  Fix a problem with exporting XPM/GIF files under certain TrueColor visuals
+    of Hummingbird's eXceed server.  The fix is to compute the color table
+    for the exported XPM/GIF file from the pixels in the actual image for
+    TrueColor visuals if the new X default,
+    Tgif.UseImagePixelsForTrueColorExport, is set to true.  Thanks to
+    Jurgen Rusch <rusch at natlab.research.philips.com> for pointing out
+    the problem.
+6)  Fix a bug with UpdateSymbols().  Thanks to sven wilhelmsson
+    <sven.wilhelmsson at swipnet.se> for the patch.
+
+-----------------------> tgif-4.1 => tgif-4.1.1 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a locale bug for non-X11R6 systems.  Thanks to Miroslav Flidr
+    <flidr at ori.zcu.cz> for pointing out the problem.
+2)  Fix a bug that if Tgif.NoMenubar is set to "true", some popup menus
+    in the choice window doesn't work.  Thanks to Hiroto Kagotani
+    <kagotani at in.it.okayama-u.ac.jp> for pointing out the problem.
+3)  Fix a bug with the File Menu flashing.  Thanks to Andrew Sapuntzakis
+    <andrewsa at cc701.comm.mot.com> for pointing out the problem.
+
+-----------------------> tgif-4.0.18 => tgif-4.1 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Strings in text objects can now be underlined.
+2)  Fix a seg fault bug which happens if the .mailcap file is not present
+    when downloading an URL.  Thanks to Frank Koeck
+    <Frank.Koeck at mpi-hd.mpg.de> for the patch.
+3)  Fix various bugs with edit text size.  Thanks to Jeremy H. Brown
+    <jhbrown at ai.mit.edu> for pointing out the problems.
+4)  Fix a bad status for the rotate/shear mode.  Thanks to Dave Bodenstab
+    <imdave at mcs.net> for the patch.
+5)  Fix negative offsets bug in SetSlideShowWindowOffsets().
+6)  Reduce repaint when editing text objects.
+7)  Add EditPageFileNames() under the StackedPage Menu so that each page
+    in a multipage drawing can have its own print/export file name when
+    PrintOneFilePerPage() is invoked.
+
+-----------------------> tgif-4.0.17 => tgif-4.0.18 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix problems with internal commands to work better with non-simple
+    (multi-color, multi-font, etc.) attributes.  Thanks to Daniel Ratton
+    Figueiredo <ratton at land.ufrj.br> for pointing out the problem.
+2)  Fix problems with menus with wm2.  Thanks to <dshawhan at nyx.net>
+    for pointing out the problem.
+3)  Fix a bug that creating a new text object when the edit text size is
+    non-zero results in the font size of the text object being 0.  Thanks
+    to Jeremy H. Brown <jhbrown at ai.mit.edu> for pointing out the problem.
+4)  Fix page number bugs (as specified in the MULTIPAGE DRAWING section
+    of tgif's man pages) in slideshow mode.
+5)  Allows the moving of individual attributes directly in select mode.
+
+-----------------------> tgif-4.0.16 => tgif-4.0.17 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a bug in clicking over the font size button in the Choice Window.
+2)  By default, don't use EUC PS fonts in printing/export PS files that
+    contains Japanese characters.  Thanks to Shinta Sato
+    <shinta at crimson.q.t.u-tokyo.ac.jp> for the patch.
+
+-----------------------> tgif-4.0.15 => tgif-4.0.16 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a bug with Tgif.RubberBandColor that it leaves ghost images during
+    editing text objects when one moves the text cursor with cursor keys.
+    Thanks to Shinichiro Shiratake <shinichiro.shiratake at toshiba.co.jp>
+    for pointing out the problems.
+2)  Rename SetTextBackgroundColor() in the Text Submenu of the Edit Menu
+    to SetTextFillPatternColor() since this operation only changes the
+    fill pattern color of a text object and not the background color.
+    Also, since text doesn't reallly have a background color (but only
+    has a fill pattern color), the fix to set the default background color
+    in 4.0 patchlevel 15 is invalid.  Now the current color is used as
+    the fill pattern color for new text objects.  Thanks to Shinichiro
+    Shiratake <shinichiro.shiratake at toshiba.co.jp> for pointing out
+    the problems.
+
+-----------------------> tgif-4.0.14 => tgif-4.0.15 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix the default background color for new text objects.  Used to be
+    that the first color is used.  Now the background color of tgif is
+    used as the default background color for text objects.
+2)  Add SetAltEditTextBgColor(), SetAltEditTextHighlightColor() and
+    UseAltEditTextBgColor() under the Properties Menu so that an alternate
+    background and highlight color can be used when editing/creating text
+    objects.  Thanks to Ralphe Neill <ran at oberon.sub.net.au> for
+    the suggestion.
+
+-----------------------> tgif-4.0.13 => tgif-4.0.14 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Add Tgif.LightGrayColor and Tgif.DarkGrayColor so that the user can
+    change the colors for the backgrounds and shadows of butons, menus, etc.
+2)  Split the Attribute submenu under the Special Menu into Attribute and
+    FileAttribute submenus.
+
+-----------------------> tgif-4.0.12 => tgif-4.0.13 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a bug with stretching grouped objects that contain text objects.
+    Also fix a bug with the TransPattern Menu.  Thanks to
+    Shinichiro Shiratake <shinichiro.shiratake at toshiba.co.jp> for pointing
+    out the problems.
+2)  Improve scrolling and zooming.  Allow smooth and jump scrolling of the
+    canvas window.
+3)  Add visible-grid control in slideshow mode.
+
+-----------------------> tgif-4.0.11 => tgif-4.0.12 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a hanging bug with executing the lauch() internal command.
+    Thanks to Leana Golubchik <leana at cs.umd.edu> for pointing out the
+    problem.
+
+-----------------------> tgif-4.0.10 => tgif-4.0.11 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Obsolete Tgif.StripEPSComments and Tgif.StripCondensedPSComments
+    X defaults.  Turns out that it's not always okay to strip PostScript
+    comments (an Adobe Illustrator 6.0 generated EPS file may have data
+    that looks like a PostScript comment).  So these values should alway
+    be false.
+
+-----------------------> tgif-4.0.9 => tgif-4.0.10 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a hanging bug when choosing a non-existant font.  If you specify
+    additional fonts with Tgif.AdditionalFonts and a font doesn't exist
+    on your machine, tgif would normally bring up a message box saying
+    that the font is not available.  If you re-expose tgif's main window
+    at this time, you may get a second message box and hangs tgif.
+    Thanks to Helmut Jarausch <jarausch at IGPM.Rwth-Aachen.DE> for
+    pointing out the problem.
+
+-----------------------> tgif-4.0.8 => tgif-4.0.9 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a compatibility bug.  If "file.obj" is produced by tgif-3.x,
+    text objects in PostScript file are not positioned correctly for
+    "tgif -print -ps file.obj".  This is not a problem if tgif is
+    run interactively (without "-print").  Thanks to Dan McMahill
+    <mcmahill at mtl.mit.edu> for pointing out the problem.
+2)  Fix bugs in flipping grouped objects with text subobjects horizontally
+    and vertically.  Thanks to Stephan Shuichi Haupt
+    <stephan at bios.t.u-tokyo.ac.jp> for pointing out the problem.
+
+-----------------------> tgif-4.0.7 => tgif-4.0.8 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix formating bug in DistributeObjsDirect().  Thanks to TSUKADA Satoru
+    <tsukada at tcd.hitachi.co.jp> for the patch.
+2)  Fix a bug in retriving URL's.  Sometimes, the last byte of the file
+    is not retrieved (which doesn't usualy cause any problems for text
+    files because the last byte is a <LF>).
+
+-----------------------> tgif-4.0.6 => tgif-4.0.7 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a crashing bug which can happen when you paste complex text objects
+    at the text cursor.  Thanks to TSUKADA Satoru
+    <tsukada at tcd.hitachi.co.jp> for the patch.
+2)  Fix a bug in inserting <CR> in an text object.  Sometimes, the <End>
+    key will bring you to the wrong place after inserting <CR>.
+    Thanks to TSUKADA Satoru <tsukada at tcd.hitachi.co.jp> for the patch.
+3)  Fix a bunch of bugs related to the handling of double-byte fonts.
+    Thanks to TSUKADA Satoru <tsukada at tcd.hitachi.co.jp> for the patch.
+4)  Use the portable locale ("C") by default.  Thanks to Gregor Zych
+    <zych at pool.informatik.rwth-aachen.de> for the suggestion.
+5)  Add a new drawing mode to create arcs such that the user can specify the
+    endpoints of an arc while tgif determines automatically the center of
+    the circle on which the arc lies.  Thanks to Dick Wesseling
+    <ftu at fi.uu.nl> for the patch and suggestion.
+6)  Add 3 alignment submenus and 1 distribution submenu.  Using these submenus,
+    one can specify alignments directly while aligning objects, aligning
+    objects to grid, aligning objects to page, and distribute objects.
+    Thanks to Dick Wesseling <ftu at fi.uu.nl> for the suggestion.
+7)  Update "tgif.pl" Prolog code to document the new tgif file format
+    (file version 37).
+
+-----------------------> tgif-4.0.5 => tgif-4.0.6 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix divide by zero bugs which causes a seg fault on OSF1 (apparently,
+    this doesn't crash on either Solaris or Linux).
+2)  Handles <ESC> correctly when creating objects.  Thanks to
+    Dick Wesseling <ftu at fi.uu.nl> for pointing out the problem.
+3)  Add the following files:
+
+        Tgif.tmpl-osf1
+
+    Also moved some code around so tgif will compile under Digital UNIX
+    (OSF1).
+
+-----------------------> tgif-4.0.4 => tgif-4.0.5 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a bug that generates bad a GIF file when running tgif with
+    "-print -gif" commandline arguments.  Thanks to Dick Wesseling
+    <ftu at fi.uu.nl> for pointing out this problem.
+2)  Support more tgif file name extensions.  Allow ".tgo" to also be a tgif
+    object file name extension and ".tgs" to also be a tgif symbol file name
+    extension.
+
+-----------------------> tgif-4.0.3 => tgif-4.0.4 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a seg fault bug when Tgif.ShowFontSizeInPoints is used.  Thanks to
+    Levente NOVAK <novak at jaguar.dote.hu> for pointing out this problem
+    (and a few other problems).
+2)  Allow URL's while importing XPM/XBM/GIF and other files (to specify an
+    URL, type '/' in the file dialogbox before typing the URL).
+3)  Fix problems reading files generated by tgif-2.13J and tgif-2.16J.
+    Thanks to TSUKADA Satoru <tsukada at tcd.hitachi.co.jp> for the patch.
+4)  Use auto _DL_EXPORT_UNDERSCORE determination on NetBSD.
+    Thanks to Dan McMahill <mcmahill at mtl.mit.edu> for the patch.
+5)  Accept "cm" and "in" specifications in SpecifyAnArc() and
+    SizeToGivenWidthHeight().  Thanks to Levente NOVAK
+    <novak at jaguar.dote.hu> for pointing out the problems.
+
+-----------------------> tgif-4.0.2 => tgif-4.0.3 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix crashing bugs with super/subscripts.  Thanks to Levente NOVAK
+    <novak at jaguar.dote.hu> for pointing out the problem.
+2)  Make tgif compile under HP-UX.  On an HP 9000/735, /bin/cc does not
+    like "#define extern extern" which appears in all the .e files.
+3)  Add "#include <locale.h>" if _NO_LOCALE_SUPPORT is defined in "convxim.c".
+    Thanks to Ralphe Neill <ran at oberon.sub.net.au> for pointing out the
+    problem.
+4)  Fix offset into the tiff image is incorrect when exporting in the
+    TiffEPSI format.  Thanks for Leana Golubchik <leana at cs.umd.edu> for
+    pointing out the problem.
+5)  Handle window manager Delete's properly.  Thanks to Dick Wesseling
+    <ftu at fi.uu.nl> for the patch.
+6)  Don't repaint so much when pasting.  Thanks to Francis Ngoh
+    <fngoh at ti.com> for pointing out the problem.
+7)  Fix the following problems when dealing with inputing Japanese characters.
+    a) The File Modified flag was not set when inputing Japanese characters.
+    b) After switching to a single-byte font, tgif was still talking to the
+       input method.
+    c) If Tgif.PreeditType is set to overthespot, the kinput2's window
+       position was wrong.
+    Thanks to TAKAHASHI Hitoshi <thitoshi at ne.scphys.kyoto-u.ac.jp> pointing
+    out the problems.
+8)  Add the following files:
+
+        Tgif.tmpl-netbsd
+        Tgif.tmpl-irix
+        Tgif.tmpl-hpux
+
+-----------------------> tgif-4.0.1 => tgif-4.0.2 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Fix a ``Fatal Unexpected Error'' when the Edit Menu is pinned and certain
+    text cursor movement is performed when a text object is being edited.
+2)  Tgif.BoldMsgFont by default will now use the value of Tgif.MsgFont if
+    Tgif.MsgFont is specified.
+3)  RTLD_GLOBAL, used in "xprtfltr.c", is not defined on FreeeBSD.  Thanks to
+    Dan McMahill <mcmahill at mtl.mit.edu> for pointing out the problem.
+4)  Add the following files to the distribution:
+
+        Tgif.tmpl-linux
+        Tgif.tmpl-solaris
+        Tgif.tmpl-freebsd
+
+-----------------------> tgif-4.0 => tgif-4.0.1 <-----------------------
+Here's a short list of added features/bug fixes.
+
+1)  Tgif.MinimalEPS was not behaving and documented properly.  Thanks to
+    Koppa Vesa <Vesa.Koppa at nmp.nokia.com> for pointing out the problems.
+2)  Fix a few missing items in make.common and Makefile.noimake. Thanks to
+    Koppa Vesa <Vesa.Koppa at nmp.nokia.com> for pointing out the problems.
+3)  Fix a few minor compiler warnings. for pointing out the problems.
+4)  Fix a few missing defines for certain machines. Thanks to
+    Francis Ngoh <fngoh at ti.com> for pointing out the problems.
+1)  Support the _TGIF_WB2 compile option.  Attempting to phase out _TGIF_WB.
+
+-----------------------> tgif-4.0 <-----------------------
+I'm happy to announce the availability of version 4.0 of tgif.  This release
+is an alpha release.  So it's probably a good idea not to use it on anything
+too serious.  Please send bug reports to bill.cheng at acm.org as soon as you
+see bugs so I can release patches to fix major bugs.  Unfortunately, I will
+be out of e-mail reach until 12/31, so I won't be able to respond until
+probably the next year.  I apologize for that.
+
+Although version 4.0 is backward-compatible with old versions of tgif, the
+file format is not forward-compatible (you won't be able to read files
+generated by this version of tgif with an older versions of tgif).
+
+The tgif-4.0 source code is available at the following places for anonymous
+ftp (binaries are not available yet at the time of this release, please check
+the tgif current release and download page for availability):
+
+    ftp://bourbon.cs.umd.edu/pub/tgif/tgif-4.0.tar.gz (primary)
+    ftp://ftp.cs.ucla.edu/pub/tgif/tgif-4.0.tar.gz
+
+(1,098.938 bytes - running 'sum tgif-4.0.tar.gz' should get: 16385  1074)
+
+Here's a short list of the main features added in version 4.0.
+
+1)  3-D look.
+2)  Allow a text object to have multiple font faces, sizes, styles, and colors.
+3)  Allow superscripts and subscripts in text objects.
+4)  Support double-byte fonts and their input methods such as kinput2 for
+    Japanese and xcin and chinput for Chinese.
+5)  Slide show mode for multipage drawings using left and right cursor keys
+    to advance pages.
+6)  Import/export GIF animation - requires gifsicle
+    <URL:http://www.lcdf.org/gifsicle/> version 1.9.1 or newer.
+7)  Export PDF files - requires ps2pdf from the ghostscript 5.x distribution
+    <URL:http://www.cs.wisc.edu/~ghost/>.
+8)  Copy/paste object properties (such as color, linewidth, etc.)
+
+ABOUT TGIF:
+
+    Tgif is an Xlib-based 2-D drawing tool.  It's also a hyper-graphics (or
+    hyper-structured-graphics) browser on the World-Wide-Web.  Its hyper-text
+    home page is <URL:http://bourbon.cs.umd.edu:8001/tgif/> and its
+    hyper-graphics home page is
+    <URL:http://bourbon.cs.umd.edu:8001/tgif/index.obj>.  (Please note that the
+    Content-type of a tgif file sent by the httpd at bourbon.cs.umd.edu:8001
+    is applications/x-tgif.)
+
+    Tgif is free-of-charge, but please read the Copyright file in the
+    distribution (or select Copyright from the Help Menu in tgif) for
+    restrictions.
+
+    (Please note that tgif is NEITHER an html viewer NOR an html editor.
+    It is also NOT directly related to GIF nor Transparent GIF.)
+
+TGIF RESOURCES:
+
+                   Home Page: http://bourbon.cs.umd.edu:8001/tgif/
+                         FAQ: http://bourbon.cs.umd.edu:8001/tgif/faq/
+  Current Release & Download: http://bourbon.cs.umd.edu:8001/tgif/current.html
+        Join to Mailing List: kragen-tgif-subscribe at kragen.dnaco.net
+                Mailing List: kragen-tgif at kragen.dnaco.net
+         Bug Reports Send To: bill.cheng at acm.org
+
+Happy New Year!
+
+/*
+ *  @(#)$Header: /mm2/home/cvs/bc-src/tgif/HISTORY,v 1.114 2011/06/28 02:12:04 william Exp $
+ */
+

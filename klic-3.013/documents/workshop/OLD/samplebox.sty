@@ -1,0 +1,10 @@
+\newdimen\boxindent
+\boxindent5mm
+\newbox\sampletempbox
+\newdimen\sboxwidth
+\def\samplebox{\begin{center}
+        \sboxwidth\linewidth
+        \advance\sboxwidth-2\boxindent
+        \setbox\sampletempbox\hbox\bgroup\minipage{\sboxwidth}}
+\def\endsamplebox{\endminipage\egroup\fbox{\box\sampletempbox}
+        \end{center}}

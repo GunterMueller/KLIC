@@ -1,0 +1,5254 @@
+#LyX 1.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 221
+\textclass article
+\language english
+\inputencoding auto
+\fontscheme default
+\graphics default
+\float_placement hbpt
+\paperfontsize default
+\spacing single 
+\papersize Default
+\paperpackage widemarginsa4
+\use_geometry 0
+\use_amsmath 0
+\use_natbib 0
+\use_numerical_citations 0
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\quotes_times 2
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\bullet 0
+	0
+	10
+	-1
+\end_bullet
+
+\layout Title
+
+The Reliable Multicast Library (RML) and Tangram II Whiteboard Developer
+ Documentation
+\layout Author
+
+Jorge Allyson Azevedo, Milena Scanferla, Daniel Sadoc
+\newline 
+{allyson,milena,sadoc}@land.ufrj.br
+\layout Section
+
+Introduction
+\layout Standard
+
+The main goal of this article is to explain some topics about what a programmer
+ needs to know in order to make source code changes in the Reliable Multicast
+ Library (RML) and in the Tangram II Whiteboard.
+ We will also give comments about problems found and the solutions adopted
+ while developing the RML and the Tangram II 
+\begin_inset LatexCommand \cite{key-30}
+
+\end_inset 
+
+ Whiteboard tool - including references to books, newsgroups or articles
+ that may be useful for the interested readers.
+ In the following section we will take a look at general characteristics
+ of IP multicast.
+ Then, the reliable multicast approach used in the implemented RML will
+ be describe.
+ We will introduce the library, and show a sample program that makes use
+ of it - a chat.
+ After that, a more complex example - the Tangram II Whiteboard (TGWB).
+ In the Appendix, we will describe the operating system interprocess communicati
+on (IPC) resources that which have been used.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename screencapt.eps
+	display grayscale
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+TGWB Screenshot
+\end_inset 
+
+
+\layout Section
+
+IP Multicast 
+\layout Subsection
+
+Introduction
+\layout Standard
+
+Quoting from the Multicast HOWTO 
+\begin_inset LatexCommand \cite{key-33}
+
+\end_inset 
+
+: 
+\begin_inset Quotes eld
+\end_inset 
+
+...
+ multicast is a need ...
+ Well, at least in some scenarios.
+ If you have information (a lot of information, usually) that should be
+ transmitted to various (but usually not all) hosts over an internet, then
+ Multicast is the answer.
+ One common situation in which it is used is when distributing real time
+ audio and video to the set of hosts which have joined a distributed conference.
+ 
+\layout Standard
+
+Multicast is much like radio or TV in the sense that only those who have
+ tuned their receivers (by selecting a particular frequency they are interested
+ on) receive the information.
+ That is: you hear the channel you are interested in, but not the others.
+\begin_inset Quotes erd
+\end_inset 
+
+
+\layout Subsubsection
+
+Multicast Addressing
+\layout Standard
+
+The range of IP addresses is divided into "classes" based on the high order
+ bits of a 32 bits IP address: 
+\newline 
+
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
+0\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 31\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ Address Range:
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
++-+----------------------------+
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
+|0|\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ Class A Address\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ |\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 0.0.0.0 - 127.255.255.255
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
++-+----------------------------+
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
++-+-+--------------------------+
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
+|1 0|\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ Class B Address\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ |\SpecialChar ~
+\SpecialChar ~
+ 128.0.0.0 - 191.255.255.255
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
++-+-+--------------------------+
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
++-+-+-+------------------------+
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
+|1 1 0|\SpecialChar ~
+\SpecialChar ~
+ Class C Address\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ |\SpecialChar ~
+\SpecialChar ~
+ 192.0.0.0 - 223.255.255.255
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
++-+-+-+------------------------+
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
++-+-+-+-+----------------------+
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
+|1 1 1 0|\SpecialChar ~
+ MULTICAST Address\SpecialChar ~
+\SpecialChar ~
+ |\SpecialChar ~
+\SpecialChar ~
+ 224.0.0.0 - 239.255.255.255
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
++-+-+-+-+----------------------+
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
++-+-+-+-+-+--------------------+
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
+|1 1 1 1 0|\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ Reserved\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ |\SpecialChar ~
+\SpecialChar ~
+ 240.0.0.0 - 247.255.255.255
+\layout Standard
+
+
+\family typewriter 
+\shape italic 
+\color black
++-+-+-+-+-+--------------------+
+\newline 
+
+\layout Standard
+
+The multicast addresses start with 
+\begin_inset Quotes eld
+\end_inset 
+
+1110
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ Among the multicast addresses, the remaining 28 bits identify the multicast
+ group.
+ There are some special addresses that should not be used by common applications
+:
+\layout Standard
+
+
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="7" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Address
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+Function
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+224.0.0.1
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+All hosts in the LAN
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+224.0.0.2
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+All routers in the LAN
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+224.0.0.4
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+All routers DVMRP in the LAN
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+224.0.0.5
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+All routers OSPF in the LAN
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+224.0.0.6
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+All routers OSPF designated in the LAN
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+224.0.0.13
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+All the PIM routers in the LAN
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{mcast special addresses}
+
+\end_inset 
+
+Multicast special addresses
+\end_inset 
+
+The interval from 224.0.0.0 to 224.0.0.255 is reserved to local purposes (local
+ administrative tasks) - to see some of these address purposes, refer to
+ table 
+\begin_inset LatexCommand \ref{mcast special addresses}
+
+\end_inset 
+
+.
+ Similarly, the interval from 239.0.0.0 to 239.255.255.255 is also reserved for
+ administrative tasks - but not necessarily local tasks.
+ So, the interval that may be used by general multicast applications is
+ from 225.0.0.0 to 238.255.255.255.
+\layout Subsubsection
+
+Multicast Group
+\layout Standard
+
+A multicast group is composed by the set of hosts in a network which share
+ data via multicast.
+ This group is identified by a multicast address.
+ When a host sends a packet to the multicast address, this packet is received
+ by all the multicast group members.
+ The transmission of a packet from one sender to multiple receivers is accomplis
+hed by a single send operation.
+ A single packet is sent from the sender host - there is no need to send
+ multiple copies of this packet, as would be needed if unicast were used.
+\layout Standard
+
+The receivers may join and leave the multicast group in a dynamic way.
+ The network devices, specially the routers, have to determine which of
+ their interfaces have a multicast member connected to them.
+\layout Subsubsection
+
+Levels of conformance
+\layout Standard
+
+Hosts can be in three different levels of conformance with the Multicast
+ specification, according to the requirements they meet: 
+\layout Itemize
+
+
+\series bold 
+Level 0
+\series default 
+ is the "no support for IP Multicasting" level.
+ Lots of hosts and routers in the Internet are in this state, as multicast
+ support is not mandatory in IPv4 (it is, however, in IPv6).
+ Not too much explanation is needed here: hosts in this level can neither
+ send nor receive multicast packets.
+ They must ignore the ones sent by other multicast hosts.
+ 
+\layout Itemize
+
+
+\series bold 
+Level 1
+\series default 
+ is the "support for sending but not receiving multicast IP datagrams" level.
+ Thus, note that it is not necessary to join a multicast group to be able
+ to send datagrams to it.
+ Very few additions are needed in the IP module to make a "Level 0" host
+ "Level 1-compliant".
+ 
+\layout Itemize
+
+
+\series bold 
+Level 2
+\series default 
+ is the "full support for IP multicasting" level.
+ Level 2 hosts must be able to both send and receive multicast traffic.
+ They must know the way to join and leave multicast groups and to propagate
+ this information to multicast routers.
+ Thus, they must include an Internet Group Management Protocol (IGMP) implementa
+tion in their TCP/IP stack.
+\layout Standard
+
+The Multicast Reliable Library was developed considering that the hosts
+ are in level 2 of conformance.
+ 
+\layout Subsubsection
+
+Some benefits of Multicast
+\layout Standard
+
+Some benefits of multicast over unicast are presented below
+\begin_inset LatexCommand \cite{key-35}
+
+\end_inset 
+
+:
+\layout Enumerate
+
+Optimized use of the network - the intelligent use of the network resources
+ avoids unnecessary replication of data.
+ So, the links are better used, through a better architecture of data distributi
+on.
+\layout Enumerate
+
+Distributed application support - the multicast technology is directly focused
+ on distributed applications.
+ Multimedia applications like distance learning and video conferencing may
+ be used in the network in an efficient way.
+ 
+\layout Enumerate
+
+Scalability - services that use multicast can be accessed by many hosts,
+ and may accept new members at any time.
+\layout Enumerate
+
+Availability of the network resources - congestion is reduced, because no
+ replicated data is sent through a single link in the network, so the availabili
+ty of the network resources is increased.
+\layout Subsection
+
+Configuration under Linux 
+\layout Standard
+
+This section will not explain multicast configuration in details.
+ We just want to give some tips needed to set up a basic system in a local
+ network area.
+ If you want further information see the Multicast HOWTO 
+\begin_inset LatexCommand \cite{key-33}
+
+\end_inset 
+
+.
+ Multicast transmission through different networks is more complex and you
+ must have routers with multicast support between those networks.
+ 
+\layout Subsubsection
+
+Does your system have support for IP Multicast? 
+\layout Standard
+
+Some configurations are needed to use IP Multicast.
+ First of all, the network cards have to be enabled to receive multicast
+ data.
+ Most network cards modules automatically set the MULTICAST flag.
+ In GNU/Linux systems, you can check whether your network interface has
+ multicast support by typing the following command:
+\layout Quotation
+
+
+\family typewriter 
+\size footnotesize 
+ifconfig -a
+\layout Standard
+
+An ifconfig output example follows:
+\layout Verse
+
+
+\family typewriter 
+\size footnotesize 
+eth0 
+\layout Verse
+
+
+\family typewriter 
+\size footnotesize 
+Link encap:Ethernet HWaddr 00:50:BF:06:89:47
+\newline 
+inet addr:192.168.1.2 Bcast:192.168.1.255 Mask:255.255.255.0 
+\newline 
+UP BROADCAST RUNNING 
+\series bold 
+MULTICAST
+\series default 
+ MTU:1500 Metric:1 
+\newline 
+RX packets:12438583 errors:0 dropped:0 overruns:0 frame:0 
+\newline 
+TX packets:6498370 errors:0 dropped:0 overruns:0 carrier:0 
+\newline 
+collisions:0 txqueuelen:100 
+\newline 
+RX bytes:1100375580 (1049.3 Mb) 
+\newline 
+TX bytes:2158372342 (2058.3 Mb) 
+\newline 
+Interrupt:10 Base address:0x7000
+\layout Verse
+
+
+\family typewriter 
+\size footnotesize 
+lo 
+\layout Verse
+
+
+\family typewriter 
+\size footnotesize 
+Link encap:Local Loopback 
+\newline 
+inet addr:127.0.0.1 Mask:255.0.0.0 
+\newline 
+UP LOOPBACK RUNNING MTU:16436 Metric:1 
+\newline 
+RX packets:8361666 errors:0 dropped:0 overruns:0 frame:0 
+\newline 
+TX packets:8361666 errors:0 dropped:0 overruns:0 carrier:0 
+\newline 
+collisions:0 txqueuelen:0 
+\newline 
+RX bytes:1830657956 (1745.8 Mb) 
+\newline 
+TX bytes:1830657956 (1745.8 Mb)
+\layout Standard
+
+Note the MULTICAST flag at 
+\series bold 
+eth0
+\series default 
+.
+ That flag is missed at 
+\series bold 
+lo
+\series default 
+ (the loopback interface).
+ You must have root privileges to enable the MULTICAST flag.
+ To enable that flag you have to issue the following command:
+\layout Verse
+
+
+\family typewriter 
+\size footnotesize 
+ifconfig <interface_name> multicast
+\layout Standard
+
+Where 
+\series bold 
+interface_name
+\series default 
+ must be replaced by the name of the interface you want to set the MULTICAST
+ flag.
+ This may be useful if you want to enable multicast on a 
+\series bold 
+lo
+\series default 
+ interface because that allows you to do some tests using multicast transmission
+ even if you don't have any real network interface.
+ The next step is to set up the route that the multicast packets will follow.
+ To add this route, as root user, issue the following command:
+\layout Verse
+
+
+\family typewriter 
+\size footnotesize 
+route add -net 224.0.0.0 netmask 240.0.0.0 dev <interface_name>
+\layout Standard
+
+Where 
+\series bold 
+interface_name
+\series default 
+ must be replaced by the name of the interface to which you want to send
+ the multicast packets.
+ Again, if you are testing on a single machine this interface will be the
+ 
+\series bold 
+lo.
+
+\series default 
+ To test your configuration try:
+\layout Verse
+
+
+\family typewriter 
+\size footnotesize 
+ping 224.0.0.1
+\layout Standard
+
+Every machine in your local network that has multicast enabled should answer
+ this ping.
+\layout Section
+
+Reliable Multicast 
+\layout Subsection
+
+Introduction
+\layout Standard
+
+Multicast is supported by the transport layer through the UDP protocol.
+ As each packet may get a different path from source to destiny, packets
+ may come out of order at the receiver host.
+ To solve this problem, it is necessary to have a packet ordering algorithm.
+ Besides the problem of ordering, there is also the possibility of packet
+ loss.
+ This loss makes the protocol unreliable.
+ To solve these problems, which are directly related to the UDP protocol,
+ it is necessary to create an application-level mechanism to guarantee the
+ reliable transmission of data.
+ 
+\layout Standard
+
+There are some ways to implement the reliable multicast mechanism.
+ For instance, the responsibility of recovering loss packets can be directed
+ to the receiver or the sender of the data.
+ 
+\layout Standard
+
+Here, we will describe three classes of reliable multicast protocols, according
+ to [FIXME]:
+\layout Enumerate
+
+Sender Initiated Approach - based on confirmations (acknowledgments or ACKs)
+ sent by receivers and processed by the senders;
+\layout Enumerate
+
+Receiver Initiated Approach - the receiver detects the loss of packets.
+ The receiver sends negative acknowledgments (NACKs) to the sender via a
+ unicast connection.
+ The sender replies with retransmissions.
+\layout Enumerate
+
+Enhanced Receiver Initiated Approach - the receiver detects the loss of
+ packets.
+ The receiver sends negative acknowledgments (NACKs) to the group via a
+ multicast connection.
+\layout Subsubsection
+
+Sender Initiated Approach
+\layout Standard
+
+Every time a member receives a packet he sends a confirmation (ACK) to the
+ sender.
+ The sender maintains a list of all the group members.
+ When the sender sends a packet, he starts a timer for that packet, and
+ waits for ACKs from the group members.
+ As soon as the timer expires, if the sender haven't received an ACK from
+ some member, this packet is retransmitted.
+ The timer is then restarted.
+\layout Subsubsection*
+
+Advantages and disadvantages
+\layout Standard
+
+The main advantage of this approach is that when the sender receives a confirmat
+ion (ACK), he is sure that the packet was in fact received.
+ The main disadvantage of this approach is that for each data packet sent,
+ the sender will receive an ACK from each receiver of the multicast session,
+ which may cause congestion.
+ 
+\layout Subsubsection*
+
+Summary
+\layout Enumerate
+
+every time the sender transmits or retransmits a data packet he starts a
+ timer for this packet and wait for the ACKs from the receivers;
+\layout Enumerate
+
+every time the receiver receives a data packet he sends a confirmation (ACK)
+ to the sender in a unicast connection.
+\layout Subsubsection
+
+Receiver Initiated Approach
+\layout Standard
+
+In this approach, the receiver has the responsibility of detecting the packet
+ losses.
+ When the receiver doesn't receive a data packet, he sends a negative acknowledg
+ment (NACK) to the sender, via a unicast connection.
+ The sender will retransmit the data packet when he receives a NACK.
+ 
+\layout Standard
+
+The packet loss is detected when a receiver receives a packet with sequence
+ number (sn) i + 1 without having received the packet with sn i.
+ For instance, if the receiver receives packets with sn 0, 1 and 3, he will
+ know that packet with sn 2 was lost.
+\layout Subsubsection*
+
+Advantages and disadvantages
+\layout Standard
+
+In general, the loss probability of a packet is smaller than the success
+ probability.
+ So, few NACK packets will be sent through the network.
+ The disadvantage of this approach is that just the sender of the message
+ will be notified that a packet was lost, and only he may retransmit the
+ data packet.
+\layout Subsubsection*
+
+Summary
+\layout Enumerate
+
+every time the receiver detects a packet loss he sends a negative acknowledgment
+ (NACK) to the sender, via a unicast connection, and starts a timer to wait
+ for a retransmission.
+\layout Enumerate
+
+every time the sender receives a NACK packet he sends a retransmission to
+ the group via multicast connection.
+\layout Subsubsection
+
+Enhanced Receiver Initiated Approach
+\layout Standard
+
+That's a variation of the receiver initiated approach.
+ When a loss is detected, a timer is scheduled.
+ If the timer expires and a NACK for that packet has not been received,
+ the receiver multicasts the request message to the group.
+ If a NACK was received before the timer has expired, the receiver will
+ not send the request message, because he knows that a retransmission request
+ has already been sent by some other member.
+\layout Subsubsection*
+
+Advantages and disadvantages
+\layout Standard
+
+The advantage of this approach is that it limits the number of NACKs which
+ will be sent through the network.
+ The disadvantage is that when the loss probability is high, there will
+ be many NACK packets in the network.
+ Each member of the group will receive all the NACKs sent.
+ This may consume a lot of processing time.
+ 
+\layout Subsubsection*
+
+Summary
+\layout Enumerate
+
+every time the receiver detects a packet loss, he starts a timer to send
+ a NACK packet.
+ 
+\begin_deeper 
+\layout Enumerate
+
+If he receives a NACK for the same packet which was lost, the transmission
+ of the NACK is canceled (NACK suppression).
+ 
+\layout Enumerate
+
+Else, when the timer expires, he sends a NACK via multicast to the group.
+\newline 
+
+\newline 
+In both cases, another timer is started, in order to wait for retransmissions.
+ If a retransmission is received, this timer is canceled, and there is nothing
+ else to be done.
+ The data was finally successfully received with success.
+ Else, the timer to send a NACK packet is restarted.
+ We go back to item 1.
+\end_deeper 
+\layout Enumerate
+
+every time a member receives a NACK packet, he schedules the retransmission
+ of the requested packet.
+\layout Section
+
+The Reliable Multicast Library (RML)
+\layout Standard
+
+In this section we will describe how the Reliable Multicast Library works.
+ In section 4.1, definitions will be given.
+ In section 4.2 the mechanisms of how new members join and leave the group
+ will be explained.
+ Then, we will describe how lost packets are recovered in section 4.3.
+ In section 4.4 we show the implementation of the Event List.
+ Finally, we summarize the RML messages and actions in section 4.5.
+\layout Subsection
+
+Definitions
+\layout Standard
+
+Before starting the description of the RML protocol, it is important to
+ define some terms that will be used:
+\layout Itemize
+
+
+\series bold 
+Multicast Session
+\series default 
+: a multicast session is the period of time when a multicast group is active.
+ A multicast group is active if we have at least one member on it.
+\layout Itemize
+
+
+\series bold 
+ACK
+\series default 
+: a special packet, the acknowledgment (ACK) packet, is used to confirm
+ the receiving of data.
+ For instance, in the TCP protocol, the sender always waits for confirmations
+ sent by the receivers via ACKs.
+\layout Itemize
+
+
+\series bold 
+NACK
+\series default 
+: a special packet, the negative acknowledgment (NACK) packet, is used to
+ inform that data was lost.
+ If a receiver finds out that data was lost, he may send NACKs to the sender
+ in order to advertise this problem, and request retransmissions.
+\layout Itemize
+
+
+\series bold 
+Timers
+\series default 
+: the time that a member waits in order to execute a specific action (event).
+ This time may be random, with an uniform or exponential distribution.
+\layout Itemize
+
+
+\series bold 
+Event List
+\series default 
+: list containing all the events that will be executed.
+ When the timer for a specific event expires, this event is removed from
+ the event list and then executed.
+\layout Itemize
+
+
+\series bold 
+Cache: 
+\series default 
+structure maintained by the multicast members which stores the last messages
+ received from every member of the multicast session.
+\layout Subsection
+
+Multicast Session Members Management
+\layout Standard
+
+May anyone join a multicast session at any time? What does a new member
+ need to get in order to become a member of a multicast session? What about
+ the exit procedure? If a member wants to leave the group, may he go away
+ immediately? Or should he wait a bit before exiting? This section will
+ answer this questions.
+\layout Standard
+
+Let's start with the join procedure.
+ If every member of the multicast group entered the session always at the
+ same time, the join procedure would be very simple.
+ The problem is that, in practice, a new member may want to join the session
+ a long time after the session has started.
+ If that happens, this member may not be able to get into a consistent state
+ just requesting retransmissions to the older members of the group.
+ That's because the size of the cache of the other members of the group
+ is finite.
+ The data requested by the new member may not be any more in the cache of
+ the older members.
+\layout Standard
+
+During a session, each member maintains a certain quantity of data in his
+ own cache.
+ When this cache gets full, new data replaces the oldest.
+ If a new member enters the group a long time after the session has started,
+ it may happen that he won't be able to receive the older data, since it
+ has been replaced in all the current members caches.
+\layout Standard
+
+For some applications, that may not be a problem.
+ But for drawing applications, such as the TGWB, in which there is a dependency
+ between the data, this problem must be regarded with attention.
+ For instance, the first message received by a member, in a drawing tool,
+ may instruct the application that a rectangle must be drawn.
+ In the future, another message may instruct that the color of this same
+ rectangle must be changed.
+ Thus, the later command only may be executed after the first one has already
+ been executed.
+ In other words, it makes no sense try to change a color of an inexistent
+ rectangle.
+\layout Standard
+
+In order to solve this problem the following mechanism was implemented:
+ when a new member wants to enter the group, he gets, via TCP, the current
+ state of the multicast session from an older member.
+ The current state is composed by all the elements that this member must
+ have in order to join the group, including the cache of the older member.
+\layout Standard
+
+In more details, when a new member wants to join the group, he sends a 
+\begin_inset Quotes eld
+\end_inset 
+
+join request
+\begin_inset Quotes erd
+\end_inset 
+
+ message to the multicast group, starts a timer and waits for an 
+\begin_inset Quotes eld
+\end_inset 
+
+accept
+\begin_inset Quotes erd
+\end_inset 
+
+ message.
+ This 
+\begin_inset Quotes eld
+\end_inset 
+
+accept
+\begin_inset Quotes erd
+\end_inset 
+
+ message will contain information (address and port) of a member of the
+ group.
+ The new member will connect, via TCP, to this member and get his current
+ state.
+ Then, this new member may be considered a member of the group, as the others.
+ If this timer expires before the new member receives an "accept" message,
+ he considers himself the first member of the group.
+\layout Standard
+
+When an old member of the group receives a 
+\begin_inset Quotes eld
+\end_inset 
+
+join request
+\begin_inset Quotes erd
+\end_inset 
+
+ message, he starts another timer, waiting to send an 
+\begin_inset Quotes eld
+\end_inset 
+
+accept
+\begin_inset Quotes erd
+\end_inset 
+
+ message.
+ If an 
+\begin_inset Quotes eld
+\end_inset 
+
+accept
+\begin_inset Quotes erd
+\end_inset 
+
+ message is received before the timer expires, this member suppresses his
+ transmission, and stops his timer.
+ Otherwise, if the timer expires, he sends the 
+\begin_inset Quotes eld
+\end_inset 
+
+accept
+\begin_inset Quotes erd
+\end_inset 
+
+ message.
+ This mechanism minimizes the number of 
+\begin_inset Quotes eld
+\end_inset 
+
+accept
+\begin_inset Quotes erd
+\end_inset 
+
+ messages sent by the old members of the group, since when one member detects
+ that another one has already sent an 
+\begin_inset Quotes eld
+\end_inset 
+
+accept
+\begin_inset Quotes erd
+\end_inset 
+
+, he cancels his own transmission.
+\layout Standard
+
+To see more details about how this mechanism of joining the group is implemented
+, please consult the subsection titled 
+\begin_inset Quotes eld
+\end_inset 
+
+Thread 5 - Current State Server Thread
+\begin_inset Quotes erd
+\end_inset 
+
+, in section 7.1.
+\layout Standard
+
+Now, let's see what happens when a member wants to leave the group.
+ Suppose a member wants to leave the group.
+ First, he sends a 
+\begin_inset Quotes eld
+\end_inset 
+
+leave group
+\begin_inset Quotes erd
+\end_inset 
+
+ message to all the members of the group to advertise his intention.
+ Then, he starts a timer and when this timer expires, the member in fact
+ leaves the group.
+ During this latency period, he is still able to send eventual retransmissions.
+ When the other members of the group receive the 
+\begin_inset Quotes eld
+\end_inset 
+
+leave group
+\begin_inset Quotes erd
+\end_inset 
+
+ message, they turn off the 
+\begin_inset Quotes eld
+\end_inset 
+
+active
+\begin_inset Quotes erd
+\end_inset 
+
+ bit in their cache related to the member who sent the 
+\begin_inset Quotes eld
+\end_inset 
+
+leave group
+\begin_inset Quotes erd
+\end_inset 
+
+ message.
+\layout Subsection
+
+Loss Detection and Data Recovery 
+\layout Standard
+
+Every data message transmitted by the protocol is identified by its sequence
+ number.
+ When a data message is received from the application to be transmitted
+ for the multicast group, a header is added to indicate the proper sequence
+ number (sn).
+ Afterward the data message is transmitted for the group.
+ 
+\layout Subsubsection
+
+The Cache Structure
+\layout Standard
+
+Every member has a cache structure where he stores some information about
+ the members, this cache has an entry for each member of the multicast session.
+ In the figure 
+\begin_inset LatexCommand \ref{rml cache strucuture}
+
+\end_inset 
+
+ we can see the cache structure.
+ Each cache entry has some fields that we will describe below:
+\layout Itemize
+
+
+\series bold 
+number_of_nodes:
+\series default 
+ number of data packets received from the member
+\layout Itemize
+
+
+\series bold 
+active:
+\series default 
+ indicates whether a member is currently active in the multicast session
+ 
+\layout Itemize
+
+
+\series bold 
+first:
+\series default 
+ a pointer to the first packet of the packet list - the packet list stores
+ the last data packets received from the member
+\layout Itemize
+
+
+\series bold 
+sm_info:
+\series default 
+ is a structure composed by 
+\emph on 
+member_id
+\emph default 
+ and 
+\emph on 
+member_status
+\layout Standard
+
+The structure sm_info, as described, is composed by:
+\layout Itemize
+
+
+\series bold 
+member_id
+\series default 
+: member identification structure composed by the member IP address and
+ the process ID (PID)
+\layout Itemize
+
+
+\series bold 
+member_status:
+\series default 
+ is a structure that stores the current member status, e.g., the first and
+ the last sn received
+\layout Standard
+
+Finally, member_status is composed by:
+\layout Itemize
+
+
+\series bold 
+first_rcv:
+\series default 
+ the sequence number (sn) of the first packet received from the member
+\layout Itemize
+
+
+\series bold 
+last_rcv:
+\series default 
+ the sn of the last packet received from the member
+\layout Itemize
+
+
+\series bold 
+last_seq_rcv:
+\series default 
+ the sn of of the last in-order packet received from the member
+\layout Itemize
+
+
+\series bold 
+last_identified
+\series default 
+:
+\series bold 
+ 
+\series default 
+the greatest sn of the member packet list
+\layout Itemize
+
+
+\series bold 
+window_size:
+\series default 
+ the maximum size of the NACK window, i.e, the maximum number of NACKs that
+ we can send in a specific time
+\layout Itemize
+
+
+\series bold 
+window_mask
+\series default 
+:
+\series bold 
+ 
+\series default 
+it is an array to identify the sn of the lost packets.
+ Where 1 means that we are going to send a NACK for that packet and 2 means
+ that we are waiting for the retransmission for that packet
+\layout Itemize
+
+
+\series bold 
+window_ini:
+\series default 
+ the position of the smallest sn represented in the window_mask.
+\layout Itemize
+
+
+\series bold 
+nak_list:
+\series default 
+ the list of NACKs that have been sent.
+ This list controls the number of NACKs sent by each sn.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename cache.eps
+	display monochrome
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{rml cache strucuture}
+
+\end_inset 
+
+RML Cache structure
+\end_inset 
+
+
+\layout Subsubsection
+
+Loss Detection
+\layout Standard
+
+When a member of the multicast group receives a data packet, he checks the
+ packet sequence number and the sender identification.
+ Then, the member tries to match the sender identification with some 
+\emph on 
+member_id
+\emph default 
+ in his cache.
+ If he is successful in that matching, the sender is already in the cache.
+ Otherwise a node for the new member must be inserted in the cache.
+ After that, the member has to check whether or not the received packet
+ is in sequence.
+ 
+\layout Standard
+
+If the sequence number (sn) is in order, i.e., 
+\family typewriter 
+sn=last_seq_rcv+1
+\family default 
+, the packet is inserted in the cache and passed to the application.
+ If the sequence number is not in sequence, the member has found out that
+ packets were lost - a gap was detected.
+ Detected the loss, it is necessary to execute the procedures for recovering
+ the lost packets.
+ The data packet received out of order is inserted and kept in the cache.
+ It will be released to the application after all lost data have been recovered.
+\layout Standard
+
+The recovery procedure consists of requesting retransmissions for the lost
+ data packets, in other words, to send NACK messages for the multicast group.
+ For instance, as it can be seen in figure 
+\begin_inset LatexCommand \ref{rml cache strucuture}
+
+\end_inset 
+
+, if the losses of data packets 2 and 3 were detected, then the member is
+ supposed to send requests for retransmission of those data packets.
+ Any member of the multicast session that has the requested data is able
+ to retransmit it.
+ In that way, the retransmission responsibility is distributed.
+\layout Standard
+
+The loss detection discussed before can fail when the lost packet is the
+ last packet transmitted by the sender.
+ Suppose that a member A has sent his last data packet with sn=10 and that
+ member B has lost that packet.
+ Member B is unable to detect the loss until he receives a new data packet
+ from member A.
+ But we have supposed that A will not send new packets.
+ In that situation, there must be another way of detecting the loss.
+ To solve that problem, members send a 
+\begin_inset Quotes eld
+\end_inset 
+
+ refresh message
+\begin_inset Quotes erd
+\end_inset 
+
+ periodically indicating the sn of the last packet sent.
+ When a member receives the 
+\begin_inset Quotes eld
+\end_inset 
+
+refresh message
+\begin_inset Quotes erd
+\end_inset 
+
+, he is able to identify the lost packets and to start the recovering procedures.
+ In our example, member B would receive a 
+\begin_inset Quotes eld
+\end_inset 
+
+refresh message
+\begin_inset Quotes erd
+\end_inset 
+
+ from member A and then would be able to detect and recover the lost packet.
+\layout Subsubsection
+
+Sending NACKs
+\layout Standard
+
+Suppose a scenario where a member of the multicast group sends a data packet
+ to the other members, and all the other members lose that packet.
+ Now, suppose that a NACK packet is sent by every member immediately after
+ the loss is detected.
+ That action may cause an unnecessary traffic in the network.
+ That problem is called NACK implosion
+\begin_inset LatexCommand \cite{key-36}
+
+\end_inset 
+
+.
+ One solution is to wait for a random time T
+\size footnotesize 
+\emph on 
+nack
+\size default 
+\emph default 
+ before sending a NACK message.
+ As other members of the multicast group might have lost the same data message,
+ and considering that T
+\size footnotesize 
+\emph on 
+nack
+\size default 
+\emph default 
+ is random, there will be a member who will choose a smaller timer and send
+ the NACK message before the others.
+ If before T
+\size footnotesize 
+\emph on 
+nack
+\size default 
+\emph default 
+ expires the member receives a NACK message or a retransmission of the lost
+ data, the transmission of the NACK message will be canceled.
+ So, if we choose an efficient way to determine T
+\size footnotesize 
+\emph on 
+nack
+\size default 
+\emph default 
+ we will have a great probability of suppressing the sending of duplicated
+ NACK messages through the network.
+\layout Standard
+
+Besides the implosion of NACKs, another problem that may happen related
+ to the sending of NACK messages is that the member may request more data
+ than he is able to handle.
+ In fact, this two problems are similar to the ones faced in the unicast
+ case.
+ The congestion control, used in the TCP, is implemented in order to avoid
+ network congestion.
+ The flow control, also used in the TCP, tries to get rid of the buffer
+ overflow in the client application.
+ More information about TCP mechanisms can be found in chapter 3 of 
+\begin_inset LatexCommand \cite{key-3}
+
+\end_inset 
+
+.
+ As described in the last paragraph, the NACK suppression algorithm tries
+ to solve a problem analog to the one solved by the congestion control in
+ the unicast case.
+ In that way, the congestion control and NACK suppression algorithm attempt
+ to avoid a network core congestion while the unicast and multicast flow
+ control attempt to prevent the overflow that may happen at the network
+ hosts (end systems) buffers.
+ RML implements a simple flow control: the amount of NACKs sent should not
+ exceed the amount of data that the member expecting this packets may process
+ at once.
+ 
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename flowcontrol.eps
+	display monochrome
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{rml flow control}
+
+\end_inset 
+
+RML Flow Control
+\end_inset 
+
+
+\layout Standard
+
+Two possible scenarios for flow control are illustrated in figure 
+\begin_inset LatexCommand \ref{rml flow control}
+
+\end_inset 
+
+.
+ Suppose that packets with sn from 0 to 8 were transmitted by the sender.
+ Those packets were lost by the receiver.
+ The receiver detects the loss when he receives a refresh message from the
+ sender.
+ Then there are two ways of dealing with that loss.
+ The first approach, which we call 
+\emph on 
+Naive Approach
+\emph default 
+, is, in fact, an approach with no flow control.
+ The problem with this approach is that the receiver will send a large amount
+ of NACK messages and it may happen that the amount of retransmission received
+ in response to those NACKs may be greater than the cache space available.
+ Thus, old data packets, that have not already been sent to the application,
+ will be replaced by new ones.
+ In figure 
+\begin_inset LatexCommand \ref{rml flow control}
+
+\end_inset 
+
+ the packet with sn 0 was lost.
+ The receiver has a cache with five slots.
+ It may be seen that data packets from 1 to 5 were first stored in the cache.
+ Note that those packets were not sent to the application because the packet
+ with sn 0 is missed.
+ Then, packets from 6 to 8 were received and replaced packets 1, 2 and 3.
+ After that, the receiver must send NACKs to recover packets from 0 to 3.
+ We can see that it is not useful to replace packets that have not already
+ been sent to the application.
+\layout Standard
+
+In the second approach, which we call 
+\emph on 
+Flow Control Approach
+\emph default 
+, when a loss is detected the receiver only send NACKs for a certain amount
+ of packets, i.e., the amount he is able to handle.
+ In addition, the receiver requests those retransmissions in only one NACK
+ message.
+ Note in figure 
+\begin_inset LatexCommand \ref{rml flow control}
+
+\end_inset 
+
+ that the first NACK sent requests retransmissions for packets with sn 0
+ to 4 because there were five free slots in the cache.
+ The second NACK requests only the retransmission of packet 0 because there
+ was only one free slot in the cache at that time.
+ Using the Flow Control Approach two NACKs were sent, while in the Naive
+ Approach they were thirteen.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename packet_types.eps
+	display monochrome
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{rml packet types}
+
+\end_inset 
+
+RML Packet Types
+\end_inset 
+
+
+\layout Standard
+
+The RML uses the 
+\emph on 
+window_mask
+\emph default 
+,
+\emph on 
+ window_size
+\emph default 
+ and 
+\emph on 
+window_ini
+\emph default 
+ parameters to bound the NACK transmission.
+ The 
+\emph on 
+window_size
+\emph default 
+ has a value of 64, i.e., we can request at most 64 retransmissions per NACK
+ message.
+ The 
+\emph on 
+window_size
+\emph default 
+ value was chosen just for implementation purposes.
+ With that value we can represent the 
+\emph on 
+window_mask
+\emph default 
+ using only two integers in the NACK packets, as shown in figure 
+\begin_inset LatexCommand \ref{rml nack mask}
+
+\end_inset 
+
+.
+ The 
+\emph on 
+window_ini
+\emph default 
+ points to the first position in the 
+\emph on 
+window_mask
+\emph default 
+ array.
+ The NACK packet is mounted using those parameters.
+ In figure 
+\begin_inset LatexCommand \ref{rml packet types}
+
+\end_inset 
+
+, there is a description of the packet structures used in RML.
+ The NACK packet is composed by a set of fields, among them we have :
+\layout Itemize
+
+
+\series bold 
+base_sn: 
+\series default 
+the value of the sn of the first NACK in the 
+\emph on 
+window_mask
+\layout Itemize
+
+
+\series bold 
+window_size: 
+\series default 
+the value of 
+\emph on 
+window_size 
+\emph default 
+of the cache, default is 64
+\layout Itemize
+
+
+\series bold 
+hmask: 
+\series default 
+an integer that represents the higher part of the NACK mask
+\layout Itemize
+
+
+\series bold 
+lmask: 
+\series default 
+an integer that represents the lower part of the NACK mask
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename nack_mask.eps
+	display monochrome
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{rml nack mask}
+
+\end_inset 
+
+RML NACK mask
+\end_inset 
+
+
+\layout Standard
+
+Suppose a NACK message from member M has arrived with 
+\emph on 
+base_sn=5, window_size=64, hmask=1 
+\emph default 
+and
+\emph on 
+ lmask=3.
+ 
+\emph default 
+To find out which retransmission has been requested by member M we have
+ to translate 
+\emph on 
+hmask 
+\emph default 
+and
+\emph on 
+ lmask 
+\emph default 
+to their binary representation.
+ This translation is shown in figure 
+\begin_inset LatexCommand \ref{rml nack mask}
+
+\end_inset 
+
+.
+ The requests can be identified using the position of the bits with value
+ of 1 plus the 
+\emph on 
+base_sn
+\emph default 
+.
+ In our scenario, the requests are for the packets with sn 5 (0+5), 6 (1+5)
+ and 37 (32+5).
+\layout Standard
+
+After sending a NACK message, the member waits for a retransmission during
+ a random period of time, called T
+\size footnotesize 
+\emph on 
+wait
+\size default 
+\emph default 
+.
+ If the requested retransmission is not received after T
+\size footnotesize 
+\emph on 
+wait
+\size default 
+\emph default 
+ units of time, a new NACK message is sent.
+ The maximum number of NACKs is limited by 
+\size small 
+the MAX_NAK
+\size default 
+ parameter, which the user may set in the rmcast.config file (see section
+ 5.3 to learn about RML configuration).
+ If MAX_NAK is reached, i.e., a data packet couldn't be recovered - the applicatio
+n is then suspended.
+ 
+\layout Subsubsection
+
+Data Retransmission
+\layout Standard
+
+In the RML each member maintains in his cache the last N data packets he
+ has received from other members.
+ Thus, any member of the multicast group is able to answer to a request
+ for retransmission of the last N messages he has received from each other
+ member.
+ This mechanism distributes the responsibility of retransmission among all
+ the members of the multicast session, but it may create a lot of traffic
+ if every member answers to a NACK message.
+ As was explained in section 4.3.3, we use random timers to avoid this traffic
+ problem.
+\layout Standard
+
+Suppose a member A receives a NACK message from member B regarding a specific
+ lost packet P from member C.
+ If the packet P is stored in A's cache, then member A schedules a random
+ timer T
+\size footnotesize 
+\emph on 
+ret
+\size default 
+\emph default 
+ to wait before sending a retransmission.
+ There are two situations that may occur before T
+\size footnotesize 
+\emph on 
+ret
+\size default 
+\emph default 
+ timed out:
+\layout Enumerate
+
+a retransmission of the packet P is received: the A's retransmission is
+ aborted because another member has already answered the request.
+\layout Enumerate
+
+a NACK message regarding the same packet P is received: the NACK message
+ is ignored because the retransmission is already scheduled.
+\layout Standard
+
+If T
+\size footnotesize 
+\emph on 
+ret
+\size default 
+\emph default 
+ expires and neither (1) nor (2) has occurred, then the retransmission is
+ sent.
+\layout Subsection
+
+The Event List 
+\layout Standard
+
+A common activity of the reliable multicast library (RML) is to schedule
+ an event to happen some time in the future.
+ Almost every action that is taken by the RML is not executed immediately
+ when it is requested.
+ Instead, events are scheduled in order to perform the tasks.
+ When a loss of packets is detected, for example, an event is scheduled
+ to send a negative acknowledgment (NACK) after a certain period of time.
+ If, before the timeout, the member receives a retransmission of the lost
+ packet or if the member receives a NACK for the considered packet, then
+ the sending of the NACK is canceled.
+ In the last case, the sending of the NACK is suppressed because another
+ member has just sent the NACK.
+ In order to reduce the network traffic, a member just sends a message after
+ waiting to see if this message was just sent by another member.
+ The key point here is to keep the work distributed but avoiding redundancy.
+\layout Standard
+
+The event list of the Reliable Multicast Protocol is an implementation of
+ a conventional delta list 
+\begin_inset LatexCommand \cite{key-37}
+
+\end_inset 
+
+.
+ The list is a chain of event nodes.
+ The event nodes are stored in increasing order of when the event occurs.
+ Each event node contains the information needed to execute the event -
+ the event type, described below, and some other information, depending
+ on the event type - as well as the time in the future that the event should
+ take place.
+ The time stored in each event is relative to the preceding event.
+ For example, suppose there are five events scheduled for 4, 6, 6, 13 and
+ 17 time units in the future.
+ This would result in the event list illustrated in figure 
+\begin_inset LatexCommand \ref{rml simple event list}
+
+\end_inset 
+
+.
+ Notice that the third event record contains a 0 because it occurs 0 time
+ units after the second event.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename simple_event_list.eps
+	display monochrome
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{rml simple event list}
+
+\end_inset 
+
+RML Event List - a simple example
+\end_inset 
+
+
+\layout Standard
+
+The first event node is the next one that will be executed.
+ When an event is inserted at the head of the list, an operating system
+ alarm signal is scheduled to fire after the time indicated at the header
+ node of the list.
+ When the alarm fires, the event node is processed and removed.
+ All the subsequent events that have time of 0 are also executed and removed.
+ Then the alarm is restarted.
+\layout Standard
+
+To schedule a new event, the event manager walks down the list and inserts
+ a record for the new event in the appropriate location, being careful to
+ adjust the relative time of both the new and the event immediately following
+ the new event.
+ Deleting an event from the event list is implemented in an analogous way.
+\layout Standard
+
+The event nodes are divided into five types: 
+\layout Itemize
+
+NAK_SND_WAIT- used to schedule a sending of a negative acknowledgment; 
+\layout Itemize
+
+RET_RCV_WAIT- used to wait for retransmissions; 
+\layout Itemize
+
+RET_SND_WAIT- created to schedule a sending of a retransmission; 
+\layout Itemize
+
+REF_SND_WAIT- used to schedule a refresh; 
+\layout Itemize
+
+LEV_GRP_WAIT- specifies the time between a user requests to go away from
+ the group and the actual moment when the user leaves the group.
+\layout Standard
+
+Suppose there is one NAK_SND_WAIT event scheduled for 4 time units in the
+ future, in order to send a NACK to a packet initially sent by member M1.
+ Suppose also that there is one REF_SND_WAIT scheduled for 6 time units
+ in the future, and a RET_SND_WAIT for 17 time units in the future.
+ This retransmission refers to packet 4 of member M2.
+ This would result in the event list illustrated in figure 
+\begin_inset LatexCommand \ref{rml detailed event list}
+
+\end_inset 
+
+.
+ Note that the NAK_SND_WAIT event node contains a pointer to the cache entry
+ of member M1.
+ The cache entry of M1 will contain the information about what packets from
+ member M1 were lost.
+ When the event NAK_SND_WAIT fires, searching the cache we will find out
+ which packets of member M1 were lost, and then send a NACK message to request
+ these packets.
+ On the other hand, the REF_SND_WAIT does not require any other information.
+ Finally, the RET_SND_WAIT schedules a retransmission, and to identify the
+ message to be retransmitted we need both the member id of the message and
+ its sequence number.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename eventlist.eps
+	display monochrome
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{rml detailed event list}
+
+\end_inset 
+
+RML Event List - a more detailed example
+\end_inset 
+
+
+\layout Standard
+
+Figure 
+\begin_inset LatexCommand \ref{rml event handlers}
+
+\end_inset 
+
+ depicts how the different events are handled.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename fleventlist.eps
+	display monochrome
+	width 100col%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{rml event handlers}
+
+\end_inset 
+
+RML Event Handlers
+\end_inset 
+
+
+\layout Subsection
+
+RML log generation
+\layout Standard
+
+The RML offers the option of log generation.
+ The log file name is configured through the LOG_FILE option (see section
+ 5.3 for further information about RML parameters configuration).
+ The file will be created at the current directory and the host name and
+ process ID will be appended to the file name provided in the LOG_FILE option.
+ Suppose LOG_FILE=
+\emph on 
+log 
+\emph default 
+and the application that uses the RML is called from the 
+\emph on 
+/tmp
+\emph default 
+ directory at the 
+\emph on 
+machine01
+\emph default 
+.
+ Then, the log file name will be 
+\emph on 
+/tmp/log.machine01.137
+\emph default 
+, where 
+\emph on 
+137
+\emph default 
+ is the process ID of the application.
+\layout Standard
+
+A log file sample is showed below:
+\layout Standard
+
+
+\family typewriter 
+\size scriptsize 
+
+\hfill 
+
+\newline 
+host: receiverhost
+\newline 
+ip: 192.168.1.2
+\newline 
+pid: 18348
+\newline 
+--------------------------------------------------------------------------------
+-----------------------------------
+\newline 
+time snd/rcv/loss type sender_ip\SpecialChar ~
+ sender_pid requested_ip\SpecialChar ~
+ requested_pid sn\SpecialChar ~
+
+ [{base_sn} {win_size} {hmask} {lmask}]
+\newline 
+--------------------------------------------------------------------------------
+-----------------------------------
+\newline 
+51800783466\SpecialChar ~
+\SpecialChar ~
+ L\SpecialChar ~
+\SpecialChar ~
+ RF\SpecialChar ~
+\SpecialChar ~
+ 192.168.1.1\SpecialChar ~
+ 13893\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ -1
+\newline 
+51808642569\SpecialChar ~
+\SpecialChar ~
+ L\SpecialChar ~
+\SpecialChar ~
+ DT\SpecialChar ~
+\SpecialChar ~
+ 192.168.1.1\SpecialChar ~
+ 13893\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 0
+\newline 
+51810314729\SpecialChar ~
+\SpecialChar ~
+ S\SpecialChar ~
+\SpecialChar ~
+ RF\SpecialChar ~
+\SpecialChar ~
+ 192.168.1.2\SpecialChar ~
+ 18348\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ -1
+\newline 
+51829942926\SpecialChar ~
+\SpecialChar ~
+ R\SpecialChar ~
+\SpecialChar ~
+ DT\SpecialChar ~
+\SpecialChar ~
+ 192.168.1.1\SpecialChar ~
+ 13893\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 48
+\newline 
+51829947209\SpecialChar ~
+\SpecialChar ~
+ S\SpecialChar ~
+\SpecialChar ~
+ NK\SpecialChar ~
+\SpecialChar ~
+ 192.168.1.2\SpecialChar ~
+ 18348\SpecialChar ~
+ 192.168.1.1\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 13893\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ -1\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 64\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 29280\SpecialChar ~
+ 235372671
+\newline 
+
+\layout Standard
+
+The header of the log file is composed by the host name, ip address and
+ process ID.
+ Then a short description of the log structure is presented.
+ After that, each line describe a packet that was received or sent by the
+ member.
+ The fields are:
+\layout Itemize
+
+
+\series bold 
+time: 
+\series default 
+indicates the time when the packet was received or sent
+\layout Itemize
+
+
+\series bold 
+snd/rcv/loss: 
+\series default 
+indicates if the packet was sent (S), received (R) or received but lost
+ because of loss simulation (L).
+\layout Itemize
+
+
+\series bold 
+type: 
+\series default 
+indicates the packet type, i.e., NACK(NK), data(DT), retransmission(RT), refresh(R
+F), join accept(JA), join request(JR), leave group(LG) and unknown(UN).
+\layout Itemize
+
+
+\series bold 
+sender_ip: 
+\series default 
+indicates the IP address of the sender
+\layout Itemize
+
+
+\series bold 
+sender_pid: 
+\series default 
+indicates the process ID of the sender
+\layout Itemize
+
+
+\series bold 
+requested_ip: 
+\series default 
+this field appears when a NACK or a retransmission packet is received.
+ If the NACK is requesting the retransmission from packets sent by member
+ C, this field indicates C's IP address.
+\layout Itemize
+
+
+\series bold 
+requested_pid:
+\series default 
+ this field only appears when a NACK or a retransmission packet is received.
+ If the NACK is requesting the retransmission from packets sent by member
+ C, this field indicates C's process ID.
+\layout Itemize
+
+
+\series bold 
+sn: 
+\series default 
+this field has different meanings depending on the packet type.
+ When the packet is data or retransmission, this field indicates the sequence
+ number of the packet.
+ When the packet is a refresh message, this field indicates the sequence
+ number of the last data packet sent by the member identified by sender_ip
+ and sender_pid.
+ This field does not appear for the remaining packet types.
+\layout Itemize
+
+
+\series bold 
+base sn:
+\series default 
+ indicates the value of the sequence number of the first retransmission
+ requested in the NACK packet.
+\layout Itemize
+
+
+\series bold 
+win size:
+\series default 
+ indicates the window size of the NACK packet
+\layout Itemize
+
+
+\series bold 
+hmask: 
+\series default 
+an integer that represents the higher part of the NACK mask
+\layout Itemize
+
+
+\series bold 
+lmask:
+\series default 
+ an integer that represents the lower part of the NACK mask
+\layout Standard
+
+There is a simple shell script, called rmcastplot.bash, that can be used
+ to generate statistics and plots from the RML log files.
+ If you run rmcastplot.bash with no arguments it will show a short help:
+\layout Paragraph
+
+
+\family typewriter 
+\series medium 
+\size footnotesize 
+--------------------------------------------------------------------------------
+---------------------
+\newline 
+Usage:
+\newline 
+rmcastplot.bash <max_num_pack_sent> <xyrange> <member1.log> <member2.log> [awk_scri
+pt_dir] [tgif|png]
+\newline 
+\SpecialChar ~
+
+\newline 
+max_num_pack_sent: maximum number of sent packets
+\newline 
+xyrange: [XMIN:XMAX][YMIN:YMAX] gnuplot style
+\newline 
+member1.log: full path to member log
+\newline 
+member2_log: full path to member log
+\newline 
+awk_script_dir: optional parameter.
+ Full path to directory where rmlog.awk script is found
+\newline 
+tgif or png: optional parameter.
+ Changes gnuplot output to generate Tgif files or PNG files
+\newline 
+--------------------------------------------------------------------------------
+---------------------
+\layout Paragraph
+
+
+\family typewriter 
+\series medium 
+\size footnotesize 
+\SpecialChar ~
+
+\layout Standard
+
+Suppose there are two members using an RML based application.
+ They generate two log files: log.senderhost.13893 and log.receiverhost.18348.
+ For instance, rmcastplot.bash script can be executed with the following
+ line command:
+\layout Standard
+\align center 
+
+\family typewriter 
+\size footnotesize 
+
+\hfill 
+
+\newline 
+rmcastplot.bash 100 [0:15][0:5] log.senderhost.13893 log.receiverhost.18348
+\newline 
+
+\hfill 
+
+\layout Standard
+
+The script outputs some statistics at the standard input:
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+
+\hfill 
+
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+--------------------------------------------------
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Member 1 Name:\SpecialChar ~
+ senderhost
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Member 1 IP:\SpecialChar ~
+ 192.168.1.1
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Member 1 PID: 13893
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Member 2 Name:\SpecialChar ~
+ receiverhost
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Member 2 IP:\SpecialChar ~
+ 192.168.1.2
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Member 2 PID: 18348
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+--------------------------------------------------
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+\SpecialChar ~
+ Data related to
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+\SpecialChar ~
+ log.senderhost.13893 -> 192.168.1.2:18348
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+--------------------------------------------------
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Data sent:\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 101
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Data received from 192.168.1.2:18348\SpecialChar ~
+\SpecialChar ~
+ 1
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+NACKs sent:\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 0
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+NACKs received from 192.168.1.2:18348\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 5
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Refresh sent:\SpecialChar ~
+ 9
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Refresh received from 192.168.1.2:18348 16
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Retrans sent:\SpecialChar ~
+ 51
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Retrans received from 192.168.1.2:18348 0
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Total simulated loss:\SpecialChar ~
+\SpecialChar ~
+ 0
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Data loss with simulation from 192.168.1.2:18348\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 0
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+NACKs lost by simulation from 192.168.1.2:18348\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 0
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Refresh lost by simulation from 192.168.1.2:18348\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 0
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Retrans lost by simulation from 192.168.1.2:18348\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 0
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Packets identified:\SpecialChar ~
+ 517
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+--------------------------------------------------
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+\SpecialChar ~
+
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+--------------------------------------------------
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+\SpecialChar ~
+ Data related to
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+\SpecialChar ~
+ log.receiverhost.18348 -> 192.168.1.1:13893
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+--------------------------------------------------
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Data sent:\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 1
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Data received from 192.168.1.1:13893\SpecialChar ~
+\SpecialChar ~
+ 65
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+NACKs sent:\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 5
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+NACKs received from 192.168.1.1:13893\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 0
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Refresh sent:\SpecialChar ~
+ 7
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Refresh received from 192.168.1.1:13893 11
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Retrans sent:\SpecialChar ~
+ 0
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Retrans received from 192.168.1.1:13893 36
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Total simulated loss:\SpecialChar ~
+\SpecialChar ~
+ 54
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Data loss with simulation from 192.168.1.1:13893\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 36
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+NACKs lost by simulation from 192.168.1.1:13893\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 0
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Refresh lost by simulation from 192.168.1.1:13893\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 3
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Retrans lost by simulation from 192.168.1.1:13893\SpecialChar ~
+\SpecialChar ~
+\SpecialChar ~
+ 15
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+Packets identified:\SpecialChar ~
+ 453 
+\layout Standard
+
+
+\family typewriter 
+\size footnotesize 
+--------------------------------------------------
+\layout Standard
+
+
+\hfill 
+
+\layout Standard
+
+Besides those statistics, if you have gnuplot
+\begin_inset LatexCommand \cite{key-38}
+
+\end_inset 
+
+ installed in your system, some plots will be generated.
+ One of those plots is showed in figure 
+\begin_inset LatexCommand \ref{log plot}
+
+\end_inset 
+
+.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename log_plot.eps
+	display monochrome
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{log plot}
+
+\end_inset 
+
+Log plotted with the rmcastplot.bash script
+\end_inset 
+
+
+\layout Subsection
+
+Summary
+\layout Standard
+
+Figure 
+\begin_inset LatexCommand \ref{rml actions on receiving packets}
+
+\end_inset 
+
+ summarizes the RML behavior on receiving each packet type.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename actions_on_receiving_packets.eps
+	display monochrome
+	width 100text%
+	height 100text%
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{rml actions on receiving packets}
+
+\end_inset 
+
+Actions taken on receiving each packet type
+\end_inset 
+
+
+\layout Section
+
+A simple example: the chat program 
+\layout Standard
+
+In this section we will describe a simple chat application that uses the
+ RML.
+ We hope that this simple example may be used to show how to develop an
+ application based on our RML.
+\layout Subsection
+
+Minimal requirements to create an Reliable Multicast based application
+\layout Standard
+
+The development of a Reliable Multicast application has some requirements
+ as follow:
+\layout Itemize
+
+A multicast enabled environment (see section 2 to learn about that);
+\layout Itemize
+
+The Reliable Multicast Library - the librmcast.a file;
+\layout Itemize
+
+The Reliable Multicast Header - the rmcast.h file;
+\layout Itemize
+
+C language develop environment - gcc, make, c libraries etc.
+\layout Subsection
+
+Getting and installing the Reliable Multicast Library
+\layout Standard
+
+To get the Reliable Multicast Library do the following:
+\layout Enumerate
+
+Download the RML source code from our project page at 
+\emph on 
+
+\newline 
+http://www.land.ufrj.br/tools/rmcast
+\layout Enumerate
+
+Gunzip and untar the package.
+ After that the RelMulticast directory will be created.
+\layout Enumerate
+
+Change to RelMulticast directory.
+\layout Enumerate
+
+Type make and see if the 
+\series bold 
+librmcast.a
+\series default 
+ is compiled without errors.
+ This may be flawless for most users.
+\layout Standard
+
+To compile an application with librmcast.a you should use the following options
+ with gcc:
+\layout Quote
+
+-I<rmcast.h_directory> -L<librmcast.a_directory> -lrmcast
+\layout Standard
+
+For instance, we have an application called rmchat in the examples/rmchat
+ directory, to compile that application we should issue the command:
+\layout Quote
+
+gcc rmchat.c -I../..
+ -L../..
+ -lpthread -lm -lrmcast -o rmchat
+\layout Standard
+
+Inside the RelMulticast directory you will find some useful files such as
+ README, INSTALL etc.
+ Those files contain the most updated instructions to compile the RML, please
+ take a look at them.
+\layout Subsection
+
+The Reliable Multicast Library configuration
+\layout Standard
+
+There are two ways for an application to customize the Reliable Multicast
+ Library options:
+\layout Enumerate
+
+Calling the 
+\series bold 
+RM_setOption(int OPTION_ID, void *OPTION_VALUE)
+\series default 
+ function, where: 
+\newline 
+
+\newline 
+OPTION_ID: indicates what option you want to set.
+ You can found the option list in the rmcast.h header file.
+ 
+\newline 
+OPTION_VALUE: the value you want to set the option to 
+\newline 
+
+\newline 
+
+\series bold 
+Example:
+\series default 
+ 
+\newline 
+
+\family typewriter 
+...
+ 
+\newline 
+/* Setting REFRESH_TIMER */ 
+\newline 
+int refresh_timer=10; 
+\newline 
+
+\newline 
+RM_setOption(REFRESH_TIMER,(void *) refresh_timer); 
+\newline 
+...
+ 
+\layout Enumerate
+
+Calling 
+\series bold 
+RM_readConfigFile(char *filename)
+\series default 
+.
+ This function will tell the Reliable Multicast Library to read the user's
+ options from 
+\series bold 
+filename
+\series default 
+.
+ 
+\newline 
+
+\newline 
+
+\series bold 
+Example:
+\series default 
+ 
+\newline 
+
+\newline 
+
+\family typewriter 
+...
+\newline 
+/* Read the config file from /etc/rmcast.config */ 
+\newline 
+char config_file[50]; 
+\newline 
+
+\newline 
+strcpy(config_file,"/etc/rmcast.config"); 
+\newline 
+
+\newline 
+RM_readConfigFile(config_file); 
+\newline 
+...
+ 
+\family default 
+
+\newline 
+
+\layout Standard
+
+NOTE: There is a constant, RM_USE_CURRENT_CONFIG, that can replace functions
+ parameters.
+ In those situations, the RM_USE_CURRENT_CONFIG will indicate that the current
+ values (which may have been set either by calling RM_setOption or RM_readConfig
+File) must be used.
+ For instance, when we call the RM_joinGroup() function we are supposed
+ to pass as parameters the IP Multicast address and port number.
+ If we have already read those options from rmcast.config file, just replace
+ the parameters with the RM_USE_CURRENT_CONFIG constant.
+\newline 
+
+\layout Standard
+
+The rmcast.config file contain some options that can be customized by the
+ users.
+ A rmcast.config file example follows (lines beginning with a \i \"{ }
+#\i \"{ }
+ are comments):
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Reliable Multicast Library configuration file
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Reliable Multicast Library version 
+\newline 
+RM_VERSION=1.0
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Transmission mode: 0 multicast (default), 1 unicast 
+\newline 
+TRANSMISSION_MODE=0
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Multicast or Unicast IP address to send data (destination IP) 
+\newline 
+DEST_IP=225.1.2.3
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Multicast or Unicast port to send data (destination port) 
+\newline 
+DEST_PORT=5000
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Time to live for the packets setting (1 indicates local network) 
+\newline 
+TTL=1
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Inter-packet sleep timer - timer between transmissions of packets 
+\newline 
+#( in microseconds) 
+\newline 
+MICROSLEEP=10
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Log file path - NULL disable logging (default) 
+\newline 
+LOG_FILE=NULL
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Random Timers Distribution: 0 uniform 1 exponential 
+\newline 
+TIMER_DISTRIBUTION=0
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Lower bound for timer generation (in milliseconds) 
+\newline 
+TIMER_LOWER=200
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Upper bound for timer generation (in milliseconds) 
+\newline 
+TIMER_UPPER=1000
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Max number of naks that can be sent for each packet.
+ 100 (default) 
+\newline 
+MAX_NAK=100
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+# We will be able to retransmit the last MAX_MEMBER_CACHE_SIZE 
+\newline 
+# packets from each member of the multicast group, i.e., we will store the
+\newline 
+# last MAX_MEMBER_CACHE_SIZE PACKETS from each member
+\newline 
+# of the multicast group in the cache.
+ 4000 (default) 
+\newline 
+# 
+\newline 
+# WARNING: if you set MAX_MEMBER_CACHE_SIZE to low values 
+\newline 
+# the protocol may fail!! 
+\newline 
+# 
+\newline 
+MAX_MEMBER_CACHE_SIZE=4000 
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Enable support for new users 1 enabled (default), 0 disabled 
+\newline 
+NEW_USER_SUPPORT=0
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Show transmission statistics: 0 disabled (default) 1 enabled 
+\newline 
+STATISTICS=0
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Time between sending of refresh messages (seconds) 
+\newline 
+REFRESH_TIMER=10
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+#Loss simulation: 0 disabled (default) any float number > 0 enabled
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+# A note about loss simulation: 
+\newline 
+# When loss simulation is enabled (LOSS_PROB > 0) we always loose 
+\newline 
+# the first 10 received packets, and the first received data packet - 
+\newline 
+# that is, the first burst of received packets.
+ 
+\newline 
+# After that, packets are lost according to LOSS_PROB.
+ 
+\newline 
+# Example: LOSS_PROB=30 
+\newline 
+# The first 10 received packets will be lost.
+ 
+\newline 
+# Then, 30% of the packets will be lost 
+\newline 
+LOSS_PROB=0
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+# Time to wait, in microseconds, before leaving the multicast group.
+ 
+\newline 
+LEAVE_GROUP_WAIT_TIME = 5000000
+\layout Quote
+
+
+\family typewriter 
+\size footnotesize 
+# Size of the buffer of the receiver host 
+\newline 
+# (maximum size of a message that may be processed by 
+\newline 
+# the receiver host).
+\newline 
+RCV_BUFFER_SIZE = 10000
+\layout Standard
+
+To retrieve the current value of an option from the RML you must call the
+ 
+\series bold 
+RM_getOption(int OPTION,void *OPTION_VALUE) 
+\series default 
+function
+\series bold 
+.
+\layout Subsection
+
+The Reliable Multicast Chat (rmchat) application
+\layout Standard
+
+This is a simple chat application and was written just for testing the RML.
+ The fully commented source code can be found in the examples/rmchat directory.
+ You can compile the program by typing 
+\family typewriter 
+\color black
+make
+\family default 
+\color default
+ in that directory.
+ 
+\layout Subsubsection
+
+The program
+\layout Standard
+
+Every user that initiates the program is prompted for a username - this
+ username will be the users identity in the group.
+ After that they will receive all the messages from every user already connected
+ to the chat group (if any).
+ You can also type messages in the prompt and send them to the group by
+ pressing the return key.
+ Note that there is no need for a chat server because we are using multicast.
+ Users must know the IP address and port to join the chat group.
+ You can set this address and port through the rmcast.config file as we have
+ seen in the previous section.
+ 
+\layout Standard
+
+We have implemented only two simple commands in the rmchat:
+\layout Enumerate
+
+
+\series bold 
+send - 
+\series default 
+by typing 
+\family typewriter 
+\color black
+send
+\family default 
+\color default
+ on the prompt you will be asked for the number of packets to send to the
+ group.
+ This command was implemented to perform simple tests with the application.
+\layout Enumerate
+
+
+\series bold 
+exit
+\series default 
+ - this command is used to terminate the application.
+\layout Subsubsection
+
+Source code comments
+\layout Standard
+
+This section is supposed to be read along with the source code of rmchat,
+ available at examples/rmchat/rmchat.c.
+\layout Standard
+
+The very first thing we have to do when we are writing an application is
+ to include the 
+\series bold 
+rmcast.h
+\series default 
+ header file.
+ Next we define BUFFSIZE - the maximum message size.
+ We also declare an integer global variable to identify the socket we will
+ use to send and receive data.
+ 
+\layout Standard
+
+The following step is to read the configuration file, calling the
+\series bold 
+ RM_readConfigFile
+\series default 
+ function.
+ Then, we have to initialize the RML calling the 
+\series bold 
+RM_initialize
+\series default 
+ function.
+ After that we join the multicast group calling the 
+\series bold 
+RM_joinGroup
+\series default 
+ function.
+ At this point we are using the RM_USE_CURRENT_CONFIG as discussed in section
+ 4.3.
+ The
+\series bold 
+ RM_joinGroup
+\series default 
+ function returns the socket identifier that we will need to send and receive
+ data from the network.
+\layout Standard
+
+Interactive network applications are supposed to simultaneously receive
+ and send data through the network.
+ To implement that feature we usually create separated threads to deal with
+ those tasks.
+ In the rmchat we have created, calling the pthread_create function, the
+\emph on 
+ 
+\series bold 
+\emph default 
+Receive thread
+\series default 
+ to receive packets from the network, while the main thread will get the
+ user messages and will send them to the multicast group.
+\layout Standard
+
+You can easily see in the Receive thread code that there is a loop where
+ we just call 
+\series bold 
+RM_recv
+\series default 
+ function to retrieve data from the network.
+ The data received is then showed on the screen.
+\layout Standard
+
+In the main program we are reading the messages typed by the user and checking
+ whether they are a command or a simple message.
+ If it is a simple message, we just call the 
+\series bold 
+RM_sendto
+\series default 
+ function to send the data to the multicast group.
+ Otherwise, if the 
+\series bold 
+exit
+\series default 
+ command is issued, we break the loop and prepare to terminate the application.
+ We use the 
+\series bold 
+RM_getOption
+\series default 
+ to retrieve the current IP address and port from the RML just to report
+ it to the user.
+ In addition we cancel the Receive thread using the pthread_cancel() function.
+\layout Standard
+
+Finally we call the 
+\series bold 
+RM_leaveGroup
+\series default 
+ function to finish the RML and our program.
+ This function is 
+\noun on 
+very important
+\noun default 
+ because it cleans up the system resources that we were using such as the
+ message queue.
+ See section 7.3 for further information on message queues.
+ Again, we recommend that you take a look at the source code to better understan
+d the application.
+\layout Subsection
+
+RML functions quick reference
+\layout Standard
+
+In this section will go through the user functions available in the Reliable
+ Multicast Library.
+\layout Itemize
+
+
+\series bold 
+RM_readConfigFile(char *filename)
+\series default 
+ - read the configuration file identified by 
+\emph on 
+filename
+\emph default 
+.
+ See section 4.3 for the config file format and options.
+\layout Itemize
+
+
+\series bold 
+RM_setOption(int opt, void *optvalue)
+\series default 
+ - set the option identified by 
+\emph on 
+opt
+\emph default 
+ with the value in 
+\emph on 
+optvalue
+\emph default 
+.
+ You can use setOption to set the RML instead of reading the config file.
+\layout Itemize
+
+
+\series bold 
+RM_getOption(int opt, void *optvalue)
+\series default 
+ - returns the current value 
+\emph on 
+optvalue
+\emph default 
+ of the option identified by 
+\emph on 
+opt
+\emph default 
+.
+\layout Itemize
+
+
+\series bold 
+int RM_initialize(void)
+\series default 
+ - initializes the RML structures and defines the callback function that will be used when finishing the application
+\layout Itemize
+
+
+\series bold 
+RM_getCurStatus(char *group, int port, CurStatus *c)
+\series default 
+ - get the current status from a member of the multicast group.
+\layout Itemize
+
+
+\series bold 
+RM_sendCurStatus(int connfd, char *buff, int buffsize)
+\series default 
+ - send the current status to a new member of the multicast group.
+\layout Itemize
+
+
+\series bold 
+RM_joinGroup(char *group, int port)
+\series default 
+ - join the multicast group identified by the IP address in 
+\emph on 
+group
+\emph default 
+ and the port in 
+\emph on 
+port
+\emph default 
+.
+ Returns the socket identifier that will be used in the RM_sendto and RM_recv
+ functions.
+\layout Itemize
+
+
+\series bold 
+RM_sendto(int socket, void *buffer, int buffsize)
+\series default 
+ - sends up to 
+\emph on 
+buffsize
+\emph default 
+ bytes of data from 
+\emph on 
+buffer
+\emph default 
+ using the socket identifier 
+\emph on 
+socket
+\emph default 
+.
+ Returns 1 on success and 0 if an error occurs.
+\layout Itemize
+
+
+\series bold 
+RM_recv(int socket, void *buffer, int buffsize)
+\series default 
+ - receives up to 
+\emph on 
+buffsize
+\emph default 
+ bytes of data, and stores them into
+\emph on 
+ buffer
+\emph default 
+ using the socket identifier 
+\emph on 
+socket
+\emph default 
+.
+ Returns the number of bytes received on success and -1 when an error occurs.
+\layout Itemize
+
+
+\series bold 
+RM_leaveGroup(int sock,char * group)
+\series default 
+ - sends a message indicating that we are leaving the multicast group identified
+ by 
+\emph on 
+group
+\emph default 
+, cleans all the system resources being used and closes the socket identified
+ by 
+\emph on 
+socket
+\emph default 
+.
+ You must call this function before terminating the application.
+ Returns 1 on success and 0 on failure.
+\layout Section
+
+A more advanced application: the Tangram II Whiteboard
+\layout Subsection
+
+About Tangram II Whiteboard (TGWB)
+\layout Standard
+
+Quoting from the tgif manual, 
+\begin_inset Quotes eld
+\end_inset 
+
+tgif (Tangram2 Graphic Interface Facility) is a Xlib based interactive 2-D
+ drawing facility under X11
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ The tgif tool is a powerful vector based drawing tool.
+ The user draws objects, i.e., rectangles, lines, circles and splines, over
+ a drawing area.
+ Objects may be transformed - for instance, rotated, translated and flipped.
+ New objects may be constructed by grouping other objects.
+ 
+\layout Standard
+
+In the next section, we will describe a whiteboard tool which was developed
+ over tgif - TGWB (Tangram II Whiteboard).
+ The tgwb allows simultaneous modifications in drawings by users in a group.
+ It is a versatile multicast distributed tool.
+\layout Subsection
+
+Getting and installing TGWB
+\layout Standard
+
+To get the TGWB, follow the steps below:
+\layout Enumerate
+
+get tgif at http://bourbon.usc.edu:8001/tgif/
+\layout Enumerate
+
+read the README.tgwb file and follow the instructions described there.
+\layout Subsection
+
+What features make TGWB different
+\layout Standard
+
+There are two main points that make the TGWB application different from
+ the previously described chat.
+ 
+\layout Standard
+
+At a given time, a user may want to send to the group huge amounts of data
+ (for example, a screenshot).
+ This message must be segmented into smaller packets before being sent to
+ the group (note that, for simplicity, in the chat application we were assuming
+ that the user would not send very large amounts of data in the messages).
+ One of the reasons segmentation is needed is the fact that there is a maximum
+ segment size which network routers support.
+ To see other reason for doing segmentation, the interested read should
+ consult chapter 1 of 
+\begin_inset LatexCommand \cite{key-3}
+
+\end_inset 
+
+.
+ Figure 
+\begin_inset LatexCommand \ref{tgwb layers}
+
+\end_inset 
+
+ presents the TGWB layers.
+\layout Standard
+
+A second feature that makes the TWGB tool different from the chat is the
+ fact that we need to assure global consistency among the users of the TGWB
+ tool.
+ Imagine that two users change the color of a rectangle at the same time:
+ user A changes the color of the rectangle to red, and B to blue.
+ What must user C see? A blue or a red rectangle? What about A and B? This
+ problem, and others, are solved using a 
+\begin_inset Quotes eld
+\end_inset 
+
+total ordering mechanism
+\begin_inset Quotes erd
+\end_inset 
+
+, which is based in the use of the undo/redo commands (rollback-recovery
+ strategy).
+ Consult 
+\begin_inset LatexCommand \cite{key-24}
+
+\end_inset 
+
+ for a complete explanation about this subject.
+ 
+\layout Subsection
+
+The life cycle of a packet in the TGWB
+\layout Standard
+
+The packets life cycle begins when a user draws an object over the tgif
+ drawing area.
+ As mentioned above, an object may be a circle, a rectangle, a text box
+ or any other drawing primitive described on the tgif manual.
+ Please, see tgif man pages, tgif FAQ 
+\begin_inset LatexCommand \cite{key-2}
+
+\end_inset 
+
+ and tgif tutorial for more information about tgif.
+\layout Standard
+
+Now, the object must be delivered to the members of the multicast group.
+ This is done via the RML functions.
+ However, before being delivered the object is first divided into segments
+ - see the 
+\emph on 
+Segment()
+\emph default 
+ call in wb.c.
+ The segment size is chosen in a way that the more common objects (rectangles,
+ circles and text boxes) fit in one segment and, at the same time, the maximum
+ transfer unit (MTU) is greater then the segment size.
+\layout Standard
+
+All the RML functions available for the applications have the RM_ prefix.
+ So, in order to send a tgif object to the network, 
+\emph on 
+RM_sendto()
+\emph default 
+ is called, passing as parameters the multicast destination group and the
+ object data.
+ You may see the definition of the function 
+\emph on 
+SendWBData()
+\emph default 
+ in wb.c.
+ The 
+\emph on 
+RM_sendto()
+\emph default 
+ function (and all the other functions that may be called by an application)
+ is defined in the rmcast.c file.
+ 
+\emph on 
+RM_sendto()
+\emph default 
+ calls 
+\emph on 
+rmcastSendPackets()
+\emph default 
+, which is defined in rminternals.c, and that in turns makes a 
+\shape italic 
+\color black
+sendto(2)
+\shape default 
+\color default
+ system call (the number two between parenthesis refers to the section two
+ of man of sendto - to see the man info, type 
+\family typewriter 
+man 2 sendto
+\family default 
+ at the Linux prompt.
+ Please, note that this number may vary according to the operating system).
+\layout Standard
+
+In general, the functions defined in rmcast.c call functions defined in rminterna
+ls.c.
+ Then, functions in rminternals.c make system calls.
+ Concerning the syntax, note that the functions in rmcast.c have the prefix
+ 
+\begin_inset Quotes eld
+\end_inset 
+
+RM_
+\begin_inset Quotes erd
+\end_inset 
+
+ and the functions in rminternals.c have the prefix 
+\begin_inset Quotes eld
+\end_inset 
+
+rmcast
+\begin_inset Quotes erd
+\end_inset 
+
+.
+\layout Standard
+
+At this point we have segmented the object data into packets, appended all
+ needed headers and the packet was sent.
+ That's what happens at the sender side.
+ Now, let's see the receiver side.
+\layout Standard
+
+All the members of the multicast group, communicating among themselves using
+ the TGWB, receive messages from all the other members
+\shape italic 
+\color black
+.
+ 
+\emph on 
+At the application level, the 
+\emph default 
+RM_recv()
+\emph on 
+ function is used to get messages in order, without gaps, from the other
+ members of the group
+\emph default 
+.
+ 
+\shape default 
+The 
+\emph on 
+\color default
+RM_recv()
+\emph default 
+ function makes a 
+\shape italic 
+\color black
+msgrcv(2)
+\shape default 
+\color default
+ system call to get messages from a message queue.
+ Note that this is an exception to the general explanation given two paragraphs
+ above.
+ Read the following section in order to get more information about how the
+ message queue works, and why it is used here.
+ 
+\layout Standard
+
+When a packet arrives from the network, the 
+\shape italic 
+\color black
+recvfrom(2)
+\shape default 
+\color default
+ system call is responsible for receiving it.
+ We make a 
+\shape italic 
+\color black
+recvfrom(2) 
+\shape default 
+\color default
+system call in the 
+\emph on 
+rmcastReceivePackets()
+\emph default 
+ function, defined in rminternals.c.
+ The received message is then processed, inserted in the cache and, if it
+ is in fact the expected message, we put it in the message queue.
+ The message queue was the interprocess communication mechanism that we
+ have chosen in order to store the in-order without-gaps messages that will
+ be read by the application.
+\layout Standard
+
+Figure 
+\begin_inset LatexCommand \ref{tgwb architecture}
+
+\end_inset 
+
+ show the Tangram II Whiteboard architecture.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename layers.eps
+	display monochrome
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{tgwb layers}
+
+\end_inset 
+
+TGWB Layers
+\end_inset 
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset Graphics
+	filename wbarch.eps
+	display monochrome
+	width 100col%
+	height 100text%
+	rotateAngle 90
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{tgwb architecture}
+
+\end_inset 
+
+TGWB Architecture
+\end_inset 
+
+
+\layout Section
+
+More about the Tangram II Whiteboard
+\layout Subsection
+
+The TGWB threads
+\layout Standard
+
+UNIX/Linux offers a lot of interprocess communication mechanisms.
+ If you run tgwb under Linux, and type 
+\family typewriter 
+ps -aux | grep tgwb
+\family default 
+, you will probably see something like:
+\layout Quotation
+
+
+\family typewriter 
+[anonymous@salinas anonymous]$ ps -axu | grep tgwb 
+\layout Quotation
+
+
+\family typewriter 
+anonymous 2820 1.7 0.8 12780 1992 pts/4 S 16:25 tgwb 
+\layout Quotation
+
+
+\family typewriter 
+anonymous 2821 0.1 0.8 12780 1992 pts/4 S 16:25 tgwb 
+\layout Quotation
+
+
+\family typewriter 
+anonymous 2822 0.0 0.8 12780 1992 pts/4 S 16:25 tgwb 
+\layout Quotation
+
+
+\family typewriter 
+anonymous 2823 0.0 0.8 12780 1992 pts/4 S 16:25 tgwb 
+\layout Quotation
+
+
+\family typewriter 
+anonymous 2824 0.0 0.8 12780 1992 pts/4 S 16:25 tgwb 
+\layout Quotation
+
+
+\family typewriter 
+anonymous 2825 0.0 0.8 12780 1992 pts/4 S 16:25 tgwb 
+\layout Quotation
+
+
+\family typewriter 
+anonymous 2827 1.0 0.2 1700 592 pts/4 S 16:25 grep tgwb
+\layout Standard
+
+We see here that tgwb generates six processes.
+ That's because under Linux the pthreads library generates one process per
+ thread (please, see Appendix), plus one extra thread, which corresponds
+ to the 
+\begin_inset Quotes eld
+\end_inset 
+
+thread manager
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ We will briefly describe the first five threads generated by TGWB - the
+ last one, the 
+\begin_inset Quotes eld
+\end_inset 
+
+thread manager
+\begin_inset Quotes erd
+\end_inset 
+
+ is created internally by Linux Threads to handle thread creation and terminatio
+n 
+\begin_inset LatexCommand \cite{key-4}
+
+\end_inset 
+
+.
+ 
+\layout Standard
+
+thread 1.
+ responsible for receiving ordered, without gaps messages - that is, reliable
+ messages;
+\layout Standard
+
+thread 2.
+ responsible for receiving possible out of order, with gaps messages - that
+ is, messages from the network;
+\layout Standard
+
+thread 3.
+ responsible for (a) processing the local user actions, such as drawing
+ objects and writing texts, (b) processing remote user commands which arrive
+ from the message queue and (c) sending local commands to the other users.
+ That is the 
+\begin_inset Quotes eld
+\end_inset 
+
+main
+\begin_inset Quotes erd
+\end_inset 
+
+ thread;
+\layout Standard
+
+thread 4.
+ responsible for signal handling.
+ We will call this thread the 
+\begin_inset Quotes eld
+\end_inset 
+
+signal handler
+\begin_inset Quotes erd
+\end_inset 
+
+ thread;
+\layout Standard
+
+thread 5.
+ responsible for sending the current state, via TCP, to the new users who
+ eventually would like to join the group.
+ We will call this thread as the 
+\begin_inset Quotes eld
+\end_inset 
+
+current state server
+\begin_inset Quotes erd
+\end_inset 
+
+ thread.
+\layout Standard
+
+These threads, and the relations between them, are represented in figure
+ 
+\begin_inset LatexCommand \ref{tgwb architecture}
+
+\end_inset 
+
+.
+\layout Subsection*
+
+Thread 1 - Reliable messages receiver thread
+\layout Standard
+
+This thread, implemented in the tgwb, stays in a loop waiting for reliable
+ messages.
+ When a reliable message is received, it is inserted in a buffer, and also
+ an 'a' is written into a pipe.
+ This 'a' will signal the main thread that there is data available from
+ the network.
+\layout Subsection*
+
+Thread 2 - Raw messages receiver thread
+\layout Standard
+
+Implemented under the RML, this thread is responsible for receiving raw
+ data from the network.
+ Depending on the type of the message (for instance, data, negative acknowledgme
+nt and refresh messages) we take the appropriate actions.
+ Please, see section 4.3 for more details about this.
+\layout Subsection*
+
+Thread 3 - Main thread
+\layout Standard
+
+This thread is implemented in the TGWB mainloop.c file.
+ This thread remains sleeping until it is wakened up by one of the following
+ events:
+\layout Standard
+
+(1) an X event is generated by the local user;
+\layout Standard
+
+(2) a 
+\begin_inset Quotes eld
+\end_inset 
+
+reliable message
+\begin_inset Quotes erd
+\end_inset 
+
+ arrives from the network.
+\layout Standard
+
+Lets start by (1).
+ When an user drags the mouse in order to draw an object this event is inserted
+ in the X event-list.
+ This list is managed by the X-server using a FIFO policy.
+ As soon as the mentioned user command gets on the top of this list, the
+ command is executed and sent to the other members of the group.
+\layout Standard
+
+Now, let's analyze (2).
+ A pipe is used to perform the communication between the main thread and
+ the 
+\begin_inset Quotes eld
+\end_inset 
+
+reliable messages receiver thread
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ When a 
+\begin_inset Quotes eld
+\end_inset 
+
+reliable message
+\begin_inset Quotes erd
+\end_inset 
+
+ arrives from the network an 'a' character is written in the pipe by the
+ 
+\begin_inset Quotes eld
+\end_inset 
+
+reliable messages receiver thread
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ The main thread then reads this 'a' from the pipe, and the command received
+ from the network is locally processed.
+ 
+\layout Standard
+
+At this point it's interesting to talk a little about the history of tgwb.
+ In former versions of TGWB, we made a busy wait loop in order to wait for
+ events from both the local user and the network, that is, a busy wait for
+ (1) and (2).
+ That is not efficient, and when someone call the command 
+\family typewriter 
+top
+\family default 
+, from the shell prompt, TGWB usually appears as the first element of the
+ list, consuming near 100% of the CPU cycles.
+ To solve this problem, we introduced the use of pipes 
+\begin_inset LatexCommand \cite{key-22}
+
+\end_inset 
+
+ in the mainloop of TGWB.
+\layout Standard
+
+Please, refer to figure 
+\begin_inset LatexCommand \ref{tgwb mainloop}
+
+\end_inset 
+
+ for a scheme of the TGWB mainloop.
+ The mainloop of TGWB waits for (1) or (2) calling:
+\layout LyX-Code
+
+status = select(nfds, &fdset, NULL, NULL, &timeout);
+\layout Standard
+
+When we get (1), 
+\emph on 
+XNextEvent(mainDisplay, pXEvent)
+\emph default 
+ is called, and the X event generated by the local user is processed.
+ When we get (2), 
+\emph on 
+SendCommandToSelf(CMDID_DATA_IN_MBUFF, 0)
+\emph default 
+ is called, and the 
+\begin_inset Quotes eld
+\end_inset 
+
+reliable message
+\begin_inset Quotes erd
+\end_inset 
+
+ which arrived from the network is processed.
+ Besides (1) and (2), the main thread may also get a request for packing
+ the tgwb current state.
+ When we receive 'c' via the pipe, which signals this request, we call 
+\emph on 
+HandleNewUserRequest()
+\emph default 
+ and the request is attended.
+ Our approach to solve this problem is discussed at session 7.2.
+\layout Standard
+
+
+\begin_inset Float figure
+wide false
+collapsed false
+
+\layout Standard
+\align left 
+
+\begin_inset Graphics
+	filename mainloop.eps
+	display monochrome
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{tgwb mainloop}
+
+\end_inset 
+
+TGWB mainloop routine
+\end_inset 
+
+
+\layout Subsection*
+
+Thread 4 - Signal handler thread
+\layout Standard
+
+We will give a brief explanation about the difference between synchronous
+ and asynchronous signals.
+ As signal handling is a very broad topic, please refer to 
+\begin_inset LatexCommand \cite{key-18}
+
+\end_inset 
+
+
+\begin_inset LatexCommand \cite{key-23}
+
+\end_inset 
+
+ for more details.
+ Signals may be generated synchronously or asynchronously.
+ A synchronous (sync) signal pertains to a specific action in the program,
+ and is delivered (unless blocked) during that action.
+ Errors generate signals synchronously, and so do explicit requests by a
+ process to generate a signal for that same process.
+ 
+\layout Standard
+
+Asynchronous (async) signals are generated by events outside the control
+ of the process that receives them.
+ These signals arrive at unpredictable times during execution.
+ External events generate signals asynchronously, and so do explicit requests
+ that apply to some other process.
+ 
+\layout Standard
+
+A given type of signal is either typically synchronous or typically asynchronous.
+ For example, signals for errors are typically synchronous because errors
+ generate signals synchronously.
+ But any type of signal can be generated synchronously or asynchronously
+ with an explicit request.
+\layout Standard
+
+In the Reliable Multicast Library, a dedicated thread was created to wait
+ for all the generated signals.
+ Such a thread just loops on a sigwait subroutine call and handles the signals.
+ That is a typical schema for programs that handle signals with threads
+ 
+\begin_inset LatexCommand \cite{key-6}
+
+\end_inset 
+
+ and an example can be found at 
+\begin_inset LatexCommand \cite{key-17}
+
+\end_inset 
+
+.
+ 
+\family roman 
+Th
+\family default 
+at
+\family roman 
+ kind of procedure 
+\family default 
+handles the signals
+\family roman 
+ synchronously
+\family default 
+ because this is the safest programming style.
+\layout Subsection*
+
+Thread 5 - Current State Server Thread
+\layout Standard
+
+This thread is responsible for the so called 
+\begin_inset Quotes eld
+\end_inset 
+
+support for new members
+\begin_inset Quotes erd
+\end_inset 
+
+ in the RML.
+ In other words, this thread is responsible for provisioning to new members
+ the capacity for joining a TGWB session at any time.
+\layout Standard
+
+Suppose that a new member A wants to join the multicast group.
+ This member will try to get the 
+\begin_inset Quotes eld
+\end_inset 
+
+current state
+\begin_inset Quotes erd
+\end_inset 
+
+ of the group, and just after that he will enter.
+ In more details, we follow the steps below:
+\layout Standard
+
+(1) First, member A send a packet of type JOIN_REQUEST to the group.
+\layout Standard
+
+(2) Then, member A waits for an JOIN_ACCEPT packet from any member of the
+ group.
+\layout Standard
+
+If member A doesn't receive any message, and gets a timeout, he will start
+ to send/receive packets to/from the multicast group as he was the first
+ member in that TGWB session.
+\layout Standard
+
+(3) When a JOIN_ACCEPT packet is received from a member B, member A will
+ try to connect to B via TCP, and retrieve his 
+\begin_inset Quotes eld
+\end_inset 
+
+current state
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ After receiving the current state, A will make a call to RM_joinGroup()
+ and at this moment member A becomes an actual member of the group.
+ It implies that besides being able to talk with the other members of the
+ group, member A is promoted to a 
+\begin_inset Quotes eld
+\end_inset 
+
+current state server
+\begin_inset Quotes erd
+\end_inset 
+
+.
+\layout Standard
+
+A 
+\begin_inset Quotes eld
+\end_inset 
+
+current state server
+\begin_inset Quotes erd
+\end_inset 
+
+ is a server that waits for connections in a specific port, and when a new
+ client connects to this port, the 
+\begin_inset Quotes eld
+\end_inset 
+
+current state server
+\begin_inset Quotes erd
+\end_inset 
+
+ provides the 
+\begin_inset Quotes eld
+\end_inset 
+
+current state
+\begin_inset Quotes erd
+\end_inset 
+
+ to this client.
+\layout Subsection
+
+Solving the busy wait problem
+\layout Standard
+
+Processes (and threads), during its execution time, may be in several operating
+ states.
+ Among the states, we will focus on the two extreme ones: busy wait, when
+ the process occupies almost 100% of the CPU, or sleeping, when it practically
+ does not use system resources.
+ See chapter 3 of 
+\begin_inset LatexCommand \cite{key-23}
+
+\end_inset 
+
+ for more details about process (and threads) states.
+ 
+\layout Standard
+
+In former versions of tgwb, the mainloop of the program worked using busy
+ wait.
+ In tgwb version 4.1.40, if we ran tgwb and typed 
+\begin_inset Quotes eld
+\end_inset 
+
+top
+\begin_inset Quotes erd
+\end_inset 
+
+ at the Linux shell prompt, we would get:
+\layout LyX-Code
+
+PID   %CPU %MEM TIME COMMAND 
+\layout LyX-Code
+
+27490 81.3 2.5  0:26 tgwb
+\layout LyX-Code
+
+\layout Standard
+
+Note that tgwb was occupying 81.3% of the CPU time.
+ And this occurred even when we were not drawing or writing anything on
+ the canvas - the simple fact of opening the tgwb was responsible for that.
+ We started trying to solve the problem using the 
+\shape italic 
+\color black
+select(2)
+\shape default 
+\color default
+ system call.
+ Using 
+\shape italic 
+\color black
+select(2)
+\shape default 
+\color default
+ we would be able to 
+\begin_inset Quotes eld
+\end_inset 
+
+sleep
+\begin_inset Quotes erd
+\end_inset 
+
+ waiting for data to arrive either from the network or from commands sent
+ by the local user.
+ Instead of having something like:
+\layout LyX-Code
+
+while(1)
+\layout LyX-Code
+
+{
+\layout LyX-Code
+
+  if ( data received from the network )
+\layout LyX-Code
+
+     do this;
+\layout LyX-Code
+
+  else if ( there is an X event to be processed )
+\layout LyX-Code
+
+     do that;
+\layout LyX-Code
+
+  else
+\layout LyX-Code
+
+     do nothing;
+\layout LyX-Code
+
+}
+\layout Standard
+
+We would like to get:
+\layout LyX-Code
+
+while(1)
+\layout LyX-Code
+
+{
+\layout LyX-Code
+
+  select (...); /* sleep waiting for data from the network
+\layout LyX-Code
+
+                   or for an X event */
+\layout LyX-Code
+
+\layout LyX-Code
+
+  if ( data received from the network )
+\layout LyX-Code
+
+     do this;
+\layout LyX-Code
+
+  else if ( there is an X event to be processed )
+\layout LyX-Code
+
+     do that;
+\layout LyX-Code
+
+}
+\layout Standard
+
+First we tried to do this by making the 
+\begin_inset Quotes eld
+\end_inset 
+
+reliable messages receiver thread
+\begin_inset Quotes erd
+\end_inset 
+
+ write a character into a conventional file when a message arrived from
+ the networking, and the select would watch the file to see if characters
+ become available for reading.
+ The select would return if there were some character on the file or there
+ were an pending X event.
+ The problem is that select() doesn't work with conventional files.
+ After finding out this problem, instead of using conventional files we
+ started working with a pipe.
+ An important reference that we used was 
+\begin_inset LatexCommand \cite{key-34}
+
+\end_inset 
+
+.
+\layout Standard
+
+Follows below a piece of a message from William Cheng, who is the tgif's
+ main developer :
+\newline 
+
+\layout Standard
+
+
+\family typewriter 
+Basically, you create a pipe to send notification characters to yourself!
+ So, when tgwb starts, a pipe is created and its 2 endpoints (file descriptors)
+ are stored in an array.
+ In GetAnXEvent(), you need to do a select() call.
+ This call will wait for 3 conditions: (1) an X events has arrived; (2)
+ the pipe contains some data; and (3) a timeout has occurred.
+ The timeout is there just case something goes wrong.
+ I would set a very large timeout, for example, 15 seconds.
+\layout Standard
+
+
+\family typewriter 
+In ReceivePacket(), instead of calling SendCommandToSelf(), 
+\newline 
+it should write 1 byte to the pipe! That's it!
+\layout Standard
+
+
+\family typewriter 
+In GetAnXEvent(), if select() returns with the pipe having some data, you
+ should read 1 bytes and then calls SendCommandToSelf().
+ 
+\layout Standard
+
+
+\family typewriter 
+(Well, calling HandleDataInMBuff() directly would be fine too.)
+\newline 
+
+\layout Standard
+
+Note that we call the 
+\emph on 
+SendCommadToSelf()
+\emph default 
+ function when we receive a command from the network.
+ This function, which is also called in menu.c, is used to put X events in
+ the X internal queue.
+ Using this functionality, when we receive a data from the network it is
+ processed and then the resulting action is put in the X queue, and then
+ treated as any other X event.
+\layout Standard
+
+Now, if we run tgwb and type 
+\begin_inset Quotes eld
+\end_inset 
+
+top
+\begin_inset Quotes erd
+\end_inset 
+
+ at the Linux shell prompt, we get:
+\layout LyX-Code
+
+PID %CPU %MEM TIME COMMAND 
+\layout LyX-Code
+
+26919 0.0 0.6 0:00 bash 
+\layout LyX-Code
+
+27049 0.0 0.7 0:00 tgwb 
+\layout LyX-Code
+
+27050 0.0 0.7 0:00 tgwb 
+\layout LyX-Code
+
+27051 0.0 0.7 0:00 tgwb 
+\layout LyX-Code
+
+27052 0.0 0.7 0:00 tgwb 
+\layout LyX-Code
+
+27053 0.0 0.7 0:00 tgwb
+\layout Standard
+
+Note that the %CPU (percentage of total CPU time) of tgwb now is almost
+ 0.
+\layout Section
+
+Appendix - Interprocess Communication Resources
+\layout Standard
+
+In order to implement the reliable multicast library we have used a lot
+ of interprocess communication resources.
+ The operating system and interprocess communication resources used were:
+\layout Enumerate
+
+threads;
+\layout Enumerate
+
+mutexes;
+\layout Enumerate
+
+message queues;
+\layout Enumerate
+
+pipes;
+\layout Enumerate
+
+sockets (TCP and UDP);
+\layout Enumerate
+
+signals.
+\layout Standard
+
+We will give here a brief introduction to these topics.
+ The interested reader should consult 
+\begin_inset LatexCommand \cite{key-25,key-26}
+
+\end_inset 
+
+.
+\layout Subsection
+
+Threads
+\layout Standard
+
+When we have a lot of tasks to do, we try to do different tasks at the same
+ time.
+ This tasks are the human analogy to what threads are for computer programs.
+ In our Reliable Multicast Library (RML) we have used mainly the following
+ pthread system calls:
+\layout Itemize
+
+pthread_create
+\layout Itemize
+
+pthread_join
+\layout Itemize
+
+pthread_exit
+\layout Standard
+
+To get more info about pthreads, please refer to the man pages of this functions
+, and 
+\begin_inset LatexCommand \cite{key-4,key-27,key-28}
+
+\end_inset 
+
+
+\layout Subsection
+
+Mutexes
+\layout Standard
+
+In order to synchronize threads we have to use mutexes.
+ We can't, for example, change the value of a variable at two distinct points
+ at the same time because this may generate an inconsistency.
+ In the RML, we used the system calls:
+\layout Itemize
+
+pthread_mutex_lock
+\layout Itemize
+
+pthread_mutex_unlock
+\layout Standard
+
+in order to protect some critical points of the program - mainly the ones
+ that work with the cache and the event list, which are the global structures
+ accessed by more than one thread.
+\layout Subsection
+
+Message Queues
+\layout Standard
+
+The message queues are a first in first out (FIFO) operating system mechanism
+ that are used to pass data between different thread/processes.
+ They are an important IPC mechanism.
+ Among the message queue functions used, we may focus:
+\layout Itemize
+
+msgget - int msgget ( key_t key, int msgflg )
+\layout Itemize
+
+msgctl - int msgctl ( int msqid, int cmd, struct msqid_ds *buf )
+\layout Itemize
+
+msgsnd - int msgsnd ( int msqid, struct msgbuf *msgp, size_t msgsz, int
+ msgflg )
+\layout Itemize
+
+msgrcv - ssize_t msgrcv ( int msqid, struct msgbuf *msgp, size_t msgsz,
+ long msgtyp, int msgflg )
+\layout Standard
+
+The first important concept to understand is the concept of a 
+\begin_inset Quotes eld
+\end_inset 
+
+key
+\begin_inset Quotes erd
+\end_inset 
+
+.
+ Keys are numbers used to identify an IPC resource in UNIX, in an analogy
+ to the fact that file names are used to identify files.
+ It's the key that allows that an IPC resource be shared between different
+ threads and processes, similarly to the fact that the file names allow
+ that a file be referenced by any program running in the operating system.
+\layout Standard
+
+The function 
+\emph on 
+msgget
+\emph default 
+ receives as first parameter a key, and return an identifier for the object
+ which is analogous to the 
+\begin_inset Quotes eld
+\end_inset 
+
+file descriptor
+\begin_inset Quotes erd
+\end_inset 
+
+ in the case of files.
+ The last parameter, 
+\emph on 
+msgflg
+\emph default 
+, must be set to IPC_CREAT when we want to create a new object.
+ It's necessary to make a logical OR of IPC_CREAT with the values of table
+ 
+\begin_inset LatexCommand \ref{message queue permissions}
+
+\end_inset 
+
+ depending on the permissions wanted for the created object.
+\layout Standard
+
+
+\begin_inset Float table
+wide false
+collapsed false
+
+\layout Standard
+\align center 
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="1" columns="1">
+<features>
+<column alignment="center" valignment="top" width="0pt">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+
+\begin_inset  Tabular
+<lyxtabular version="3" rows="7" columns="2">
+<features>
+<column alignment="center" valignment="top" leftline="true" width="0pt">
+<column alignment="center" valignment="top" leftline="true" rightline="true" width="0pt">
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+octal value
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+meaning
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+0400
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+read permited for the owner of the object
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+0200
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+write permited for the owner of the object
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+0040
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+read permited for the group
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+0020
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+write permited for the group
+\end_inset 
+</cell>
+</row>
+<row topline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+0004
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+read permited for all
+\end_inset 
+</cell>
+</row>
+<row topline="true" bottomline="true">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+0002
+\end_inset 
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\layout Standard
+
+write permited for all
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\end_inset 
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset 
+
+
+\layout Caption
+
+
+\begin_inset LatexCommand \label{message queue permissions}
+
+\end_inset 
+
+Message queue permissions
+\end_inset 
+
+The functions 
+\emph on 
+msgsnd
+\emph default 
+ and 
+\emph on 
+msgrcv
+\emph default 
+ are used to send/receive messages to/from the queue.
+ The
+\emph on 
+ msgctl
+\emph default 
+ function is used to set control properties of the queue.
+ Please, refer to the man pages of this functions for more details about
+ them.
+\layout Subsection
+
+Pipes
+\layout Standard
+
+The pipes, as the message queues, are used to transmit data between processes/th
+reads.
+ The difference between pipes and message queues is that pipes work with
+ characters (we write/read characters to/from the pipe) while message queues
+ work with messages of variable sizes.
+\layout Standard
+
+The main pipe system call used was:
+\layout Itemize
+
+pipe
+\layout Subsection
+
+Sockets
+\layout Standard
+
+Sockets are IPC mechanisms that may be used to send/receive messages between
+ two hosts.
+ Please, consult 
+\begin_inset LatexCommand \cite{key-29}
+
+\end_inset 
+
+ in order to get more information about sockets.
+\layout Subsection
+
+Signals
+\layout Standard
+
+Please, see the comments about the 
+\begin_inset Quotes eld
+\end_inset 
+
+signal handler thread
+\begin_inset Quotes erd
+\end_inset 
+
+, in section 7.1.
+\layout Bibliography
+\bibitem {key-30}
+
+
+\color black
+Tangram II web site: http://www.land.ufrj.br
+\layout Bibliography
+\bibitem {key-33}
+
+
+\color black
+Multicast HOWTO available at http://www.linuxdoc.org/HOWTO/Multicast-HOWTO.html
+ 
+\layout Bibliography
+\bibitem {key-2}
+
+Cheng, W.C.
+ Tangram Graphical Interface Facility 
+\newline 
+<URL: http://bourbon.cs.umd.edu:8001/tgif> 
+\newline 
+TGWB has been integrated with TGIF since version 4.1.29 released on April
+ 18,2000.
+\layout Bibliography
+\bibitem {key-3}
+
+Kurose, J.F.
+ and Ross, K.W., Computer Networking - A Top-Down Approach Featuring the Internet.
+\layout Bibliography
+\bibitem {key-4}
+
+Leroy, X.
+ The Linux Threads library - an implementation of the Posix 1003.1c thread
+ package for Linux.
+ 
+\newline 
+http://pauillac.inria.fr/~xleroy/linuxthreads/
+\layout Bibliography
+\bibitem {key-6}
+
+http://www.unet.univie.ac.at/aix/aixprggd/genprogc/signal_mgmt.htm
+\layout Bibliography
+\bibitem {key-17}
+
+http://support.entegrity.com/private/doclib/docs/osfhtm/develop/apgstyle/Apgsty83.h
+tm
+\layout Bibliography
+\bibitem {key-18}
+
+http://www.gnu.org/manual/glibc-2.2.3/html_node/libc_458.html
+\layout Bibliography
+\bibitem {key-22}
+
+http://www-h.eng.cam.ac.uk/help/tpl/graphics/X/signals.html
+\layout Bibliography
+\bibitem {key-23}
+
+Stallings, William.
+ Operating Systems, Internals and Design Principles.
+ Prentice Hall.
+\layout Bibliography
+\bibitem {key-24}
+
+C.
+ E.
+ F.
+ Brito, E.
+ Souza e Silva and W.
+ Cheng.
+ Reliable Multicast Communication and the Implementation of TGWB, a Shared
+ Vector-based Whiteboard Tool.
+ Technical Report.
+\layout Bibliography
+\bibitem {key-25}
+
+Haviland, Keith.
+ Unix System Programming.
+ Addison Wesley Publishing Company.
+\layout Bibliography
+\bibitem {key-26}
+
+Stevens, Richard.
+ Advanced Programming in the UNIX Environment.
+ Addison Wesley Professional Computing Series.
+\layout Bibliography
+\bibitem {key-27}
+
+Nichols, Bradford et al.
+ Pthreads Programming.
+ O'Reilly.
+\layout Bibliography
+\bibitem {key-28}
+
+Kleiman, Steve et al.
+ Programming with Threads.
+\layout Bibliography
+\bibitem {key-29}
+
+Stevens, Richard.
+ UNIX Network Programming.
+ Prentice Hall.
+\layout Bibliography
+\bibitem {key-34}
+
+http://www-h.eng.cam.ac.uk/help/tpl/graphics/X/signals.html
+\layout Bibliography
+\bibitem {key-35}
+
+RNP: http://www.rnp.br/multicast/multicast-beneficios.html
+\layout Bibliography
+\bibitem {key-36}
+
+A.Erramilli and R.P Sing.
+ 
+\begin_inset Quotes eld
+\end_inset 
+
+A Reliable and Eficient Multicast Protocol for Broadband Broadcast Networks
+ Proccedings of ACM SIGCOMM 87, pp.
+ 343-352, August 1987.
+\layout Bibliography
+\bibitem {key-37}
+
+Peterson, Larry et al.
+ 
+\begin_inset Quotes eld
+\end_inset 
+
+Computer Networks: A Systems Approach
+\begin_inset Quotes erd
+\end_inset 
+
+.
+\layout Bibliography
+\bibitem {key-38}
+
+http://www.gnuplot.info
+\layout LyX-Code
+
+\layout LyX-Code
+
+\the_end

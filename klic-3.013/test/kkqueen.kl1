@@ -1,0 +1,68 @@
+/*-----------------------------------------------------------------------------
+Program:  N-Queens (candidates/noncandidates)
+Author:   K. Kumon 
+Modified: E. Tick
+Date:     July 9 1989
+KL1 vers: T. Chikayama
+Date:	  May 13 1993
+
+Notes:
+Input number of queens.
+Number of solutions and statistics will be printed out.
+
+Original Notes:
+1. To run:
+    ?- go(N,M).
+
+for N = 9, should print M = 352.
+-----------------------------------------------------------------------------*/
+
+:- module main.
+main :-
+    klicio:klicio([stdout(Res)]),
+    check_stream(Res).
+
+check_stream(normal(S)) :-
+    go(10,M),
+    S = [putt(M),nl].
+check_stream(abnormal).
+
+go(N,M) :-  
+    gen(N,L),
+    queen(L,[],[],X,[]), 
+    count(X, M).
+
+queen([], [], L, I, O):-
+	I=[L|O].
+queen([], [_|_], _, I, O):-
+	I=O.
+queen([P|U], C, L, I0, I2):-
+	check(L, P, 1, U,C, L, I0, I1),    
+	queen(U, [P|C], L, I1, I2).            
+
+check([],    T, _D, U,C, B, I, O):-
+	concat(U, C, N), 
+	queen(N, [], [T|B], I, O).
+check([P|R], T, D, U,C, B, I, O):- 
+	T =\= P+D,
+	T =\= P-D |
+	D1 := D+1,
+	check(R, T, D1, U,C, B, I, O).
+check([P|_R],T, D,_U,_C,_B,I, O):- 
+	(T =:= P+D; T =:= P-D) | I=O.
+
+concat([], Y, Z) :- Z = Y.
+concat([W|X], Y, WZ) :- WZ = [W|Z], concat(X, Y, Z).
+
+gen(N, X) :- N > 0 | X = [N|Xs], M := N-1, gen(M,Xs).
+gen(N, X) :- N =:= 0 | X = [].
+                            
+
+count(L,N) :-
+	count(L,0,N).
+
+count([],M,N) :-
+	N = M.
+count([_|Xs],M,N) :-
+	M1 := M+1,
+	count(Xs,M1,N).

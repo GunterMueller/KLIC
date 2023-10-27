@@ -1,0 +1,36 @@
+:- module main.
+
+main :- true|
+    main(100,Answer),
+    io:outstream([print(Answer),nl]).
+
+main(Target,Answer) :- true|
+    fibonacci(0,1,Fibo,Target),
+    square(Fibo,Squares), cube(Fibo,Cubes),
+    merge(Squares,Cubes,Both),
+    sum(Both,Answer).
+
+fibonacci(N1,N2,Stream,Target) :- N2 >= Target |
+    Stream = [].
+fibonacci(N1,N2,Stream,Target) :- N2 < Target |
+    Stream = [N2|StreamN],
+    N3 := N1 + N2,
+    fibonacci(N2,N3,StreamN,Target).
+
+square([],Out) :- Out=[].
+square([One|Rest],Out) :-
+    Square:=One*One, Out=[Square|OutTail], square(Rest,OutTail).
+
+cube([],Out) :- Out=[].
+cube([One|Rest],Out) :-
+    Cube:=One*One*One, Out=[Cube|OutTail], cube(Rest,OutTail).
+
+merge([],In2,Out) :- Out=In2.
+merge(In1,[],Out) :- Out=In1.
+merge([Msg|In1],In2,Out) :- Out=[Msg|OutTail], merge(In1,In2,OutTail).
+merge(In1,[Msg|In2],Out) :- Out=[Msg|OutTail], merge(In1,In2,OutTail).
+
+sum([],PSum,Sum) :- Sum=PSum.
+sum([One|Rest],PSum,Sum) :- NewPSum:=PSum+One, sum(Rest,NewPSum,Sum).
+
+sum(List,Sum) :- sum(List,0,Sum).

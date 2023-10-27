@@ -1,0 +1,49 @@
+% Nodei                          Nodej
+%        goal --(thrown)-->            (1)
+%            <--(thrown)-- goal        (2)
+%        goal --(thrown)-->            (3)
+%            <--(thrown)-- goal        (4)
+%                  :
+
+:- module main. 
+
+main :- lib:io(Os), 
+	lib:prsl(Os,Os2,'### InterNode Test [goal throw] Begin ###',_), 
+	lib:prs(Os2,Os3,'(a-d) : ',_), 
+	test(Os3,Os4,Cs), 
+	Cs=[t(nadd(500,1),out(a)),
+	    t(nadd(500,2),out(b)),
+	    t(nadd(200,1),nadd(300,1),out(c)),
+	    t(nadd(100,3),nadd(500,1),out(d))], 
+	lib:prsl(Os4,Os5,'...done',_), 
+	lib:prsl(Os5,[],'### InterNode Test [goal throw] End ###',_). 
+
+test(Os,OsE,[t(nadd(N,Add),out(Out))|Cs]):- 
+	throw(N,Add,Done,done), 
+	pr(Os,Os2,Done,Out), test(Os2,OsE,Cs). 
+test(Os,OsE,[t(nadd(N1,Add1),nadd(N2,Add2),out(Out))|Cs]):- 
+	throw(N1,Add1,Da,Db), throw(N2,Add2,Db,done), 
+	pr(Os,Os2,Da,Out), test(Os2,OsE,Cs). 
+test(Os,OsE,[]):- Os=OsE. 
+
+throw(N,Add,Da,Db):- N > 0, wait(Add) | 
+	nextNode(Add,Node), throw(~(N-1),Add,Da,Db,Node).  
+throw(N,_,Da,Db):- N=:=0 | Da=Db. 
+
+throw(N,Add,Da,Db,Node):- wait(Node) | throw(N,Add,Da,Db)@node(Node). 
+
+pr(Os,OsE,done,Out):- lib:prs(Os,OsE,Out,_). 
+otherwise. 
+pr(Os,OsE,_,Out):- lib:prs_err(Os,OsE,Out,_). 
+
+%===========================================================================
+nextNode(Add,Node):- 
+	current_node(CurrentNode,NumberOfNodes), 
+	modNode(~(CurrentNode+Add),NumberOfNodes,Node).  
+
+modNode(CalNode,NumberOfNodes,Node) :- CalNode >= 0 | 
+	Node := CalNode mod NumberOfNodes.
+modNode(CalNode,NumberOfNodes,Node) :- CalNode <  0 | 
+	CalNode2 := CalNode + NumberOfNodes, 
+	modNode(CalNode2,NumberOfNodes,Node).
+

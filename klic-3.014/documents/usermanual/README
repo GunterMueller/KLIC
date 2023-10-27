@@ -1,0 +1,25 @@
+FILES:
+  klic.pdf      User's Manual (English)
+  klicj.pdf     User's Manual (Japanese)
+  KLIC.info     Emacs Info file (English)
+  KLICj.info    Emacs Info file (Japanese)
+
+Info files can be viewed by executing the command "C-u M-x info" and
+specifying the above file name.
+
+========================================================================
+NOTES: 
+(2019-08-08) ユーザマニュアルの日本語版は make klicj.dvi で作成できるが，
+索引の日本語部分について，手作業で
+
+  klicj.cps, klicj.fns, klicj.pgs, klicj.tps
+
+の各ファイルを修正し，その後 ptex klicj, dvipdfmx klicj を実行すること
+でklicj.pdf を作成している．
+
+KLICj.info を make KLICj.info で作成しようとしてエラーメッセージが出た
+場合は，klicj-info.el の内容を Emacs 内で実行して（同じメッセージが出
+るが）得られた結果を KLICj.info とすればよい．同梱の KLICj.info もその
+ようにして作成した．
+
+

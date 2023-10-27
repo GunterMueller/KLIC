@@ -1,0 +1,38 @@
+If you plan to install KLIC to IRIX v5.x and later, some special
+treatment is needed while configuring.
+
+IRIX has libraries named libnsl, libmld, and the Configure program of
+KLIC finds the libraries and tries to link the libraries with
+KLIC. These libraries are necessary for KLIC on many SVR4 based UNIX
+(e.g. Sun Solaris 2.x), but on IRIX, is seems that these libraries
+MUST NOT linked with KLIC programs.
+
+Thus, if you failed to KLIC install to IRIX, please try w/o using the
+libraries. For not using the libraries, You must indicate as following
+for the input of the Configure program.
+
+.....
+.....
+# Specify library archive files.
+# Default library archives are:  libm libelf libsocket libnsl libmld
+
+Do you want to change the default?  (yes or no) [no] yes
+
+Do you want to delete any of them?  (yes or no) [no] yes
+
+# OK, then I'll clear the default.
+# Now there are no default library archives.
+
+Specify additions if any: libm libelf libsocket
+More?						<-- just return !
+
+# Using library file(s): /usr/lib/libm.a /usr/lib/libelf.a /usr/lib/libsocket.s\
+o
+...
+...
+
+Any comment and report are welcome. Please send them to
+klic@icot.or.jp.
+
+D.Sekita (a member of the KLIC development group)
+sekita@mri.co.jp

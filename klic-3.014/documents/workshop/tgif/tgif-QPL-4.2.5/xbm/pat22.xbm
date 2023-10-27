@@ -1,0 +1,9 @@
+/*
+ * @(#)$Header: /mm2/home/cvs/bc-src/tgif/xbm/pat22.xbm,v 1.1 2004/06/18 23:18:45 william Exp $
+ */
+#define pat22_width 8
+#define pat22_height 8
+#define pat22_x_hot 0
+#define pat22_y_hot 0
+static unsigned char pat22_bits[] = {
+   0xee, 0xdd, 0xbb, 0x77, 0xee, 0xdd, 0xbb, 0x77};

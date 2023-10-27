@@ -1,0 +1,17 @@
+% seq.kl1
+:- module main.                                                          %  1
+
+main :- true |                                                           %  2
+        eval(T,E), io:outstream([print(E),nl]),                          %  3
+        T = and(and(and(t,or(f,or(t,f))),f),or(t,or(and(f,t),f))).       %  4
+
+eval(and(L,R),E) :- true | eval(L,EL), and_node(EL,R,E).                 %  5
+eval(or(L,R),E) :- true | eval(L,EL), or_node(EL,R,E).                   %  6
+eval(t,E) :- true | E = t.                                               %  7
+eval(f,E) :- true | E = f.                                               %  8
+
+and_node(f,_,E) :- true | E = f.                                         %  9
+and_node(t,R,E) :- true | eval(R,E).                                     % 10
+
+or_node(f,R,E) :- true | eval(R,E).                                      % 11
+or_node(t,_,E) :- true | E = t.                                          % 12

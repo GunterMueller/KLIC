@@ -1,0 +1,13 @@
+The tgwb.sh is a script for tgwb configuration and start-up.
+
+The rmcastplot.bash script is intended to generate statistics from the logs
+  written by the rmcast library.
+
+The script is self explanatory. Type its name to see how to use it.
+
+  NOTE: You will need gnuplot to plot the data.
+
+The rmsg.sh and solarisrmsg.sh scripts are intended to release some system 
+   resources that can be locked due to a Rmcastlibrary crash.
+ NOTE: You must be the owner of the resources to release them.
+

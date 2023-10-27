@@ -1,0 +1,19 @@
+% naive.kl1
+:- module main.                                                          %  1
+
+main :- true |                                                           %  2
+        eval(T,E), io:outstream([print(E),nl]),                          %  3
+        T = and(and(and(t,or(f,or(t,f))),f),or(t,or(and(f,t),f))).       %  4
+
+eval(and(L,R),E) :- true | eval(L,EL), eval(R,ER), and_node(EL,ER,E).    %  5
+eval(or(L,R),E) :- true | eval(L,EL), eval(R,ER), or_node(EL,ER,E).      %  6
+eval(t,E) :- true | E = t.                                               %  7
+eval(f,E) :- true | E = f.                                               %  8
+
+and_node(t,t,E) :- true | E = t.                                         %  9
+and_node(f,_,E) :- true | E = f.                                         % 10
+and_node(_,f,E) :- true | E = f.                                         % 11
+
+or_node(t,_,E) :- true | E = t.                                          % 12
+or_node(_,t,E) :- true | E = t.                                          % 13
+or_node(f,f,E) :- true | E = f.                                          % 14

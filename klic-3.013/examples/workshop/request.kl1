@@ -1,0 +1,15 @@
+%  request.kl1
+:- module main.
+
+main :- true | generator(next,20000,Stream), consumer(Stream).
+
+generator(_,0,Stream)    :- true | Stream = [].
+generator(Next,N,Stream) :- N =\= 0, Next=next |
+     Stream = [send(N,NextN)|NextStream],
+     N1 := N - 1,
+     generator(NextN,N1,NextStream).
+
+consumer([]) :- true | true.
+consumer([send(N,Next)|Stream]) :- integer(N) |
+     Next = next,
+     consumer(Stream).

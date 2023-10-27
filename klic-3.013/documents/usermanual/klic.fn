@@ -1,0 +1,211 @@
+\entry{string_element on builtin}{3}{\code {string_element} on\ \code {builtin}}
+\entry{element on string}{3}{\code {element} on\ \code {string}}
+\entry{putc on C-like I/O}{4}{\code {putc} on\ \code {C-like I/O}}
+\entry{= on builtin}{15}{\code {=} on\ \code {builtin}}
+\entry{= on builtin}{15}{\code {=} on\ \code {builtin}}
+\entry{wait on builtin}{15}{\code {wait} on\ \code {builtin}}
+\entry{compare on builtin}{15}{\code {compare} on\ \code {builtin}}
+\entry{@< on builtin}{16}{\code {@<} on\ \code {builtin}}
+\entry{@=< on builtin}{16}{\code {@=<} on\ \code {builtin}}
+\entry{@>= on builtin}{16}{\code {@>=} on\ \code {builtin}}
+\entry{@> on builtin}{16}{\code {@>} on\ \code {builtin}}
+\entry{{\indexbackslash }= on builtin}{16}{\code {{\tt \backslashcurfont }=} on\ \code {builtin}}
+\entry{hash on builtin}{16}{\code {hash} on\ \code {builtin}}
+\entry{current_priority on builtin}{16}{\code {current_priority} on\ \code {builtin}}
+\entry{current_node on builtin}{16}{\code {current_node} on\ \code {builtin}}
+\entry{unbound on builtin}{16}{\code {unbound} on\ \code {builtin}}
+\entry{atomic on builtin}{17}{\code {atomic} on\ \code {builtin}}
+\entry{atom on builtin}{18}{\code {atom} on\ \code {builtin}}
+\entry{make_atom on atom_table}{18}{\code {make_atom} on\ \code {atom_table}}
+\entry{atom_number on atom_table}{18}{\code {atom_number} on\ \code {atom_table}}
+\entry{get_atom_string on atom_table}{18}{\code {get_atom_string} on\ \code {atom_table}}
+\entry{intern on atom_table}{18}{\code {intern} on\ \code {atom_table}}
+\entry{get_atom_name on atom_table}{18}{\code {get_atom_name} on\ \code {atom_table}}
+\entry{integer on builtin}{19}{\code {integer} on\ \code {builtin}}
+\entry{:= on builtin}{19}{\code {:=} on\ \code {builtin}}
+\entry{:= on builtin}{19}{\code {:=} on\ \code {builtin}}
+\entry{> on builtin}{20}{\code {>} on\ \code {builtin}}
+\entry{>= on builtin}{20}{\code {>=} on\ \code {builtin}}
+\entry{=:= on builtin}{20}{\code {=:=} on\ \code {builtin}}
+\entry{={\indexbackslash }= on builtin}{20}{\code {={\tt \backslashcurfont }=} on\ \code {builtin}}
+\entry{=< on builtin}{20}{\code {=<} on\ \code {builtin}}
+\entry{< on builtin}{20}{\code {<} on\ \code {builtin}}
+\entry{float on float}{21}{\code {float} on\ \code {float}}
+\entry{float on builtin}{21}{\code {float} on\ \code {builtin}}
+\entry{new on float}{21}{\code {new} on\ \code {float}}
+\entry{$:= on builtin}{21}{\code {$:=} on\ \code {builtin}}
+\entry{add on float}{22}{\code {add} on\ \code {float}}
+\entry{subtract on float}{22}{\code {subtract} on\ \code {float}}
+\entry{multiply on float}{22}{\code {multiply} on\ \code {float}}
+\entry{divide on float}{22}{\code {divide} on\ \code {float}}
+\entry{pow on float}{22}{\code {pow} on\ \code {float}}
+\entry{sin on float}{22}{\code {sin} on\ \code {float}}
+\entry{cos on float}{22}{\code {cos} on\ \code {float}}
+\entry{tan on float}{22}{\code {tan} on\ \code {float}}
+\entry{asin on float}{22}{\code {asin} on\ \code {float}}
+\entry{acos on float}{22}{\code {acos} on\ \code {float}}
+\entry{atan on float}{22}{\code {atan} on\ \code {float}}
+\entry{sinh on float}{22}{\code {sinh} on\ \code {float}}
+\entry{cosn on float}{22}{\code {cosn} on\ \code {float}}
+\entry{tanh on float}{22}{\code {tanh} on\ \code {float}}
+\entry{exp on float}{22}{\code {exp} on\ \code {float}}
+\entry{log on float}{22}{\code {log} on\ \code {float}}
+\entry{sqrt on float}{22}{\code {sqrt} on\ \code {float}}
+\entry{ceil on float}{22}{\code {ceil} on\ \code {float}}
+\entry{floor on float}{22}{\code {floor} on\ \code {float}}
+\entry{$> on builtin}{22}{\code {$>} on\ \code {builtin}}
+\entry{$>= on builtin}{22}{\code {$>=} on\ \code {builtin}}
+\entry{$=:= on builtin}{22}{\code {$=:=} on\ \code {builtin}}
+\entry{$={\indexbackslash }= on builtin}{23}{\code {$={\tt \backslashcurfont }=} on\ \code {builtin}}
+\entry{$=< on builtin}{23}{\code {$=<} on\ \code {builtin}}
+\entry{$< on builtin}{23}{\code {$<} on\ \code {builtin}}
+\entry{less_than on float}{23}{\code {less_than} on\ \code {float}}
+\entry{not_greater_than on float}{23}{\code {not_greater_than} on\ \code {float}}
+\entry{not_less_than on float}{23}{\code {not_less_than} on\ \code {float}}
+\entry{greater_than on float}{23}{\code {greater_than} on\ \code {float}}
+\entry{equal on float}{23}{\code {equal} on\ \code {float}}
+\entry{not_equal on float}{23}{\code {not_equal} on\ \code {float}}
+\entry{functor on builtin}{24}{\code {functor} on\ \code {builtin}}
+\entry{functor on builtin}{24}{\code {functor} on\ \code {builtin}}
+\entry{arg on builtin}{24}{\code {arg} on\ \code {builtin}}
+\entry{arg on builtin}{24}{\code {arg} on\ \code {builtin}}
+\entry{new_functor on builtin}{24}{\code {new_functor} on\ \code {builtin}}
+\entry{setarg on builtin}{24}{\code {setarg} on\ \code {builtin}}
+\entry{setarg on builtin}{24}{\code {setarg} on\ \code {builtin}}
+\entry{=.. on functor_table}{24}{\code {=..} on\ \code {functor_table}}
+\entry{list on builtin}{24}{\code {list} on\ \code {builtin}}
+\entry{new on merge}{26}{\code {new} on\ \code {merge}}
+\entry{new on vector}{27}{\code {new} on\ \code {vector}}
+\entry{new_vector on builtin}{27}{\code {new_vector} on\ \code {builtin}}
+\entry{vector on vector}{27}{\code {vector} on\ \code {vector}}
+\entry{size on vector}{27}{\code {size} on\ \code {vector}}
+\entry{vector on builtin}{27}{\code {vector} on\ \code {builtin}}
+\entry{element on vector}{28}{\code {element} on\ \code {vector}}
+\entry{element on vector}{28}{\code {element} on\ \code {vector}}
+\entry{vector_element on builtin}{28}{\code {vector_element} on\ \code {builtin}}
+\entry{vector_element on builtin}{28}{\code {vector_element} on\ \code {builtin}}
+\entry{set_element on vector}{28}{\code {set_element} on\ \code {vector}}
+\entry{set_vector_element on builtin}{28}{\code {set_vector_element} on\ \code {builtin}}
+\entry{set_element on vector}{28}{\code {set_element} on\ \code {vector}}
+\entry{set_vector_element on builtin}{28}{\code {set_vector_element} on\ \code {builtin}}
+\entry{split on vector}{28}{\code {split} on\ \code {vector}}
+\entry{join on vector}{28}{\code {join} on\ \code {vector}}
+\entry{new on string}{29}{\code {new} on\ \code {string}}
+\entry{new_string on builtin}{29}{\code {new_string} on\ \code {builtin}}
+\entry{string on string}{30}{\code {string} on\ \code {string}}
+\entry{string on string}{30}{\code {string} on\ \code {string}}
+\entry{string on builtin}{30}{\code {string} on\ \code {builtin}}
+\entry{size on string}{30}{\code {size} on\ \code {string}}
+\entry{element_size on string}{30}{\code {element_size} on\ \code {string}}
+\entry{element on string}{30}{\code {element} on\ \code {string}}
+\entry{element on string}{30}{\code {element} on\ \code {string}}
+\entry{string_element on builtin}{30}{\code {string_element} on\ \code {builtin}}
+\entry{string_element on builtin}{30}{\code {string_element} on\ \code {builtin}}
+\entry{less_than on string}{30}{\code {less_than} on\ \code {string}}
+\entry{string_less_than on builtin}{30}{\code {string_less_than} on\ \code {builtin}}
+\entry{not_less_than on string}{30}{\code {not_less_than} on\ \code {string}}
+\entry{string_not_less_than on builtin}{30}{\code {string_not_less_than} on\ \code {builtin}}
+\entry{set_element on string}{30}{\code {set_element} on\ \code {string}}
+\entry{set_string_element on builtin}{30}{\code {set_string_element} on\ \code {builtin}}
+\entry{split on string}{30}{\code {split} on\ \code {string}}
+\entry{join on string}{31}{\code {join} on\ \code {string}}
+\entry{search_character on string}{31}{\code {search_character} on\ \code {string}}
+\entry{search_character on builtin}{31}{\code {search_character} on\ \code {builtin}}
+\entry{new on module}{31}{\code {new} on\ \code {module}}
+\entry{module on module}{31}{\code {module} on\ \code {module}}
+\entry{name on module}{31}{\code {name} on\ \code {module}}
+\entry{new on predicate}{32}{\code {new} on\ \code {predicate}}
+\entry{predicate on predicate}{32}{\code {predicate} on\ \code {predicate}}
+\entry{arity on predicate}{32}{\code {arity} on\ \code {predicate}}
+\entry{arity on predicate}{32}{\code {arity} on\ \code {predicate}}
+\entry{apply on predicate}{32}{\code {apply} on\ \code {predicate}}
+\entry{call on predicate}{32}{\code {call} on\ \code {predicate}}
+\entry{module on predicate}{32}{\code {module} on\ \code {predicate}}
+\entry{name on predicate}{32}{\code {name} on\ \code {predicate}}
+\entry{unix on unix}{32}{\code {unix} on\ \code {unix}}
+\entry{stdin on unix stream}{33}{\code {stdin} on\ \code {unix stream}}
+\entry{stdout on unix stream}{33}{\code {stdout} on\ \code {unix stream}}
+\entry{stderr on unix stream}{33}{\code {stderr} on\ \code {unix stream}}
+\entry{read_open on unix stream}{33}{\code {read_open} on\ \code {unix stream}}
+\entry{write_open on unix stream}{33}{\code {write_open} on\ \code {unix stream}}
+\entry{append_open on unix stream}{33}{\code {append_open} on\ \code {unix stream}}
+\entry{update_open on unix stream}{33}{\code {update_open} on\ \code {unix stream}}
+\entry{connect on unix stream}{34}{\code {connect} on\ \code {unix stream}}
+\entry{bind on unix stream}{34}{\code {bind} on\ \code {unix stream}}
+\entry{accept on bound socket}{34}{\code {accept} on\ \code {bound socket}}
+\entry{cd on unix stream}{34}{\code {cd} on\ \code {unix stream}}
+\entry{unlink on unix stream}{35}{\code {unlink} on\ \code {unix stream}}
+\entry{mktemp on unix stream}{35}{\code {mktemp} on\ \code {unix stream}}
+\entry{access on unix stream}{35}{\code {access} on\ \code {unix stream}}
+\entry{chmod on unix stream}{35}{\code {chmod} on\ \code {unix stream}}
+\entry{umask on unix stream}{35}{\code {umask} on\ \code {unix stream}}
+\entry{umask on unix stream}{35}{\code {umask} on\ \code {unix stream}}
+\entry{signal_stream on unix stream}{35}{\code {signal_stream} on\ \code {unix stream}}
+\entry{system on unix stream}{36}{\code {system} on\ \code {unix stream}}
+\entry{getenv on unix stream}{36}{\code {getenv} on\ \code {unix stream}}
+\entry{putenv on unix stream}{36}{\code {putenv} on\ \code {unix stream}}
+\entry{kill on unix stream}{36}{\code {kill} on\ \code {unix stream}}
+\entry{fork on unix stream}{36}{\code {fork} on\ \code {unix stream}}
+\entry{fork_with_pipes on unix stream}{36}{\code {fork_with_pipes} on\ \code {unix stream}}
+\entry{argc on unix}{36}{\code {argc} on\ \code {unix}}
+\entry{argv on unix}{36}{\code {argv} on\ \code {unix}}
+\entry{exit on unix}{36}{\code {exit} on\ \code {unix}}
+\entry{times on unix}{37}{\code {times} on\ \code {unix}}
+\entry{feof on C-like I/O}{37}{\code {feof} on\ \code {C-like I/O}}
+\entry{fseek on C-like I/O}{37}{\code {fseek} on\ \code {C-like I/O}}
+\entry{ftell on C-like I/O}{37}{\code {ftell} on\ \code {C-like I/O}}
+\entry{fclose on C-like I/O}{37}{\code {fclose} on\ \code {C-like I/O}}
+\entry{sync on C-like I/O}{38}{\code {sync} on\ \code {C-like I/O}}
+\entry{getc on C-like I/O}{38}{\code {getc} on\ \code {C-like I/O}}
+\entry{ungetc on C-like I/O}{38}{\code {ungetc} on\ \code {C-like I/O}}
+\entry{fread on C-like I/O}{38}{\code {fread} on\ \code {C-like I/O}}
+\entry{linecount on C-like I/O}{38}{\code {linecount} on\ \code {C-like I/O}}
+\entry{putc on C-like I/O}{38}{\code {putc} on\ \code {C-like I/O}}
+\entry{Number on C-like I/O}{38}{\code {\var {Number}} on\ \code {C-like I/O}}
+\entry{fwrite on C-like I/O}{38}{\code {fwrite} on\ \code {C-like I/O}}
+\entry{fwrite on C-like I/O}{38}{\code {fwrite} on\ \code {C-like I/O}}
+\entry{fflush on C-like I/O}{38}{\code {fflush} on\ \code {C-like I/O}}
+\entry{klicio on klicio}{39}{\code {klicio} on\ \code {klicio}}
+\entry{stdin on klicio stream}{39}{\code {stdin} on\ \code {klicio stream}}
+\entry{stdout on klicio stream}{39}{\code {stdout} on\ \code {klicio stream}}
+\entry{stderr on klicio stream}{39}{\code {stderr} on\ \code {klicio stream}}
+\entry{read_open on klicio stream}{39}{\code {read_open} on\ \code {klicio stream}}
+\entry{write_open on klicio stream}{39}{\code {write_open} on\ \code {klicio stream}}
+\entry{append_open on klicio stream}{39}{\code {append_open} on\ \code {klicio stream}}
+\entry{update_open on klicio stream}{39}{\code {update_open} on\ \code {klicio stream}}
+\entry{feof on Prolog-like I/O}{39}{\code {feof} on\ \code {Prolog-like I/O}}
+\entry{fseek on Prolog-like I/O}{39}{\code {fseek} on\ \code {Prolog-like I/O}}
+\entry{ftell on Prolog-like I/O}{39}{\code {ftell} on\ \code {Prolog-like I/O}}
+\entry{fclose on Prolog-like I/O}{39}{\code {fclose} on\ \code {Prolog-like I/O}}
+\entry{sync on Prolog-like I/O}{39}{\code {sync} on\ \code {Prolog-like I/O}}
+\entry{addop on Prolog-like I/O}{40}{\code {addop} on\ \code {Prolog-like I/O}}
+\entry{rmop on Prolog-like I/O}{40}{\code {rmop} on\ \code {Prolog-like I/O}}
+\entry{gett on Prolog-like I/O}{40}{\code {gett} on\ \code {Prolog-like I/O}}
+\entry{getwt on Prolog-like I/O}{40}{\code {getwt} on\ \code {Prolog-like I/O}}
+\entry{getc on Prolog-like I/O}{40}{\code {getc} on\ \code {Prolog-like I/O}}
+\entry{ungetc on Prolog-like I/O}{40}{\code {ungetc} on\ \code {Prolog-like I/O}}
+\entry{fread on Prolog-like I/O}{40}{\code {fread} on\ \code {Prolog-like I/O}}
+\entry{linecount on Prolog-like I/O}{40}{\code {linecount} on\ \code {Prolog-like I/O}}
+\entry{putt on Prolog-like I/O}{40}{\code {putt} on\ \code {Prolog-like I/O}}
+\entry{puttq on Prolog-like I/O}{40}{\code {puttq} on\ \code {Prolog-like I/O}}
+\entry{putwt on Prolog-like I/O}{40}{\code {putwt} on\ \code {Prolog-like I/O}}
+\entry{putwtq on Prolog-like I/O}{40}{\code {putwtq} on\ \code {Prolog-like I/O}}
+\entry{putc on Prolog-like I/O}{41}{\code {putc} on\ \code {Prolog-like I/O}}
+\entry{Number on Prolog-like I/O}{41}{\code {\var {Number}} on\ \code {Prolog-like I/O}}
+\entry{fwrite on Prolog-like I/O}{41}{\code {fwrite} on\ \code {Prolog-like I/O}}
+\entry{fwrite on Prolog-like I/O}{41}{\code {fwrite} on\ \code {Prolog-like I/O}}
+\entry{fflush on Prolog-like I/O}{41}{\code {fflush} on\ \code {Prolog-like I/O}}
+\entry{nl on Prolog-like I/O}{41}{\code {nl} on\ \code {Prolog-like I/O}}
+\entry{unwrap on variable}{42}{\code {unwrap} on\ \code {variable}}
+\entry{wrap on variable}{42}{\code {wrap} on\ \code {variable}}
+\entry{postmortem on system_control}{42}{\code {postmortem} on\ \code {system_control}}
+\entry{gc on system_control}{43}{\code {gc} on\ \code {system_control}}
+\entry{get_time_of_day on timer}{43}{\code {get_time_of_day} on\ \code {timer}}
+\entry{add on timer}{43}{\code {add} on\ \code {timer}}
+\entry{sub on timer}{43}{\code {sub} on\ \code {timer}}
+\entry{compare on timer}{43}{\code {compare} on\ \code {timer}}
+\entry{instantiate_at on timer}{43}{\code {instantiate_at} on\ \code {timer}}
+\entry{instantiate_after on timer}{43}{\code {instantiate_after} on\ \code {timer}}
+\entry{instantiate_every on timer}{44}{\code {instantiate_every} on\ \code {timer}}
+\entry{new on random_numbers}{44}{\code {new} on\ \code {random_numbers}}
+\entry{new on random_numbers}{44}{\code {new} on\ \code {random_numbers}}

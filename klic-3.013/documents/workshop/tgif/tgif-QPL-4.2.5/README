@@ -1,0 +1,93 @@
+/*
+ * Author:	William Chia-Wei Cheng (bill.cheng@acm.org)
+ *
+ * @(#)$Header: /mm2/home/cvs/bc-src/tgif/README,v 1.7 2009/10/04 03:02:48 william Exp $
+ */
+
+This is the ``tgif'' README file.  Tgif is pronounced, "T-G-I-F".
+
+Tgif is an Xlib base 2-D drawing facility under X11.
+
+1) Please read the "Copyright" file in this distribution for the copyright
+   and licensing information.
+
+   Please note that starting from tgif-4.1.41, an Open Sourced version of
+   tgif is simulatneously released under the Q Public License.  For every
+   tgif-x.y.z release, a corresponding tgif-QPL-x.y.z is also release.
+   Therefore, if you want to use an Open Sourced version of tgif, please
+   look for the tgif-QPL releases.
+
+2) Tgif resources:
+
+                    Home Page: http://bourbon.cs.umd.edu:8001/tgif/
+                          FAQ: http://bourbon.cs.umd.edu:8001/tgif/faq/
+   Current Release & Download: http://bourbon.cs.umd.edu:8001/tgif/current.html
+         Join to Mailing List: tgif4-announce-subscribe@yahoogroups.com
+                 Mailing List: tgif4-announce@yahoogroups.com
+          Bug Reports Send To: bill.cheng@acm.org
+
+3) Please read tgif.man, the man pages that comes with the distribution.
+	nroff -t -man tgif.man | more	<== to view
+	psroff -man tgif.man		<== to print
+
+4) If you want to use imake, you can copy Tgif.tmpl-PLATFORM to Tgif.tmpl
+   (where PLATFORM depends on the platform you are on).  The default Tgif.tmpl
+   is identical to Tgif.tmpl-linux.  There's only a few Tgif.tmpl-* files in
+   the current release of tgif.  More will be added when they become available.
+   I only have access to limited number of platforms, so if you don't find your
+   platform listed, please ask a local expert to modify Tgif.tmpl and send a
+   working version to me so I can create new Tgif.tmpl-* files.
+
+5) Modify the DEFINES line at the beginning of Tgif.tmpl or Makefile.noimake
+   (see "Things to try..." in the Tgif.tmpl for examples).  Please do not
+   change -DTELEPORT_ATTR=\"warp_to=\", -DLAUNCH_ATTR=\"launch=\", or
+   -DEXEC_ATTR=\"exec=\".
+
+   If you plan to do a "make install" and you don't have root privileges,
+   please uncomment (by remove XCOMM) BINDIR, MANPATH, and the second occurance
+   of TGIFDIR, and replace "/u/halfmoon" with your target directory (such as
+   "/home/yourlogin").
+
+6) If you have imake and xmkmf, do the following (this is the preferred way
+   of building tgif),
+	xmkmf
+	make tgif
+	make install
+
+   If you don't have imake, just do the following,
+	cp Makefile.noimake Makefile
+	make tgif
+
+   If you have imake but don't have xmkmf, do the following,
+		(note that the config directory should be set to
+		wherever you can find Imake.tmpl)
+	imake -DUseInstalled -I/usr/local/libdata/X11/config
+	make tgif
+	make install
+
+7) If you do not have imake or xmkmf, please try the following (you can
+   change "/usr" to a top-level directory where you would like tgif to be
+   installed, e.g., "${HOME}"; this will cause tgif to be installed in
+   ${HOME}/bin and other data files to be installed in ${HOME}/lib/X11/tgif):
+	./configure --prefix=/usr
+	make
+	make install
+
+   If "make" does not work, it may be due to platform-specific
+   problems, please do the following for specified platforms:
+
+	Mac OS X: append "-D__DARWIN__ -D_NO_DL_SUPPORT" after
+			"-DUSE_XT_INITIALIZE" in Makefile
+
+   Afterwards, please try the following:
+	make clean
+	make
+	make install
+
+8) If your <Meta> key does not work on a HP-UX machine, try doing the following
+   (<Meta> is also labeled <Alt> on some keyboards):
+
+	xmodmap -e "clear mod1"
+	xmodmap -e "add mod1 = Meta_L Meta_R"
+
+9) Please also note that tgif has nothing to do with GIF files/formats.

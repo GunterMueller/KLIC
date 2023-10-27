@@ -1,0 +1,39 @@
+:- module simple_search.
+
+        search(Tree,Output):- true |               %(1)
+                control(Result,Output,Cont),       %(2)
+                fork(Tree,Result,Cont).            %(3)
+        fork(_,R,stop):-   true | R=[].            %(4)
+    alternatively.                                 %(5)
+        fork(H,R,Cont):- integer(H) |R=[].         %(6)
+        fork(H,R,Cont):- atom(H)    |              %(7)
+                R=[H].                             %(8)
+        fork([TL,TR],R,Cont):-                     %(9)
+                merge:in(R0,R1,R),                 %(10)
+                fork(TL,R0,Cont),                  %(11)
+                fork(TR,R1,Cont).                  %(12)
+        control([H|_],Output,Cont):- wait(H) |     %(13) 
+                Output = [H], Cont=stop.           %(14) 
+        control([], Output, Cont):- true |         %(15)
+                Output = [] .                      %(16) 
+
+:- module merge.
+
+        in([E|In1],In2,Out) :-                     %(17)
+                Out = [E|OutT], in(In1,In2,OutT).  %(18)
+        in(In1,[E|In2],Out) :-                     %(19)
+                Out = [E|OutT], in(In1,In2,OutT).  %(20)
+        in([],In2,Out) :-  Out = In2.              %(21)
+        in(In1,[],Out) :-  Out = In1.              %(22)
+
+:- module main.
+
+        main :-                                    %(23)
+           Tree=[[[1,[here,[2,here]]],[here,here]],
+                [[[3,[4,5]],6],[[here,7],8]]],
+               simple_search:search(Tree,Out),     %(24)
+               klicio:klicio([stdout(Result)]),    %(25)
+               wait_open(Result, Out).             %(26)
+        wait_open(normal(STDOUT), Out) :-          %(27)
+           STDOUT=[ putt(Out), nl ].               %(28)
+        wait_open(abnormal, _) :- unix:exit(1).    %(29)

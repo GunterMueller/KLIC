@@ -1,0 +1,40 @@
+:- module main.
+
+
+main:- go(100,100, Sync, Go, Fin), init(Sync,Go,Fin).
+
+init(Sync,Go,Fin) :- wait(Sync) | Go=Sync, init(Fin).
+init(Fin) :- wait(Fin) | true.  
+
+
+go(X,Y,Sync,Go,Fin) :-
+    true |
+        current_node(C,T),
+	row(0,X,0,T,Y,Sync,[],Fin,[],Go).
+
+row(X0,X1,C0,C1,Y)-Sync-F+Go :-
+    X0+1 =:= X1 |
+        current_node(C,T),
+	col(0,Y,0,C)-Sync-F+Go.
+otherwise.
+row(X0,X1,C0,C1,Y)-Sync-F+Go :-
+  true |
+  X2 := (X0+X1)/2,
+  C2 := (C0+C1)/2,
+  (row(X0,X2,C0,C2,Y)-Sync-F+Go)@node(C0),
+  (row(X2,X1,C2,C1,Y)-Sync-F+Go)@node(C2).
+
+
+col(Y0,Y1,C0,C1)-Sync-F+Go :-
+  Y0 +1 =:= Y1 |
+  w(Go)-Sync-F.
+otherwise.
+col(Y0,Y1,C0,C1)-Sync-F+Go :-
+  Y2 := (Y0+Y1)/2,
+  C2 := (C0+C1)/2,
+  col(Y0,Y2,C0,C2)-Sync-F+Go@node(C0),
+  col(Y2,Y1,C2,C1)-Sync-F+Go@node(C2).
+
+w(Go)-Sync-F:- true | w1(Go)-F.
+
+w1(Go)-F :- wait(Go) | true.

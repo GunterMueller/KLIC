@@ -1,0 +1,122 @@
+/* ---------------------------------------------------------- 
+%   (C) 1994 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- module sorted_bag.
+
+create(Stream) :-
+    splay_tree:create(Pool),
+    main(Stream,[],Pool).
+
+create(Cmpr,Stream) :-
+    splay_tree:create(Cmpr,Pool),
+    main(Stream,[],Pool).
+
+main([],[])+_Pool.
+main([],[S|ST])+Pool :- main(S,ST)+Pool.
+main([do(S)|T],ST)+Pool :- main(S,[T|ST])+Pool.
+otherwise.
+main([Message|T],ST)+Pool :- message(Message)-Pool, main(T,ST)+Pool.
+
+message(empty(YorN))-Pool :-
+    splay_tree:empty(YorN)-Pool.
+
+message(put(Value))-Pool :-
+    splay_tree:empty(Value,Empty)-Pool,
+    (
+	Empty=yes -> splay_tree:put(Value,[Value])-Pool
+      ;
+	Empty=no ->
+	splay_tree:update(Value,Values,New)-Pool,
+	append(Values,[Value],New)
+    ).
+
+message(get(Value))-Pool :-
+    splay_tree:empty(Empty)-Pool,
+    (
+	Empty=no ->
+	splay_tree:get_max(Key,Values)-Pool,
+	last_elem(Values,Preceding,Value),
+	(
+	    Preceding=[] -> true	/* AMANUMA */
+	  ; otherwise ;
+	    true -> splay_tree:put(Key,Preceding)-Pool
+	)
+    ).
+
+
+
+
+message(get_if_any(Value))-Pool :-
+/*
+    splay_tree:empty(Empty)-Pool,
+    (
+	Empty=yes -> Value={}, New=[]
+      ;
+	Empty=no ->
+	message(get_min_if_any(V))-Pool,
+	Value={V}
+    ).
+*/
+    message(get_min_if_any(Value))-Pool.
+
+
+message(get_all(Values))-Pool :-
+    splay_tree:get_all(All)-Pool,
+    flatten(All,Values).
+
+message(carbon_copy(Values))-Pool :-
+    splay_tree:get_all(All)+Pool+_,
+    flatten(All,Values).
+
+message(get_max_if_any(Elem))-Pool :-
+    splay_tree:empty(Empty)-Pool,
+    (
+	Empty=yes -> Elem={}
+      ;
+	Empty=no ->
+	splay_tree:get_max(Key,Values)-Pool,
+	last_elem(Values,Preceding,Value),
+	Elem = {Value},
+	(
+	    Preceding=[] -> true	/* AMANUMA */
+	  ; otherwise ;
+	    true -> splay_tree:put(Key,Preceding)-Pool
+	)
+    ).
+
+message(get_min_if_any(Elem))-Pool :-
+    splay_tree:empty(Empty)-Pool,
+    (
+	Empty=yes -> Elem={}
+      ;
+	Empty=no ->
+	splay_tree:get_min(Key,[Value|Values])-Pool,
+	Elem = {Value},
+	(
+	    Values=[] -> true
+	  ; otherwise ;
+	    true -> splay_tree:put(Key,Values)-Pool
+	)
+    ).
+
+
+flatten([])+Flat :- Flat=[].
+flatten([K=L|T])+Flat :-
+    flatten(L,K)-Flat, flatten(T)+Flat.
+
+flatten([],_K,Flat,FlatT) :- Flat=FlatT.
+flatten([V|T],K,Flat,FlatT) :-
+    Flat=[V|Flat1], flatten(T,K,Flat1,FlatT).
+
+
+append([],Y,Z) :- Y=Z.
+append([W|X],Y,WZ) :- WZ=[W|Z], append(X,Y,Z).
+
+
+last_elem([X],P,L) :- P=[], L=X.
+otherwise.
+last_elem([H|T],P,L) :- P=[H|P1], last_elem(T,P1,L).

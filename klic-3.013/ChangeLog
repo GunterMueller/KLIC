@@ -1,0 +1,889 @@
+Mon, 21 Apr 2019 01:19:15 +0900 Kazunori Ueda <lang@ueda.info.waseda.ac.jp>
+
+        * Included README-FIRST for KLIC-3.011, which is the same as
+	  KLIC-3.01 except for the documentation and config.sh.*.
+
+Sat, 14 May 2016 18:12:37 +0900 Kazunori Ueda <lang@ueda.info.waseda.ac.jp>
+
+        * Included the revived "Inside KLIC" document in documets/inside.
+
+Mon, 09 May 2016 00:40:57 +0900 Kazunori Ueda <lang@ueda.info.waseda.ac.jp>
+
+        * Bugfix release of klic-3.003 with many small ad-hoc fixes
+        (added casting, qualifiers, return types, extern declarations,
+       	header files, etc.; too many to mention individually) to
+	eliminate error messages and reduce warning messages from recent
+	GCC.
+
+ 	* Character strings are changed to (char *) for compatiblity
+	 with string.h, while byte strings remain (unsigned char *).
+
+	* Provided several template config.sh.* files.
+
+	* Configure: some questions were removed and some default values
+	were changed to minimize the overriding of default values.
+
+	* Tested on Linux (Ubuntu, Gentoo, CentOS5 and CentOS6), 32-bit
+	Cygwin, and MacOSX Darwin, all with 'gcc -m32' on Intel x86_64 machines.
+	Distributed-memory parallel KLIC works but has been tested for the
+	'shm' version only.
+	Note: for MacOSX Darwin, 'gcc -m32' calling LLVM 7.3 may not work
+	(while LLVM 6.* is known to work) for distributed-memory parallel
+	KLIC.  In this case please use download and use real gcc (GNU C),
+	which is known to work.
+
+	* Shared libraries can be created for Linux and Cygwin.  To
+	achieve this, the main function was moved to a separate,
+	non-shared library (libklicm.a).
+	Note that, when both shared and non-shared libraries exist in the
+	search path of libraries, shared ones are used for Linux while
+	non-shared ones are used for Cygwin.  Note also that you may need
+	to set LD_LIBRARY_PATH (Linux etc.) or include the shared library
+	path to your PATH environment variable (Cygwin).
+
+	* For 32-bit Cygwin and MacOSX Darwin,
+	runtime/configure/shm/INTEL/lock.s should be modified, and this
+	is now done automatically.
+
+	* Released as klic-3.01.
+
+Thu Feb 13 17:11:01 2003  Yusuke KANEKI  <lang@ueda.info.waseda.ac.jp>
+
+	* Configure, version.sed, Makefile.tail
+	* runtime/Makefile.tail, Compiler/Makefile
+	* runtime/gunix.kl1, runtime/asyncio.c
+	support cygwin and gcc 3.xx .
+
+Fri Jan 31 15:12:09 2003  Yusuke KANEKI  <lang@ueda.info.waseda.ac.jp>
+
+	* include/klic/control.h, include/klic/gg_macro.h, runtime/debug.c
+	fix the bug in control.h REDCTION_COUNT -> REDUCTION_COUNT
+	fix the bug in gg_macro.h GG_ERROR_IN_IN -> GG_ERROR_IN_NEW
+	fix the bug in debug.c sys_errlist[] -> strerror()
+
+Thu Jan 30 14:44:50 2003  Ryo MATSUMURA  <lang@ueda.info.waseda.ac.jp>
+
+	* runtime/alloc.c, runtime/gc.c, include/klic/struct.h:
+	add functions for DKLIC.
+
+Thu Jan 30 14:34:33 2003  Ryo MATSUMURA  <lang@ueda.info.waseda.ac.jp>
+
+	* runtime/termio.kl1:
+	fix the bug in full-duplex IO for socket stream.
+
+Thu Jan 30 12:24:19 2003  Ryo MATSUMURA  <lang@ueda.info.waseda.ac.jp>
+
+	* runtime/asyncio.c, runtime/gunix.kl1:
+	support ip multi cast.
+
+Sun Dec 28 18:56:12 2002  Yusuke KANEKI  <lang@ueda.info.waseda.ac.jp>
+
+	* runtime/gunix.kl1:
+	fix the bug in ungetc.
+
+Sun Nov 18 12:22:34 2001  Xiobi WEI   <lang@ueda.info.waseda.ac.jp>
+
+	* runtime/gunix.kl1:
+	fix the bug in mktemp.
+
+Thu Nov  1 20:07:47 2001  Yusuke KANEKI  <lang@ueda.info.waseda.ac.jp>
+
+	* runtime/termio.kl1, runtime/gunix.kl1:
+
+Wed Oct 11 16:33:41 2000  Yusuke TAKAGI  <takagi@ueda.info.waseda.ac.jp>
+
+	* runtime/termio.kl1: support prolog-like IO for socket stream.
+
+Wed Oct 11 16:31:13 2000  Hiroshi IGARASHI  <iga@ruby-lang.org>
+
+	* runtime/asyncio.c, runtime/gunix.kl1, runtime/signal.c:
+	support full-duplex IO for socket stream.
+
+Thu May  3 23:06:39 2001  Hiroshi IGARASHI  <iga@ruby-lang.org>
+
+	* Makefile.tail, compiler/Makefile: specify -L../runtime via
+	LD_LIBRARY_OPTIONS when compiler is compiled.
+
+Thu Oct 12 18:16:32 2000  Hiroshi IGARASHI  <iga@ruby-lang.org>
+
+	* Configure, Makefile.tail: specify runpath by ld option `-R'
+	for Solaris.
+
+Thu Oct 12 14:54:17 2000  Hiroshi IGARASHI  <iga@ruby-lang.org>
+
+	* Makefile.tail (clean): pass value of variable DLLIBS.
+
+Thu Oct 12 14:50:34 2000  Hiroshi IGARASHI  <iga@ruby-lang.org>
+
+	* runtime/trace.c (get_mte): should be independent of dynamic location
+	of functions.
+
+Mon Jul 31 05:04:10 2000  Hiroshi IGARASHI  <iga@ruby-lang.org>
+
+	* Configure, Makefile.tail, compiler/Makefile, disttest/Makefile,
+	runtime/Makefile.head, runtime/Makefile.tail, shmtest/Makefile,
+	test/Makefile: add shared library support(Linux/Solaris only).
+
+Sat Mar 27 11:14:18 1999  Sekita Daigo  <sekita@mri.co.jp>
+
+	* macro.kl1: fix the bug in replaceClase for the :- Dec form clause.
+
+	* Configure: Added processes around shared libraries.
+
+Sat Mar 27 11:10:19 1999  Sekita Daigo  <sekita@mri.co.jp>
+
+	* struct.h: Change the macro definitions. (char *) -> (unsigned int)
+
+1998-08-04  Sekita Daigo  <sekita@mri.co.jp>
+
+	* Configure: remove const declaraion from the testing of sys_errlist.
+
+1998-07-31  Sekita Daigo  <sekita@mri.co.jp>
+
+	* ``polling mechanism'' may be used now in the PVM version. This
+ 	version of KLIC wait the message by polling in spite of the
+ 	normally by the interval timer. This mechanism is introduced
+ 	automatically for the platforms which does not equip setitmer()
+ 	function. This function was developped by fujise@{icot.or.jp,
+ 	mri.co.jp}.
+
+	* klic.c: klic command now supports fortran code.
+
+1997-12-18  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/unify.c (allocp): missing break was inserted.
+	(resume_goals): makecons(1) -> makecons(0)
+
+	* documents/klicj.tex (Timer): subtract -> sub
+
+	* documents/klic.tex (Timer): subtract -> sub
+
+1997-11-25  Sekita Daigo  <sekita@mri.co.jp>
+
+	* compiler/cmacro.kl1: Fixed the type of replaceClauase/1 ->
+ 	replaceClauase/2.
+
+1997-11-07  Sekita Daigo  <sekita@mri.co.jp>
+
+	* documents/klicj.tex (Compiler Options): KLIC_DBINET -> KLIC_DBINIT
+
+1997-10-17  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/gio.c (GCDEF_UNIFY): CheckInput -> CheckOutput for
+	functor_fwrite_2
+
+Thu Oct  2 15:31:06 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* Configure: fix the bug in libsocket checking.
+
+	* runtime/config/shm/configure: support SYSV 'tr' command.
+
+Wed Sep  3 11:15:56 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* Released as klic-3.002
+
+	* Added disttest/trace.{kl1,exp}
+
+Fri Aug 29 20:28:33 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/config/pvm-tcp/distpkt.h (MAXHOSTNAMELEN): change to 256
+
+	* runtime/config/pvm-tcp/distpkt.c: change structure of port_table
+	(devide the body and the node_name strings areg)
+
+Mon Aug 25 16:55:13 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/signal.c (add_signal_handler): added #ifdef SA_RESTART
+	for SunOS 4.x
+
+Thu Aug 21 19:56:45 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/config/pvm-tcp/distpkt.c (make_connection): change the
+	size of hostname (20 -> MAXHOSTNAMELEN)
+
+	* runtime/config/pvm-tcp/distpkt.h: change the size of node_name (20 -
+ 	> MAXHOSTNAMELEN).
+
+Wed Aug 20 19:57:37 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/config/pvm-tcp/configure: change ln option -f to -sf
+	(The links may already exist).
+
+Mon Aug 18 18:02:17 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/xio.c: rewrite debug_xxx functions and add klic_xxx
+ 	functions.
+
+Wed Aug  6 14:04:51 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/signal.c (add_signal_handler): set SA_RESTART flag to
+ 	sa_flags. (from gNiibe)
+
+	* runtime/trace.c (trace_deadlock): change the format string %4d -> %9d
+	because the goal sequent number is 100000 * node + throw_trace_count
+	(cntlmsg.c: send_throw_goal())
+	(initiate_trace): fix the bug of the tracer for PVM version.
+
+Thu Jul 31 11:01:01 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* disttest/Makefile (PARALLEL): redefine PARALLEL variable as to
+ 	NODES variable
+
+Wed Jul 30 19:35:30 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* documents/klicj.tex: Fix the mis-translation around the
+ 	description of the paired argument macro. (by Chik-san)
+
+	* runtime/ge_exref.c (GGDEF_GENERATE): Cancel the previous fix.
+
+	* runtime/cntlmsg.c (decode_read): Fixed the bug that the %read
+ 	messages may be sent to the self node. (by Nakase-san)
+
+Fri Jul 18 11:09:02 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/ge_exref.c (GGDEF_GENERATE): The code fragment are
+ 	inserted not to send the %read message to the self PE. But this
+ 	fix is excluded by #ifdef because this is not authorized by
+ 	Nakase-san.
+
+	* Configure (NODES): introduced the variable NODES. This variable
+ 	defines the $(NODES) in Makefile. The changes in Makefile.tail
+	which to ask user to indicate the # of PE are dismissed.
+
+	* runtime/config/shm/distpkt.c: Fixed the bug for the overflowing
+	of the communication buffer (from chik).
+
+Thu Jul 17 13:15:06 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/config/shm/configure: guesses default architecture from
+ 	the output of uname command.
+
+	* Makefile.tail (disttests): asks the # of PE to use. The same
+	changes are done for shmtests.
+
+	* runtime/gio.c (GCDEF_UNIFY): made [] messages NOP after the
+	fclose message.
+
+	* runtime/io.kl1: introduced debug_fputc and replaced with
+ 	klic_putc.
+
+	* runtime/debug.c: introduced iofprintf_inner, and
+	putbuf_fordist function and made the code clear.
+
+	* rewritten the test/*.kl1 program using "klicio" module.
+
+Wed Jul 16 14:22:38 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* compiler/generate.kl1: Fixed the bug for `xthrow' instr.
+	(This bug is derived from "IPA modificatoin").
+
+	* runtime/config/pvm-tcp/distpkt.c: Introduced ISASTREAM macro,
+ 	and avoid the usage of isastream() library function.
+
+	* inclide/klic/options.h: added -D option for DIST version.
+
+	* runtime/bb.c (bblt_fix_2): fixed the bug on float -> int conversion.
+
+Thu Jun 26 18:08:35 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/shm_rsv.c : insert invokation init_shm_atom()
+	when the # of PE is one (shared memory version).
+
+Wed Jun 25 19:41:27 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* include/klic/gc_macro.h (GCSET_MESSAGE): Delete ``break'' for
+ 	fixing the bug of dereference.
+
+Tue Jun 24 19:24:56 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* runtime/debug.c, gfloat.c (debug_fprintf): quick measure was
+ 	done for the special treatment of floating point data on INTEL
+ 	processor .
+
+Mon Jun 16 17:50:36 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* README,README.j: Add SPARC Enterprise as a valid platform.
+
+	* Configure: Fix the bug around add #define TRANSFER_CNT
+
+	* runtime/kmain.c (klic_main): Fixed arguments of gettimeofday().
+
+Mon Jun 16 17:50:00 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* include/klic/interpe.h (TRANSFER_CNT): Added #ifndef See
+ 	Configure file. This fix is temporary for the sake of the trouble
+ 	of PVM-TCP version.
+
+Mon Jun 16 16:40:14 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+	* Configure (INCLUDESH): Added sun4u supports.
+
+Fri Jun  6 19:54:42 1997  Sekita Daigo  <sekita@mri.co.jp>
+
+Copyrights in all files were changed.
+
+* compiler/obj.kl1,generate.kl1: intermediate code was changed to the
+	preparetion of the indroducting interpreter.
+* runtime/config/pvm-tcp/*: add declare_globals for ``my_node'' macro.
+* Configure: FreeBSD support was added.
+* FOR-DEVELOPERS, COPYRIGHT-JIPDEC was added.
+
+Thu May  1 19:08:16 1997  Sekita Daigo  <sekita@mri.co.jp>
+* introduced chikayama version. i.e Goal object function.
+
+Sat Jan  4 17:07:06 1997  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/config/shm: Added a distributed parallel implementation
+on SMP-type parallel machines
+
+Thu Sep 26 19:10:42 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/gc.c:  l.252-264, 605, 607, Added cmparison of addresses of
+element of suspension structure.  These are tentative codes.
+
+Sun Aug 18 21:47:49 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/shm_rsv.c: Replaced ATOM_TABLE_SIZE = 128 with
+ATOM_TABLE_SIZE = 256.
+* disttest/Makefile: add 'fi' before 'read.tst:'
+
+Wed Jul 10 20:53:12 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/export_table.c, runtime/import_table.c, runtime/sendrecv.c,
+ runtime/config/pvm/distio.c: Fixed bugs for missing cast of malloc and
+ realloc.
+
+Wed May 22 15:27:03 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/cntlmsg.c:  Fixed a bug in send_throw_goal (missing 3rd
+argument of trace_goal).
+
+Wed May 22 15:27:03 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/kmain.c, include/klic/config/pvm/distproc.h, etc.: Changed
+definition of klic_fprintf using  debug_fprintf, and added new macro
+klic_local_fprintf.
+
+Sat May 11 18:21:13 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/cntlmsg.c, runtime/sendrecv.c: Added "declare_globals to some
+ functions.
+
+Fri May 10 13:59:36 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/config/pvm/distproc.h: Added Extern macro to tid_table definition.
+
+Fri May 10 13:48:35 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/faisus.c, runtime/signal.c, include/klic/sighndl.h: Added
+SIGMAIN macro and external declaration to do_fail definition.
+
+Fri May 10 08:10:35 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/gunix.kl1: Added "ifdef" before "stropt.h" for LINUX.
+
+Thu May  9 23:59:08 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/gio.c, runtime/config/pvm/distio.c, runtime/config/pvm/distio.h:
+  Added ungetc protocol to distributed memory implementation.
+
+Thu May  9 20:19:14 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/gstring.c  l. 358-406: Added explicit cast
+
+Thu May  9 20:18:16 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/newatom.c: Rewrote macro definition of malloc_check for shared
+memory implementation
+
+Wed May  8 22:46:35 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/config/pvm/disproc.h: Changed OPT_PARENT_TID definition.
+
+Wed May  8 22:15:22 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* Configure: Added checking "sys/procset.h"
+
+Wed May  8 22:11:35 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/unify.c: Removed "long higher_priority_goal = 0;".
+
+Wed May  8 22:09:44 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* Configure, runtime/asyncio.c, runtime/gunix.kl1:
+Added "#include <sys/select.h>"
+
+Wed May  8 22:03:32 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/generic.c, include/klic/g_basic.h: Added function header
+of noreturn fucntion without volatile declaration for c compiler except
+GNU C
+
+Wed May  8 21:53:36 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* Configure: Added checking libc_s.a in  $LIBPATH
+
+Wed May  8 21:43:21 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/gfloat.c: Added encoding & decoding method.
+
+Wed May  8 21:37:03 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* compiler/macro.kl1: Fixed a bug of macro_goal_functor.
+
+Wed May  8 21:29:18 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/gc.c: Moved perpetual suspension detection before after_gc_hook.
+
+Wed May  8 21:21:08 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/sysc.kl1: Fixed a bug of gc predicate.
+
+Wed May  8 21:18:25 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/var.kl1: Fixed a bug in wrapping a vector.
+
+Tue May  7 22:32:11 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/bb.c: Fixed a bug of macro expansion.
+
+Tue May  7 22:29:32 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* Configure:  Fixed some spelling bugs.
+
+Tue May  7 21:53:14 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/faisus.c:  Added some comments.
+
+Tue May  7 20:56:57 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/config/pvm/cntrlmsg.c: Replaced "fprintf" with "ioprintf".
+
+Tue May  7 16:11:06 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/ge_readhook.c, runtime/cntlmsg.c: Fixed a bug of calling
+send_read and a comment.
+
+Tue May  7 16:09:00 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* include/klic/interpe.h: Added "#define TRANSFER_CNT 0x1000L"
+
+Tue May  7 15:59:38 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/config/pvm/cntrlmsg.c: "#include <klic/distio.h>" Removed.
+
+Tue May  7 14:52:02 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* include/klic/timing.h: Moved "#include <sys/types.h>" out of if-def
+block.
+
+Tue May  7 14:44:06 1996  Tetsuro Fujise  <fujise@icot.or.jp>
+* runtime/datamsg.c: Fixed a bug in error processing when calling an
+encoding method which isn't defined in data object.
+
+Wed Aug  9 12:27:26 1995  Takashi Chikayama <chik@logos.t.u-tokyo.ac.jp>
+* runtime/g_extern_inline.h, runtime/export.c: Removed.
+
+Thu Aug 10 10:32:54 1995  NIIBE Yutaka  <gniibe@mri.co.jp>
+* runtime/gunix.kl1: Portability for asynchronous I/O.
+
+Wed May 31 11:03:32 1995  Tetsuro Fujise (fujise@ss112)
+* Fixed a bug in compare-macro expansion (compiler/macro.kl1).
+
+Tue May 23 13:14:57 1995  Tetsuro Fujise (fujise@ss112)
+* Fixed a bug about 'pipedio' (runtime/Makefile)
+
+Tue May  9 11:15:37 1995  Takashi Chikayama (chik@fuchi.t.u-tokyo.ac.jp)
+* Fixed a bug in 'gett' of updt/3 (runtime/termio.kl1).
+
+Fri Apr 28 09:55:12 1995  Tetsuro Fujise (fujise@icot.or.jp)
+* Added preliminary Japanese KLIC Manual (klic-1.600).
+* Version 2.000 released.
+
+Tue Apr 11 14:40:38 1995  Masao Morita (m-morita@mri.co.jp)
+* Fixed a bug in a termination detection part of shared-memory
+parallel implementation (runtime/sched.c).
+
+Tue Apr 11 14:33:28 1995  Takashi Chikayama  (chik@fuchi.t.u-tokyo.ac.jp)
+* Fixed a bug in setting up to 'iscnst' for split/join which are new
+methods of a vector object (runtime/gmvv.c).
+
+Thu Mar 30 11:09:38 1995  Takashi Chikayama  (chik@orochi)
+* Merged Nakase's new distributed implementation and Morita's changes for
+smoother merge of two different parallel implementations (many files).
+
+Tue Mar 28 20:31:58 1995  Takashi Chikayama  (chik@orochi)
+* Merged shared-memory parallel implementation (many files).
+* Fixed problems on type subsumption rule for floats (insert.kl1).
+
+Tue Mar 14 13:58:27 1995  Takashi Chikayama  (chik@ss108)
+* Deleted obsolete script (runtime/version.sed).
+* Better handling of system reconfiguration (setupcomm).
+* Better error recovery for illegal floating point number option
+(options.c).
+* Fixed negative timer value problem (itimer.kl1).
+* Fixed a trivial misspelling bug (pvm/distpkt.c, pvm-tcp/distpkt.c).
+* Avoided too frequent GC for deadlock detection (kmain.c, options.h).
+* Added mode change to make queries after finding some error in
+the configuration script (Configure).
+* Added reports of cumulative suspensions and resumptions when
+report_measure is called from post-mortem goals (struct.h, kmain.c,
+bodyblt.kl1).
+* Fixed several non-ANSI compliant notations (asyncio.h, interpe.h,
+options.h, distio.h).
+* Modified the unparser to use operators (unparse.kl1).
+
+Wed Mar  8 13:12:59 1995  Takashi Chikayama  (chik@gydra)
+* Fixed int/long type problem for arguments of error message output
+routines (debug.c).
+* Fixed argument index bug in subterm inspection (trace.c).
+* Added mulit-window debugging feature (Configure, trace.c, pipedio.c).
+
+Fri Feb 10 13:40:36 1995  Takashi Chikayama  (chik@gydra)
+* Fixed a bug in generation of clause indexing code, when both symbolic
+and integer atoms are index candidates (generate.kl1).
+
+Thu Feb  9 13:11:50 1995  Takashi Chikayama  (chik@gydra)
+* Fixed a bug in closing a socket, caused by a missing "break" in
+add_sigio_handler (asyncio.c).
+* Merged changes by Kumon and Nakase.
+
+Wed Feb  8 09:44:38 1995  Takashi Chikayama  (chik@gydra)
+* Fixed the problem of useless reference to the table defined_modules.
+This was due to unused external references to method tables of predicate
+and module objects, which made the linker to think that objects for these
+classes are required.  To solve this problem, extern declarations of these
+tables are deleted from gmodule.h and extern declarations of predicate
+method tables are inserted wherever a module or predicate object constants
+are needed.  The same problems with other classes that the KLIC kernel
+knows of (gmodule.h, g_float.h, g_string.h, g_vector.h, generate.kl1,
+write.kl1).
+* Fixed bug in float to integer conversion (farith.kl1).
+* Added int/1 method to floats (gfloat.c).
+* Added error diagnostics for illegal initial value for floats (gfloat.c).
+* Added error diagnostics for illegal body goal (normalize.kl1).
+* Fixed a bug that didn't create database files when no atoms nor functors
+are added but the files are non-existent (klicdb.c).
+* Fixed a bug in writing out octal escape sequences in constant string
+elements (write.kl1).
+* Inserted inclusion of stddef.h (xio.c).
+* Changed random number generator from "random" to "nrand48" (random.c,
+Configure, Makefiles).
+
+Tue Feb  7 14:26:33 1995  Takashi Chikayama  (chik@ss108)
+* Avoid using voidfn except when __STDC__ (klicdb.c, faisus.c).  CC of
+SunOS 4.1 complains on it.
+* Include sys/stdtypes.h for size_t (xio.c).
+* Other changes for non-ANSI compilers (ktimer.c).
+* Avoided aggregate initiation (timer.c).
+
+Mon Feb  6 17:10:07 1995  Takashi Chikayama  (chik@gydra)
+* Added runtime monitoring feature (many files).
+* Added a feature to make default configuration parameters available
+(Configure).
+* Added random number generator (random.c, runtime/Makefile).
+* Added KL1-level timer interfact (itimer.kl1, runtime/Makefile).
+* Documented random number generator and timer (klic.tex).
+* Fixed some problems in Makefile.
+
+Wed Feb  1 20:31:55 1995  Takashi Chikayama  (chik@gydra)
+* Replaced all calls to getc, fread, putc, fwrite, fflush and fprintf with
+KLIC's own version of them.  This is to process EINTR error within these
+functions and for future revision for unifying I/O for distributed version
+(basic.h, xio.c <new addtion>, many files invoking those functions,
+runtime/Makefile).
+* Fixed buggy rule for verifying the compiler (used to use the original
+compiler for the verification) (runtime/Makefile, compiler/Makefile).
+
+Mon Jan 30 20:12:50 1995  Kouichi Kumon  (kumon@icot.or.jp)
+* Supporting virtualized_timer() in the distributed system. (kmain.c)
+* Add wait before gc start after a PE becomes idle. (kmain.c)
+* Add sigio retry processing and fix allocp setting bug. (asyncio.c)
+* Change perror to errno+sys_errlist[] to display error description
+  on distributed code. I wonder it may be less standard. (debug.c)
+
+Mon Jan 30 18:57:54 1995  Kouichi Kumon  (kumon@icot.or.jp)
+* Add return-value checking of signal-setting system calls to detect error.
+	(kmain.c)
+* Fix pause codes for sequential core. (kmain.c)
+
+Fri Jan 27 18:34:08 1995  Takashi Chikayama  (chik@gydra)
+* Fixed a problem in timer handling caused when the interrupt occurs
+earlier than expected (timer.c).
+
+Thu Jan 26 20:53:34 1995  Takashi Chikayama  (chik@gydra)
+* Several fixes in manual (klic.tex).
+* Changed the way to compile C files for different (tracing, distributed
+or normal) versions of runtime library.  The object file used to be
+specified by the "-o" option of C compiler, which was not available on
+some systems.  The new strategy links the source file to different names,
+such as FILE-t.c.
+* Added feature to test availability of symbolic links and use it in
+making different versions of runtime library (Configure, Makefile.tail,
+runtime/Makefile).
+* Separated specification of Unix-level signal handling and slit-check
+level signal handling (signal.c).
+* Added timer handling features (timer.c, ktimer.c, runtime/Makefile).
+
+ Thr Jan 26 15:22:43 1995  Kouichi Kumon  (kumon@icot.or.jp)
+* Delete commented codes and blank lines. (pvm-tcp/distpkt.{c,h})
+* Change variable name syncid_sent to syncid_recv in io_wait_sunc()
+  to make thing clear. (pvm/distproc.c)
+* Add child_wait_sync() and io_sync() functions to support wating
+  synchronization for child. (pvm/distproc.c)
+
+ Thr Jan 26 14:57:11 1995  Kouichi Kumon  (kumon@icot.or.jp)
+* Change debugging macro from DEBUG() to DEBUG_X().
+* Delete unused statements.
+* Modification for disio_handler scheme.
+* Add synchronization, it may not be necessary.
+* Change BCOPY() of fd_set to structure assignment statement.
+* Add useless_message() handling, which is used only for debugging purpose.
+	(pvm-tcp/distpkt.c)
+
+Wed Jan 25 10:24:48 1995  Takashi Chikayama  (chik@gydra)
+* Fixed argument pair expansion for goals with @ pragmas (macro.kl1).
+* Added @lower_priority to the "life" test program to make it run much
+faster (life.kl1).
+
+Fri Jan 20 11:23:16 1995  Takashi Chikayama  (chik@gydra)
+* Updated the manual correcting problems found during Japanese translation
+efforts (klic.tex).
+* Added virtualized interrupt timer handling (timer.h, timer.c,
+include/Makefile, runtime/Makefile).
+* Made compilation for compiler verification run in parallel
+(runtime/Makefile, compiler/Makefile).
+* Added final synchronization with subtasks in the comiler driver
+(klic.c).
+* Made compilation for tests run in parallel (Makefile, test/Makefile).
+* Removed unused module (runtime/timing.c, runtime/Makefile).
+* Made to avoid redundant overwriting of atom and functor databases
+(klicdb.c).
+* Fixed bug in compilation of unit clauses without arguments (macro.kl1).
+
+ Fri Jan 20 11:20:49 1995  Kouichi Kumon  (kumon@icot.or.jp)
+* Change interval_usec and noitimer variable from static to global to enable
+  itimer setting in distpkt.c(pvm/distproc.h)
+* Add rel_spawn_path option and variable. (pvm/distproc.h)
+* Add flag for "relative-spawn" using PVM spawn path. (pvm/distproc.c)
+* Change spawned program path printing. only -n flag enables it.
+	(pvm/distproc.c)
+* Move signal setup from kmain.c to distpkt.c. (pvm/distpkt.c)
+* Add init_dist_signal_setup() to setup dist-version signals to support
+  machine dependent signal_setting. (pvm/distpkt.c)
+
+Wed Jan 18 13:32:12 1995  Takashi Chikayama  (chik@gydra)
+* Fixed wrong wrapping of vectors (var.kl1).  Variable naming is still
+problematic and, considering distributed implementations and garbage
+collection, I'm not sure whether I can ever do it correctly.
+* Fixed order of const and extern declarations (options.h).
+* Fixed wrong "unsigned" declaration of "size" parameter in creation of
+strings (gstring.c).
+* Fixed manual description of the operator "int" in floating point
+expressions (was written as "fix").
+
+Tue Jan 17 20:03:34 1995  Kouichi Kumon  (kumon@icot.or.jp)
+* Change PvmDataDefault to PvmDataRaw. (walk-around for pvm BUG on DEC alpha!!)
+	(pvm/dist{io,pkt,proc}.c, pvm-tcp/distpkt.c)
+
+Tue Jan 17 15:20:28 1995  Kouichi Kumon (kumon@icot.or.jp)
+* Add cast (char *) to the first and second arguments of BCOPY()
+  (pvm-tcp/distpkt.c).
+* Add cast (char *) to BCOPY()'s first and second arguments
+  (pvm/distpkt.c).
+* Add <string.h> include file (options.c).
+* Count_suspensions is changed from long to int (faisus.c).
+* Add cast (char *)to BCOPY()'s the first and the second
+  arguments (gmvv.c).
+
+Tue Jan 10 13:42:39 1995  Kouichi Kumon (kumon@icot.or.jp)
+* Fix comment (config/pvm-tcp/distpkt.c).
+* Change variable name (config/pvm-tcp/distpkt.c).
+* Change his_node(formerly his_id) change from int to long.
+  It should be same type to my_node (config/pvm-tcp/distpkt.c).
+* Fix tcp-address handling. sin_addr.S_un... -> sendsin.sin_addr
+  (config/pvm-tcp/distpkt.c).
+* Add iocntl for STREAM device to generate SIGIO signal
+  (config/pvm-tcp/distpkt.c).
+* Add isastream() for checking fd is a STREAM device or not
+  (config/pvm-tcp/distpkt.c).
+
+Fri Jan  6 12:10:45 1995  Takashi Chikayama  (chik@gydra)
+* Fixed lacked message dereference for I/O object (gio.c).
+* Fixed argument pointer increment problem for format char 'k' in
+debug_printf (debug.c).
+* Fixed lack of -t (debugging) version of debug.c (runtime/Makefile).
+* Fixed a problem for systems with non-long time_t (klicdb.c).
+* Fixed wrong cast for string body (gstring.c).
+* Fixed volatile function declaration problem in STDC but not GNUC
+(basic.h).
+
+Tue Dec 27 18:32:52 1994  Takashi Chikayama  (chik@gydra)
+* Fixed alignment problems for variables start_tracing and
+count_suspension (options.h, kmain.c, faisus.c).
+
+Mon Dec 26 22:25:52 1994  Kouichi Kumon (kumon@icot.or.jp)
+* Bug fix in io_client(): va_arg() never receives type 'char'
+ (config/pvm/distio.c).
+
+Thu Dec 22 10:41:10 1994  Takashi Chikayama  (chik@gydra)
+* Added parallel compilation (klic.c).
+* Parallel compilation feature added for installation (Configure and
+Makefile on runtime, compiler and test directories).
+* Made "alternatively" work (faisus.c).
+* Corrected volatile declaration for do_fail (faisus.c).
+
+Wed Dec 21 18:03:29 1994  Kouichi Kumon (kumon@icot.or.jp)
+* Remove writev() system-call (config/pvm-tcp/distpkt.c).
+* Supplement  statistics measurement in send/receive_packet()
+  (config/pvm-tcp/distpkt.c).
+* Change ambiguous variable names (config/pvm-tcp/distpkt.c).
+
+Fri Dec 16 23:45:05 1994  Kouichi Kumon (kumon@icot.or.jp)
+* Nomore use writev, so buffer management is changed to make room
+ for pktsize at the front of packet by shifting packet by one word
+ (config/pvm-tcp/distpkt.c).
+* Severe bug, variable name spelling. hos(t)name. therefore, changed
+  all ambiguous names (config/pvm-tcp/distpkt.c).
+* Change include-file name from klic_pvm.h -> distproc.h (config/pvm/distio.h).
+
+Fri Dec 09 13:33:49 1994  Kouichi Kumon (kumon@icot.or.jp)
+* Add interrupt statistics routine (config/pvm/{distpkt.h, distpkt.c}).
+
+Thr Dec 08 22:14:43 1994  Kouichi Kumon (kumon@icot.or.jp)
+* Add polite network closing celemony by using zero-length packet
+  (config/pvm-tcp/distpkt.c).
+* Trivial debugging output change (sendrecv.c).
+* Fix the read_reply optimization bug (cntlmsg.c).
+* Change some debugging print messages (cntlmsg.c).
+
+Thr Dec 08 20:01:12 1994  Kouichi Kumon (kumon@icot.or.jp)
+* INTERRUPT_RECEIVE_STAT macro is enabled. (sendrecv.c).
+* Change debug output (cntlmsg.c).
+* Add experimental reply_answer_value code (cntlmsg.c.
+* Add interrupt_statistics related macros (config/pvm-tcp/distpkt.h).
+* Add sudden close network detection (config/pvm-tcp/distpkt.c).
+* Initialize self-communicating port fd to -1 (config/pvm-tcp/distpkt.c).
+* Use io_wait_sync() routine (config/pvm-tcp/distpkt.c).
+* Add child_sync routine (config/pvm-tcp/distpkt.c).
+* Move static struct immediate to file-wise scope (config/pvm-tcp/distpkt.c).
+* Add EINTR check in forceread() (config/pvm-tcp/distpkt.c).
+* Add print_interrupt_statistics (config/pvm-tcp/distpkt.c).
+* ARG_SET/ARG_RESET variables use int and ARG_SIZEed variables use long
+  (config/pvm/distproc.c).
+* Fix long/int usage (config/pvm/distproc.h).
+* Change Close_net() macro to call close_network() (config/pvm/distproc.h).
+* Aadd close_network(). for supporting both pvm and pvm-tcp
+ (config/pvm/distpkt.c).
+
+Thr Dec 08 15:09:52 1994  Kouichi Kumon (kumon@icot.or.jp)
+* Change interrupt statistics to standard form
+  (kmain.c, cntlmsg.c, sendrecv.c).
+
+Wed Dec 07 17:29:27 1994  Kouichi Kumon (kumon@icot.or.jp)
+* Temporaly version (cntlmsg.c).
+* Add SIGALRM effect print routine (cntlmsg.c).
+* Fix parse_size argument in ARG_SIZE (options.c).
+* Temporaly version for measuring itimer effect (kmain.c).
+* Add some comment to #else of #endif macro (kmain.c).
+* Change pause() to much precise operation (kmain.c).
+
+Tue Dec 06 22:11:03 1994  Kouichi Kumon (kumon@icot.or.jp)
+* Non STDC compiler complains ioprintf etc. are non compatible to
+  the declaration (debug.c).
+
+Mon Dec  5 16:15:37 1994  Takashi Chikayama  (chik@gydra)
+* Deleted search for "nlist" during configuration, as it is no longer
+needed by the system (Configure).
+
+Fri Dec 02 17:27:00 1994  Kouichi Kumon (kumon@icot.or.jp)
+* Add child_sync(), io_wait_sync() routine (config/pvm/distproc.c).
+
+Fri Dec 02 14:13:48 1994  Kouichi Kumon (kumon@icot.or.jp)
+* Add comment (config/pvm-tcp/distpkt.h).
+* Change ioctl parameter for SIGIO (config/pvm-tcp/distpkt.c).
+* Change include file (config/pvm/{distio.h,distproc.c}, options.c kmain.c).
+
+Thr Dec 01 19:52:06 1994  Kouichi Kumon (kumon@icot.or.jp)
+* Fix argc handling (config/pvm/distproc.c).
+
+Thu Dec  1 13:36:58 1994  Takashi Chikayama  (chik@gydra)
+* Fixed the problem of not registering module and predicate name atoms for
+predicate constants (compiler/extern.kl1).
+
+Fri Nov 25 10:55:25 1994  Takashi Chikayama  (chik@gydra)
+* Added environment variable lookup for compilation/linkage options
+(klic.c, klicdb.c, options.c, compiler/Makefile, klic.tex).
+* Added configuration features to specify LD different from CC and options
+for CC and LD (Configure).
+
+Wed Nov 16 11:52:21 1994  Takashi Chikayama  (chik@gydra)
+* Fixed GC problem when no more memory is available for larger heap
+allocation (gc.c).
+* Fixed synchronization problem and changed it top actually verify
+parsing/unparsing in parser test program (parsetest.kl1).
+
+Tue Nov 15 14:01:04 1994  Takashi Chikayama  (chik@ss108)
+* Cleaned up the compiler (many files under compiler dir).
+* Changed code generation strategy for structure elements and goal
+arguments when the element/argument is a structure element.  The element
+is retrieved stored directly in one assignment, rather than loading it to
+an "x" register (generate.kl1).
+
+Fri Nov 11 11:54:32 1994  Takashi Chikayama  (chik@ss108)
+* Alpha release of 1.511 within ICOT.
+* Fixed heap top pointer manipulation bug in the message handler
+(msg_handler.c).
+* Fixed argument name misspell of do_unify_4 (unify.c).
+* Cleaned up redundant variable declarations in inline C code (functt.kl1,
+generic.kl1).
+
+Thu Nov 10 15:14:41 1994  Takashi Chikayama  (chik@ss108)
+* Fixed include file name g_extern_inline.h to g_extinl.h (ge_exref.c).
+* Fixed double inclusion of functorstuffs.h (encode.c).
+* Fixed double invocation problem of init_klic_signal_handling (kmain.c).
+* Fixed suspeded goal list maintenance bug (gc.c).
+* Fixed problem with handling format option specifier 'l' (as in "%ld") in
+debug_printf (debug.c).
+
+Wed Nov  9 11:58:16 1994  Takashi Chikayama  (chik@ss108)
+* Alpha release of 1.510 within ICOT.
+* Fixed non-returning function declaration problems (many files).
+Actually, the problem is not solved completely, as we haven't found good
+way to tell older versions of gcc of the fact in a K&R compatible manner.
+* Fixed wrong order of storage class (static) and Const keywords (many
+individual files directly, write.c for compiler code generation and
+klicdb.c for database file generation).
+* Fixed signed/unsigned problem in argument range checks (gmvv.c,
+gstring.c).
+* Merged patches for distributed processing (many files in runtime).
+* Merged the functionalities of trace_printf in trace.c to debug_printf in
+debug.c; also sped up debug_printf a bit (trace.c, debug.c).
+
+Tue Nov  8 11:04:12 1994  Takashi Chikayama  (chik@ss108)
+* Changed to use I/O generic objects for pipe I/O.  This made "in" and
+"out" predicates needless (gunix.kl1).
+* Fixed operator precedence misunderstanding in writing out of string
+constant elements, that used to cause zero division (write.kl1).
+* Cleaned up suspension statistics code (faisus.c, recsusp.c).
+* Fixed erroneous expansion of pow/1 in floating expressions (macro.kl1).
+* Cleaned up several predicates (macro_arg &c) (macro.kl1).
+* Fixed tag on object and removed redundant to debug_printf called when
+inappropriate objects are compared (generic.c).
+* Fixed bug in macro expansion deadlock for @>= and @> and tidied up
+things (macro.kl1).
+
+Mon Nov  7 11:59:00 1994  Takashi Chikayama  (chik@ss108)
+* Fixed wrong arguments to debug_printf on message error to I/O objects
+(gio.c).
+* Fixed storage class conflict of print_ready_queue and
+print_suspended_goals (trace.c).
+* Fixed format string handling bug that failed to use formatting
+characters of printf (debug.c).
+* Fixed a makefile to generate debugging version of debug.c
+(runtime/Makefile).
+
+Fri Nov  4 14:43:44 1994  Takashi Chikayama  (chik@ss108)
+* Fixed setarg for cons (functt.kl1).
+* Fixed allocp manipulation to be compatible with the "this_more_space"
+(signal.c, intrpt.c).
+* Fixed infinite loop problem by setting signal_done (signal.c).
+* Fixed bugs in examples of string creation (klic.tex).
+
+Wed Nov  2 09:55:58 1994  Takashi Chikayama  (chik@ss108)
+* Fixed double ++ for the same pointer problem (decode.c).
+* Fixed infinite loop bug in verbose printing of hooked goals (print.c).
+
+Tue Nov  1 18:59:05 1994  Takashi Chikayama  (chik@ss108)
+* Fixed deadlock detection code so that the suspended goal list is
+maintaned correctly when a deadlock is detected (gc.c).
+* Cleaned up trace printing for distributed parallel system (trace.c,
+traceio.h).
+
+Mon Oct 31 17:19:41 1994  Takashi Chikayama  (chik@ss108)
+* Changed deref_and_jump macro (index.h) so that compiled codes only
+dereference one level.  Changed faisus.c to take care of multiple level
+indirections.  This makes code shorter without much runtime overhead.
+Several occurences of deref_and_jump in files directly written in C are
+changed to avoid its use.
+* Fixed "pvm3.h" to <pvm3.h> in several files.
+* Added suspended goal dump routine to runtime/trace.c.
+* Fixed Configure to respect environment variable values as default values
+of PVM_ROOT, PVM_ARCH and PVMLIB.
+* Fixed asynchronous I/O handling (gunix.kl1) so that:
+  - sync/1 message won't deadlock, and
+  - write_buf tries again when not whole of the buffer is written.
+* Changed the description of I/O streams in the manual to explicitly state
+that I/O messages should not be sent to unix or klicio streams.
+
+Mon Nov 07 10:25:00 1994  Kouichi Kumon (kumon@icot.or.jp)
+* Unify level0/1 encoding routines into encode_data(). Those are
+  distingushed by eager_transfer_level (val_hndl.c).

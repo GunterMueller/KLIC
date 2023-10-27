@@ -1,0 +1,331 @@
+/*-----------------------------------------------------------------------------
+Program: puzzle 
+Author:  E. Tick
+Date:    December 26 1988
+
+Notes:
+1. To run:
+    ?- go(N).
+where output N = 65 (number of solutions).
+
+2. This is 5x4x3 puzzle with chip in corner.
+
+3. Uses an abstract template matching routine.  The template is described with
+codes representing the layout of the piece.  The largest template uses eight
+codewords.  To match a template, the codewords are examined one at a time,
+ensuring that the board obeys the constraints outlined by the code.  For 
+example, codeword = 'vsssss2' constrains the next 12 board elements to be
+[v,_,_,_,_,_,v,_,_,_,_,_].  Of course, in checking this constraint, the matcher
+also copies the don't-care variables from the old board to the new board.
+
+4. Not ALL pieces use the above template matching method.  The small pieces
+directly enforce the constraints themselves, thereby avoiding extra reductions.
+Even large pieces might use this direct method IF the compiler allows a large
+number of logical variables per clause.  Unfortunately, the current compiler
+allows only 32 unique logical variables, thus forcing us to use the template
+method for large pieces.
+-----------------------------------------------------------------------------*/
+
+:- module main.
+main :-
+	klicio:klicio([stdout(Res)]),
+	check_stream(Res).
+
+check_stream(normal(S)) :-
+	go(N),
+	S = [putt(N),nl].
+check_stream(abnormal).
+
+go(N) :- 
+    make_board(Board),
+%                  p321    p431  p331 p421
+    play(Board, [[a,b,c], [d,e], [f], [g]], L, [], 0, []),
+    count(L, N).
+
+make_board(X) :- 
+        X = [z,v,v,v,v,z,
+	     v,v,v,v,v,z,
+	     v,v,v,v,v,z,
+	     v,v,v,v,v,z,
+	     z,z,z,z,z,z,
+
+	     v,v,v,v,v,z,
+	     v,v,v,v,v,z,
+	     v,v,v,v,v,z,
+	     v,v,v,v,v,z,
+	     z,z,z,z,z,z,
+
+	     v,v,v,v,v,z,
+	     v,v,v,v,v,z,
+	     v,v,v,v,v,z,
+	     v,v,v,v,v,z,
+	     z,z,z,z,z,z,
+
+	     z,z,z,z,z,z,
+	     z,z,z,z,z,z,
+	     z,z,z,z,z,z,
+	     z,z,z,z,z,z,
+	     z,z,z,z,z,z].
+
+count(L,N) :-  count(L,0,N).
+
+count([],M,N) :- M = N.
+count([_|Xs],M,N) :- M1 := M+1, count(Xs,M1,N).
+
+play([],_,S0,S1,_,A) :- S0=[A|S1]. % board empty - solution found
+                                          % spot empty - try to fill
+play(Board, Pieces,      S0,S4, N, A) :- [v|_] = Board |
+    fill1(Pieces, Board, S0,S1, N, A),
+    fill2(Pieces, Board, S1,S2, N, A),
+    fill3(Pieces, Board, S2,S3, N, A),
+    fill4(Pieces, Board, S3,S4, N, A).
+otherwise.
+play([_|Rest], Pieces, S0,S1, N, A) :- N1 := N+1,
+    play(Rest, Pieces, S0,S1, N1,A).
+
+fill1([[M|P1], P2, P3, P4], Board, S0,S6, N, A) :-
+    Pieces = [P1,P2,P3,P4],
+    p321(Board, M, Pieces, S0,S1, N, A),
+    p213(Board, M, Pieces, S1,S2, N, A),
+    p132(Board, M, Pieces, S2,S3, N, A),
+    p231(Board, M, Pieces, S3,S4, N, A),
+    p312(Board, M, Pieces, S4,S5, N, A),
+    p123(Board, M, Pieces, S5,S6, N, A).
+fill1([[],_,_,_],_,S0,S1,_,_) :- S0 = S1.
+
+fill2([P1, [M|P2], P3, P4], Board, S0,S4, N, A) :-
+    Pieces = [P1,P2,P3,P4],
+    p431(Board, M, Pieces, S0,S1, N, A),
+    p143(Board, M, Pieces, S1,S2, N, A),
+    p341(Board, M, Pieces, S2,S3, N, A),
+    p413(Board, M, Pieces, S3,S4, N, A).
+fill2([_,[],_,_],_,S0,S1,_,_) :- S0 = S1.
+
+fill3([P1, P2, [M|P3], P4], Board, S0,S3, N, A) :-
+    Pieces = [P1,P2,P3,P4],
+    p331(Board, M, Pieces, S0,S1, N, A),
+    p313(Board, M, Pieces, S1,S2, N, A),
+    p133(Board, M, Pieces, S2,S3, N, A).
+fill3([_,_,[],_],_,S0,S1,_,_) :- S0 = S1.
+
+fill4([P1, P2, P3, [M|P4]], Board, S0,S4, N, A) :-
+    Pieces = [P1,P2,P3,P4],
+    p421(Board, M, Pieces, S0,S1, N, A),
+    p142(Board, M, Pieces, S1,S2, N, A),
+    p241(Board, M, Pieces, S2,S3, N, A),
+    p412(Board, M, Pieces, S3,S4, N, A).
+fill4([_,_,_,[]],_,S0,S1,_,_) :- S0 = S1.
+
+match(R,X,B,M,J1,J2,J3,J4,J5,J6,J7) :-  
+    match(R,X,B,M,j(J1,J2,J3,J4,J5,J6,J7)).
+
+match([], Board, Rest, _, j(NewBoard,Pieces,S0,S1,N,A,Code)) :- N1 := N+1 |
+    Rest = Board,
+    play(NewBoard, Pieces, S0,S1, N1, [[Code|N]|A]).
+match([ssssss1|R],[X1,X2,X3,X4,X5,X6|Xs], B, M, J) :-
+    B =           [X1,X2,X3,X4,X5,X6|Bs],
+    match(R, Xs, Bs, M, J).
+match([ssssss2|R], [X1,X2,X3,X4,X5,X6,
+                    X7,X8,X9,Xa,Xb,Xc|Xs], B,M, J) :-
+    B =            [X1,X2,X3,X4,X5,X6,
+                    X7,X8,X9,Xa,Xb,Xc|Bs],
+    match(R, Xs, Bs, M, J).
+match([vvssss1|R], [v,v,X1,X2,X3,X4|Xs], B, M, J) :-
+    B =            [M,M,X1,X2,X3,X4|Bs],
+    match(R, Xs, Bs, M, J).
+match([vvvsss1|R], [v,v,v,X1,X2,X3|Xs], B, M, J) :-
+    B =            [M,M,M,X1,X2,X3|Bs],
+    match(R, Xs, Bs, M, J).
+match([vvvvss1|R], [v,v,v,v,X1,X2|Xs], B, M, J) :-
+    B =            [M,M,M,M,X1,X2|Bs],
+    match(R, Xs, Bs, M, J).
+match([vsssss1|R], [v,X1,X2,X3,X4,X5|Xs], B, M, J) :-
+    B =            [M,X1,X2,X3,X4,X5|Bs],
+    match(R, Xs, Bs, M, J).
+match([vsssss2|R], [v,X1,X2,X3,X4,X5,
+                    v,X6,X7,X8,X9,Xa|Xs], B, M, J) :-
+    B =            [M,X1,X2,X3,X4,X5,
+                    M,X6,X7,X8,X9,Xa|Bs],
+    match(R, Xs, Bs, M, J).
+match([vsssss3|R], [v,X1,X2,X3,X4,X5,
+                    v,X6,X7,X8,X9,Xa,
+                    v,Xb,Xc,Xd,Xe,Xf|Xs], B, M, J) :-
+    B =            [M,X1,X2,X3,X4,X5,
+                    M,X6,X7,X8,X9,Xa,
+                    M,Xb,Xc,Xd,Xe,Xf|Bs],
+    match(R, Xs, Bs, M, J).
+otherwise.
+match(_,_,_,_,j(_,_,S0,S1,_,_,_)) :- S0=S1.
+
+%-------------------------------------------------------------
+% p421 = 4x2x1: 4 orientations
+p421([v,v,v,v,X1,X2,
+      v,v,v,v|R],            
+     M, Pieces, S0,S1, N, A) :- N1 := N+1 |
+     play([        X1,X2,
+           M,M,M,M|R], 
+          Pieces, S0,S1, N1, [[421|N]|A]).
+otherwise.
+p421(_,_,_,S0,S1,_,_) :-   S0=S1.
+
+p142(Board, M, Pieces, S0,S1, N, A) :- 
+    match([vsssss2,
+           vsssss2,
+           ssssss1,
+           vsssss2,
+           vsssss2],
+    Board,NewBoard,M,NewBoard,Pieces,S0,S1,N,A,142).
+
+p241([v,v,X1,X2, X3, X4, 
+      v,v,X5,X6, X7, X8,
+      v,v,X9,X10,X11,X12,
+      v,v|R],
+     M, Pieces, S0,S1, N, A) :- N1 := N+1 |
+     play([    X1,X2, X3, X4, 
+           M,M,X5,X6, X7, X8,
+           M,M,X9,X10,X11,X12,
+           M,M|R],
+          Pieces, S0,S1, N1, [[241|N]|A]).
+otherwise.
+p241(_,_,_,S0,S1,_,_) :- S0=S1.
+
+p412(Board, M, Pieces, S0,S1, N, A) :- 
+    match([vvvvss1,
+           ssssss2,
+           ssssss2,
+           vvvvss1],
+    Board,NewBoard,M,NewBoard,Pieces,S0,S1,N,A,412).
+
+%---------------------------------------------------------
+% p431 = 4x3x1: 6 orientations
+p431([v,v,v,v,X1,X2,
+      v,v,v,v,X3,X4,
+      v,v,v,v|R],   
+      M, Pieces, S0,S1, N, A) :- N1 := N+1 |
+      play([        X1,X2,
+            M,M,M,M,X3,X4,
+            M,M,M,M|R],   
+           Pieces, S0,S1, N1, [[431|N]|A]).
+otherwise.
+p431(_,_,_,S0,S1,_,_) :- S0=S1.
+
+p143(Board, M, Pieces, S0,S1, N, A) :- 
+    match([vsssss2,
+           vsssss2,
+           ssssss1,
+           vsssss2,
+           vsssss2,
+           ssssss1,
+           vsssss2,
+           vsssss2],
+    Board,NewBoard,M,NewBoard,Pieces,S0,S1,N,A,143).
+
+p341([v,v,v,X1,X2,X3,
+      v,v,v,X4,X5,X6,
+      v,v,v,X7,X8,X9,
+      v,v,v|R],   
+      M, Pieces, S0,S1, N, A) :- N1 := N+1 |
+      play([      X1,X2,X3,
+            M,M,M,X4,X5,X6,
+            M,M,M,X7,X8,X9,
+            M,M,M|R],   
+           Pieces, S0,S1, N1, [[341|N]|A]).
+otherwise.
+p341(_,_,_,S0,S1,_,_) :- S0=S1.
+
+p413(Board, M, Pieces, S0,S1, N, A) :- 
+    match([vvvvss1,
+           ssssss2,
+           ssssss2,
+           vvvvss1,
+           ssssss2,
+           ssssss2,
+           vvvvss1],
+    Board,NewBoard,M,NewBoard,Pieces,S0,S1,N,A,413).
+
+%-------------------------------------------------------------
+% p321 = 3x2x1: 6 orientations
+p321([v,v,v,X1,X2,X3,
+      v,v,v|R],   
+      M, Pieces, S0,S1, N, A) :- N1 := N+1 |
+      play([      X1,X2,X3,
+            M,M,M|R],
+           Pieces, S0,S1, N1, [[321|N]|A]).
+otherwise.
+p321(_,_,_,S0,S1,_,_) :- S0=S1.
+
+p213(Board, M, Pieces, S0,S1, N, A) :- 
+    match([vvssss1,
+           ssssss2,
+           ssssss2,
+           vvssss1,
+           ssssss2,
+           ssssss2,
+           vvssss1],
+    Board,NewBoard,M,NewBoard,Pieces,S0,S1,N,A,213).
+
+p132(Board, M, Pieces, S0,S1, N, A) :- 
+    match([vsssss3,
+           ssssss2,
+           vsssss3],
+    Board,NewBoard,M,NewBoard,Pieces,S0,S1,N,A,132).
+
+p231([v,v,X1,X2,X3,X4,
+      v,v,X5,X6,X7,X8,
+      v,v|R],   
+      M, Pieces, S0,S1, N, A) :- N1 := N+1 |
+      play([    X1,X2,X3,X4,
+            M,M,X5,X6,X7,X8,
+            M,M|R],   
+           Pieces, S0,S1, N1, [[231|N]|A]).
+otherwise.
+p231(_,_,_,S0,S1,_,_) :- S0=S1.
+
+
+p312(Board, M, Pieces, S0,S1, N, A) :- 
+    match([vvvsss1,
+           ssssss2,
+           ssssss2,
+           vvvsss1],
+    Board,NewBoard,M,NewBoard,Pieces,S0,S1,N,A,312).
+
+p123(Board, M, Pieces, S0,S1, N, A) :- 
+    match([vsssss2,
+           ssssss2,
+           ssssss1,
+           vsssss2,
+           ssssss2,
+           ssssss1,
+           vsssss2],
+    Board,NewBoard,M,NewBoard,Pieces,S0,S1,N,A,123).
+
+%---------------------------------------------------------
+% p331 = 3x3x1: 3 orientations
+p331([v,v,v,X1,X2,X3,
+      v,v,v,X4,X5,X6,
+      v,v,v|R],   
+      M, Pieces, S0,S1, N, A) :- N1 := N+1 |
+      play([      X1,X2,X3,
+            M,M,M,X4,X5,X6,
+            M,M,M|R],   
+           Pieces, S0,S1, N1, [[331|N]|A]).
+otherwise.
+p331(_,_,_,S0,S1,_,_) :- S0=S1.
+
+p133(Board, M, Pieces, S0,S1, N, A) :- 
+    match([vsssss3,
+           ssssss2,
+           vsssss3,
+           ssssss2,
+           vsssss3],
+    Board,NewBoard,M,NewBoard,Pieces,S0,S1,N,A,133).
+
+p313(Board, M, Pieces, S0,S1, N, A) :- 
+    match([vvvsss1,
+           ssssss2,
+           ssssss2,
+           vvvsss1,
+           ssssss2,
+           ssssss2,
+           vvvsss1],
+    Board,NewBoard,M,NewBoard,Pieces,S0,S1,N,A,313).

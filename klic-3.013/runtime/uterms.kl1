@@ -1,0 +1,34 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- inline:"#include <klic/gobj.h>".
+:- module unify_term_dcode.
+
+unify(X,Y) :- 
+	functor(X,PX,AX),
+	functor(Y,PY,AY),
+	AX =:= AY |
+	unify_pf(PX,PY),
+	unify_args(AX,X,Y).
+
+unify_pf(PX,PY) :-
+        inline:"
+         if (isatomic(%0)) {
+           if (%0 != %1) goto %f;
+         } else if (isatomic(%1)) {
+	   goto %f;
+         } else {
+            generic_active_unify(data_objectp(%0),
+			         data_objectp(%1),allocp);
+         }":[PX+bound,PY+bound] | true.
+
+unify_args(0,_,_):- true | true.
+unify_args(N,X,Y):- N>0,
+	arg(N,X,EX), arg(N,Y,EY) |
+	EX=EY, N1:=N-1, unify_args(N1,X,Y).
+
+unify_goal(X,Y):- true | X = Y.

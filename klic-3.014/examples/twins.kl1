@@ -1,0 +1,30 @@
+% Twin primes generator.
+%
+% klic twins.kl1 tty.kl1
+
+:- module main.
+
+main :- true | primes(300).
+
+primes(Max) :- true | primes(Max,Ps), twin(Ps,Ts), outterms(Ts,Os), tty:ttystream(Os).
+
+primes(Max,Ps) :- true | gen(2,Max,Ns), sift(Ns,Ps).
+
+gen(N0,Max,Ns0) :- N0=<Max | Ns0=[N0|Ns1], N1:=N0+1, gen(N1,Max,Ns1).
+gen(N0,Max,Ns0) :- N0 >Max | Ns0=[].
+
+sift([P|Xs1],Zs0) :- true | Zs0=[P|Zs1], filter(P,Xs1,Ys), sift(Ys,Zs1).
+sift([],     Zs0) :- true | Zs0=[].
+
+filter(P,[X|Xs1],Ys0) :- X mod P=\=0 | Ys0=[X|Ys1], filter(P,Xs1,Ys1).
+filter(P,[X|Xs1],Ys0) :- X mod P=:=0 |              filter(P,Xs1,Ys0).
+filter(P,[],     Ys0) :- true        | Ys0=[].
+
+outterms([X|Xs1], Os0) :- true | Os0=[putt(X),nl|Os1], outterms(Xs1,Os1).
+outterms([],      Os0) :- true | Os0=[].
+
+twin([P1,P2|Ps2],Ts) :- P2=\=P1+2 | twin([P2|Ps2],Ts).
+twin([P1,P2|Ps2],Ts) :- P2=:=P1+2 | Ts=[twins(P1,P2)|Ts1],twin([P2|Ps2],Ts1).
+twin([_],        Ts) :- true      | Ts=[].
+twin([],         Ts) :- true      | Ts=[].
+

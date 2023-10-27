@@ -1,0 +1,685 @@
+#ifndef XCOMM
+#define XCOMM #
+#endif
+
+#ifndef NullParameter
+#define NullParameter
+#endif
+
+XCOMM ------------------------------------------------- XCOMM
+XCOMM Please make changed in Tgif.tmpl and Target.tmpl. XCOMM
+XCOMM There should be no need to modify this file.      XCOMM
+XCOMM ------------------------------------------------- XCOMM
+
+#include <Tgif.tmpl>
+#include <Target.tmpl>
+
+XCOMM 
+XCOMM  Author:      William Chia-Wei Cheng (bill.cheng@acm.org)
+XCOMM 
+XCOMM  Copyright (C) 2001-2009, William Chia-Wei Cheng.
+XCOMM 
+XCOMM  This file may be distributed under the terms of the Q Public License
+XCOMM  as defined by Trolltech AS of Norway and appearing in the file
+XCOMM  LICENSE.QPL included in the packaging of this file.
+XCOMM 
+XCOMM  THIS FILE IS PROVIDED AS IS WITH NO WARRANTY OF ANY KIND, INCLUDING
+XCOMM  THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+XCOMM  PURPOSE.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL,
+XCOMM  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING
+XCOMM  FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+XCOMM  NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
+XCOMM  WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+XCOMM 
+XCOMM  @(#)$Header: /mm2/home/cvs/bc-src/tgif/Imakefile,v 1.205 2011/06/26 02:02:01 william Exp $
+XCOMM 
+
+TGIFVERSION	= 4.2.5
+
+EXTDEFINES	= -DEPSF_FILE_EXT=\"eps\" -DPS_FILE_EXT=\"ps\" \@@\
+		  -DXBM_FILE_EXT=\"xbm\" -DXPM_FILE_EXT=\"xpm\" \@@\
+		  -DOBJ_FILE_EXT=\"obj\" -DSYM_FILE_EXT=\"sym\" \@@\
+		  -DTEXT_FILE_EXT=\"txt\" -DPIN_FILE_EXT=\"pin\" \@@\
+		  -DNETLIST_FILE_EXT=\"net\" -DCOMP_FILE_EXT=\"cmp\"
+
+DEFINES		= $(DIRDEFINES) \@@\
+                  $(EXTDEFINES) \@@\
+                  $(XIMPDEFINES) \@@\
+                  $(MISCDEFINES) \@@\
+                  -DTGIF_DISTR_VER=\"$(TGIFVERSION)\" \@@\
+                  $(MOREDEFINES) -DQPL_LICENSE
+
+XCOMM Things to try to add to the DEFINES line above:
+XCOMM
+XCOMM    RS6000:  -D_BSD
+XCOMM    Solaris: 
+XCOMM    Irix:    
+XCOMM    SunOS:   
+XCOMM    HP-UX:   -D_NO_LOCALE_SUPPORT
+XCOMM    VMS:     -D_NO_GETTIMEOFDAY
+XCOMM    Linux:   
+XCOMM    FreeBSD: 
+XCOMM    SCO:     -DPRINT_CMD=\""lp -o raw -o nobanner"\"
+
+XCOMM -D_NO_XUTF8FUNCTIONS
+XCOMM    Include the above line if your X11 library does have have the
+XCOMM    Xutf8TextListToTextProperty() function implemented (such as on
+XCOMM    some Solaris system).
+XCOMM -D_NO_RMCAST_SO
+XCOMM    Include the above line if you do not want to link to the rmcast
+XCOMM    library dynamically.  If this flag is used, you must link tgif with
+XCOMM    the rmcast library statically.
+XCOMM -D_NO_IDNLIB
+XCOMM    Include the above line if you do not have libidn installed in your
+XCOMM    system.  libidn is used in conjunction with the XIM input method
+XCOMM    to convert a UTF-8 character into something X understands.
+XCOMM -D_NO_ZLIB
+XCOMM    Include the above line if you do not have zlib installed in your
+XCOMM    system.  Zlib is only used in tgif when _TGIF_WB2 (see below) is
+XCOMM    used.
+XCOMM -D_NO_ENTER_TEXT_EVERYWHERE
+XCOMM    Include the above line if you do not want to be able to enter
+XCOMM    text from the keyboard in tgif unless the drawing area of tgif
+XCOMM    has the keyboard focus.
+XCOMM -D_DARWIN_MOD1_AS_META
+XCOMM    Include the above line if you are compiling for Mac OS X and
+XCOMM    you want to use the Mod1 key as the <Meta> key.  By default,
+XCOMM    the Mod2 key is treated as the <Meta> key (at the time this
+XCOMM    option was added).
+XCOMM -D_XPM3TOPPM
+XCOMM    Include the above line if the xpmtoppm you have only knows how to
+XCOMM    handle XPM format version 3.  (This is the case with xpm-9.14.)
+XCOMM    This has the same effect as setting Tgif.XPmOutputVersion to 3 and
+XCOMM    Tgif.UseXPmVersion1ForImageMap to false.
+XCOMM -D_NO_LANDSCAPE_PDF_SETPAGEDEVICE
+XCOMM    Include the above line if you want tgif to *not* generate
+XCOMM    "setpagedevice" PostScript command to rotate the generated PostScript
+XCOMM    file.  (This is meant to be used when ps2pdf can handle landscape
+XCOMM    PostScript files correctly.)
+XCOMM -D_PRTGIF_USE_ISO_LATIN_1_ALWAYS
+XCOMM    Include the above line if you want to always use ISO 8859-1 character
+XCOMM    set for single-byte characters when running tgif with the -print
+XCOMM    commandline option.  Please only use this if you are sure that you
+XCOMM    will *never* use other encodings.  You can selectively turn off
+XCOMM    reencoding by using either the Tgif.DontReencode X default or the
+XCOMM    -dontreencode commandline option.
+XCOMM -D_TMP_DIR_IN_HOME_DIR
+XCOMM    Include the above line if you want the temporary directory to be
+XCOMM    a user's $HOME/.Tgif directory by default.
+XCOMM -D_DONT_USE_MKTEMP
+XCOMM    Include the above line if you do not want to use mktemp() and your
+XCOMM    system supports tempnam().  The use of mktemp() is not recommanded
+XCOMM    due to some security considerations.
+XCOMM -D_PS_SEVENBIT_DOUBLEBYTE_TEXT
+XCOMM    Include the above line if bit 7 in both bytes of a double-byte
+XCOMM    character should be masked out when printing/exporting double-byte
+XCOMM    text to a PostScript file.
+XCOMM -D_USE_PS_ADOBE_STRING=\"true\"
+XCOMM    Include the above line in the DEFINES if you want to configure tgif
+XCOMM    to use a default Tgif.UsePsAdobeString value.
+XCOMM -D_MINIMAL_EPS=1
+XCOMM    Include the above line in the DEFINES if you want to configure tgif
+XCOMM    to use a default Tgif.MinimalEPS value.
+XCOMM -DENABLE_NLS
+XCOMM    Include the above line if you want to enable NLS (Native Language
+XCOMM    Support).
+XCOMM -D_DONT_USE_PORTABLE_LOCALE (obsoleted)
+XCOMM    Include the above line if you don't want to use the portable locale.
+XCOMM    (Portable locale is "C" for all locale categories.)
+XCOMM -D_NO_RECURSIVE_EXTERN
+XCOMM    Include the above line if your C compiler cannot handle
+XCOMM    "#define extern extern".  The /bin/cc compiler on HP-UX reports a
+XCOMM    Recursion in macro "extern" when the above define is used.
+XCOMM -D_DL_EXPORT_UNDERSCORE
+XCOMM    Include the above line if you use export filters and there is an entry
+XCOMM    point to an export filter named "_TgifExportFilterMain" (and there's
+XCOMM    no entry point named "TgifExportFilterMain").  One can see all the
+XCOMM    entry points to an export filter by running 'nm' against it.
+XCOMM -D_NO_TGTWB5
+XCOMM    Include the above line if you do not want to include the code
+XCOMM    that handles tgtwb5.  Please also remove "tgtwb5.o" and "tgtwb5xl.o"
+XCOMM    from OBJ1 in Imakefile.
+XCOMM -D_NO_XCIN
+XCOMM    Include the above line if you do not want to include the code
+XCOMM    that handles xcin.  Please also remove "cli_xcin.o" from
+XCOMM    OBJ1 in Imakefile.
+XCOMM -D_NO_CHINPUT
+XCOMM    Include the above line if you do not want to include the code
+XCOMM    that handles chinput.  Please also remove "chinput.o" from
+XCOMM    OBJ1 in Imakefile.
+XCOMM -D_NO_KINPUT
+XCOMM    Include the above line if you do not want to include the code
+XCOMM    that handles kinput.  Please also remove "convkinput.o" from
+XCOMM    OBJ1 in Imakefile.
+XCOMM -D_NO_XIM
+XCOMM    Include the above line if you do not want to include the code
+XCOMM    that handles X Input Method.  Please also remove "convxim.o" from
+XCOMM    OBJ1 in Imakefile.
+XCOMM -D_NO_NKF
+XCOMM    Include the above line if you do not want to include the code
+XCOMM    that handles Network Kanji Filter (NKF).  Please also remove
+XCOMM    "nkf.o" from OBJ1 in Imakefile.
+XCOMM -D_NO_DL_SUPPORT
+XCOMM    Include the above line if you don't have <dlfcn.h>.  If you define
+XCOMM    _NO_DL_SUPPORT, please use the SYS_LIBRARIES that does not contain
+XCOMM    -ldl above.
+XCOMM -D_NO_LOCALE_SUPPORT
+XCOMM    Include the above line if you don't have <X11/Xlocale.h>.  If this
+XCOMM    is the case and you don't have <locale.h>, you must also use
+XCOMM    -D_NO_XIM because "convxim.c" assumes that you have <locale.h>.
+XCOMM -D_METRIC_PIX_PER_INCH
+XCOMM    Include the above line if you want to use 127 pixels per inch
+XCOMM    when printing in the metric system.  If this line is not
+XCOMM    included, 128 pixels per inch is used.
+XCOMM -D_NO_GETTIMEOFDAY
+XCOMM    Include the above line if you do not have the gettimeofday()
+XCOMM    function but have the ftime() function.
+XCOMM -D_TANGRAM_II (obsoleted)
+XCOMM    Include the above line if you want to include the Tangram-II features
+XCOMM    by Carlos Fisch de Brito, Luiz Rogerio Goncalves de Carvalho, and
+XCOMM    Denise Jorge de Oliveira <fisch,luiz,dezinha@land.ufrj.br> of the
+XCOMM    Tangram-II team of the Universidade Federal do Rio de Janeiro.  These
+XCOMM    features are under development and highly experimental.
+XCOMM    (Tangram-II features are enabled in tgif by default now.  To activate
+XCOMM    them, run tgif with "-tgrm2" commandline option.)
+XCOMM -D_TGIF_WB (obsoleted)
+XCOMM    Include the above line if you want to include the whiteboard feature
+XCOMM    by Renato Santana <renato@nce.ufrj.br>.
+XCOMM -D_TGIF_WB2
+XCOMM    Include the above line if you want to include the whiteboard feature
+XCOMM    by Magnos Martinello <magnos@land.ufrj.br> and Raphael S. de Moraes
+XCOMM    <raphael@land.ufrj.br>.  The whiteboard needs IP multicast support,
+XCOMM    and therefore, can only run on IP multicast enabled kernels.  This
+XCOMM    has only been tested on Solaris 2.6 or above or Linux 6.x or above.
+XCOMM    Once tgif is copmiled with this flag, you need to run tgif with the
+XCOMM    "-tgwb2" commandline option to activate it.
+XCOMM -D_WB2DATA_NO_GZIP
+XCOMM    Starting with tgif-4.2 tgif always gzip whiteboard data before
+XCOMM    sending it down the multicast channel.  Include the above line if you
+XCOMM    do *not* want the data to be gzipped.  This flag can only be used
+XCOMM    if _TGIF_WB2 is active.
+XCOMM -D_HAS_STREAMS_SUPPORT
+XCOMM    Include the above line in addition to -D_TGIF_WB2 if you have the
+XCOMM    /usr/include/stropts.h file (such as Solaris 2.6 or above or Linux
+XCOMM    6.x or above.
+XCOMM -DBSD_COMP
+XCOMM    Include the above line if you are compiling on a Solaris (or
+XCOMM    possibly an SGI) machine which requires it in <sys/ioctl.h>.
+XCOMM    (If you see the error that FIONBIO is not defined when compiling
+XCOMM    tcp.c, then you probably need this.)
+XCOMM -D_BACKGROUND_DONT_FORK
+XCOMM    Try the above line if there are defunct tgif child processes.
+XCOMM -D_NO_LSTAT
+XCOMM    Include the above line if lstat() is not available.  In this case,
+XCOMM    using BrowseXBitmap and BrowseXPixmap under the File Menu may cause
+XCOMM    infinite loop if the directory structure is infinitely recursive.
+XCOMM -D_USE_XDRAWPOINT_TO_PUT_A_POINT
+XCOMM    Include the above line if the grid points are not visible.  This can
+XCOMM    be used to bypass some X server bugs (such as certain Linux X server
+XCOMM    using VGA16 screen) where the XDrawLine() Xlib call does not work
+XCOMM    properly.
+XCOMM -D_NO_EXTERN (obsoleted)
+XCOMM    Include the above line in the DEFINES if you don't want to include
+XCOMM    the extern definition for functions defined in a module.  For example,
+XCOMM    if this option is set, then file "foo.c" will not include "foo.e",
+XCOMM    and certain other extern definition in "foo.c" will be omitted.
+XCOMM -D_NO_PROTO
+XCOMM    Include the above line in the DEFINES if checking for function
+XCOMM    prototypes is not desired.  Checking for function prototypes
+XCOMM    are automatically enabled if you are using an ANSI or C++ compilor.
+XCOMM    However, not all ANSI/C++ compilors are created equal.
+XCOMM -D_BSD
+XCOMM    Include the above line in the DEFINES if the select() function can
+XCOMM    does not be found for AIX systems (such as RS6000).  Also, on AIX
+XCOMM    systems, if you see garbage file names when you try to open files,
+XCOMM    try this flag to make direct and dirent equivalent (in <sys/dir.h>).
+XCOMM -D_NO_RAND48
+XCOMM    Include the above line in the DEFINES if you do not have the
+XCOMM    srand48() or drand48() functions in your system's library.
+XCOMM -DNO_STRSTR
+XCOMM    Include the above line in the DEFINES if you do not have the strstr()
+XCOMM    function in your system's string library.
+XCOMM -DINVERT_CTM_BUG
+XCOMM    Include the above line in the DEFINES if you are using PostScript
+XCOMM    utilities which fails when trying to invert non-invertible CTM
+XCOMM    (e.g., muluti.ps from ftp.ucc.su.oz.au:/pub/ps_printing/multi).
+XCOMM -DHP_LINE_BUG
+XCOMM    Include the above line in the DEFINES if two-vertices horizontal and
+XCOMM    verticle line segments don't draw properly on a buggy HP server.
+XCOMM -DDONTFREECOLORS
+XCOMM    Include the above line in the DEFINES if you don't want the black and
+XCOMM    the white colors to be freed when tgif initializes itself.  You should
+XCOMM    not need to do this unless you need to get around some server bugs.
+XCOMM -DUSE_XT_INITIALIZE
+XCOMM    This will cause the XToolkit to be initialized so that the X defaults
+XCOMM    are obtained from the Xt directories.  Please remember to use
+XCOMM    LOCAL_LIBRARIES with $(XTOOLLIB) $(XMULIB) in your Tgif.tmpl file.
+XCOMM -DUSE_XAPPLRESDIR
+XCOMM    Include the above line in the DEFINES if $XAPPLRESDIR/Tgif is used to
+XCOMM    specify the resource file.  If your system does not have putenv()
+XCOMM    (such as IBM-RT), then this won't work.  This directive has no effect
+XCOMM    if -DUSE_XT_INITIALIZE is used.
+XCOMM -DXAPPLOADDIR_DEF
+XCOMM    If you define USE_XAPPLRESDIR, define this to a default directory
+XCOMM    to use in case $XAPPLRESDIR isn't set.
+XCOMM -DNO_THIN_LINE
+XCOMM    Include the above line in the DEFINES if a line width of 0 causes
+XCOMM    your server to crash.  This is to get around a bug in some X servers.
+XCOMM -DTHIN_OVAL_AND_ARC
+XCOMM    Include the above line in the DEFINES if you want 0 width arcs to
+XCOMM    be used when the width of an arc is less than or equal to 1.
+XCOMM    (Sun3 server has a bug that makes drawing ovals and arcs with
+XCOMM    width other than 0 VERY slow).
+XCOMM -DKEEP_WHEN_PRINT
+XCOMM    Include the above line in the DEFINES if you don't want the temp
+XCOMM    file to be deleted after sending the print job to the printer.
+XCOMM    (Some VMS systems might require this flag to be used.)
+XCOMM -DPRINT_CMD=\"lpr\"
+XCOMM    Include the above line in the DEFINES if you want to configure tgif
+XCOMM    to use a default print command.
+XCOMM -DNOTR4MODE
+XCOMM    Include the above line in the DEFINES if you are running X11R3.
+XCOMM    This will cause tgif NOT to use some X11R4 window manager related
+XCOMM    functions that's not present in R3.
+XCOMM -DMAPBEFORESELECT
+XCOMM    Include the above line in the DEFINES to call XMapWindow() before
+XCOMM    calling XSelectInput().  This might be needed to get around some
+XCOMM    server bugs.
+XCOMM -DDONT_FREE_COLORMAP
+XCOMM    Include the above line in the DEFINES if you don't want the colormap
+XCOMM    to be freed when tgif exits.
+XCOMM -DA4PAPER
+XCOMM    Include the above line in the DEFINES if you want to print on A4 paper
+XCOMM    (8.25in by 11.7in or about 21cm by 29.7cm).
+
+OBJ1 =	align.o animate.o arc.o attr.o auxtext.o \
+	box.o button.o \
+	chat.o chinput.o choice.o choose.o cli_xcin.o \
+		convkinput.o convxim.o cmd.o color.o cutpaste.o \
+		cursor.o \
+	dialog.o drawing.o dup.o \
+	edit.o eps.o exec.o expr.o \
+	file.o font.o ftp.o \
+	grid.o group.o \
+	hash.o help.o http.o \
+	imgproc.o import.o ini.o inmethod.o \
+	list.o \
+	mainloop.o mainmenu.o mark.o markup.o menu.o \
+		menuinfo.o miniline.o move.o msg.o \
+	names.o navigate.o nkf.o \
+	obj.o oval.o \
+	page.o pattern.o pin.o pngtrans.o poly.o polygon.o ps.o \
+	raster.o rcbox.o rect.o remote.o rm_intrf.o ruler.o \
+	scroll.o select.o setup.o shape.o shortcut.o \
+		special.o spline.o stk.o stream.o stretch.o \
+		strtbl.o \
+	tangram2.o tdgtbase.o tdgtbmpl.o tdgtbrow.o tdgtbtn.o tdgtdraw.o \
+		tdgtlist.o tdgtmsg.o tdgtsedt.o tgif_dbg.o tgcwheel.o \
+		tgcwdl.o tginssym.o tgisdl.o tgtwb5.o tgtwb5dl.o tgtwb5xl.o \
+		tidget.o tcp.o text.o \
+	util.o \
+	version.o vms_comp.o \
+	wb.o wb1.o wb2.o wb3.o wb_buff.o wb_mcast.o \
+		wb_seg.o \
+	xbitmap.o xpixmap.o xprtfltr.o \
+	z_intrf.o
+
+OBJS1 = tgif.o $(OBJ1)
+OBJS2 = prtgif.o
+OBJS3 = testdrive.o $(OBJ1)
+FRONTENDOBJS = frontend.o $(OBJ1)
+
+CURRENTDIR =./
+
+SRCS1 = $(CURRENTDIR)*.c
+SRCS2 = 
+SRCS3 = 
+
+ComplexProgramTarget_1($(TARGET_1),$(LOCAL_LIBRARIES),NullParameter)
+/*
+ * ComplexProgramTarget_2(prtgif,NullParameter,NullParameter)
+ * ComplexProgramTarget_3(testdrive,$(LOCAL_LIBRARIES),NullParameter)
+ */
+
+XCOMM rmcast/src/librmcast.a:
+XCOMM 	pushd rmcast; make $(CCLL)$(EEAANN); ./configure; make; popd
+
+/*
+ * NormalRelocatableTarget(frontend11,$(FRONTENDOBJS))
+ */
+
+ICONSDIR =icons/
+
+MakeDirectories(install,$(TGIFDIR))
+MakeDirectories(install,$(TGIFDIR)/hicolor)
+MakeDirectories(install,$(TGIFDIR)/hicolor/22x22)
+MakeDirectories(install,$(TGIFDIR)/hicolor/22x22/apps)
+MakeDirectories(install,$(TGIFDIR)/hicolor/32x32)
+MakeDirectories(install,$(TGIFDIR)/hicolor/32x32/apps)
+MakeDirectories(install,$(TGIFDIR)/hicolor/48x48)
+MakeDirectories(install,$(TGIFDIR)/hicolor/48x48/apps)
+MakeDirectories(install,$(TGIFDIR)/hicolor/64x64)
+MakeDirectories(install,$(TGIFDIR)/hicolor/64x64/apps)
+MakeDirectories(install,$(TGIFDIR)/hicolor/128x128)
+MakeDirectories(install,$(TGIFDIR)/hicolor/128x128/apps)
+InstallNonExec(tgif.Xdefaults,$(TGIFDIR))
+InstallNonExec(tgificon.eps,$(TGIFDIR))
+InstallNonExec(tgificon.obj,$(TGIFDIR))
+InstallNonExec(tgificon.xbm,$(TGIFDIR))
+InstallNonExec(tgificon.xpm,$(TGIFDIR))
+InstallNonExec(tgif.gif,$(TGIFDIR))
+InstallNonExec(tangram.sym,$(TGIFDIR))
+InstallNonExec(eq4.sym,$(TGIFDIR))
+InstallNonExec(eq4-2x.sym,$(TGIFDIR))
+InstallNonExec(eq4-2x-jpg.sym,$(TGIFDIR))
+InstallNonExec(eq4-2x-nowin-jpg.sym,$(TGIFDIR))
+InstallNonExec(eq4-ps2epsi.sym,$(TGIFDIR))
+InstallNonExec(eq4-epstool.sym,$(TGIFDIR))
+InstallNonExec(eq4xpm.sym,$(TGIFDIR))
+InstallNonExec(eq4-lyx-ps2epsi.sym,$(TGIFDIR))
+InstallNonExec(eq4xpm-land.sym,$(TGIFDIR))
+InstallNonExec(eq4png.sym,$(TGIFDIR))
+InstallNonExec(eq4jpg.sym,$(TGIFDIR))
+InstallNonExec(keys.obj,$(TGIFDIR))
+InstallNonExec(Copyright,$(TGIFDIR))
+InstallNonExec(LICENSE.QPL,$(TGIFDIR))
+InstallNonExec($(ICONSDIR)22x22/apps/tgificon.png,$(TGIFDIR)/hicolor/22x22/apps)
+InstallNonExec($(ICONSDIR)32x32/apps/tgificon.png,$(TGIFDIR)/hicolor/32x32/apps)
+InstallNonExec($(ICONSDIR)48x48/apps/tgificon.png,$(TGIFDIR)/hicolor/48x48/apps)
+InstallNonExec($(ICONSDIR)64x64/apps/tgificon.png,$(TGIFDIR)/hicolor/64x64/apps)
+InstallNonExec($(ICONSDIR)128x128/apps/tgificon.png,$(TGIFDIR)/hicolor/128x128/apps)
+
+.SUFFIXES: .l .man
+
+.l.man:
+	rm -f $*.man
+	cp $*.l $*.man
+
+.e.o:
+
+SPICEDIR =spice/
+XBMDIR =xbm/
+RMCASTDIR_QPL =rmcast-qpl
+RMCASTDIR_GPL =rmcast-gpl
+
+OBJDEMO = an-sr-flip-flop.obj fonts.obj slide-demo.obj keys.obj \
+	  $(SPICEDIR)*.obj launch-demo.obj launch-demo-1.obj
+SYMDEMO = flip-flop.sym nand2.sym pin.sym tangram.sym $(SPICEDIR)*.sym \
+	  eq4.sym eq4-2x.sym eq4-ps2epsi.sym eq4-epstool.sym eq4xpm.sym \
+	  eq4-lyx-ps2epsi.sym eq4xpm-land.sym eq4png.sym eq4jpg.sym \
+	  eq4-2x-jpg.sym eq4-2x-nowin-jpg.sym
+MISCTAR = /**/*.man README README.tgwb Copyright License $(SPICEDIR)*.mod \
+		tgif.pl example.tex HISTORY testdrive.pl frontend.pl \
+		Imakefile.tgwb NEWS AUTHORS ChangeLog \
+		bootstrap.pl scan2ac.awk $(SPICEDIR)README
+AUTOCONF_FILES = Makefile Makefile.in config.h.in config.h \
+		 mkinstalldirs install-sh missing depcomp \
+		 configure configure.ac aclocal.m4 stamp-h1 \
+		 config.status
+AUTOCONF_JUNK = autom4te.cache configure.scan config.log config.status
+AUTOCONF_JUNK = autom4te.cache configure.scan
+RMCASTJUNK_QPL = $(RMCASTDIR_QPL)/stamp-h1 $(RMCASTDIR_QPL)/Makefile \
+		$(RMCASTDIR_QPL)/LOG $(RMCASTDIR_QPL)/config.status \
+		$(RMCASTDIR_QPL)/config.log $(RMCASTDIR_QPL)/config.h \
+		$(RMCASTDIR_QPL)/mcastproxy/.deps \
+		$(RMCASTDIR_QPL)/rmchat/.deps $(RMCASTDIR_QPL)/src/.deps \
+		$(RMCASTDIR_QPL)/mcastproxy/Makefile \
+		$(RMCASTDIR_QPL)/rmchat/Makefile $(RMCASTDIR_QPL)/src/Makefile
+CVSSUBDIRS_QPL =\
+ $(RMCASTDIR_QPL)/config/CVS\
+ $(RMCASTDIR_QPL)/doc/manual/CVS\
+ $(RMCASTDIR_QPL)/doc/CVS\
+ $(RMCASTDIR_QPL)/etc/CVS\
+ $(RMCASTDIR_QPL)/mcastproxy/CVS\
+ $(RMCASTDIR_QPL)/rmchat/CVS\
+ $(RMCASTDIR_QPL)/src/CVS\
+ $(RMCASTDIR_QPL)/tgif/CVS\
+ $(RMCASTDIR_QPL)/tools/scripts/special/CVS\
+ $(RMCASTDIR_QPL)/tools/scripts/CVS\
+ $(RMCASTDIR_QPL)/tools/tcpdump2rmcast/CVS\
+ $(RMCASTDIR_QPL)/tools/CVS\
+ $(RMCASTDIR_QPL)/CVS\
+ po/ja/CVS\
+ po/ru/CVS\
+ po/fr/CVS\
+ po/CVS
+CVSSUBDIRS_GPL =\
+ $(RMCASTDIR_GPL)/config/CVS\
+ $(RMCASTDIR_GPL)/doc/manual/CVS\
+ $(RMCASTDIR_GPL)/doc/CVS\
+ $(RMCASTDIR_GPL)/tgif/CVS\
+ $(RMCASTDIR_GPL)/tools/tcpdump2rmcast/CVS\
+ $(RMCASTDIR_GPL)/tools/scripts/special/CVS\
+ $(RMCASTDIR_GPL)/tools/scripts/CVS\
+ $(RMCASTDIR_GPL)/tools/mcastproxy/CVS\
+ $(RMCASTDIR_GPL)/tools/CVS\
+ $(RMCASTDIR_GPL)/examples/rmchat/rmchat-files/CVS\
+ $(RMCASTDIR_GPL)/examples/rmchat/CVS\
+ $(RMCASTDIR_GPL)/examples/CVS\
+ $(RMCASTDIR_GPL)/CVS\
+ po/ja/CVS\
+ po/ru/CVS\
+ po/fr/CVS\
+ po/CVS
+CCLL = cl
+EEAANN = ean
+BACKUPDIR = /mnt/halfmoon/home/william/src/tgif/v4/backup
+
+distr: tar versioninfo
+
+rcstar:
+	@rm -f home/RCS3.tar.gz.save
+	@if [ -f home/RCS3.tar.gz ]; then \
+		mv home/RCS3.tar.gz home/RCS3.tar.gz.save; \
+	fi
+	tar cf home/RCS3.tar RCS xbm.RCS
+	gzip home/RCS3.tar
+	ls -l home/RCS3.tar.gz
+
+spec:
+	@rm -f tgif.spec
+	echo "%define ver	$(TGIFVERSION)" > tgif.spec
+	cat tgif.spec.in >> tgif.spec
+
+clean-rmcast-qpl:
+	pushd rmcast-qpl; ./configure; make $(CCLL)$(EEAANN); popd
+	rm -rf $(RMCASTJUNK_QPL)
+
+clean-rmcast-gpl:
+	pushd rmcast-gpl; make $(CCLL)$(EEAANN); popd
+
+install-tgwb-qpl: install
+	$(INSTALL) $(INSTALLFLAGS) rmcast/tgif/tgwb $(DESTDIR)$(BINDIR)/tgwb
+	$(INSTALL) $(INSTALLFLAGS) $(INSTPGMFLAGS) \
+		rmcast/mcastproxy/mcastproxy $(DESTDIR)$(BINDIR)/mcastproxy
+
+install-tgwb: install-tgwb-qpl
+
+install-tgwb-gpl: install
+	$(INSTALL) $(INSTALLFLAGS) rmcast/tools/scripts/tgwb \
+		$(DESTDIR)$(BINDIR)/tgwb
+	$(INSTALL) $(INSTALLFLAGS) $(INSTPGMFLAGS) \
+		rmcast/tools/mcastproxy/mcastproxy \
+		$(DESTDIR)$(BINDIR)/mcastproxy
+
+tar: spec clean-rmcast-qpl
+	rm -f tgif-$(TGIFVERSION).tar/**/*
+	tar cvf tgif-$(TGIFVERSION).tar /**/*.c /**/*.e /**/*.h \
+		Makefile.am Makefile.noimake Imakefile Target.tmpl Tgif.tmpl \
+		Tgif.tmpl-/**/* descrip./**/??? tgif.spec.in tgif.spec \
+		make./**/* VMS_MAKE_TGIF.COM tgificon.obj $(XBMDIR)*.xbm \
+		tgificon.xbm tgificon.xpm tgif.gif tgif.Xdefaults tgificon.eps \
+		$(ICONSDIR)22x22/apps//**/*.png \
+		$(ICONSDIR)32x32/apps//**/*.png \
+		$(ICONSDIR)48x48/apps//**/*.png \
+		$(ICONSDIR)64x64/apps//**/*.png \
+		$(ICONSDIR)128x128/apps//**/*.png \
+		$(OBJDEMO) \
+		$(SYMDEMO) \
+		$(MISCTAR) LICENSE.QPL \
+		$(RMCASTDIR_QPL) \
+		po
+	rm -rf tgif-$(TGIFVERSION)
+	mkdir tgif-$(TGIFVERSION)
+	cd tgif-$(TGIFVERSION); tar xvf ../tgif-$(TGIFVERSION).tar; cd ..
+	cd tgif-$(TGIFVERSION); rm -rf $(CVSSUBDIRS_QPL); cd ..
+	cd tgif-$(TGIFVERSION); mv $(RMCASTDIR_QPL) rmcast; cd ..
+	cd tgif-$(TGIFVERSION); ./bootstrap.pl $(TGIFVERSION); cd ..
+	cd tgif-$(TGIFVERSION); rm -rf $(AUTOCONF_JUNK); cd ..
+	rm -f tgif-$(TGIFVERSION).tar
+	tar cvf tgif-$(TGIFVERSION).tar tgif-$(TGIFVERSION)
+	rm -rf tgif-$(TGIFVERSION)
+	gzip tgif-$(TGIFVERSION).tar
+
+rpmtar: spec clean-rmcast-qpl
+	rm -f tgif-$(TGIFVERSION).tar/**/*
+	tar cvf tgif-$(TGIFVERSION).tar /**/*.c /**/*.e /**/*.h \
+		Makefile.am Makefile.noimake Imakefile Target.tmpl Tgif.tmpl \
+		Tgif.tmpl-/**/* descrip./**/??? tgif.spec.in tgif.spec \
+		make./**/* VMS_MAKE_TGIF.COM tgificon.obj $(XBMDIR)*.xbm \
+		tgificon.xbm tgificon.xpm tgif.gif tgif.Xdefaults tgificon.eps \
+		$(ICONSDIR)22x22/apps//**/*.png \
+		$(ICONSDIR)32x32/apps//**/*.png \
+		$(ICONSDIR)48x48/apps//**/*.png \
+		$(ICONSDIR)64x64/apps//**/*.png \
+		$(ICONSDIR)128x128/apps//**/*.png \
+		$(OBJDEMO) \
+		$(SYMDEMO) \
+		$(MISCTAR) LICENSE.QPL \
+		rmcast \
+		po
+	rm -rf tgif-$(TGIFVERSION)
+	mkdir tgif-$(TGIFVERSION)
+	cd tgif-$(TGIFVERSION); tar xvf ../tgif-$(TGIFVERSION).tar; cd ..
+	cd tgif-$(TGIFVERSION); rm -rf $(CVSSUBDIRS_QPL); cd ..
+	cd tgif-$(TGIFVERSION); ./bootstrap.pl $(TGIFVERSION); cd ..
+	cd tgif-$(TGIFVERSION); rm -rf $(AUTOCONF_JUNK); cd ..
+	rm -f tgif-$(TGIFVERSION).tar
+	tar cvf tgif-$(TGIFVERSION).tar tgif-$(TGIFVERSION)
+	rm -rf tgif-$(TGIFVERSION)
+	gzip tgif-$(TGIFVERSION).tar
+
+QPL: spec
+	rm -f tgif-QPL-$(TGIFVERSION).tar/**/*
+	tar cvf tgif-QPL-$(TGIFVERSION).tar /**/*.c /**/*.e /**/*.h \
+		Makefile.am Makefile.noimake Imakefile Target.tmpl Tgif.tmpl \
+		Tgif.tmpl-/**/* descrip./**/??? tgif.spec.in tgif.spec \
+		make./**/* VMS_MAKE_TGIF.COM tgificon.obj $(XBMDIR)*.xbm \
+		tgificon.xbm tgificon.xpm tgif.gif tgif.Xdefaults tgificon.eps \
+		$(ICONSDIR)22x22/apps//**/*.png \
+		$(ICONSDIR)32x32/apps//**/*.png \
+		$(ICONSDIR)48x48/apps//**/*.png \
+		$(ICONSDIR)64x64/apps//**/*.png \
+		$(ICONSDIR)128x128/apps//**/*.png \
+		$(OBJDEMO) \
+		$(SYMDEMO) \
+		$(MISCTAR) LICENSE.QPL \
+		rmcast \
+		po
+	rm -rf tgif-QPL-$(TGIFVERSION)
+	mkdir tgif-QPL-$(TGIFVERSION)
+	cd tgif-QPL-$(TGIFVERSION);tar xvf ../tgif-QPL-$(TGIFVERSION).tar;cd ..
+	rm -f tgif-QPL-$(TGIFVERSION).tar
+	cd tgif-QPL-$(TGIFVERSION); ./bootstrap.pl $(TGIFVERSION); cd ..
+	cd tgif-QPL-$(TGIFVERSION); rm -rf $(AUTOCONF_JUNK); cd ..
+	tar cvf tgif-QPL-$(TGIFVERSION).tar tgif-QPL-$(TGIFVERSION)
+	rm -rf tgif-QPL-$(TGIFVERSION)
+	gzip tgif-QPL-$(TGIFVERSION).tar
+
+rmcastlinks:
+	ln -s rmcast rmcast-qpl
+	ln -s rmcast rmcast-gpl
+
+rpm-src: rmcastlinks rpmtar
+	rpmbuild -ba tgif.spec
+
+rpm-bin: rmcastlinks rpmtar
+	# The following stopped working after Fedora 11
+	#	rpmbuild -ta tgif-$(TGIFVERSION).tar.gz
+	#
+	# Beyond Fedora 11, if the following command failed, try this and then
+	# 		run it again:
+	#	cp tgif-$(TGIFVERSION).tar.gz /usr/src/redhat/SOURCE
+	rpmbuild -ba --target i386-linux tgif.spec
+
+backup: distr
+	rm -rf $(BACKUPDIR).old
+	mv $(BACKUPDIR) $(BACKUPDIR).old
+	mkdir $(BACKUPDIR)
+	tar cf - RCS VersionInfo tgif-$(TGIFVERSION).tar.gz | \
+		(cd $(BACKUPDIR); tar xvpf -)
+
+MAN_1 = README /**/*.man Imakefile Copyright License
+BASIC_1 = Makefile.noimake descrip./**/* make./**/* HISTORY tgif.Xdefaults \
+	  Tgif.tmpl Tgif.tmpl-/**/* VMS_MAKE_TGIF.COM
+
+MISC_1 = an-sr-flip-flop.obj fonts.obj slide-demo.obj keys.obj \
+	 launch-demo.obj launch-demo-1.obj \
+	 flip-flop.sym nand2.sym pin.sym tangram.sym tgificon.xbm \
+	 eq4.sym eq4-2x.sym eq4-ps2epsi.sym eq4-epstool.sym eq4xpm.sym \
+	 eq4-lyx-ps2epsi.sym eq4xpm-land.sym eq4png.sym eq4jpg.sym \
+	 eq4-2x-jpg.sym eq4-2x-nowin-jpg.sym
+MISC_2 = tgif.pl testdrive.pl frontend.pl tgificon.obj example.tex
+MISC_3 = tgificon.xpm tgif.gif tgificon.eps
+SPICE_1 = spice $(SPICEDIR)*.obj $(SPICEDIR)*.sym $(SPICEDIR)*.mod
+
+shar:
+	rm -f tgif-$(TGIFVERSION).shar./**/*
+	shar -otgif-$(TGIFVERSION).shar.1 -n1 -e38 $(MAN_1)
+	shar -otgif-$(TGIFVERSION).shar.2 -n2 -e38 $(BASIC_1)
+	shar -otgif-$(TGIFVERSION).shar.3 -n3 -e38 a[a-n]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.4 -n4 -e38 a[o-s]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.5 -n5 -e38 a[t-z]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.6 -n6 -e38 b/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.7 -n7 -e38 c[a-m]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.8 -n8 -e38 c[n-z]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.9 -n9 -e38 d/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.10 -n10 -e38 e[a-d]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.11 -n11 -e38 e[e-z]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.12 -n12 -e38 f[a-i]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.13 -n13 -e38 f[j-z]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.14 -n14 -e38 [g-l]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.15 -n15 -e38 ma/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.16 -n16 -e38 m[b-e]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.17 -n17 -e38 m[f-z]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.18 -n18 -e38 n/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.19 -n19 -e38 o/**/*.c p[a-n]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.20 -n20 -e38 poly.c
+	shar -otgif-$(TGIFVERSION).shar.21 -n21 -e38 polygon.c p[p-z]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.22 -n22 -e38 r[a-c]/**/*.c stk/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.23 -n23 -e38 r[d-z]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.24 -n24 -e38 sc/**/*.c sel/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.25 -n25 -e38 set/**/*.c s[f-p]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.26 -n26 -e38 str/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.27 -n27 -e38 text.c
+	shar -otgif-$(TGIFVERSION).shar.28 -n28 -e38 testdrive.c t[f-z]/**/*.c \
+				[u-w]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.29 -n29 -e38 x[a-m]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.30 -n30 -e38 x[n-z]/**/*.c
+	shar -otgif-$(TGIFVERSION).shar.31 -n31 -e38 [a-n]/**/*.e
+	shar -otgif-$(TGIFVERSION).shar.32 -n32 -e38 [o-z]/**/*.e /**/*.h
+	shar -otgif-$(TGIFVERSION).shar.33 -n33 -e38 xbm xbm/[a-k]/**/*.xbm \
+				xbm/l[a-s]/**/*.xbm
+	shar -otgif-$(TGIFVERSION).shar.34 -n34 -e38 xbm/l[t-z]/**/*.xbm \
+				xbm/[m-z]/**/*.xbm
+	shar -otgif-$(TGIFVERSION).shar.35 -n35 -e38 $(MISC_1)
+	shar -otgif-$(TGIFVERSION).shar.36 -n36 -e38 $(MISC_2)
+	shar -otgif-$(TGIFVERSION).shar.37 -n37 -e38 $(MISC_3)
+	shar -otgif-$(TGIFVERSION).shar.38 -n38 -e38 $(SPICE_1)
+
+versioninfo:
+	ident .psmac /**/*.c /**/*.e /**/*.h Makefile.noimake Imakefile \
+		Tgif.tmpl /**/*.man tgif.pl README example.tex HISTORY \
+		tgificon.obj an-sr-flip-flop.obj fonts.obj slide-demo.obj \
+		keys.obj flip-flop.sym nand2.sym pin.sym tangram.sym \
+		eq4.sym eq4-2x.sym eq4-ps2epsi.sym eq4-epstool.sym \
+		$(SPICEDIR)*.obj $(SPICEDIR)*.sym testdrive.pl frontend.pl \
+		descrip.mms descrip.opt tgifmacro.ps $(XBMDIR)*.xbm \
+		tgificon.xbm tgif.Xdefaults tgificon.eps \
+		VMS_MAKE_TGIF.COM launch-demo.obj launch-demo-1.obj \
+		Copyright License make./**/* Tgif.tmpl-/**/* tgif.spec.in \
+		Imakefile.tgwb README.tgwb Target.tmpl $(SPICEDIR)README \
+		eq4xpm.sym eq4-lyx-ps2epsi.sym eq4xpm-land.sym eq4png.sym \
+		eq4jpg.sym eq4-2x-jpg.sym bootstrap.pl scan2ac.awk Makefile.am \
+		eq4-2x-nowin-jpg.sym \
+		> VersionInfo/Distribution/tgif-$(TGIFVERSION)

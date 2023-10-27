@@ -1,0 +1,5 @@
+:- module app.
+
+append([], Y, Z) :- true | Y = Z.
+append([A|X], Y, Z) :- true |
+    Z=[A|Z1], append(X, Y, Z1).

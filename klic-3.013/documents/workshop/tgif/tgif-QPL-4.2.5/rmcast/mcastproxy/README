@@ -1,0 +1,73 @@
+Multicast "Proxy"
+
+This is application should be used to build a "unicast bridge" between 2 or more
+multicast groups.
+
+----------------
+Using mcastproxy
+----------------
+
+For instance, suppose one want to run a multicast session in 2 networks A and B.
+A and B have local multicast support but there is no such support between them.
+
+So, we can simulate this support using mcastproxy following the steps below:
+
+1. Choose a machine in network A, e.g., m1.A
+2. Choose a machine in network B, e.g., m1.B
+3. Before starting run mcastproxy in m1.A you must fill the mcastproxy.conf file
+   with the options (See "The mcastproxy Config File Options" section below):
+
+        GROUPADDR=225.1.2.3
+        NADDR=1
+        ADDRLIST
+        m1.B
+        TTL=1
+        REUSEADDR=1
+        LOOPBACK=0
+        UCASTPORT=32566
+        MCASTPORT=5151
+        
+4. In m1.B the mcastproxy.conf file should be like:
+
+        GROUPADDR=225.1.2.3
+        NADDR=1
+        ADDRLIST
+        m1.A
+        TTL=1
+        REUSEADDR=1
+        LOOPBACK=0
+        UCASTPORT=32566
+        MCASTPORT=5151
+
+5. When both mcastproxies are running, you can use any Reliable Multicast 
+   Library based application through A and B.
+   
+---------------------------------- 
+The mcastproxy Config File Options
+----------------------------------
+
+    GROUPADDR
+        The IP multicast group address
+    NADDR
+        Number of proxies addresses to send data to
+    ADDRLIST
+        After this it will be the address list of other proxies you will send 
+        data to  (one per line)
+    TTL
+        Time to Live for the multicast packets
+    REUSEADDR
+        Enable address reuse
+    LOOPBACK
+        Enable loopback.
+        Values:
+            0 - loopback disabled. You MUST NOT run a multicast client in the
+                same host which you are running mcastproxy
+            1 - loopback enabled. This will work only for special packets such
+                as the ones from Reliable Multicast Library
+    UCASTPORT
+        Unicast port where you will listen to. This will be the same port
+        to where you have to send packets to
+    MCASTPORT
+        Multicast port where you will listen and send packets to
+
+

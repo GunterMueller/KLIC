@@ -1,0 +1,7 @@
+/*
+ * @(#)$Header: /mm2/home/cvs/bc-src/tgif/xbm/pat9.xbm,v 1.1 2004/06/18 23:18:45 william Exp $
+ */
+#define pat9_width 8
+#define pat9_height 8
+static unsigned char pat9_bits[] = {
+   0xee, 0xff, 0xbb, 0xff, 0xee, 0xff, 0xbb, 0xff};

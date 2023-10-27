@@ -1,0 +1,17 @@
+:- module search_pri.
+
+        search(Tree,Output):- true |                    %(1)
+                control(Results,Output,Cont),           %(2)
+                fork(Tree,Results,Cont)@priority(4000). %(3)
+        fork(_,R,stop):- true | R=[].                   %(4)
+        alternatively.                                  %(5)
+        fork(H,R,_):- integer(H) | R=[].                %(6)
+        fork(H,R,Cont):- atom(H) |                      %(7)
+                R=[H].                                  %(8)
+        fork([TL,TR],R,Cont):-true |                    %(9)
+                merge:in(R0,R1,R),                      %(10)
+                fork(TL,R0,Cont)@lower_priority,        %(11)
+                fork(TR,R1,Cont)@lower_priority.        %(12)
+        control([H|_],Output,Cont):- wait(H) |          %(13)
+                Output=[H], Cont=stop.                  %(14)
+        control([],Output,Cont):- true | Output=[].     %(15)

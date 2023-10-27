@@ -1,0 +1,135 @@
+@unnchapentry{ICOT 無償公開ソフトウェアの利用条件}{10001}{Copying}{1}
+@unnchapentry{JIPDEC 無償公開ソフトウェアの利用条件}{10002}{Copying Of JIPDEC}{3}
+@numchapentry{はじめに}{1}{Introduction}{4}
+@numsecentry{述語とメソッドの説明について}{1.1}{Description}{4}
+@numsubsecentry{述語とメソッド}{1.1.1}{Predicates and Methods}{4}
+@numsubsecentry{メッセージ}{1.1.2}{Messages}{5}
+@numsubsecentry{引数モード}{1.1.3}{Argument Modes}{5}
+@numsecentry{バグ報告とコメントの送付}{1.2}{Reporting Bugs}{5}
+@numchapentry{KL1 とは}{2}{Language}{6}
+@numsecentry{基本的な実行の仕組み}{2.1}{Basics}{6}
+@numsecentry{述語}{2.2}{Predicates}{7}
+@numsecentry{モジュール}{2.3}{Modules}{7}
+@numsecentry{ゴール}{2.4}{Goals}{8}
+@numsecentry{初期ゴール}{2.5}{Initial Goal}{8}
+@numsecentry{ジェネリック・オブジェクト}{2.6}{Generic Objects}{8}
+@numsubsecentry{ジェネリック・オブジェクトの生成}{2.6.1}{Creating Objects}{9}
+@numsubsecentry{ジェネリック・データ・オブジェクトのガード・メソッド}{2.6.2}{Guard Methods}{9}
+@numsubsecentry{ジェネリック・データ・オブジェクトのボディ・メソッド}{2.6.3}{Body Methods}{9}
+@numsecentry{優先順位の指定}{2.7}{Priority}{10}
+@numsecentry{節の優先関係}{2.8}{Alternatively}{10}
+@numsecentry{引数対の簡略表記}{2.9}{Argument Pair Notation}{11}
+@numsubsecentry{引数対と引数対の展開}{2.9.1}{Paired Arguments}{11}
+@numsubsecentry{引数対のためのマクロ}{2.9.2}{Macros for Paired Arguments}{12}
+@numsubsecentry{引数対の使い方}{2.9.3}{Usage of Paired Arguments}{12}
+@numsecentry{C 言語コードのインライン挿入}{2.10}{Inline C Code}{13}
+@numsubsecentry{ファイル先頭でのインライン挿入}{2.10.1}{Top Insertion}{13}
+@numsubsecentry{ガード部でのインライン挿入}{2.10.2}{Guard Insertion}{13}
+@numsubsecentry{KL1 項の C レベル表現}{2.10.3}{C-Level Rep}{14}
+@numsubsecentry{例}{2.10.4}{Examples of Inline}{14}
+@numsubsecentry{インライン C コード機能を使う上でのヒント}{2.10.5}{Hints of Inline}{15}
+@numchapentry{組込み述語とライブラリ機能}{3}{Builtin and Library}{16}
+@numsecentry{共通操作}{3.1}{Common Operations}{16}
+@numsubsecentry{単一化}{3.1.1}{Unification}{16}
+@numsubsecentry{同期}{3.1.2}{Synchronization}{16}
+@numsubsecentry{比較とハッシュ}{3.1.3}{Comparison and Hashing}{16}
+@numsubsecentry{実行ステータス}{3.1.4}{Execution Status}{17}
+@numsubsecentry{デバッグ}{3.1.5}{Debugging}{17}
+@numsecentry{アトム・データ}{3.2}{Atomic Data}{18}
+@numsubsecentry{記号アトム}{3.2.1}{Symbolic Atoms}{18}
+@numsubsubsecentry{記号アトムの表記}{3.2.1.1}{Notation of Atoms}{18}
+@numsubsubsecentry{記号アトムの操作}{3.2.1.2}{Symbolic Atom Operation}{19}
+@numsubsecentry{整数アトム}{3.2.2}{Integers}{19}
+@numsubsubsecentry{整数の表記}{3.2.2.1}{Notation of Integers}{20}
+@numsubsubsecentry{整数演算}{3.2.2.2}{Integer Arith}{20}
+@numsubsubsecentry{整数比較}{3.2.2.3}{Integer Comp}{21}
+@numsubsecentry{浮動小数点数}{3.2.3}{Floating Points}{21}
+@numsubsubsecentry{浮動小数点数の表記}{3.2.3.1}{Notation of Floats}{21}
+@numsubsubsecentry{新しい浮動小数点数の生成}{3.2.3.2}{Creating Floats}{22}
+@numsubsubsecentry{浮動小数点演算}{3.2.3.3}{Floating Arith}{22}
+@numsubsubsecentry{浮動小数点比較}{3.2.3.4}{Floating Comp}{23}
+@numsecentry{構造型データ}{3.3}{Structured Data}{24}
+@numsubsecentry{ファンクタ構造}{3.3.1}{Functors}{24}
+@numsubsubsecentry{ファンクタの表記}{3.3.1.1}{Notation of Functors}{24}
+@numsubsubsecentry{ファンクタの操作}{3.3.1.2}{Functor Operation}{24}
+@numsubsecentry{リスト}{3.3.2}{Lists}{25}
+@numsubsubsecentry{リストの表記}{3.3.2.1}{Notation of Lists}{25}
+@numsubsubsecentry{メッセージ・ストリームの操作}{3.3.2.2}{Merging}{26}
+@numsubsecentry{ベクタ}{3.3.3}{Vectors}{27}
+@numsubsubsecentry{ベクタの表記}{3.3.3.1}{Notation of Vectors}{27}
+@numsubsubsecentry{ベクタの生成}{3.3.3.2}{Creating Vectors}{28}
+@numsubsubsecentry{ベクタの述語}{3.3.3.3}{Predicates on Vectors}{28}
+@numsubsecentry{文字列}{3.3.4}{Strings}{29}
+@numsubsubsecentry{文字列の表記}{3.3.4.1}{Notation of Strings}{29}
+@numsubsubsecentry{文字列の生成}{3.3.4.2}{Creating Strings}{30}
+@numsubsubsecentry{文字列の述語}{3.3.4.3}{Predicates on Strings}{30}
+@numsecentry{プログラム・コードのデータとしての扱い}{3.4}{Executable Code}{31}
+@numsubsecentry{モジュール}{3.4.1}{Module Type}{31}
+@numsubsecentry{述語}{3.4.2}{Predicate Type}{32}
+@numsecentry{Unix インタフェース}{3.5}{Unix}{33}
+@numsubsecentry{Unix インタフェース・ストリームの獲得}{3.5.1}{Unix Stream}{33}
+@numsubsecentry{入出力用ストリームのオープン}{3.5.2}{I/O Opening}{34}
+@numsubsecentry{ソケットの使い方}{3.5.3}{Sockets}{34}
+@numsubsecentry{ファイルとディレクトリ}{3.5.4}{Files & Dirs}{35}
+@numsubsecentry{シグナル割込みの処理}{3.5.5}{Signals}{36}
+@numsubsecentry{Unix ストリームへの種々のメッセージ}{3.5.6}{Misc Unix Messages}{36}
+@numsubsecentry{述語インタフェース}{3.5.7}{Predicate Interface}{37}
+@numsecentry{入出力}{3.6}{Input and Output}{37}
+@numsubsecentry{C 風のインタフェースを用いた入出力}{3.6.1}{C-like I/O}{37}
+@numsubsubsecentry{C 風のインタフェースを用いた共通メッセージ}{3.6.1.1}{Common Msgs (C style)}{37}
+@numsubsubsecentry{C 風のインタフェースを用いた入力メッセージ}{3.6.1.2}{Input Msgs (C style)}{38}
+@numsubsubsecentry{C 風のインタフェースを用いた出力メッセージ}{3.6.1.3}{Output Msgs (C style)}{39}
+@numsubsecentry{Prolog 風のインタフェースを用いた入出力}{3.6.2}{Prolog I/O}{39}
+@numsubsubsecentry{Prolog 風の I/O ストリームのオープン}{3.6.2.1}{Opening Prolog I/O}{39}
+@numsubsubsecentry{Prolog 風のインタフェースを用いた共通メッセージ}{3.6.2.2}{Common Msgs (Prolog style)}{40}
+@numsubsubsecentry{Prolog 風のインタフェースを用いた入力メッセージ}{3.6.2.3}{Input Msgs (Prolog style)}{40}
+@numsubsubsecentry{Prolog 風のインタフェースを用いた出力メッセージ}{3.6.2.4}{Output Msgs (Prolog style)}{41}
+@numsubsubsecentry{ラップした項}{3.6.2.5}{Wrapped Terms}{42}
+@numsecentry{システム動作の制御}{3.7}{System Control}{43}
+@numsecentry{タイマ}{3.8}{Timer}{43}
+@numsecentry{乱数生成器}{3.9}{Random Numbers}{44}
+@numchapentry{KLIC の使い方}{4}{Using KLIC}{45}
+@numsecentry{KLIC におけるプログラムのコンパイル}{4.1}{Compiling}{45}
+@numsubsecentry{コンパイル用コマンド}{4.1.1}{Command for Compilation}{45}
+@numsubsecentry{コンパイラ・オプション}{4.1.2}{Compiler Options}{45}
+@numsubsecentry{KLIC コンパイラの動作内容}{4.1.3}{Mechanism of Compilation}{47}
+@numsecentry{KLIC におけるプログラムの実行}{4.2}{Running}{48}
+@numsubsecentry{実行時オプション}{4.2.1}{Runtime Switches}{48}
+@numsecentry{プログラム実行のトレース}{4.3}{Tracing}{49}
+@numsubsecentry{トレース実行の準備}{4.3.1}{Preparing for Trace}{49}
+@numsubsecentry{トレース・ポート}{4.3.2}{Trace Ports}{49}
+@numsubsecentry{トレース表示のフォーマット}{4.3.3}{Output of Tracer}{50}
+@numsubsecentry{トレース制御コマンド}{4.3.4}{Controlling Trace}{51}
+@numsubsubsecentry{トレース対象ゴールのトレース制御}{4.3.4.1}{Goal Control}{51}
+@numsubsubsecentry{新しく生成されたサブゴールのトレース制御}{4.3.4.2}{Subgoal Control}{52}
+@numsubsubsecentry{述語ごとのトレース・スイッチのデフォルト値の変更}{4.3.4.3}{Predicate Control}{52}
+@numsubsecentry{スパイ}{4.3.5}{Spying}{53}
+@numsubsecentry{トレース・ポートの制御}{4.3.6}{Port Control}{53}
+@numsubsecentry{表示を制御するコマンド}{4.3.7}{Display Control}{54}
+@numsubsecentry{ゴールのダンプ}{4.3.8}{Dumping Goals}{55}
+@numsubsecentry{その他のコマンド}{4.3.9}{Misc Trace Commands}{55}
+@numsubsecentry{永久中断の探索}{4.3.10}{Perpetual Suspension}{55}
+@numsecentry{インストール}{4.4}{Install}{56}
+@numsubsecentry{コンフィギュレーション}{4.4.1}{Configuration}{56}
+@numsubsecentry{KLIC システムのコンパイル}{4.4.2}{Make All}{57}
+@numsubsecentry{コンパイル結果のテスト}{4.4.3}{Make Tests}{57}
+@numsubsecentry{オブジェクトのインストール}{4.4.4}{Make Install}{57}
+@numsubsecentry{インストール・ディレクトリのクリーン・アップ}{4.4.5}{Make Distclean}{57}
+@numsubsecentry{うまく行かない場合}{4.4.6}{Troubles}{57}
+@numsecentry{分散 KLIC}{4.5}{Distributed KLIC}{57}
+@numsubsecentry{分散 KLIC のインストール}{4.5.1}{Installation of Distributed KLIC}{58}
+@numsubsecentry{分散 KLIC 向けプログラムのコンパイル}{4.5.2}{Compiling Programs for Distributed KLIC}{58}
+@numsubsecentry{分散 KLIC のプログラム実行}{4.5.3}{Running Programs of Distributed KLIC}{58}
+@numsubsubsecentry{PVM のセット・アップ}{4.5.3.1}{Setting Up PVM}{58}
+@numsubsubsecentry{分散 KLIC の実行時オプション}{4.5.3.2}{Runtime Options for Distributed KLIC}{59}
+@numsubsubsecentry{分散 KLIC の既知のバグ}{4.5.3.3}{Known Bugs of Distributed KLIC}{59}
+@numsecentry{共有メモリ KLIC}{4.6}{Shared-Memory KLIC}{59}
+@numsubsecentry{共有メモリ KLIC のインストール}{4.6.1}{Installation of Shared-Memory KLIC}{59}
+@numsubsecentry{共有メモリ KLIC 向けプログラムのコンパイル}{4.6.2}{Compiling Programs for Shared-Memory KLIC}{60}
+@numsubsecentry{共有メモリ KLIC のプログラム実行}{4.6.3}{Running Programs of Shared-Memory KLIC}{60}
+@numsubsubsecentry{共有メモリ KLIC の実行時オプション}{4.6.3.1}{Runtime Options for Shared-Memory KLIC}{60}
+@numsubsubsecentry{共有メモリ KLIC の既知のバグ}{4.6.3.2}{Known Bugs of Shared-Memory KLIC}{60}
+@unnchapentry{データ型索引}{10003}{Type Index}{61}
+@unnchapentry{述語、メソッド、メッセージ名索引}{10004}{Predicate Index}{62}
+@unnchapentry{モジュール名索引}{10005}{Module Index}{65}
+@unnchapentry{索引}{10006}{Concepts}{66}

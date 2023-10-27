@@ -1,0 +1,60 @@
+% Reads a ASCII text file from stdin, counts the number of occurrences
+% of each character, and output the table.
+%
+% klic chcount.kl1
+
+:- module main.
+
+main :- true | iostream(Is,Os), in(Is,Xs), drive(Xs,Cs,Os), leaf(Cs).
+
+in(Is0,Xs) :- true | Is0=[getc(X)|Is1], inconv(X,Is1,Xs).
+
+inconv(X,Is, Xs ) :- X=:= -1 | Xs=[], Is=[].
+inconv(X,Is0,Xs0) :- X=\= -1 |
+    Xs0=[X|Xs], Is0=[getc(X1)|Is], inconv(X1,Is,Xs).
+
+drive([],    Cs ,Os) :- true | Cs =[exam(As,[])], format(As,Os,0).
+drive([X|Xs],Cs0,Os) :- true | Cs0=[ins(X)|Cs1], drive(Xs,Cs1,Os).
+
+leaf([]) :- true | true.
+leaf([ins(X)|Cs]) :- true | nonleaf(Cs,X,1,Ls,Rs), leaf(Ls), leaf(Rs).
+leaf([exam(As0,As)|Cs]) :- true | As0=As, leaf(Cs).
+
+nonleaf([],_,_,Ls,Rs) :- true | Ls=[], Rs=[].
+nonleaf([ins(X)|Cs],Value,Count,Ls,Rs) :- true |
+    inspect(X,Cs,Value,Count,Ls,Rs).
+nonleaf([exam(As0,As)|Cs],Value,Count,Ls0,Rs0) :- true |
+    Ls0=[exam(As0,As1)|Ls], As1=[(Value,Count)|As2],
+    Rs0=[exam(As2,As)|Rs], nonleaf(Cs,Value,Count,Ls,Rs).
+
+inspect(X,Cs,Value,Count,Ls0,Rs ) :- X < Value |
+    Ls0=[ins(X)|Ls], nonleaf(Cs,Value,Count,Ls,Rs).
+inspect(X,Cs,Value,Count,Ls, Rs0) :- X > Value | 
+    Rs0=[ins(X)|Rs], nonleaf(Cs,Value,Count,Ls,Rs).
+inspect(X,Cs,Value,Count,Ls, Rs ) :- X=:=Value |
+    Count1:=Count+1, nonleaf(Cs,Value,Count1,Ls,Rs).
+ 
+format([(Char,Count)|L],Os0,Col0) :- true |
+    checkcol(Col0,Col,Os0,Os1), Os1=[fwrite("     ")|Os2],
+    outchar(Char,Os2,Os3), outint(Count,5,Os3,Os4), format(L,Os4,Col).
+format([],Os,_) :- true | Os=[nl].
+
+outchar(Char,Os0,Os1) :- Char=\=10 /* newline */ |
+    Os0=[putc(39/*'*/),putc(Char),putc(39/*'*/),putc(58/*:*/)|Os1].
+outchar(Char,Os0,Os1) :- Char=:=10 | Os0=[fwrite("nl :")|Os1].
+outint(N,Width,Os0,Os2) :- true |
+    outspace(W,Os0,Os1), oi2(N,Width,W,Os1,Os2).
+oi2(N, W0,W,Os0,Os) :- N=:=0 | W=W0, Os0=Os.
+oi2(N0,W0,W,Os0,Os) :- N0>0 |
+    N:=N0/10, W1:=W0-1, C:=48/*0*/+N0 mod 10,
+    oi2(N,W1,W,Os0,Os1), Os1=[putc(C)|Os].
+outspace(N, Os0,Os) :- N=:=0 | Os0=Os.
+outspace(N0,Os0,Os) :- N0> 0 |
+    Os0=[putc(32/* */)|Os1], N:=N0-1, outspace(N,Os1,Os).
+checkcol(Col0,Col,Os0,Os) :- Col0=\=4 | Col:=Col0+1, Os0=Os.
+checkcol(Col0,Col,Os0,Os) :- Col0=:=4 | Col:=1, Os0=[nl|Os].
+
+iostream(I,O) :- true | 
+    klicio:klicio([stdin(In),stdout(On)]), testok(In,I), testok(On,O).
+
+testok(normal(R0),R) :- true | R=R0.

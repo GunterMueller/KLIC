@@ -1,0 +1,99 @@
+% Test for unification between exrefs
+
+:- module main.
+main :- lib:io(Os), 
+	lib:prsl(Os,Os2,'### InterNode Test [Unification between EXREFs ] Begin ###',_), 
+	gen_gen_test(Os2,Os3), 
+	con_con_test(Os3,Os4), 
+	gen_con_test(Os4,Os5), 
+	lib:prsl(Os5,[],'### InterNode Test [Unification between EXREFs ] End ###',_). 
+
+gen_gen_test(Os,OsE):- 
+	lib:prs(Os,Os2,'gen-exref & gen-exref (a-j) : ',_),
+	test(Os2,OsE,Cs), 
+	Cs=[ufy([genv(1),gens(2)],out(a)),
+	    ufy([gens(1),gens(2),genv(3)],out(b)),
+	    ufy([gens(1),gens(1),gens(2),gens(2),gens(3),genv(1)],out(c)),
+	    ufy([genv(2),genv(3)],out(d)),
+	    ufy([genv(3),genv(2),genv(1),genv(3),genv(3)],out(e)),
+	    ufy([gens(3),genv(2),gens(1),genv(3),gens(2),genv(1)],out(f)),
+	    ufy([gens(1),value],out(g)),
+	    ufy([gens(2),gens(2),gens(2),gens(2),gens(2),value],out(h)),
+	    ufy([genv(3),value],out(i)),
+	    ufy([genv(4),genv(4),genv(4),genv(4),genv(4),value],out(j))]. 
+
+con_con_test(Os,OsE):- 
+	lib:prs(Os,Os2,'con-exref & con-exref (a-c) : ',_),
+	test(Os2,OsE,Cs), 
+	Cs=[ufy([con(1),value],out(a)),
+	    ufy([con(1),con(2),value],out(b)),
+	    ufy([con(1),con(2),con(1),con(2),con(1),con(2),value],out(c))]. 
+
+gen_con_test(Os,OsE):- 
+	lib:prs(Os,Os2,'gen-exref & con-exref (a-m) : ',_),
+	test(Os2,OsE,Cs), 
+	Cs=[ufy([genv(1),con(2)],out(a)),
+	    ufy([con(1),genv(2)],out(b)),
+	    ufy([gens(1),con(2),value],out(c)),
+	    ufy([con(1),gens(2),value],out(d)),
+	    ufy([gens(1),genv(2),con(3)],out(e)),
+	    ufy([gens(1),con(3),genv(2)],out(f)),
+	    ufy([con(3),gens(2),genv(1)],out(g)),
+	    ufy([gens(1),genv(2),con(3),value],out(h)),
+	    ufy([con(1),con(2),con(1),con(2),con(1),con(2),genv(3)],out(i)),
+	    ufy([con(1),gens(2),con(1),gens(2),con(1),gens(2),genv(3)],out(j)),
+	    ufy([gens(1),gens(2),gens(3),gens(4),con(1),value],out(k)),
+	    ufy([gens(1),gens(2),gens(3),gens(4),con(5),genv(6)],out(l)),
+	    ufy([con(1),con(2),con(1),con(2),con(1),gens(2),genv(3)],out(m))]. 
+
+test(Os,OsE,[ufy(Vs,out(Out))|Cs]):- 
+	genEXs(Vs,EXs,Gen,gen,Done,done), ufy(Gen,EXs), 
+	pr(Os,Os2,Done,Out), test(Os2,OsE,Cs). 
+test(Os,OsE,[]):- lib:prsl(Os,OsE,'...done',_). 
+
+ufy(Wait,[EX|EXs]):- wait(Wait) | ufy_exe(EX,EXs). 
+ufy_exe(EXa,[EXb|EXs]):- EXa=EXb, ufy_exe(EXb,EXs). 
+ufy_exe(_,[]). 
+
+pr(Os,Os2,done,Out):- lib:prs(Os,Os2,Out,_). 
+otherwise. 
+pr(Os,Os2,_,Out):- lib:prs_err(Os,Os2,Out,_). 
+
+genEXs([con(Add)|Vs],EXs,Ga,Gc,Ua,Ud):- 
+	nextNode(Add,Node), genExr(Ex,Ga,Gb,Ua,Ub,Node), EXs=[Ex|EXs2], 
+	susp(Ex,Ub,Uc), 
+	genEXs(Vs,EXs2,Gb,Gc,Uc,Ud)@lower_priority. 
+genEXs([genv(Add)|Vs],EXs,Ga,Gc,Ua,Ub):- 
+	nextNode(Add,Node), genExv(Ex,Ga,Gb,Node), EXs=[Ex|EXs2], 
+	genEXs(Vs,EXs2,Gb,Gc,Ua,Ub). 
+genEXs([gens(Add)|Vs],EXs,Ga,Gc,Ua,Uc):- 
+	nextNode(Add,Node), genExr(Ex,Ga,Gb,Ua,Ub,Node), EXs=[Ex|EXs2], 
+	genEXs(Vs,EXs2,Gb,Gc,Ub,Uc). 
+genEXs([value|Vs],EXs,Ga,Gb,Ua,Ub):- 
+	EXs=[value|EXs2], 
+	genEXs(Vs,EXs2,Ga,Gb,Ua,Ub). 
+genEXs([],EXs,Ga,Gb,Ua,Ub):- EXs=[], Ga=Gb, Ua=Ub. 
+
+genExv(Ex,Ga,Gb,Node):- wait(Node) | 
+	genExv_exe(ExF,Ack)@node(Node), wait_exref(ExF,Ex,Ga,Gb,Ack). 
+wait_exref(ex(Ref),Ex,Ga,Gb,Ack):- Ref=Ex, Ga=Gb, Ack=ack. 
+genExv_exe(ExF,Ack):- ExF=ex(Var), bindV(Ack,Var). 
+bindV(ack,Var):- Var=value. 
+
+genExr(Ex,Ga,Gb,Ua,Ub,Node):- wait(Node) | 
+	genExr_exe(ExF,Ua,Ub)@node(Node), wait_exref(ExF,Ex,Ga,Gb). 
+wait_exref(ex(Ref),Ex,Ga,Gb):- Ref=Ex, Ga=Gb. 
+genExr_exe(ExF,Ua,Ub):- ExF=ex(Var), susp(Var,Ua,Ub). 
+susp(value,Ua,Ub):- Ua=Ub. 
+
+%===========================================================================
+nextNode(Add,Node):- 
+	current_node(CurrentNode,NumberOfNodes), 
+	modNode(~(CurrentNode+Add),NumberOfNodes,Node).  
+
+modNode(CalNode,NumberOfNodes,Node) :- CalNode >= 0 | 
+	Node := CalNode mod NumberOfNodes.
+modNode(CalNode,NumberOfNodes,Node) :- CalNode <  0 | 
+	CalNode2 := CalNode + NumberOfNodes, 
+	modNode(CalNode2,NumberOfNodes,Node).
+

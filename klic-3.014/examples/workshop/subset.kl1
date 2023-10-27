@@ -1,0 +1,12 @@
+:- module main.
+
+main :- true | subset(yes, [3,1], [1,3,5], Ans), 
+               io:outstream([print(Ans),nl]).
+
+subset(no,  X,    Y,Ans) :- true | Ans = no.
+subset(yes, [],   Y,Ans) :- true | Ans = yes.
+subset(yes, [A|B],Y,Ans) :- true | member(A,Y,Ans1), subset(Ans1,B,Y,Ans).
+
+member(A, B, Ans) :- B = []            | Ans = no.
+member(A, B, Ans) :- B = [X|Y], A =:= X | Ans = yes.
+member(A, B, Ans) :- B = [X|Y], A =\= X | member(A, Y, Ans).

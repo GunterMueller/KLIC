@@ -1,0 +1,62 @@
+% /* ---------------------------------------------------------- 
+% %   (C)1993,1994 Institute for New Generation Computer Technology 
+% %       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+% ----------------------------------------------------------- */
+
+:- inline:"
+#ifdef STRINGH
+#include <string.h>
+#else
+#include <strings.h>
+#endif
+
+extern unsigned long enter_atom_string();
+".
+
+:- module atom_table.
+
+make_atom(String,Atom) :- 
+    string(String,_,8),
+    inline:"%1 = makesym(enter_atom_string(%0));":[String+any,Atom0-atom] |
+    Atom = Atom0.
+
+atom_number(Atom,Number):-
+    inline:"%1 = makeint(symval(%0));":[Atom+atom,Number0-int] |
+	Number = Number0.
+
+get_atom_string([],String):- true | String = "[]".
+get_atom_string(.,String):- true | String = ".".
+otherwise.
+get_atom_string(Atom,String):- atom(Atom),
+     inline:"%1 = makeint(strlen((char *)namestringof(%0)));"
+	:[Atom+atom,Size-int] |
+	new_string(String0,Size,8),
+	set_atom_string(0,Size,Atom,String0,String).
+
+set_atom_string(Size,Size,_Atom,String0,String):- String=String0.
+set_atom_string(N,Size,Atom,String0,String):- N<Size,
+	inline:"%2 = makeint((namestringof(%0))[intval(%1)]);":
+                        [Atom+atom,N+int,E-int] |
+	set_string_element(String0,N,E,String1),
+	N1:= N+1,
+	set_atom_string(N1,Size,Atom,String1,String).
+
+intern(String,Status):- string(String,L,_), L>0 |
+	make_atom(String,Atom),
+	Status=normal(Atom).
+
+get_atom_name(Atom,Status):- get_atom_string(Atom,String),
+	Status=normal(String).
+
+cache_table([get_atom(AtomName,Status)|S]):- string(AtomName,L,8),L>0 |
+	intern(AtomName,Status),
+	cache_table(S).
+cache_table([get_atom_name(Atom,Status)|S]):- atom(Atom) |
+	get_atom_name(Atom,Status),
+	cache_table(S).
+cache_table([intern(AtomName,Status)|S]):- string(AtomName,L,8),L>0 |
+	intern(AtomName,Status),
+	cache_table(S).
+cache_table([]).

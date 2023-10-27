@@ -1,0 +1,1003 @@
+\documentstyle[a4,epic,eepic,epsf,titlepage,samplebox,newmacros]{jreport}
+
+\title{IFS 講習会資料\\KLIC 入門}
+\date{平成 7 年 6月}
+\author{財団法人 新世代コンピュータ技術開発機構}
+
+\def\em{\bf\dg}
+\newlength\miniwidth
+\newlength\boxoutmargin \boxoutmargin 3pt
+\newlength\boxinmargin \boxinmargin 10pt
+
+\newcounter{exercise}
+\setcounter{exercise}{0}
+\newcommand{\exercise}[1]{%
+\section*{\refstepcounter{exercise}【演習問題\arabic{exercise}】 #1}}
+\newcommand{\answer}[1]{%
+\section*{\refstepcounter{exercise}【演習問題解答\arabic{exercise}】 #1}}
+
+%\def\program{\begin{center}\miniwidth\columnwidth
+%\advance\miniwidth-2\boxoutmargin
+%\advance\miniwidth-2\boxinmargin
+%\hbox\bgroup\hskip\boxoutmargin
+%\vbox\bgroup\hrule\hbox\bgroup
+%\vrule\hskip\boxinmargin\vbox\bgroup\vskip\boxinmargin\hbox\bgroup
+%\begin{minipage}{\miniwidth}}
+%\def\endprogram{\end{minipage}\egroup\vskip\boxinmargin\egroup
+%\hskip\boxinmargin\vrule\egroup
+%\hrule\egroup
+%\hskip\boxoutmargin\egroup
+%\end{center}}
+
+\newenvironment{program}{\begin{quote}}{\end{quote}}
+
+\tolerance 1000
+\newcommand{\commit}{\verb^|^}
+\newcommand{\code}[1]{{\bf #1}}
+% Makes underbar act like explicit hyphen
+\def\_{\leavevmode \kern.06em \vbox{\hrule width.3em}\penalty\exhyphenpenalty}
+
+\begin{document}
+\maketitle
+\chapter*{はじめに}
+
+\bgroup\large
+本資料は IFS 講習会のために作成した KL1 言語を中心とした KLIC の
+入門テキストである.  
+KL1 言語について, まったくの白紙状態からの入門から, 若干複雑なプログラ
+ムを組めるようになるための基本テクニックまでを解説した.
+
+本資料は (財)新世代コンピュータ技術開発機構が開催した KLIC 講習会およ
+び KL1 講習会の資料を再編集し, 一部変更を加えて作成した. そちらの資料
+も入手されたい.
+
+\begin{flushright}
+1995年 6 月\\ ICOT KLIC 開発グループ
+\end{flushright}
+\egroup
+\thispagestyle{empty}
+
+\newpage
+\setcounter{page}{0}
+\pagenumbering{roman}
+\tableofcontents
+
+\chapter{プラグマを利用したプログラム例}
+\section{優先度制御を応用したプログラム例}
+
+本節では, 優先度制御を使った効率的なプログラム例を示す.
+
+%\subsection*{簡単な探索問題}
+
+簡単な探索問題をKL1でプログラムしてみよう.  探索問題は, 探索木の各ノー
+ドを探索して解の含まれているリーフ(葉)を見つける問題である.  探索する
+順序には関係なく, 最悪全てのリーフを探索すれば答えは見つかる.  しかし, 
+探索問題の多くのものは経験的に木の左の方とか右の方とか, どのあたりに解
+が含まれている確率が高いかわかっているものが多い.  ここでは, そのよう
+なヒューリスティックを適用できる探索問題を考えてみる.
+
+なお, 同期制御を行なえば木の左から探索するようにプログラムを書く事は可
+能であるが, それでは逐次実行しかできない.  ここでは, 並列実行ができか
+つヒューリスティックを適用するように, 優先度制御を使ってみよう.
+
+
+\begin{quote}\begin{dg}\begin{bf}
+図\ref{search_tree}に示されるような2分探索木があった時, アトムを含
+むリーフを1つ見つけるプログラムを書け.
+\end{bf}\end{dg}\end{quote}
+
+\begin{figure}[htb]
+        \setlength{\unitlength}{0.9mm}
+        \begin{picture}(160,110)(0,0)
+        \put(80,100){\framebox(5,5){{\em a}}}
+        \put(35,80){\framebox(5,5){{\em b}}}
+        \put(125,80){\framebox(5,5){{\em c}}}
+        \put(15,60){\framebox(5,5){{\em d}}}
+        \put(55,60){\framebox(5,5){{\em e}}}
+        \put(105,60){\framebox(5,5){{\em f}}}
+        \put(145,60){\framebox(5,5){{\em g}}}
+        \put(30,45){\framebox(5,5){{\em h}}}
+        \put(90,45){\framebox(5,5){{\em i}}}
+        \put(130,45){\framebox(5,5){{\em j}}}
+        \put(45,30){\framebox(5,5){{\em k}}}
+        \put(105,30){\framebox(5,5){{\em l}}}
+
+        \put(0,45){\makebox(10,5){{\tt 1}}}
+        \put(40,45){\makebox(10,5){{\sf here}}}
+        \put(67,45){\makebox(10,5){{\sf here}}}
+        \put(117,45){\makebox(10,5){{\tt 6}}}
+        \put(157,45){\makebox(10,5){{\tt 8}}}
+        \put(15,30){\makebox(10,5){{\sf here}}}
+        \put(75,30){\makebox(10,5){{\tt 3}}}
+        \put(115,30){\makebox(10,5){{\sf here}}}
+        \put(145,30){\makebox(10,5){{\tt 7}}}
+        \put(30,15){\makebox(10,5){{\tt 2}}}
+        \put(60,15){\makebox(10,5){{\sf here}}}
+        \put(90,15){\makebox(10,5){{\tt 4}}}
+        \put(120,15){\makebox(10,5){{\tt 5}}}
+
+        \put(37.5,85){\line(3,1){45}}
+        \put(127.5,85){\line(-3,1){45}}
+
+        \put(17.5,65){\line(4,3){20}}
+        \put(57.5,65){\line(-4,3){20}}
+        \put(107.5,65){\line(4,3){20}}
+        \put(147.5,65){\line(-4,3){20}}
+        
+        \put(2.5,50){\line(3,2){15}}
+        \put(32.5,50){\line(-3,2){15}}
+        \put(42.5,50){\line(3,2){15}}
+        \put(72.5,50){\line(-3,2){15}}
+        \put(92.5,50){\line(3,2){15}}
+        \put(122.5,50){\line(-3,2){15}}
+        \put(132.5,50){\line(3,2){15}}
+        \put(162.5,50){\line(-3,2){15}}
+
+        \put(17.5,35){\line(3,2){15}}
+        \put(47.5,35){\line(-3,2){15}}
+        \put(77.5,35){\line(3,2){15}}
+        \put(107.5,35){\line(-3,2){15}}
+        \put(117.5,35){\line(3,2){15}}
+        \put(147.5,35){\line(-3,2){15}}
+
+        \put(32.5,20){\line(3,2){15}}
+        \put(62.5,20){\line(-3,2){15}}
+        \put(92.5,20){\line(3,2){15}}
+        \put(122.5,20){\line(-3,2){15}}
+
+        \put(5,47.5){\oval(10,5)}       %1
+        \put(45,47.5){\oval(10,5)}      %here
+        \put(72,47.5){\oval(10,5)}      %here
+        \put(122,47.5){\oval(10,5)}     %6
+        \put(162,47.5){\oval(10,5)}     %8
+        \put(20,32.5){\oval(10,5)}      %here
+        \put(80,32.5){\oval(10,5)}      %3
+        \put(120,32.5){\oval(10,5)}     %here
+        \put(150,32.5){\oval(10,5)}     %7
+        \put(35,17.5){\oval(10,5)}      %2
+        \put(65,17.5){\oval(10,5)}      %here
+        \put(95,17.5){\oval(10,5)}      %4
+        \put(125,17.5){\oval(10,5)}     %5
+        \end{picture}
+        \caption{探索木}
+        \label{search_tree}
+\end{figure}
+
+
+図\ref{search_tree}において四角はノードを表わし, 楕円はリーフを表わす. 
+また, ノードには {\em a} から {\em l} の名前が付けてあり, リーフは整数
+或いはアトムを値として持つ.  この探索木をここでは次の様なリストデータ
+で表わす事にする.
+\begin{verbatim}
+     [[[1,[here,[2,here]]],[here,here]],[[[3,[4,5]],6],[[here,7],8]]]
+\end{verbatim}
+
+ではまず, ヒューリスティクを用いずにこの探索問題を解くプログラムをみて
+みよう.  ここでは, アトムが見つかったらそのアトムを要素とするリス
+トを返し, 見つからなかったら空リストを返すようにプログラムしてある. 
+また, 探索を行なうプロセスは一斉に生成する.  解を一つ見つけたプロセス
+は, 探索中の他のプロセスに対してこれ以上探索しなくてもよい旨を通知する. 
+なお, 一斉に通知するために全ての探索プロセスは同一の制御用変数を持ち廻
+る.  各探索プロセスは, この変数の値が決まるのを alternatively の機能を
+使ってチェックする.
+
+%\baselineskip=0.5cm 
+\begin{verbatim}
+:- module simple_search.
+
+        search(Tree,Output):- true |               %(1)
+                control(Result,Output,Cont),       %(2)
+                fork(Tree,Result,Cont).            %(3)
+        fork(_,R,stop):-   true | R=[].            %(4)
+    alternatively.                                 %(5)
+        fork(H,R,Cont):- integer(H) |R=[].         %(6)
+        fork(H,R,Cont):- atom(H)    |              %(7)
+                R=[H].                             %(8)
+        fork([TL,TR],R,Cont):-                     %(9)
+                merge:in(R0,R1,R),                 %(10)
+                fork(TL,R0,Cont),                  %(11)
+                fork(TR,R1,Cont).                  %(12)
+        control([H|_],Output,Cont):- wait(H) |     %(13) 
+                Output = [H], Cont=stop.           %(14) 
+        control([], Output, Cont):- true |         %(15)
+                Output = [] .                      %(16) 
+
+:- module merge.
+
+        in([E|In1],In2,Out) :-                     %(17)
+                Out = [E|OutT], in(In1,In2,OutT).  %(18)
+        in(In1,[E|In2],Out) :-                     %(19)
+                Out = [E|OutT], in(In1,In2,OutT).  %(20)
+        in([],In2,Out) :-  Out = In2.              %(21)
+        in(In1,[],Out) :-  Out = In1.              %(22)
+
+メインプログラム例
+:- module main.
+
+        main :-                                    %(23)
+           Tree=[[[1,[here,[2,here]]],[here,here]],
+                [[[3,[4,5]],6],[[here,7],8]]],
+               simple_search:search(Tree,Out),     %(24)
+               klicio:klicio([stdout(Result)]),    %(25)
+               wait_open(Result, Out).             %(26)
+        wait_open(normal(STDOUT), Out) :-          %(27)
+           STDOUT=[ putt(Out), nl ].               %(28)
+        wait_open(abnormal, _) :- unix:exit(1).    %(29)
+\end{verbatim} 
+%\baselineskip=0.8cm
+
+では, プログラムの説明を行なう.
+
+\begin{description}
+\item[search]
+このプログラムのトップレベルの述語である.  解が 1 つ見つかった時に探索
+を終了するための制御を行なうプロセス {\tt control} と探索を行なうプロ
+セス {\tt fork} を生成する.
+\item[fork]
+クローズ (4) では, 変数 {\tt Cont} の値がアトム {\tt stop} に決まった
+らそれ以降の探索を中止する.  Alternatively を用いており, このクローズ
+は必ず最初に選択される.  {\tt Cont} の値が決まっていなかったら, (6) 以
+降のクローズの選択を行なう.
+\item[fork]
+クローズ (6) では, {\tt H} が整数ならばそれはリーフなのでそれ以上探索
+は行なわない.  また, それは解ではないので解を集めるストリームには {\tt
+[]} を流す.
+\item[fork]
+クローズ (8) では, {\tt H} が アトムなら, それはリーフなのでそれ
+以上探索は行なわない.  また, それは解なのでストリームにはそのアトム自
+身を流す.
+\item[fork]
+クローズ (9) では, 探索木が 2 要素のリストで各ノードを表わしている場
+合に, その左の探索木 {\tt TL} と 右の探索木 {\tt TR}のそれぞれを探索す
+るプロセスを (11) と (12) で生成している.  なお, (10) の部分ではここで
+生成した2つのプロセスから返ってくる解のストリーム {\tt R0} と {\tt R1} 
+をマージインしている.
+\item[control]
+クローズ (13) では, 解を集めるストリーム {\tt Output} に解が1つでも見
+つかった時に, 他の探索を行なうプロセスを中止するために変数 {\tt Cont}
+の値を {\tt stop} に決めている.
+\item [in]
+クローズ (17), (19), (21),(22) で標準的な 2 入力のマージプロセスを
+実現している.
+\item [main]
+クローズ (23) にて計算を行なっている. {\sf [here]} が印刷される.
+\end{description}
+
+ここで, {\tt fork} プロセスを生成する部分 (11) と (12) をみてみよう.
+(11) はノードの左を探索するプロセスを生成しており, (12) ではノードの右
+を探索するプロセスを生成している.  このプログラムを実行すると, もしか
+したら右側の探索が優先的に実行され, 例えばノード {\em c} の下の探索ば
+かりが実行されるかも知れないが, この下には解が1つしかないので効率は良
+くない.
+
+%どのようにこのプログラムに適用すれば
+%良いだろうか.  一つは, 同期制御を行なって(13)が終わるまで(14)を実行しない
+%ようにする方法である.  しかし, これではせっかくノード {\em b} と {\em c} の
+%下の探索は並列に実行させる事が可能なのに, それができなくなる.  
+
+では, 幅優先のヒューリスティクスを, ゴールの優先度制御を用いて
+このプログラムに適用してみよう.  優先度を付ける戦略としては, 探索木の
+探索するゴール (11) および (12) を呼び出す枝より優先度を低くする.  
+すると別の枝の同じ深さのゴールがあった場合は, そちらが優先的に
+実行される.
+
+例えば探索ルートの優先度を 4000 とし, このアルゴリズムに従って優先度を
+みてみると, 探索木の各ノード及びリーフに
+おけるプロセス {\tt fork} の優先度は図\ref{search_tree_priority}のよう
+になる.  図中, 各ノード及びリーフの右肩或いは左肩の数字は優先度を表わ
+す.  また, 続けてプログラムをみてみよう.
+
+\begin{figure}[htb]
+        \setlength{\unitlength}{0.9mm} \begin{picture}(160,110)(0,0)
+\put(80,100){\framebox(5,5){{\em a}}} \put(35,80){\framebox(5,5){{\em
+b}}} \put(125,80){\framebox(5,5){{\em c}}}
+\put(15,60){\framebox(5,5){{\em d}}} \put(55,60){\framebox(5,5){{\em
+e}}} \put(105,60){\framebox(5,5){{\em f}}}
+\put(145,60){\framebox(5,5){{\em g}}} \put(30,45){\framebox(5,5){{\em
+h}}} \put(90,45){\framebox(5,5){{\em i}}}
+\put(130,45){\framebox(5,5){{\em j}}} \put(45,30){\framebox(5,5){{\em
+k}}} \put(105,30){\framebox(5,5){{\em l}}}
+
+        \put(0,45){\makebox(10,5){{\tt 1}}}
+\put(40,45){\makebox(10,5){{\sf here}}}
+\put(67,45){\makebox(10,5){{\sf here}}}
+\put(117,45){\makebox(10,5){{\tt 6}}} \put(157,45){\makebox(10,5){{\tt
+8}}} \put(15,30){\makebox(10,5){{\sf here}}}
+\put(75,30){\makebox(10,5){{\tt 3}}} \put(115,30){\makebox(10,5){{\sf
+here}}} \put(145,30){\makebox(10,5){{\tt 7}}}
+\put(30,15){\makebox(10,5){{\tt 2}}} \put(60,15){\makebox(10,5){{\sf
+here}}} \put(90,15){\makebox(10,5){{\tt 4}}}
+\put(120,15){\makebox(10,5){{\tt 5}}}
+
+        \put(37.5,85){\line(3,1){45}} \put(127.5,85){\line(-3,1){45}}
+
+        \put(17.5,65){\line(4,3){20}} \put(57.5,65){\line(-4,3){20}}
+\put(107.5,65){\line(4,3){20}} \put(147.5,65){\line(-4,3){20}}
+        
+        \put(2.5,50){\line(3,2){15}} \put(32.5,50){\line(-3,2){15}}
+\put(42.5,50){\line(3,2){15}} \put(72.5,50){\line(-3,2){15}}
+\put(92.5,50){\line(3,2){15}} \put(122.5,50){\line(-3,2){15}}
+\put(132.5,50){\line(3,2){15}} \put(162.5,50){\line(-3,2){15}}
+
+        \put(17.5,35){\line(3,2){15}} \put(47.5,35){\line(-3,2){15}}
+\put(77.5,35){\line(3,2){15}} \put(107.5,35){\line(-3,2){15}}
+\put(117.5,35){\line(3,2){15}} \put(147.5,35){\line(-3,2){15}}
+
+        \put(32.5,20){\line(3,2){15}} \put(62.5,20){\line(-3,2){15}}
+\put(92.5,20){\line(3,2){15}} \put(122.5,20){\line(-3,2){15}}
+
+        \put(5,47.5){\oval(10,5)} %1 \put(45,47.5){\oval(10,5)} %here
+\put(72,47.5){\oval(10,5)} %here \put(122,47.5){\oval(10,5)} %6
+\put(162,47.5){\oval(10,5)} %8 \put(20,32.5){\oval(10,5)} %here
+\put(80,32.5){\oval(10,5)} %3 \put(120,32.5){\oval(10,5)} %here
+\put(150,32.5){\oval(10,5)} %7 \put(35,17.5){\oval(10,5)} %2
+\put(65,17.5){\oval(10,5)} %here \put(95,17.5){\oval(10,5)} %4
+\put(125,17.5){\oval(10,5)} %5
+
+        \put(80,105){\makebox(5,5){{\tiny 4000}}}
+\put(35,85){\makebox(5,5){{\tiny 3999}}}
+\put(125,85){\makebox(5,5){{\tiny 3999}}}
+\put(12,65){\makebox(5,5){{\tiny 3998}}}
+\put(58,65){\makebox(5,5){{\tiny 3998}}}
+\put(102,65){\makebox(5,5){{\tiny 3998}}}
+\put(148,65){\makebox(5,5){{\tiny 3998}}}
+\put(32,50){\makebox(5,5){{\tiny 3997}}}
+\put(87,50){\makebox(5,5){{\tiny 3997}}}
+\put(130,50){\makebox(5,5){{\tiny 3997}}}
+\put(47,35){\makebox(5,5){{\tiny 3996}}}
+\put(106,35){\makebox(5,5){{\tiny 3996}}}
+
+\put(0,50){\makebox(5,5){{\tiny 3997}}}
+\put(48,50){\makebox(5,5){{\tiny 3997}}}
+\put(71,50){\makebox(5,5){{\tiny 3997}}}
+\put(120,50){\makebox(5,5){{\tiny 3997}}}
+\put(160,50){\makebox(5,5){{\tiny 3997}}}
+\put(23,34){\makebox(5,5){{\tiny 3996}}}
+\put(83,34){\makebox(5,5){{\tiny 3996}}}
+\put(123,34){\makebox(5,5){{\tiny 3996}}}
+\put(150,34){\makebox(5,5){{\tiny 3996}}}
+\put(30,20){\makebox(5,5){{\tiny 3995}}}
+\put(65,20){\makebox(5,5){{\tiny 3995}}}
+\put(90,20){\makebox(5,5){{\tiny 3995}}}
+\put(125,20){\makebox(5,5){{\tiny 3995}}}
+
+\end{picture} \caption{探索木の各ノードプロセスの優先度}
+\label{search_tree_priority}
+\end{figure}
+
+
+%\baselineskip=0.5cm 
+\begin{verbatim}
+:- module search_pri.
+
+        search(Tree,Output):- true |                    %(1)
+                control(Results,Output,Cont),           %(2)
+                fork(Tree,Results,Cont)@priority(4000). %(3)
+        fork(_,R,stop):- true | R=[].                   %(4)
+        alternatively.                                  %(5)
+        fork(H,R,_):- integer(H) | R=[].                %(6)
+        fork(H,R,Cont):- atom(H) |                      %(7)
+                R=[H].                                  %(8)
+        fork([TL,TR],R,Cont):-true |                    %(9)
+                merge:in(R0,R1,R),                      %(10)
+                fork(TL,R0,Cont)@lower_priority,        %(11)
+                fork(TR,R1,Cont)@lower_priority.        %(12)
+        control([H|_],Output,Cont):- wait(H) |          %(13)
+                Output=[H], Cont=stop.                  %(14)
+        control([],Output,Cont):- true | Output=[].     %(15)
+
+\end{verbatim} 
+%\baselineskip=0.8cm
+
+先のプログラムから変更した部分は, 次の通りである.
+\begin{description}
+\item {\bf search}\ \ 引数を2つ増やして, 探索を行なうプロセスが使う
+最高優先度を指定した.
+\item {\bf fork}\ \ (11)と(12)の部分で探索するプロセスを生成する際, 優
+先度を下げている.  
+\end{description}
+
+なお, この例では探索がある程度以上深くなると優先度はこれ以上低くできな
+くなるが, 優先度制御を行なう事によってプログラムは効率的に動く事は分かっ
+たであろう.
+
+\section{負荷分散制御を応用したプログラム}
+
+本節では, 負荷分散制御を応用したプログラム例を示す.  ここで示すプ
+ログラム及び負荷分散アルゴリズムは一例である.  各自でプログラムを書き
+換えたり, また負荷分散アルゴリズムを変えて色々評価をしてみると大変よい
+と思う.
+
+%\subsection*{簡単な探索問題}
+
+ゴールの優先度を勉強した際に用いた簡単な探索問題プログラムに, 今度は更
+に負荷分散制御を応用してみよう.  プログラムは先に用いたものを拡張し, 
+負荷分散アルゴリズムはサイクリック割り付けを用いる.
+
+また, 負荷分散は探索木が別れる部分で行なう.  ただし, あまり細かく分散
+すると負荷分散のためのオーバヘッドが増大するので, 探索がある程度のレベ
+ル(この例の場合は2)に達するまでは同じノードで実行し, レベルに達したと
+ころでサイクリックにノード割り付けを行なって負荷分散する.  この探索木
+は2分木なので, 探索レベル3のところ兄弟の数は$2^{3}$個になり, 8台のノー
+ドに負荷分散する事になる.
+
+なお, 負荷分散した先ではそれ以上の負荷分散は行なわず, 優先度制御のみを
+行なう.  この例では, 先に用いた {\tt search\_pri} モジュールのゴールを
+ただ呼び出しているだけである.  また, ノードの番号を得るためのサーバプ
+ロセスを設け, 負荷分散を行なう前にはこのプロセスに対してノード番号を問
+い合わせるものとする.
+
+では, まず図\ref{search_tree_distribution}に各ノードのプロセスがどのノー
+ドで実行されるかを示す.  また, 各ノード内での優先度も示す.  図中, 各ノー
+ド及びリーフの右肩或いは左肩の数字は優先度を表わす.  また, 右或いは左
+の数字は実行されるノードを表わす.  続けてプログラムをみてみよう.
+
+\begin{figure}[htb]
+        \setlength{\unitlength}{0.9mm} \begin{picture}(160,110)(0,0)
+\put(80,100){\framebox(5,5){{\em a}}} \put(35,80){\framebox(5,5){{\em
+b}}} \put(125,80){\framebox(5,5){{\em c}}}
+\put(15,60){\framebox(5,5){{\em d}}} \put(55,60){\framebox(5,5){{\em
+e}}} \put(105,60){\framebox(5,5){{\em f}}}
+\put(145,60){\framebox(5,5){{\em g}}} \put(30,45){\framebox(5,5){{\em
+h}}} \put(90,45){\framebox(5,5){{\em i}}}
+\put(130,45){\framebox(5,5){{\em j}}} \put(45,30){\framebox(5,5){{\em
+k}}} \put(105,30){\framebox(5,5){{\em l}}}
+
+        \put(0,45){\makebox(10,5){{\tt 1}}}
+\put(40,45){\makebox(10,5){{\sf here}}}
+\put(67,45){\makebox(10,5){{\sf here}}}
+\put(117,45){\makebox(10,5){{\tt 6}}} \put(157,45){\makebox(10,5){{\tt
+8}}} \put(15,30){\makebox(10,5){{\sf here}}}
+\put(75,30){\makebox(10,5){{\tt 3}}} \put(115,30){\makebox(10,5){{\sf
+here}}} \put(145,30){\makebox(10,5){{\tt 7}}}
+\put(30,15){\makebox(10,5){{\tt 2}}} \put(60,15){\makebox(10,5){{\sf
+here}}} \put(90,15){\makebox(10,5){{\tt 4}}}
+\put(120,15){\makebox(10,5){{\tt 5}}}
+
+        \put(37.5,85){\line(3,1){45}} \put(127.5,85){\line(-3,1){45}}
+
+        \put(17.5,65){\line(4,3){20}} \put(57.5,65){\line(-4,3){20}}
+\put(107.5,65){\line(4,3){20}} \put(147.5,65){\line(-4,3){20}}
+        
+        \put(2.5,50){\line(3,2){15}} \put(32.5,50){\line(-3,2){15}}
+\put(42.5,50){\line(3,2){15}} \put(72.5,50){\line(-3,2){15}}
+\put(92.5,50){\line(3,2){15}} \put(122.5,50){\line(-3,2){15}}
+\put(132.5,50){\line(3,2){15}} \put(162.5,50){\line(-3,2){15}}
+
+        \put(17.5,35){\line(3,2){15}} \put(47.5,35){\line(-3,2){15}}
+\put(77.5,35){\line(3,2){15}} \put(107.5,35){\line(-3,2){15}}
+\put(117.5,35){\line(3,2){15}} \put(147.5,35){\line(-3,2){15}}
+
+        \put(32.5,20){\line(3,2){15}} \put(62.5,20){\line(-3,2){15}}
+\put(92.5,20){\line(3,2){15}} \put(122.5,20){\line(-3,2){15}}
+
+        \put(5,47.5){\oval(10,5)} %1 \put(45,47.5){\oval(10,5)} %here
+\put(72,47.5){\oval(10,5)} %here \put(122,47.5){\oval(10,5)} %6
+\put(162,47.5){\oval(10,5)} %8 \put(20,32.5){\oval(10,5)} %here
+\put(80,32.5){\oval(10,5)} %3 \put(120,32.5){\oval(10,5)} %here
+\put(150,32.5){\oval(10,5)} %7 \put(35,17.5){\oval(10,5)} %2
+\put(65,17.5){\oval(10,5)} %here \put(95,17.5){\oval(10,5)} %4
+\put(125,17.5){\oval(10,5)} %5
+
+        \put(80,105){\makebox(5,5){{\tiny 4000}}}
+\put(35,85){\makebox(5,5){{\tiny 4000}}}
+\put(125,85){\makebox(5,5){{\tiny 4000}}}
+\put(12,65){\makebox(5,5){{\tiny 4000}}}
+\put(58,65){\makebox(5,5){{\tiny 4000}}}
+\put(102,65){\makebox(5,5){{\tiny 4000}}}
+\put(148,65){\makebox(5,5){{\tiny 4000}}}
+
+\put(32,50){\makebox(5,5){{\tiny 4000}}}
+\put(87,50){\makebox(5,5){{\tiny 4000}}}
+\put(130,50){\makebox(5,5){{\tiny 4000}}}
+\put(47,35){\makebox(5,5){{\tiny 3999}}}
+\put(106,35){\makebox(5,5){{\tiny 3999}}}
+
+\put(0,50){\makebox(5,5){{\tiny 4000}}}
+\put(48,50){\makebox(5,5){{\tiny 4000}}}
+\put(71,50){\makebox(5,5){{\tiny 4000}}}
+\put(120,50){\makebox(5,5){{\tiny 4000}}}
+\put(160,50){\makebox(5,5){{\tiny 4000}}}
+\put(23,34){\makebox(5,5){{\tiny 3999}}}
+\put(83,34){\makebox(5,5){{\tiny 3999}}}
+\put(123,34){\makebox(5,5){{\tiny 3999}}}
+\put(150,34){\makebox(5,5){{\tiny 3999}}}
+\put(30,20){\makebox(5,5){{\tiny 3998}}}
+\put(65,20){\makebox(5,5){{\tiny 3998}}}
+\put(90,20){\makebox(5,5){{\tiny 3998}}}
+\put(125,20){\makebox(5,5){{\tiny 3998}}}
+
+        \put(85,100){\makebox(5,5){{\er 0}}}
+\put(40,80){\makebox(5,5){{\er 0}}} \put(130,80){\makebox(5,5){{\er
+0}}} \put(20,60){\makebox(5,5){{\er 0}}}
+\put(60,60){\makebox(5,5){{\er 0}}} \put(110,60){\makebox(5,5){{\er
+0}}} \put(150,60){\makebox(5,5){{\er 0}}}
+\put(35,45){\makebox(5,5){{\er 1}}} \put(95,45){\makebox(5,5){{\er
+4}}} \put(135,45){\makebox(5,5){{\er 6}}}
+\put(50,30){\makebox(5,5){{\er 1}}} \put(110,30){\makebox(5,5){{\er
+4}}}
+
+        \put(10,45){\makebox(5,5){{\er 0}}}
+\put(50,45){\makebox(5,5){{\er 2}}} \put(77,45){\makebox(5,5){{\er
+3}}} \put(113,45){\makebox(5,5){{\er 5}}}
+\put(167,45){\makebox(5,5){{\er 7}}} \put(25,30){\makebox(5,5){{\er
+1}}} \put(85,30){\makebox(5,5){{\er 4}}}
+\put(125,30){\makebox(5,5){{\er 6}}} \put(155,30){\makebox(5,5){{\er
+6}}} \put(40,15){\makebox(5,5){{\er 1}}}
+\put(70,15){\makebox(5,5){{\er 1}}} \put(100,15){\makebox(5,5){{\er
+4}}} \put(130,15){\makebox(5,5){{\er 4}}}
+
+\end{picture}
+\caption{探索木の各ノードプロセスの実行されるノードと優先度}
+\label{search_tree_distribution}
+\end{figure}
+
+%\baselineskip=0.5cm 
+\begin{verbatim}
+:- module search_load_balancing.
+
+        search(Tree,Output):- true |                    %(1)
+                current_node(PE,PEs),                   %(2)
+                control(Results,Output,Cont),           %(3)
+                fork(Tree,Results,0,PeServer,Cont)
+                             @priority(4000),           %(4)
+                next_pe(PeServer,PE,PEs).               %(5)
+        fork(_,R,_,Next,stop):- true | R=[], Next=[].   %(6)
+        alternatively.                                  %(7)
+        fork(H,R,_,Next,_):- integer(H) |               %(8)
+                R=[], Next=[].                          %(9)
+        fork(H,R,_,Next,Cont):- atom(H) |               %(10)
+                R=[H], Next=[].                         %(11)
+        fork([TL,TR],R,Level,Next,Cont):-               %(12)
+                Level =< 1 |                            %(13)
+                L1 := Level+1,                          %(14)
+                merge:in(R0,R1,R),                      %(15)
+                merge:in(Next0,Next1,Next),             %(16)
+                fork(TL,R0,L1,Next0,Cont),              %(17)
+                fork(TR,R1,L1,Next1,Cont).              %(18)
+        fork([TL,TR],R,Level,Next,Cont):-               %(19)
+                Level =:= 2 |                           %(20)
+                Next=[get(PE0),get(PE1)],               %(21)
+                merge:in(R0,R1,R),                      %(22)
+                search_pri:fork(TL,R0,Cont)@node(PE0),  %(23)
+                search_pri:fork(TR,R1,Cont)@node(PE1).  %(24)
+
+        control([H|_],Output,Cont):- wait(H) |          %(25)
+                Output=[H], Cont=stop.                  %(26)
+        control([],Output,Cont):- true | Output=[].     %(27)
+        
+        next_pe([],_,_):- true | true .                 %(28)
+        next_pe([get(PeNo)|Next],PE,PEs):-true |        %(29)
+                PE1 := PE+1,                            %(30)
+                PeNo := PE mod PEs,                     %(31)
+                next_pe(Next,PE1,PEs).                  %(32)
+\end{verbatim} 
+%\baselineskip=0.8cm
+
+\begin{description}
+\item {\bf search}\ \ このプログラムを呼び出すトップレベルの述語である.  
+引数は先の例と全く同じである.  ボディゴールでは, まず組込み述語で自分
+のノード番号と全体のノード数を計算している(2). (3), (4)では探索を行な
+うプロセスを生成している.  (5)ではノード番号を得るサーパプロセスを生成
+している.
+\item {\bf fork\ クローズ(12)}\ \ 探索のレベルが1以下の時には同じノードで
+実行する.  なお, ここで (17), (18) の優先度を変えていないが, これは負
+荷分散作業を最優先で実行するためである.  即ち, 優先度を下げると探索作
+業と負荷分散作業が並行して行なわれ, ノードに投げる処理が遅れるからであ
+る.
+\begin{quote}\begin{dg}
+負荷分散が完了するまでは, 負荷分散作業を行なうゴールのプライオリティは
+他のゴールのプライオリティよりも低くならないようにするように注意しなけ
+ればならない.
+\end{dg}\end{quote}
+\item {\bf fork\ クローズ(19)}\ \  探索のレベルが 2 に達した時, 
+左右の探索を別ノードで実行させるようゴールを投げている (23), (24).  い
+ずれのゴールも, 実行する優先度の範囲はトップレベルのゴール呼び出しで与
+えられた引数をそのまま渡している.  \\ここで {\tt \ search\_pri:\ \ } 
+の後にゴールを記述しているが, これは別モジュールのゴールを呼び出すため
+の表記である.  優先度制御は, このモジュール の中で行なわれる.  なお,
+(21) の部分で動作させるべきノード番号を得ている.
+\item {\bf next\_pe}\ \ ノード番号をサイクリックに得るためのサーバである.  
+\end{description}
+
+\appendix
+
+\chapter{KLIC の使い方}
+この章では, KLIC システムの使い方について説明します.  
+
+\section{KLIC におけるプログラムのコンパイル}
+インストールが完了すると, \code{klic} コマンドで実行可能コードの生成が
+可能になります.   KL1 プログラムは,  klioc コマンドによって C 言語プロ
+グラムへコンパイルされ, 実行可能コードが生成されます.   \code{klic} と
+いうプログラムは, 様々なオプションが可能なコンパイラ・ドライバです.  
+
+\subsection{コンパイル用コマンド}
+
+引数に, 拡張子 \code{.kl1} が付いた KL1 ソース・プログラム・ファイル名
+を指定して, \code{klic} コマンドを実行すると,  KL1 プログラムは C 言語
+にコンパイルされ, 実行可能コードが生成されます.  
+
+例えば,  XXX.kl1 をコンパイルしてコードを生成する場合, 次のように入力
+します:
+
+\begin{verbatim}
+        klic XXX.kl1
+\end{verbatim}
+
+実行結果は \code{a.out} となります.  実行結果の名前を \code{YYY} とした
+い場合, 次のように入力します.  
+
+\begin{verbatim}
+        klic -o YYY XXX.kl1
+\end{verbatim}
+
+例えば, プログラムが \code{XXX.kl1} , \code{YYY.kl1} , \code{ZZZ.kl1} 
+のように複数個のソース・ファイルに分割されている場合, 次のように入力す
+ると, 一括してコンパイルとリンクができます.  
+
+\begin{verbatim}
+        klic XXX.kl1 YYY.kl1 ZZZ.kl1
+\end{verbatim}
+
+複数個の KL1 ソース・ファイルを別個にコンパイルして, 後でリンクするこ
+ともできます.  リンケージ・エラーを避けるために, 次のように \code{-c} 
+オプションを指定して, リンク前にコンパイル・コマンドの実行を終わらせる
+必要があります.  
+
+\begin{verbatim}
+        klic -c XXX.kl1
+        klic -c YYY.kl1
+        klic -c ZZZ.kl1
+\end{verbatim}
+
+最後に, 次のように入力して, 複数のコンパイル結果をリンクすることができ
+ます.  
+
+\begin{verbatim}
+        klic XXX.o YYY.o ZZZ.o
+\end{verbatim}
+
+\subsection{コンパイラ・オプション}
+
+コンパイル・コマンド klic のオプションの利用方法を, 以下に示します.  
+
+\begin{quote}
+\begin{tabular}{llp{10cm}}
+-c&&再配置可能オブジェクトを生成し, klic コマンドを終了します.  リンク
+は行ないません.  \\
+-C&& C 言語への変換を終了し, klic コマンドを終了します.  \\
+-d&&実際に実行するコマンド列を表示します.  表示するだけで実行
+はしません.   \code{-v} を仮定します.  \\
+-D&database\_manager&指定されたデータベース管理プログラムを使用します.
+\\
+-g&& dbx ,  gdb などのデバッガ用の情報を含んだ実行可能コードを生成しま
+す.  \\
+-I&directory&指定されたインクルード・パスを C コンパイル時に使用します.  \\
+-K&klic\_compiler&指定された変換プログラムを KL1 から C への変換時に使
+用します.  \\
+-l&library&指定されたライブラリをリンク時に使用します.  \\
+-L&directory&指定されたライブラリ・パスをリンク時に使用します.  \\
+-o&file&指定された実行可能コードファイルの名前を生成します.  \\
+-O&&\\
+-O&level&指定された最適化レベルで, コンパイルします.  ゼロ以外の最適化
+レベルが指定されたとき, いくつかの付加的な最適化フラグも C コンパイラ
+に渡します.   そのような付加的な最適化フラグは, システムに依存するため,  
+KLIC システムのインストール手続きの際に決定されます.  
+
+このオプションでは,  \code{-O} と level の間に空白があってはなり
+ません.  \\
+-P&parallel&サブタスク( C コンパイラなど)を並列で実行します.  
+最大時には, 並列のサブタスクを同時にフォークします.  \\ 
+-R&&ファイルの
+日付とは無関係に, 再コンパイルをします.  \\ 
+-S&&アセンブリ・コードを生成し, klic コマンドを終了します.  \\ 
+-n&&デバッグなし実行時ライブラリをリンクします.  このオプションが省略
+された場合, デバッグあり実行時ライブ ラリをリンクします.  \\
+-v&&実際に実行したすべてのコマンドを, 標準エラー出力に出力します.  \\
+-x&directory&指定されたディレクトリ中のデータベース・ファイル 
+\code{klic.db} を使用します.  また,  \code{atom.c} ,   
+\code{funct.c} ,  \code{predicates.c} や対応するオブジェクトも指定され
+たディレクトリに置きます.   このオプションは, リンクするプログラムが複
+数のディレクトリに分散している場合に便利です.  \\
+-X&directory&データベース・ファイル \code{klic.db} が存在しない場合, 
+指定されたディレクトリ下のデータベース初期化ファイル 
+\code{klicdb.init} から \code{klic.db} を作成します.   
+このオプションが省略された場合, デフォルトのライブラリ・ディレクトリを
+仮定します.  
+\end{tabular}
+\end{quote}
+
+次に示す環境変数によって, コンパイラのデフォルトの動作を変えることがで
+きます.  コンパイル時に指定されたオプションの方は, 環境変数の値よりも優
+先します.  
+
+\vspace{0.5cm}
+
+\begin{tabular}{lp{11cm}}
+KLIC\_LIBRARY&実行時ライブラリ用のディレクトリです.   \code{-X} オプショ
+ンの方を優先します.  \\
+KLIC\_DBINET&初期データベース用のディレクトリで
+す.  デフォルトは実行時ライブラリ用のディレクトリです.  \\
+KLIC\_COMPILER& KL1 から C への変換プログラムです.  
+\code{-K} オプションの方を優先します.  \\
+KLIC\_DBMAKER&データベース管理プログラムです.   \code{-D} オプションの
+方を優先します.  \\
+KLIC\_INCLUDE&コンパイル時のインクルード・パスです.   
+\code{-I} オプションの方を優先します.  \\ 
+KLIC\_CC&使用する C コンパイ
+ラです.  \\ 
+KLIC\_CC\_OPTIONS&コンパイラ・オプションです.  \\ 
+KLIC\_LD&使用するリンカです.  \\
+KLIC\_LD\_OPTIONS&リンカ・オプションです.  \\
+\end{tabular}
+
+\subsection{KLIC コンパイラの動作内容}
+
+KL1 プログラムのコンパイル過程や実行可能コードの生成過程を知ることによっ
+て,  KLIC の使い方の理解を深めることができます.  
+
+KLIC システムは, 以下のように 3 個のモジュールで構成されます.  
+
+\begin{itemize}
+\item
+ KLIC コンパイラ
+\item
+ KLIC データベース管理プログラム
+\item
+ KLIC 実行時ライブラリ
+\end{itemize}
+
+KLIC コンパイラは, KL1 プログラムを C 言語プログラムにコンパイルします.  
+KLIC コンパイラは同時に, \code{.ext} ファイルも生成します.  この
+ファイルは, プログラムで使用しているアトムとファンクタの情報などを持ち
+ます .   リンクする個々のプログラムの \code{.ext} ファイル中にある情報
+は, 後でデータベース管理プログラムによってマージされ,  \code{atom.h} , 
+\code{funct.h} ,  \code{atom.c} ,  \code{funct.c} ,  
+\code{predicates.c} になります.   
+
+ C コンパイラは, KLIC コンパイラが生成した C プログラムをコンパイルし
+ます.  その際, ヘッダ・ファイル \code{atom.h} ,  \code{funct.h} を使用
+します.   \code{atom.c} ,  \code{funct.c} , \code{predicates.c} もコン
+パイルして, 実行時ライブラリとリンクします( \code{predicates.c} は, デ
+バッグあり実行時ライブラリを使用するときだけリンクします).  
+
+コンパイル, データベース管理, およびリンクは, コンパイラ・ドライバ・プ
+ログラム \code{klic} が制御します.  この klic プログラムは,  \code{cc} 
+と \code{make} を組み合わせた機能に類似した機能を持っています.   
+\code{cc} は,  C プリプロセッサ,  C コンパイラ・カーネル, およびリンカ
+を制御します.  
+
+同様に,  \code{klic} は,  KL1 から C へのコンパイラ,  C コンパイラ,  
+KL1 プログラムのデータベース管理プログラム, およびリンカを制御します.   
+\code{make} は, ファイルの日付をチェックし, コンパイルが必要なファイル
+だけをコンパイルします.   \code{klic} も \code{make} と同様の処理を行い
+ます.  
+
+\section{KLIC におけるプログラムの実行}
+
+生成された実行可能コードは, 簡単に動かせます.   KL1 プログラムをコンパ
+イルして, 実行可能コードを \code{a.out} に出力した場合, ファイル名 
+\code{./a.out} を使用中のシェルに渡すだけで実行できます.  
+
+\code{main} モジュール中の引数なし述語 \code{main} が, 最初に実行され
+るゴールになります.
+
+
+
+\subsection{実行時オプション}
+
+実行可能コードを動かす際, 以下に示すオプションが利用できます.  
+
+\begin{tabular}{llp{10cm}}
+-h&size&ワード単位のヒープの初期サイズです.  コピー方式
+のガーベージ・コレクションを採用しているので, 実際に使用するヒープ・サ
+イズは, この 2 倍になります.  ヒープ・サイズは, (例えば, \code{2097152} 
+のように)数値を直接指定したり,  2\^10 単位や 2\^20 単位で \code{k} や 
+\code{m} を数字の後ろに付けて(\code{2048k} や \code{2m} のように)指定
+したりできます.  このオプションが省略された場合, 初期サイズはマクロの 
+\code{HEAPSIZE} によって決定します.  配布版では,  HEAPSIZE は 24k になっ
+ています.   1 ワードの長さは, C の\code{long int}型と同じです.  実際の長
+さは, 使用するハードウェアや C コンパイラに依存します.  ヒープ・サイズ
+は,  \code{-H} や \code{-a} オプションに従って自動的に増加します. \\
+-H&size&ワード単位の最大のヒープ・サイズです.  ヒープは, 指
+定されたサイズまでは自動的に拡張します.  このオプションが省略された場合, 
+無限大を仮定します.  \\
+-a&ratio&ヒープ領域中でアクティブ・セル(ゴミでないセル)が占
+める割合の上限です.  浮動小数点数で指定してください.  アクティブ・セルの
+占有する割合が, 指定された上限値を超えると,  \code{-H} オプションで指
+定された最大サイズを超えない限り, ヒープ・サイズを, 次回のガーベージ・
+コレクションで 2 倍にします.  このオプションが省略された場合, 0.5 を仮
+定します.  \\
+-g&&ガーベージ・コレクションに要した時間を計測します.  ヒープが小さ
+いとガーベージ・コレクションは非常に短い時間で行うので, 計測オーバヘッ
+ドの方が大きくなってしまう可能性が高くなります.  このオプションが省略さ
+れた場合, ガーベージ・コレクションの計測は行いません.  \\
+-s&&中断情報を計測します.  プログラムの実行が終了すると, 中断した述
+語とその中断回数を報告します.  このオプションは, デバッグあり実行時ライ
+ブラリをリンクした場合にだけ有効です.  このオプションを省略しても, デバッ
+グあり実行時ライブラリがリンクされるので, 中断情報を計測します.  \\
+-t&&トレース状態で, プログラムの実行を開始します.  このオプションは, デ
+バッグあり実行時ライブラリをリンクした場合にだけ有効です.  このオプショ
+ンを省略しても, デバッグあり実行時ライブラリがリンクされるので, トレー
+ス状態になります.  デバッグなし実行時ライブラリをリンクさせる場合には, 
+コンパイル時のオプションで指定します. 
+\end{tabular}
+
+\vspace{0.5cm}
+
+すべての実行可能ゴールが, 実行を終了するとプログラムは, 停止します.  デ
+バッグあり実行時ライブラリがリンクされている場合, (実行可能ゴールは存
+在しないが), 入力データを待って中断しているゴールが存在した場合, 中断
+の原因となっているゴールが探索されて報告されます.  デバッグなし実行時ラ
+イブラリがリンクされている場合は, 中断しているゴールの数だけが報告され
+ます.  
+
+
+
+\chapter{簡易並列実装版の使い方}
+KLIC の 2 種類の並列実装のベータ版も、配布される KLIC に含まれています.
+このうち現在の配布に含まれる分散メモリ実装と呼ばれる方式の版は PVM3.3 
+を利用して実現され, 
+簡易並列実装版とも呼ばれ, 同種のマシンがネットワーク結合された分散環境
+でも利用することができます.  この版の簡単な利用法について説明したいと
+思います.
+
+なお既知のものや, 潜在しているものを含めて, 至る所に欠陥があると思われます.  
+このバージョンでは, 我々の実装作業に役立つような問題発見が, 意欲ある人
+達によって行われることへの期待も込められています.  
+
+PVM に基づいていますが, 現在の版では異種構成をサポートしていません.  
+複数のアーキテクチャを持つプロセッサで構成されるシステムや, 異なるオペ
+レーティング・システムを動かすシステムでは機能しません.  
+現時点では, 異種システムをサポートする計画は全くありません.  
+
+\section{分散 KLIC 向けプログラムのコンパイル}
+コンパイル手続きは, 以下に示すオプションが利用できる他は, 逐次版とほぼ
+同じです.  
+
+\begin{tabular}{lp{10cm}}
+-dp&
+分散 KLIC システムを用いたコンパイルを指定します.  
+このオプションの指定がない場合, コンパイルされるオブジェクト・コードは, 
+逐次処理でしか動きません. \\
+\end{tabular}
+
+\section{分散 KLIC のプログラム実行}
+
+\subsection{PVM のセット・アップ}
+
+分散実行用にコンパイルされたプログラムを実行する前に,  PVM システムが
+システム上で稼働している必要があります.  
+
+\subsubsection{分散 KLIC の実行時オプション}
+
+分散 KLIC システムでプログラムを動かす場合, 逐次版で利用できるオプショ
+ンに加えて, 以下のオプションが利用できます.   
+
+\begin{tabular}{llp{10cm}}
+-p&N&
+プログラムを動かすための疑似プロセッサ( Unix プロセス)の数を指定します.  \\
+-e&&
+バッチ転送モードに切り替えます.  
+通常,  KLIC は要求時にプロセッサ間でデータ構造を転送します.  
+ネストしたデータ構造は通常, 1 度に 1 レベルずつ転送します.  
+バッチ転送では, ネストしたデータ構造を 1 度に転送します.  
+これは, いくつかのプログラムに対して, より効率的に実行します.  
+しかし, 他のプログラムの性能を劣化させることもあります.  \\
+-n&&
+実行時の統計情報を表示します.  \\
+\end{tabular}
+
+\section{ランタイムモニタを使った実行}
+
+並列プログラムの開発では, デバッギングの他チューニングも必要となります.
+プログラムのチューニングのためにビジュアルにノードの稼働状況を見る
+ツールは非常に威力を発揮します.  そのために KLIC ではランタイムモニタと
+呼ばれるツールを用意しています.  このツールの利用方法について簡単に
+述べます.
+
+\subsection{ランタイムモニタの起動}
+
+ランタイムモニタは PVM を利用して実現されています.
+起動は次の通りです.
+
+\begin{verbatim}
+        klicmon 最大ノード数
+\end{verbatim}
+
+すると図 \ref{rmon-empty} のウインドウが表示されます (図の場合は,
+ノード数 12 とした).  この時 rmonitor の PVM におけるタスク ID を
+覚えておいて下さい.
+
+\begin{figure}[htb]
+\begin{center}
+\epsfile{file=rmon5.ps,width=7cm}
+\end{center}
+\caption{ランタイムモニタの初期状態}\label{rmon-empty}
+\end{figure}
+
+\subsection{ランタイムモニタの利用}
+
+ランタイムモニタを利用します.  例えば {\bf a.out} をノード数 
+12 で実行したとします.  またランタイムモニタの PVM における
+タスク ID が 40004 とする.  {\bf a.out} を以下の通り実行することで
+各ノードの稼働状況が図 \ref{rmon-exec} のように見ることができる.
+
+\begin{verbatim}
+        a.out -p 12 -rmon 40004
+\end{verbatim}
+
+\begin{figure}[hbt]
+\begin{center}
+\epsfile{file=rmon3.ps,width=7cm}
+\end{center}
+\caption{稼働状況の表示}\label{rmon-exec}
+\end{figure}
+
+この図の横軸は右方向への時間軸となります.  画面が一杯になった
+場合は, 横スクロールが起こります.  縦軸は各ノードを示します.  
+上から下に昇順に並びます.
+
+\section{分散 KLIC の既知のバグ}
+\begin{itemize}
+\item
+新しく登録されたアトムとファンクタは, プログラムの実行中に, 正常に処理
+されないことがあります.  
+
+\item
+スパイの指定は, 
+指定した計算ノードの内部だけに効果があります.  
+
+\item
+永久中断ゴールの検出は行なっていません.
+
+\item
+KLIC のバグではないですが, PVM は時々ハングアップします.  
+PVM のコンソールから稼働しているかどうかを時々確認して下さい.
+
+\end{itemize}
+
+
+
+\begin{thebibliography}{1}
+
+\bibitem{PIMOS}
+Takashi Chikayama, Hiroyuki Sato, and Toshihiko Miyazaki.
+\newblock Overview of the parallel inference machine operating system
+  ({P}{I}{M}{O}{S}).
+\newblock In {\em Proceedings of FGCS'88}, pages 230--251, Tokyo, Japan, 1988.
+
+\bibitem{parlog}
+Keith~L. Clark and Steve Gregory.
+\newblock Parlog: A parallel logic programming language.
+\newblock {\em ACM Transaction on Programming Languages and Systems}, 8(1),
+  1986.
+
+\bibitem{CP}
+Ehud Shapiro.
+\newblock A subset of {C}oncurrent {P}rolog and its interpreter.
+\newblock ICOT Technical Report TR-003, ICOT, 1983.
+
+\bibitem{OOCP}
+Ehud Shapiro and Akikazu Takeuchi.
+\newblock Object oriented programming in {C}oncurrent {P}rolog.
+\newblock ICOT Technical Report TR-004, ICOT, 1983.
+\newblock Also in New Generation Computing, Springer-Verlag Vol.1 No.1,1983.
+
+\bibitem{GHCoriginal}
+Kazunori Ueda.
+\newblock {G}uarded {H}orn {C}lauses.
+\newblock ICOT Technical Report TR-103, ICOT, 1985.
+
+\bibitem{KL-Design}
+Kazunori Ueda and Takashi Chikayama.
+\newblock Design of the kernel language for the parallel inference machine.
+\newblock {\em The Computer Journal}, December 1990.
+
+\bibitem{PVM} 
+A. Geist, A. Beguelin et al.
+\newblock PVM 3 USER'S GUIDE AND REFERENCE MANUAL.
+\newblock Technical Report TM-12187, Oak Ridge National Laboratory, 1994.  
+\end{thebibliography}
+
+\end{document}

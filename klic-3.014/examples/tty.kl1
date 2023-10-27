@@ -1,0 +1,38 @@
+% Module for interactive I/O using stdin and stderr
+% March 1, 1995 by Kazunori Ueda
+%
+% A goal tty:ttystream(IO) accepts through IO a stream of I/O messages
+% and processes them in the order they are given.
+
+:- module tty.
+ttystream(IO) :- true | 
+    klicio:klicio([stdin(Rn),stderr(Wn)]),
+    testok(Rn,R), testok(Wn,W), tty_w(IO,R,W).
+
+testok(normal(R0),R) :- true | R=R0.
+
+tty_w([],R,W) :- true | R=[], W=[].
+tty_w([putc(C)  |IO],R,W0) :- true | W0=[putc(C)  |W], tty_w(IO,R,W).
+tty_w([nl       |IO],R,W0) :- true | W0=[nl       |W], tty_w(IO,R,W).
+tty_w([putt(T)  |IO],R,W0) :- true | W0=[putt(T)  |W], tty_w(IO,R,W).
+tty_w([fwrite(S)|IO],R,W0) :- true | W0=[fwrite(S)|W], tty_w(IO,R,W).
+tty_w([gett(T)  |IO],R0,W0) :- true | 
+    W0=[fflush(X)|W], wait(X,gett(T),R0,R), tty_r(T,IO,R,W).
+tty_w([getwt(T)  |IO],R0,W0) :- true | 
+    W0=[fflush(X)|W], wait(X,getwt(T),R0,R), tty_r(T,IO,R,W).
+tty_w([getc(C)  |IO],R0,W0) :- true |
+    W0=[fflush(X)|W], wait(X,getc(C),R0,R), tty_r(C,IO,R,W).
+tty_w([ungetc(C)|IO],R0,W0) :- true |
+    W0=[fflush(X)|W], wait(X,unget(C),R0,R), tty_r(C,IO,R,W).
+
+wait(0,M,S0,S) :- true | S0=[M|S].
+
+tty_r(_,[],R,W) :- true | R=[], W=[].
+tty_r(_,[gett(T)  |IO],R0,W) :- true | R0=[gett(T)  |R], tty_r(T,IO,R,W).
+tty_r(_,[getwt(T)  |IO],R0,W) :- true | R0=[getwt(T)  |R], tty_r(T,IO,R,W).
+tty_r(_,[getc(C)  |IO],R0,W) :- true | R0=[getc(C)  |R], tty_r(C,IO,R,W).
+tty_r(_,[ungetc(C)|IO],R0,W) :- true | R0=[ungetc(C)|R], tty_r(C,IO,R,W).
+tty_r(X,[putc(C)  |IO],R,W0) :- wait(X) | W0=[putc(C)  |W], tty_w(IO,R,W).
+tty_r(X,[nl       |IO],R,W0) :- wait(X) | W0=[nl       |W], tty_w(IO,R,W).
+tty_r(X,[putt(T)  |IO],R,W0) :- wait(X) | W0=[putt(T)  |W], tty_w(IO,R,W).
+tty_r(X,[fwrite(S)|IO],R,W0) :- wait(X) | W0=[fwrite(S)|W], tty_w(IO,R,W).

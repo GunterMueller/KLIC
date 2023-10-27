@@ -1,0 +1,452 @@
+% (C) 1998 Japan Information Processing Development Center
+% 詳細な配布条件については、COPYRIGHT-JIPDEC.jを参照してください。
+\chapter{単一化器}
+\index{たんいつか@単一化}
+\index{ぐたいか@具体化}
+
+本章では、KLICの単一化器の説明をおこなう。
+
+KL1では単一化はpassive unificationとactive unificationの2つが存在するが、
+両処理は全く別の実装をされている。
+\index{passive unification}
+\index{active unification}
+\index{たんいつか@単一化!passive unification}
+\index{たんいつか@単一化!active unification}
+
+両者に共通している実装のポリシーは、
+\begin{itemize}
+\item すくなくとも片方がごく単純な項であることが静的に判明するような
+場合には、コンパイル時に(部分的に)インライン展開してしまう。
+
+\item 動的にしか判明しないような場合には実行時コードを利用する。
+ただし、片方の項が手繰りが不要ですぐに純粋未定義変数と判明するような
+ごく単純な場合は、動的にしか判断できないが
+インライン展開されている。
+\end{itemize}
+
+ここでは、passive/activeともに、実行時ライブラリとして用意されている
+部分についてのみ解説を行う。
+
+\section{Passsive unification}
+
+\index{passive unification}
+\index{たんいつか@単一化!passive unification}
+
+Passive unificationは unify2.c で定義されている。
+eq\_terms\_body(x, y) なる関数で、x, yは比較対象の項であり、
+両者が同一かどうかを検査している。
+
+内部で行っていることはごく単純であり、単純比較し、
+同一でない場合でかつ構造の場合には再帰的に比較を行っている。
+また、末尾再帰最適化をかけたコードになっている。
+
+特記すべきなのは以下の2点である。
+
+\begin{itemize}
+\item 比較は際限なく行う。よって、循環構造体同士の比較を行うと
+比較は終了しなくなる。本来はこれは、バグである。
+
+\item ともにdata objectの場合には、passive\_unify メソッドにより
+比較を行う。
+\end{itemize}
+
+\section{Active unification}
+
+\index{active unification}
+\index{たんいつか@単一化!active unification}
+
+Active unificationはunify.c、unify2.cに定義されている。
+passive unificationと比較すると、明かに複雑である。
+
+単一化器のトップレベルは基本的に、do\_unify(), do\_unify\_value()の2つである。
+両者の違いは、前者が第一、二引数共にその構造がはっきりしない場合に
+呼びだされるのに対して、後者は第二引数(x, y とあった場合のy)は
+具体値であることが保証されているため処理が単純であることである。
+
+また、do\_unifyでは、基本的に1レベルずつしか単一化をせず、
+構造体の単一化については、1レベルずつ、単一化を行うゴールをエンキューする
+ことにより実現している。
+単一化を行う際には、ゴールがフックされている変数を
+具体化することにより、中断ゴールを再開したり、consumer/generator object
+のunifyメソッドの起動が行われることがある。
+通常のdo\_unifyでは連続して、それらの処理を行うが、
+「中断構造」を発見したときに、それらの再開やunify methodの起動を行わずに
+単一化を行うゴールをエンキューしてしまう版の単一化器も存在する
+(do\_shallow\_unify())。\footnote{このような版の単一化器が存在する理由は、
+特にジェネリックオブジェクトのメソッド起動については、このメソッドを起動した
+結果、再帰的に連続してメソッドが起動され、巨大なヒープを消費するなどにより
+処理が複雑になることがあり、そのような状況に対処するためである。
+例えば、mergerのコードを参照のこと。}
+
+ここでは、もっとも複雑な版である、do\_unify()についての説明を行い、
+他の版は特に説明しないこととする。
+
+\section{単一化器: do\_unify()}
+
+単一化器do\_unify()のアルゴリズムについて解説する。
+
+do\_unify()のインターフェースは以下のようになっている。
+
+\begin{verbatim}
+q *do_unify(allocp, x, y)
+     q * allocp;
+     q x, y;
+\end{verbatim}
+
+x, y は単一化対象である項であり、allocpはヒープ割付点のアドレスである。
+単一化後、更新されたヒープ割付点のアドレスが返される。
+
+以下でアルゴリズムの説明を行う。
+
+\begin{enumerate}
+\item 片方の項 x を手繰りつつ型検査を行う。
+
+\begin{itemize}
+\item x が二重ループであることがわかれば、もう一方の項 y を手繰り、
+一重ループかどうか検査する。一重ループであれば、yを具体化して終了。
+
+\begin{itemize}
+
+\item y も二重ループであれば、
+
+\begin{enumerate}
+\item x とyが同一でなければ、xがgeneratorであるかどうか検査する
+(is\_generator\_suspで検査する)。generatorであれば、
+generator\_unify()を実行する。
+y がgeneratorであれば、その逆。
+
+\item x, y が共にgeneratorでなければ、共にgoal/consumer
+ゴールであることが判明するので双方をmergeし終了。
+このマージについては、suspendしているゴール群の数に関係なく、
+一定コストで行われるように工夫がなされている\REFER{merge-chain}。
+\end{enumerate}
+
+\begin{figure}
+\begin{center}
+\epsfile{file=merge-chain.eps,width=.8\textwidth}\\
+\end{center}
+\caption{ゴールチェーンのmerge}
+\label{merge-chain}
+\end{figure}
+
+\item y が二重ループではない場合には、具体値であることが判明したので
+x を待つゴールを再開する(resume\_goals())。
+\end{itemize}
+
+\item xが一重ループであることがわかれば、y が具体値、または一/二重ループ
+であることがわかるまで手繰りxを具体化する。yを手繰るのは、x と yとが実は
+同じ変数である場合に、REFのループができてしまうことを防ぐため。
+
+\item x が具体値であることがわかった場合には、yを手繰る。
+
+\begin{itemize}
+\item yが一重ループであれば、yをxで具体化して終了。
+\item yが二重ループであることがわかれば、y を待つゴールを再開
+(resume\_goals()。generatorの場合もこれで良い)。
+\item yが具体値であることがわかれば、xとを比較する。
+同一でなければ、両者を単一化するようなゴールを割りつけ、エンキューする
+(enqueue\_unify\_goal())。
+単一化を行っている間は割り込み関連の処理がまったく行われない。
+何故なら、割り込み処理はゴールのリダクションの合間に行なわれるが、
+単一化器のような実行時ライブラリが動作している間には
+リダクション操作が行われないためである。
+これは、あまりに複雑な項同士を単一化する場合(特に並列実装時に)
+システムのレスポンスがあまりに悪くなる可能性が高いため、ある程度しか
+連続して処理が行われないようにするための配慮である。
+\end{itemize}
+\end{itemize}
+\end{enumerate}
+
+以上で述べたように、active unifierの内部では
+さらに副次的な処理が内部で行われる。つまり、ゴールの再開、
+generatorの起動、さらに複雑な項同士の単一化である。それらの説明を以下で行う。
+
+\subsection{ゴールの再開: resume\_goals()}
+
+中断構造に対して単一化を行い、ゴールの再開、consumer/generator
+objectのunifyメソッドを起動するための処理は、resume\_goals()で行われる。
+
+\subsubsection{中断構造に対しての処理の概略}
+
+\index{ちゅうだんこうぞう@中断構造}
+\index{さいかいしょり@再開処理}
+
+Generatorの処理に比較してより複雑であるゴールレコード、consumerに対しての
+処理については、概略の解説を以下で行う。
+図\ref{fig:klic-rt-final-struct}として挙げた中断構造の説明の図を
+図\ref{fig:klic-rt-final-struct-again}として再掲する。
+
+\begin{figure}
+\begin{center}
+\epsfile{file=suspstruct.eps,width=.8\textwidth}
+\end{center}
+\caption{中断を表現するデータ構造}
+\label{fig:klic-rt-final-struct-again}
+\end{figure}
+
+この図でわかるように、中断構造の内部は、ゴールレコードと
+consumerが混在して環状のリスト構造になっている。
+この「ゴールの再開」処理では、このリスト構造をたどり、
+以下のような処理を行う。
+\begin{itemize}
+\item ゴールを発見したならば、そのゴールを再開する(つまり、実行可能
+ゴールスタックにエンキューする)処理を行う
+
+\item consumerを発見したならば、そのconsumerのunifyメソッドを
+起動する。
+\end{itemize}
+ような処理を行う。
+
+このconsumerに対してのunifyメソッドの発行の結果、また再度同種の
+構造の作成が必要になるような場合がある。例えば、マージャの処理は、
+\begin{enumerate}
+\item 入力にCONSがあれば、出力用にCONSを1つ割付け、
+入力のCARをそのCONSにコピーし、出力側と単一化する。
+
+\item マージャオブジェクト自身を入力のCDRにフックしなおす。
+\end{enumerate}
+という処理が行われる。このような処理は、入力が``ストリーム''で
+あるようなconsumerで広く用いられるため、効率良く処理できることが望ましい。
+そのため、unifyメソッドの結果(戻り値)により、これまでの中断レコード、
+待合せレコードなどを再利用し、すぐにまた中断構造を作成できるような
+処理も実装している。
+
+\subsubsection{resume\_goals()の詳細}
+
+\index{さいかいしょり@再開処理}
+
+resule\_goals()の仕様は以下のようになっている。
+
+\begin{verbatim}
+Inline q *resume_goals(allocp, x, y)
+     q * allocp;
+     q x;
+     q y;
+\end{verbatim}
+
+x は中断レコード、または、generator用の構造(struct generator\_susp)
+を直接差すポインタであり、y は具体化対象となる項である。
+allocpはヒープ割付点のアドレスであり、戻り値として、
+更新されたヒープ割付点アドレスが返される。
+
+\begin{itemize}
+\item まず、x が generatorかどうか検査する(is\_generator\_susp)。
+Generatorであれば、generatorのactive\_unifyを呼ぶ。その結果が成功すれば、
+終了、成功しなければ、generate methodを呼ぶ。
+\begin{itemize}
+\item makeref(0)が返れば、メモリ不足であるので、x とy とを単一化する
+ゴールをエンキューしひとまず終了。
+
+\item makecons(0)が返ると内部エラーである。
+
+\item それ以外のものであれば、generatorにより生成された具体値なので、
+それをy と単一化する。このとき、x がぶらさがっていた変数のエントリも
+具体化する必要がある。
+\end{itemize}
+
+\item x がgoal/consumerであることがわかれば、
+\begin{enumerate}
+\item まず、エントリの変数をyで具体化しておく(共有ヒープ並列化の対応)
+
+\item チェーンを1つづつたどっていく。
+
+\begin{itemize}
+\item Consumerであることがわかれば(is\_consumer\_hook())、
+active\_unify methodを発行し、失敗すればそこで異常終了、
+成功すれば、大域変数rest\_of\_streamを参照し、非ゼロであれば
+中断構造鎖の構造を保存し、rest\_of\_streamにフックする。
+ゼロならば、鎖の構造を保存しない。
+
+メモリ不足のためにconsumerが失敗することがあるが、この場合には、
+「現在行おうとしている単一化の処理はキャンセル」する。
+つまり、フック構造は残しておき、再度当該具体値(y)と単一化を行うような
+ゴールをエンキューして終了。
+
+それ以外の結果であれば、method\_result に返された値を
+新しい値とし、再度objectを含めた鎖構造を再構成し、単一化を
+行う(enqueue\_unify\_goal())。
+
+\item Consumerではない、ゴールである場合には、
+ゴールレコードのnext fieldのタグを検査する。\label{goal-tag}
+
+\begin{itemize}
+\item NextのタグがINTであれば、このゴールはまだ起動されていないことを
+意味する。この場合Next 部には優先度がタグ付きで記述されているので、
+その優先度を現在の優先度とチェックして、
+一般的なエンキュー(enqueue\_goal())、または、現在実行中のqueueにenqueueする
+(resume\_same\_prio())を行い、終了(ここで、現在の優先度より高い
+ゴールをエンキューしたならば、enqueue\_goal()中で、heaplimitが0になり、
+次のリダクションとの間でチェックを行い、切り替わる。
+現在の優先度のqueueに接続する場合も「再開ゴールスタック」に接続されるため、
+heaplimitは0となり、次のリダクションとの間で、実際のゴールスタックに
+エンキューされる。
+
+どちらにしても、エンキューを行った結果、next fieldは他のゴールへの
+ポインタが記録され、下位2bitは00、つまり、タグ部はREFになる。
+
+\item NextのタグがREFの場合には、すでに前述の再開処理が
+行われたゴールであるので、なにもしない。
+\end{itemize}
+
+このように、1つのゴールに対して重複して再開処理が行われるのは、
+multiple wait, いわゆる``OR待ち''(図\ref{multiple-wait}参照)があるためである。
+
+\begin{figure}
+\begin{center}
+\begin{minipage}{6cm}
+\begin{verbatim}
+mwait(A, _) :- wait(A) | ... % (1)
+mwait(_, B) :- wait(B) | ... % (2)
+\end{verbatim}
+\end{minipage}
+\end{center}
+\caption{Multiple waitを起すコードの例}
+\label{multiple-wait}
+\end{figure}
+
+つまり、goal recordはその
+中断原因となった変数にフックするが、複数の中断原因がある場合にはその
+すべてにフックするが、再開は1度しか行ってはならない。
+例えば、図\ref{multiple-wait}で、変数A,B 共に未定義であると、これは
+multiple waitになる。その後、Aが先に具体化されたならば、(1)の節が選択され、
+(2)の節の実行は廃棄され、後にBが具体化されたとして実行されてはならない。
+この言語仕様を満足させるために、
+これまで説明したような実装となっている。
+
+\end{itemize}
+\end{enumerate}
+\end{itemize}
+
+\subsection{Generator の起動: generator\_unify()}
+
+\index{generatorのきどう@Generatorの起動}
+\index{じぇねりっく・おぶじぇくと@ジェネリック・オブジェクト!generatorのきどう@Generatorの起動}
+
+この関数は、generatorのactive\_unify メソッドを起動し結果に応じて、
+単一化の処理を行う。片方はgeneratorであることが確定し、
+もう一方は、hook構造体である(つまり、goal/consumer/generatorのいずれかである)
+ことが確定している時に呼びだされる。
+
+関数仕様は以下である。
+
+\begin{verbatim}
+static Inline q*
+generator_unify(gsx, sy, allocp)
+     struct generator_susp *gsx;
+     struct susprec *sy;
+     q *allocp;
+\end{verbatim}
+
+引数は、gsx は、generator\_susp 型構造へのポインタ、
+sy はsusprecへのポインタを持つ。
+
+\begin{enumerate}
+\item まず、gsxの先のgeneratorに対して、sy を引数として
+active\_unify() メソッドを起動する。
+\begin{itemize}
+\item 結果が0以外のものでなければ、
+単一化処理は、当該メソッド中で行われたので、終了する
+(このとき、戻り値はheap topを示している)。
+\item 結果が0であれば、当該メソッドの実行は拒否されたことになるので、
+以下の処理を続ける。
+\end{itemize}
+
+\item sy の先を調べる。
+
+\begin{itemize}
+\item syの先もgeneratorであることが判明したならば、
+gsxを引数とし、syの先のオブジェクトにactive\_unify()を起動する。
+\begin{itemize}
+\item 戻り値が0以外であれば、それをheap topと解釈し終了。
+
+\item 戻り値が0であれば、sy側もunifyが失敗したことを示すので、
+基本的にはgsx, sy共にgenerate methodを発行し、単一化する。
+すなわち、gsx側のobjectにgenerateメソッドを発行する。
+その結果、戻り値が
+
+\begin{itemize}
+\item makeref(0)であれば、メモリ不足であったことを意味する。
+よって、sy の先のgeneratorに対してもgenerateを発行する。
+その結果、
+
+\begin{itemize}
+\item makeref(0)がもどれば、後に再度
+単一化を行うため、enqueue\_unify\_goal()により、
+単一化ゴールをエンキューする。
+
+\item makecons(0) であれば、異常終了。
+
+\item 上記以外であれば、syはその値に変身したことを示す。
+sy のエントリをまずその値で具体化し、do\_unify()により
+gsx と再度単一化を試みる。
+\end{itemize}
+
+\item makecons(0)であれば、異常終了。
+
+\item 上記以外であれば、gsxはその値に変身したことを示すので、
+gsxのエントリをその値に具体化し、syと再度do\_unify()により単一化を行う。
+\end{itemize}
+\end{itemize}
+
+\item sy の先はgeneratorではない(consumer/goalである)ことが判明した場合には、
+gsxに対して、generateの処理を行い、戻り値に応じて、enqueue\_unifyをかけるなり
+生成された値とsyとの単一化を行うなりする。
+\end{itemize}
+
+\end{enumerate}
+
+\subsection{単一化ゴールのエンキュー: enqueue\_unify\_goal()}
+
+\index{たんいつかごーる@単一化ゴール}
+
+enqueue\_unify\_goal() は、メモリ不足、
+単一化処理の時間がかかるなどの理由により、一時的に単一化処理を
+中断し、後に再度行うためエンキューするためのAPIであり、
+マクロとして定義されている。
+
+これは、結局、ゴールレコードを1つ割り付け、
+\filename{uterms.kl1}で定義されている
+unify\_terms\_dcode:unify\_goal
+を述語として指定し、エンキューするだけである。ちなみに、unify\_goal のコードは
+以下。
+
+\begin{verbatim}
+unify_goal(X,Y):- true | X = Y.
+\end{verbatim}
+
+\subsection{複雑なゴールのエンキュー: enqueue\_unify\_terms()}
+これは、構造体同士の単一化を行うゴールをKL1レベルで実装したものを
+エンキューするのみである。
+
+エンキューされるゴールの述語は
+\filename{uterms.kl1}で定義されているunify\_terms\_dcode:unifyであり、
+以下のようなものである。
+
+\begin{verbatim}
+unify(X,Y) :- 
+        functor(X,PX,AX),
+        functor(Y,PY,AY),
+        AX =:= AY |
+        unify_pf(PX,PY),
+        unify_args(AX,X,Y).
+
+unify_pf(PX,PY) :-
+        inline:"
+         if (isatomic(%0)) {
+           if (%0 != %1) goto %f;
+         } else if (isatomic(%1)) {
+           goto %f;
+         } else {
+            generic_active_unify(data_objectp(%0),
+                                 data_objectp(%1),allocp);
+         }":[PX+bound,PY+bound] | true.
+
+unify_args(0,_,_):- true | true.
+unify_args(N,X,Y):- N>0,
+        arg(N,X,EX), arg(N,Y,EY) |
+        EX=EY, N1:=N-1, unify_args(N1,X,Y).
+\end{verbatim}
+
+unify\_pfの一部でinlineが利用されている以外は全く簡単な述語である。
+inline部は、双方がdata objectであるときの処理を行っている。
+Data objectはまずfunctorとして見えるため、このような処理が妥当である。

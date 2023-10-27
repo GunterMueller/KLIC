@@ -1,0 +1,10 @@
+\entry{atom}{17}{\code {atom}}
+\entry{integer}{19}{\code {integer}}
+\entry{floating point number}{20}{\code {floating point number}}
+\entry{functor}{23}{\code {functor}}
+\entry{list}{24}{\code {list}}
+\entry{merger}{26}{\code {merger}}
+\entry{vector}{27}{\code {vector}}
+\entry{string}{28}{\code {string}}
+\entry{module}{31}{\code {module}}
+\entry{predicate}{31}{\code {predicate}}

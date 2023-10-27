@@ -1,0 +1,22 @@
+:- module main.
+
+main :- klicio:klicio([stdout(Res)]),
+	check_stream(Res).
+
+check_stream(normal(St)) :-
+	St = [putt(V),nl,putt(S),nl],
+	test(500,{a,b,c},V),
+	test(500,string#"abc",S).
+check_stream(abnormal).
+
+test(0,V,R) :- R=V.
+test(K,V,R) :- K>0 |
+	K1 := K-1,
+	generic:element(V,0,E0),
+	generic:set_element(V,0,E0,V1),
+	generic:element(V1,1,E1),
+	generic:set_element(V2,2,E2,V),
+	generic:element(V2,2,E2),
+	generic:set_element(V1,1,E1,V2),
+	test(K1,V2,R).
+

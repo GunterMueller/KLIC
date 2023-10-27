@@ -1,0 +1,54 @@
+\contentsline {chapter}{\numberline {第1章}KLICの使い方}{1}
+\contentsline {section}{\numberline {1.1}KLICシステムの作り}{1}
+\contentsline {section}{\numberline {1.2}まず, 走らせよう!}{1}
+\contentsline {section}{\numberline {1.3}KL1プログラムの構成}{2}
+\contentsline {section}{\numberline {1.4}もうちょっと複雑な使い方}{2}
+\contentsline {subsection}{\numberline {1.4.1}klicコマンドの仕組みを少し}{3}
+\contentsline {subsection}{\numberline {1.4.2}2つのファイルの同時コンパイル/リンク}{3}
+\contentsline {subsection}{\numberline {1.4.3}モジュール}{4}
+\contentsline {subsection}{\numberline {1.4.4}分割コンパイルの方法}{5}
+\contentsline {subsection}{\numberline {1.4.5}KLICシステムについてさらにもう少し}{6}
+\contentsline {subsubsection}{「記号」の扱い}{6}
+\contentsline {subsubsection}{複数ファイルでの「記号」の処理}{6}
+\contentsline {subsection}{\numberline {1.4.6}コンパイラオプション}{8}
+\contentsline {section}{\numberline {1.5}エラーメッセージ}{8}
+\contentsline {section}{\numberline {1.6}実行時オプション}{9}
+\contentsline {chapter}{\numberline {第2章}KLIC の実行機構とトレーサの使い方}{10}
+\contentsline {section}{\numberline {2.1}KL1のゴールリダクション方式}{10}
+\contentsline {subsection}{\numberline {2.1.1}ゴール書換えモデル}{10}
+\contentsline {subsection}{\numberline {2.1.2}トレーサを用いたリダクション状況の観測}{11}
+\contentsline {subsubsection}{プログラムをトレーサ付きで実行する方法}{11}
+\contentsline {subsubsection}{トレース結果の読み方}{12}
+\contentsline {section}{\numberline {2.2}サスペンションメカニズム}{12}
+\contentsline {section}{\numberline {2.3}トレーサの使用方法}{14}
+\contentsline {subsection}{\numberline {2.3.1}トレーサの出力形式}{14}
+\contentsline {subsection}{\numberline {2.3.2}トレーサの各コマンドの詳細}{15}
+\contentsline {subsubsection}{実行制御コマンド}{15}
+\contentsline {subsubsection}{デフォルトトレースフラグ設定機能}{17}
+\contentsline {subsubsection}{スパイ制御機能}{18}
+\contentsline {subsubsection}{ポートの制御}{19}
+\contentsline {subsubsection}{その他補助機能}{20}
+\contentsline {section}{\numberline {2.4}実行時エラーの表示とトレース}{20}
+\contentsline {subsection}{\numberline {2.4.1}節の失敗 (failure)}{20}
+\contentsline {subsection}{\numberline {2.4.2}永久中断}{21}
+\contentsline {chapter}{\numberline {第3章}KLICのインストール法}{22}
+\contentsline {section}{\numberline {3.1}KLICのコンパイル方式}{22}
+\contentsline {section}{\numberline {3.2}必要とする環境}{22}
+\contentsline {section}{\numberline {3.3}インストール方法}{23}
+\contentsline {subsection}{\numberline {3.3.1}システムの入手}{23}
+\contentsline {subsection}{\numberline {3.3.2}展開}{23}
+\contentsline {subsection}{\numberline {3.3.3}コンフィギュレーション}{23}
+\contentsline {subsection}{\numberline {3.3.4}コンパイル}{24}
+\contentsline {subsection}{\numberline {3.3.5}確認}{24}
+\contentsline {subsection}{\numberline {3.3.6}インストール}{24}
+\contentsline {subsection}{\numberline {3.3.7}掃除}{24}
+\contentsline {section}{\numberline {3.4}トラブルが起きたら}{24}
+\contentsline {chapter}{\numberline {付録A}簡易並列実装版の使い方}{26}
+\contentsline {section}{\numberline {A.1}分散 KLIC 向けプログラムのコンパイル}{26}
+\contentsline {section}{\numberline {A.2}分散 KLIC のプログラム実行}{26}
+\contentsline {subsection}{\numberline {A.2.1}PVM のセット・アップ}{26}
+\contentsline {subsubsection}{分散 KLIC の実行時オプション}{26}
+\contentsline {section}{\numberline {A.3}ランタイムモニタを使った実行}{27}
+\contentsline {subsection}{\numberline {A.3.1}ランタイムモニタの起動}{27}
+\contentsline {subsection}{\numberline {A.3.2}ランタイムモニタの利用}{27}
+\contentsline {section}{\numberline {A.4}分散 KLIC の既知のバグ}{28}

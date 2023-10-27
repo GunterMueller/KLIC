@@ -1,0 +1,21 @@
+Shift-<Space> で, kinput2による日本語入力を行えます. 
+さらにいろいろな設定を行いたいときには, tgif.Xdefaults を参考にして,
+.Xdefaults に設定を加えてください.
+
+また、メニューを英語表示にしたいときには、環境変数 LANG=C LANGUAGE=C を指定してください。
+ex)
+	hoge> LANG=C LANGUAGE=C tgif
+また、
+	alias eng='LANG=C LANGUAGE=C' 
+といったエイリアスを作っておくと、tgif その他, NLS対応のコマンドで英語表示を
+
+	hoge> eng tgif
+
+と簡単に実行できるので便利です。
+
+日本語の斜体やボールド体の表示もtgif上では行うことはできますが, ボール
+ドの出力はできません。斜体は(Vine Linux 2.0 上では)問題ありませんが、
+日本語PSプリンタを使ってる場合には、日本語はgs経由で出力するようにして
+ください。 
+                            2000/1/20  Jun Nishii, Project Vine
+                                            <jun@vinelinux.org>

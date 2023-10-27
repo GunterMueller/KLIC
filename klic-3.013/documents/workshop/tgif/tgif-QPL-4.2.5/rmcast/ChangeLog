@@ -1,0 +1,877 @@
+
+####################
+version 2.0.0
+cvs tag ver_2_0_0
+
+Modified files:
+    doc/manual/tgwb.lyx
+doc/manual/tgwb.tex
+etc/rmcast.config.README
+rmchat/rmchat.c
+src/rmcast.c
+src/rmcast.h
+src/rminternals.c
+src/rminternals.h
+src/rmmsg.c
+Added files:
+    
+
+Allyson 06/07/2009
+
+src/rmcast.c
+src/rmcast.h
+    - RM_initialize now requires a pointer to a callback function. That function
+      will be called whenever we need to terminate and will allow the application
+      to clean up its resources before exiting.
+    - RM_terminate return type is now void and it calls the callback function
+      passed by the application through RM_initialize parameter
+
+src/rminternals.h
+    - code clean up
+
+src/rminternals.c
+    - call RM_terminate in the correct place
+
+src/rmmsg.c
+    - unlock remove_queues_lock before returning
+
+rmchat/rmchat.c
+    - modified to use new RM_initialize
+
+doc/manual/tgwb.tex
+doc/manual/tgwb.lyx
+    - updated documentation
+
+etc/rmcast.config.README
+    - removed info about rmcast.config.sample2
+
+
+####################
+version 1.11.8
+cvs tag ver_1_11_8
+
+Modified files:
+    src/rmcache.c
+src/rmcache.h
+src/rmcast.c
+src/rmcast.h
+src/rminternals.c
+src/rminternals.h
+src/rmmsg.c
+src/rmmsg.h
+Added files:
+    
+Allyson 22/06/2009
+
+src/rmcache.c
+src/rmcache.h
+    - replaced calls to function exit()
+    - function cacheGetSMinfo now returns a integer (0 on error)
+src/rmcast.c
+src/rmcast.h
+    - replaced calls to function exit()
+    - function RM_initialize now returns a integer (0 on error)
+    - function RM_terminate now returns a integer (0 on error)
+    - function getCurStatus returns 0 if rmcastSendPacket fails
+    - modified variable name from c to current_status in getCurStatus
+src/rminternals.c
+src/rminternals.h
+    - replaced calls to function exit()
+    - function rmcastLeaveGroup now returns a integer (0 on error)
+    - function rmcastLeaveGroup returns 0 if rmcastSendPacket fails
+    - function rmcastSendPacket now returns a integer (0 on error)
+src/rmmsg.c
+src/rmmsg.h
+    - replaced calls to function exit()
+    - code clean-up
+
+####################
+version 1.11.7
+cvs tag ver_1_11_7
+
+Modified files:
+    tools/scripts/makedeb.sh
+Added files:
+    
+Allyson 28/01/2009
+
+tools/scripts/makedeb.sh
+    - corrected errors and improved deb package creation
+
+####################
+version 1.11.6
+cvs tag ver_1_11_6
+
+Modified files:
+    Makefile.am
+rmchat/rmchat.c
+src/Makefile.am
+src/rmcache.c
+src/rmcache.h
+src/rmcast.c
+src/rmcast.h
+src/rmevent.c
+src/rmevent.h
+src/rminternals.c
+src/rminternals.h
+src/rmmsg.c
+src/rmmsg.h
+src/rmmsgpckt.c
+src/rmmsgpckt.h
+src/rmstruct.h
+src/rmtcp.c
+src/rmtcp.h
+src/rmwinmask.c
+src/rmwinmask.h
+Added files:
+    tools/scripts/makedeb.sh
+Removed files:
+    tgif/mainloop.c
+    tgif/wb.c
+
+Allyson 12/01/2009
+
+Makefile.am
+    - included target "deb" to create binary .deb packages for Debian
+
+tools/scripts/makedeb.sh
+    - new file added: shell script to build deb packages
+
+tgif/mainloop.c
+tgif/wb.c
+    - removed, tgif version of this files are too different now
+
+rmchat/rmchat.c
+src/*.c
+src/*.h
+    - updated Copyright information
+
+
+####################
+version 1.11.5
+cvs tag ver_1_11_5
+
+Modified files:
+    RMLcommit.sh
+tgif/tgwb
+Added files:
+    
+
+Allyson 26/11/2008
+
+RMcommit.sh
+    - modified again to automatically update tgif/tgwb version
+
+tgif/tgwb
+    - manually updated version number again
+
+
+####################
+version 1.11.4
+cvs tag ver_1_11_4
+
+Modified files:
+    RMLcommit.sh
+configure.in
+src/Makefile.am
+src/rmcast.h
+tgif/tgwb
+Added files:
+    
+
+Allyson 26/11/2008
+
+RMcommit.sh
+    - modified to automatically update tgif/tgwb version
+    - removed unused variable EXTRA_FILES
+
+configure.in
+    - moved out defines to src/Makefile.am
+
+src/Makefile.am
+    - moved in defines from ../configure.in
+
+src/rmcast.h
+    - removed ifdef and include of config.h
+
+tgif/tgwb
+    - manually updated version number (hopefully) for the last time
+
+
+####################
+version 1.11.3
+cvs tag ver_1_11_3
+
+Modified files:
+    README
+README.tgwb
+autotools.sh
+tgif/tgwb
+Added files:
+    
+Allyson 23/11/2008
+
+autotools.sh
+    - modified to call aclocal/automake instead of aclocal-1.7/automake-1.7
+    
+README
+    - updated tgif download URL (no need for port 8001 anymore)
+
+README.tgwb
+tgif/tgwb
+    - updated to reflect the changes made in tgif version 4.1.46, which no
+      longer generates a different binary for tgwb. Tgif will try to load the
+      reliable multicast library librmcast.so dynamically when executed with 
+      the "-tgwb2" command line parameter.
+
+####################
+version 1.11.2
+cvs tag ver_1_11_2
+
+Modified files:
+    src/rmcast.c
+Added files:
+
+Allyson 18/10/2008
+    
+src/rmcast.c
+    - added "RMCAST" string before version number in RM_getVersion (required by tgwb)
+    - removed debug info
+
+####################
+version 1.11.1
+cvs tag ver_1_11_1
+
+Modified files:
+    rmchat/rmchat.c
+Added files:
+    
+Allyson 17/10/2008
+
+rmchat/rmchat.c
+    - added missing variable declaration
+
+####################
+version 1.11.0
+cvs tag ver_1_11_0
+
+Modified files:
+    README.tgwb
+configure.in
+rmchat/rmchat.c
+src/Makefile.am
+src/rmcache.c
+src/rmcache.h
+src/rmcast.c
+src/rmcast.h
+src/rmevent.c
+src/rmevent.h
+src/rminternals.c
+src/rminternals.h
+src/rmmsg.c
+src/rmmsg.h
+src/rmmsgpckt.c
+src/rmmsgpckt.h
+src/rmstruct.h
+src/rmtcp.c
+src/rmtcp.h
+src/rmwinmask.c
+src/rmwinmask.h
+Added files:
+    RMLcommit.sh
+
+Allyson 17/10/2008
+
+RMLcommit.sh
+    - Added commit script
+
+README.tgwb
+    - Added -lz to EXTRA_LIBRARIES
+
+configure.in
+    - Use the same macros than other tools develop by LAND
+
+src/Makefile.am
+    - Added define to pass down version string during compilation
+
+src/rmcast.c
+src/rmcast.h
+    - Added new function RM_getVersion()
+
+src/rmcache.c
+src/rmcache.h
+src/rmcast.c
+src/rmcast.h
+src/rmevent.c
+src/rmevent.h
+src/rminternals.c
+src/rminternals.h
+src/rmmsg.c
+src/rmmsg.h
+src/rmmsgpckt.c
+src/rmmsgpckt.h
+src/rmstruct.h
+src/rmtcp.c
+src/rmtcp.h
+src/rmwinmask.c
+src/rmwinmask.h
+    - Updated copyright year to 2008
+
+rmchat/rmchat.c
+    - Modified to use the new function RM_getVersion()
+    - Code clean up
+
+2008-10-06 Allyson
+    * Release version 1.10 (cvs tag: rmcast_v1_10)
+    * Modified autotools to use libtool to generate static and dynamic libraries
+    * Modified files:
+         - ChangeLog
+         - autotools.sh
+         - configure.in
+         - etc/rmcast.config.sample
+         - rmchat/Makefile.am
+         - src/Makefile.am
+    
+2008-07-02 Allyson
+    * Release version 1.9.1 (cvs tag: rmcast_v1_9_1)
+    * Modified mcastproxy to re-read config file on receiving SIGHUP and code
+      clean up.
+      mcastproxy/mcastproxy.c
+2008-05-01 Allyson
+      * Release version 1.9 (cvs tag: rmcast_v1_9)
+      * Modified default timer from 300ms to 50ms:
+        src/rminternals.c
+        tgif/tgwb
+        etc/rmcast.config.sample
+        README.tgwb
+      * Code clean up in src/rminternals.c
+      
+2006-05-17 Allyson
+      * Release version 1.8 (cvs tag: rmcast_v1_8)
+      * Replaced return values for exit() to EXIT_SUCCESS and EXIT_FAILURE
+      * Modified RM_leaveGroup() type from int to void
+      * RM_terminate() now returns EXIT_SUCCESS
+      * Some code clean up (including rmchat/rmchat.c)
+      * Code fixed to avoid gcc4 warnings
+      * Fixed major bug in mcastproxy
+      * Modified configure.in and tgif/tgwb to update rmcast
+        version to 1.8 
+
+2006-03-30 Allyson
+      * Added tgif/tgif_tgwb.sh, a script to help compiling tgwb
+        from tgif source code
+
+2006-03-15 Allyson
+      * Release version 1.7 (cvs tag: rmcast_v1_7)
+      * Modified mcastproxy/mcastproxy.c to properly read and use
+        REUSEADDR from config file
+      * Added -Wall option to CFLAGS in src/Makefile.am mcastproxy/Makefile.am
+        and rmchat/Makefile.am
+      * Code clean up and fixed to avoid gcc warnings
+      * Modified configure.in and tgif/tgwb to update rmcast
+        version to 1.7
+
+2005-10-04 Allyson
+      * Modified src/rmcast.c to properly detect network interfaces
+      * Modified src/rminternals.c to use same default values as the
+        config file
+      * Modified configure.in and tgif/tgwb to update rmcast
+        version to 1.6
+
+2004-09-26 Allyson
+      * Some small modifications on tgif/tgwb script
+      * Updated tgif/*.c
+
+2004-01-27 Allyson
+      
+      * Release version 1.4
+      
+      * config option VERSION changed to RM_VERSION
+      
+      * Now we use QPL license instead of GPL
+      
+      * Code is now Autoconfiscated (configure script created)
+      * New directory structure
+      * New ChangeLog
+      
+1.3 (cvs tag: rmcast_v1_3)
+    Sep 01,2003
+       Allyson
+        - RELEASE VERSION 1.3
+        - Updated TGWB files to conform to tgif release 4.1.43. That release
+          added a chat window to TGWB.
+        - Updated
+          - tgif/wb.c
+          - tgif/mainloop.c
+          
+1.2 (cvs tag: rmcast_v1_2)
+    Jul 28,2003
+       Allyson
+        - RELEASE VERSION 1.2
+        - Added
+          - tools/scripts/tgwb.sh
+        - Updated
+          - README
+          - tools/scripts/README
+
+1.1 (cvs tag: rmcast_v1_1)
+    Apr 12,2003
+       Allyson
+        - RELEASE VERSION 1.1
+        - some code corrections and clean-up
+        - updated tgif/wb.c to search for config file $HOME/.tgwb/tgwb.conf 
+          before using the default values
+        - modified mcastproxy to search for config file 
+          $HOME/.tgwb/mcastproxy.conf
+        - mcastproxy code clean-up
+        - Makefile file clean-up
+        - Removed
+            - docs/rmcast.config.sample2
+            - docs/rmcast.config.sample3
+        - Updated
+            - tgif/wb/c
+            - tools/mcastproxy/mcastproxy.c
+            - Makefile
+            
+1.0 (cvs tag: rmcast_v1)
+    Jan 31,2003
+       Allyson
+        - RELEASE VERSION 1
+        - some code corrections and clean-up
+        - updated tgif/wb.c to properly read the config files from /etc/tgwb.conf
+          or $HOME/.tgwb.conf
+        - modified mcastproxy error messages
+        - modified signal handler in rminternals.h. Now SIGUSR2 is used to stop
+          transmissions
+        - Updated
+            - rminternals.c
+            - doc/rmcast.config.sample3
+            - tgif/wb.c
+            - tools/mcastproxy/mcastproxy.c
+          
+1.0rc1( cvs tag: rmcast_v1rc1 )
+    Nov 03,2002
+       Allyson
+        - RELEASE CANDIDATE 1
+        - Added a new debug DSUPPRESSION to generate a log file where each line
+          identifies either a retransmition (RT) or a NAK suppression (NK or
+          nk). NK indicates that a NAK was suppressed, nk indicates that only a
+          position of a NAK was suppressed. See rminternals.c and rmevent.c for
+          further info.
+        - Added new options to the config file. Now the timer parameters must be
+          used as follows:
+           TIMER_PARAM_A and TIMER_PARAM_B refers to NAK_SND_WAIT event
+           TIMER_PARAM_C and TIMER_PARAM_D refers to RET_RCV_WAIT event
+           TIMER_PARAM_E and TIMER_PARAM_F refers to RET_SND_WAIT event
+        - Updated
+            - Makefile
+            - rmcast.c
+            - rmcast.h
+            - rmevent.c
+            - rminternals.c
+            - rminternals.h
+            - doc/rmcast.config.sample3
+        
+0.99e
+    Oct 17,2002
+       Allyson
+        - Added a new debug DPROCESSING_TIME to generate a log file with the
+          processing times (in ms) required for each type of received packets.
+          See rmcastReceivePackets in rminternals.c
+        - Increased microsleep in mcastproxy
+        - Updated
+            - rminternals.c
+            - Makefile
+            - tools/mcastproxy/mcastproxy.c
+0.99d
+    Sep 22,2002
+       Allyson
+        - Modified generateTimerValue function. Now users can provide parameters
+          to calculate the intervals for NAKs and retransmitions
+        - Updated 
+        - Updated RM_readConfigFile to adapt to the new config file
+        - Modified rmcast.config.
+            Option added: TIMER_PARAM_A, 
+                          TIMER_PARAM_B,
+                          TIMER_PARAM_C,
+                          TIMER_PARAM_D
+            Option modified: HOST_IDENTIFIED
+            Now the must indicate the one-way delay for each host identified. 
+            New options allows user to control the timer interval.
+            See doc/rmcast.config.sample3 for example
+        - Improved RM_getOption function. Now almost every option can be
+          obtained using this function
+        - Replaced functions:
+            RM_getHostTimers by RM_getHostDelay
+            RM_setHostTimers by RM_setHostDelay
+          Now, the timer intervals can be obtained using these functions and the
+          timer parameters values as follows:
+            - (TIMER_PARAM_A*T,(TIMER_PARAM_A+TIMER_PARAM_B)*T)
+              is the time interval for for NAKs
+            - (TIMER_PARAM_C*T,(TIMER_PARAM_C+TIMER_PARAM_D)*T)
+              is the time interval for for retransmitions
+          Where T is the estimated one-way delay to the sender and the timer
+          parameters values can be obtained using the RM_getOption function
+        - Updated
+            - doc/rmcast.config.sample3
+            - rmcast.h
+            - rmcast.c
+            - rminternals.c
+            - rminternals.h
+            - rmevent.c
+0.99c
+    Sep 16,2002
+       Allyson
+        - Removed BUG related to timer generation in generateTimerValue function
+        - Seed for random numbers generation is now created on initialization
+        - Idented rmlog.awk script code
+        - Inserted NOT TESTED at all, the cacheDeleteNakNode function
+        - Updated
+            - rmcast.c
+            - rmevent.c
+            - tools/scripts/rmlog.awk
+            - tools/scripts/rmcastplot.bash
+            - tools/mcastproxy/mcastproxy.c
+0.99b
+    Sep 04,2002
+       Allyson
+        - Replaced word USER by MEMBER
+        - Replaced old define MAX_IP_STRING_SIZE by IP_STRING_SIZE
+        - Cleaned up DONT_SEND_NAK_AGAIN_IMMEDIATLY references
+        - Replaced mispelled function cacheDesactivateMember by
+          cacheDeactivateMember
+        - Updated
+            - rmcast.h
+            - rmcast.c
+            - rmcache.c
+            - rmcache.h
+            - rmmsgpckt.c
+            - rmstruct.h
+            - rmtcp.c
+            - rminternals.h
+            - rminternals.c
+            - Makefile
+            - doc/rmcast.config.sample3 
+0.99
+    Sep 01,2002
+       Allyson
+        - Now RM_terminate is called only when the event LEV_GRP_EVENT triggers
+        - Updated RM_readConfigFile to adapt to the new config file
+        - Modified rmcast.config.
+            Options removed: AVG_DELAY, TIMER_UPPER, TIMER_LOWER
+            Option added: HOSTS_IDENTIFIED
+            New option allows for host related timers, see 
+              doc/rmcast.config.sample3 for example
+        - Added 2 new functions to rmcast.c: RM_setHostTimer and RM_getHostTimer
+        - Removed duplicated function generate_uniform
+        - generateTimerValue function was modified to adapt to host related 
+          timers
+        - eventListInsert function was modified to adapt to host related 
+          timers
+        - Updated every call to evenListInsert
+        - Updated
+            - rmcast.c
+            - rmcast.h
+            - rmevent.c
+            - rmevent.h
+            - rminternals.c
+            - rminternals.h
+            - examples/rmchat/rmchat.c
+        - New file:
+            - docs/rmcast.config.sample3
+
+0.98c
+    Aug 28,2002
+       Allyson
+        - SIGTERM is now handled properly in the rmcastHandleSignals function
+        - Modified RM_readConfigFile function. Now the user can choose if while 
+          the config file is been read its options are displayed.
+        - Small modifications in generateTimerValue and generateSample functions
+        - Updated application files to adapt to the new RM_readConfigFile 
+          function ( tgif/wb.c e examples/rmchat/rmchat.c )
+        - Updated
+            - rminternals.c
+            - rmcast.c
+            - rmcast.h
+            - rmevent.c
+            - tgif/wb.c
+            - examples/rmchat/rmchat.c
+0.98b
+    Aug 15,2002
+       Allyson
+        - The function RM_readConfigFile now has a return value indicating if
+          the file was read successfully
+        - Updated application files to adapt to the new RM_readConfigFile 
+          function ( tgif/wb.c e examples/rmchat/rmchat.c )
+        - Replaced usleep() by nanosleep() in rminternals.c
+        - Changed rmcast_options.microsleep type from 'int' to 'unisgned int'
+          in rminternals.h
+        - Updated
+            rmcast.c
+            rmcast.h
+            rminternlas.h
+            rminternals.c
+            tgif/wb.c
+            examples/rmchat/rmchat.c
+0.98a
+    Aug 11,2002
+       Allyson
+        - Now REFRESH messages are sent only after the member has sent the first
+          data packet
+        - rmchat is no longer sending a packet before prompting
+        - rmchat can now use a distribution and a send rate in the send command
+        - Updated
+            rminternals.c
+            rmcast.c
+            rmevents.c
+            rmevents.h
+            examples/rmchat/rmchat.c
+0.98
+    Jul 10,2002
+       Allyson & Milena
+        - BUG removed: when using multiple nacks there was a non-initilized
+          variable in rmcastProcessDataPacket function
+        - Updated
+            rminternals.c
+            
+0.97
+    Jul 03,2002
+       Allyson & Milena
+        - Now we no longer need to provide max_packet_sent parameter to 
+          rmcastplot.bash. The file rmcast.c was modified to write the number of
+          sent packets in the log file (when log is enabled, of course)
+        - Added missing RM_terminate() function call in rmchat.c
+        - Updated
+            rmcast.c
+            tools/scripts/rmcastplot.bash
+            tools/scripts/rmlog.awk
+            examples/rmchat/rmchat.c
+
+0.96 ( cvs tag: rmcast_beta2 )
+    Jul 02,2002
+       Allyson & Milena        
+        - BUG FOUND & REMOVED: the MAX_MEMBER_CACHE_SIZE and TIMER_DISTRIBUTION
+             option was not properly handled in RM_readConfigFile
+        - Data or retransmission packets from user i with sn > i.last_seq_rcv
+             don't need to be handled (rmcastProcessDataPacket)
+        - Updated:
+             rminternals.c
+             rmcast.c
+             rmmsgpckt.c
+             examples/rmchat/rmchat.c
+             tools/scripts/rmcastplot.bash
+             
+0.95
+    Jul 01,2002
+       Allyson
+         - BUG REMOVED regarding infinite loop in the rmcastReceivePackets: the
+              problem was caused by a missing pthread_mutex_lock in the 
+              rmcastHandleSignals function
+         - BUG REMOVED regarding refresh messages handling: there was an 
+              incorrect variable reference in the initialization of the for loop
+              in the rmcastProcessRefreshPacket function
+         - BUG REMOVED regarding sending of retransmissions: wrong ifdef in the
+              rmcastCacheContains function
+         - Idented some files
+         - Created new function cacheCountMembers to count registered members.
+              This function will be used to adjust the timers when the
+              distribution == EXPONENTIAL
+         - Added new defines to rmstruct.h
+         - Improved some comments in rmstruct.h
+         - Updated
+              rminternals.c
+              rmevent.c
+              rmstruct.h
+              rmcache.h
+              rmcache.c
+              examples/rmchat/rmchat.c
+       
+0.94
+    Jun 25,2002
+       Allyson & Milena
+         - BUG FOUND: program goes to a infinite loop when dealing with NACKs
+              from other members
+         - Temporary debug defined: DNAK_RCV
+         - New actions defined in rmevent.c: SUPPRESSED_NAK and RET_RCV_EXPIRED
+         - NAK receiving and events handle functions rewritten
+         - Updated
+              rminternals.c
+              rmevent.c
+              rmevent.h
+              rmcache.c
+         
+0.93
+    Jun 18,2002
+       Allyson
+         - Removed BUG regarding refresh messages (rminternals.c)
+         - Removed files doc/inconsistence.HOWTO and doc/join-howto.txt
+         - Removed log directory
+         - Added tools/mcastproxy/Makefile
+         - Updated 
+              CONTENTS
+              tools/mcastproxy/mcastproxy.c
+              tools/mcastproxy/README
+              tools/mcastproxy/mcastproxy.conf
+              examples/rmchat/rmchat.c
+0.92
+    Jun 13,2002
+       Allyson 
+         - Updated tools/mcastproxy
+         - Updated CONTENTS, rmmsgpckt.c
+0.91
+    Jun 12,2002
+       Allyson
+         - Included a new field in all RML(Reliable Multicast Library) packets,
+           called "flags"
+         - Modified files rmstruct.h, rmcast.c, rminternals.c and rmmsgpckt.c to
+           add support for the new field "flags"
+         - Added new application mcastproxy in the tools directory - using this
+           application one can make a "unicast bridge" between 2 or more multicast
+           groups. See README in tools/mcastproxy for further info
+        
+0.9 (cvs tag: rmcast_beta1)
+    May 03,2002
+       Sadoc
+        - Leave group routines implemented. Now members send a
+	LEAVE_GROUP_PACKET before actually leaving the group.
+0.8.4
+    Apr 22,2002
+       Allyson
+         - Updated files: README, INSTALL, doc/rmcast.config.README, 
+               doc/rmcast.config.sample2, examples/rmchat/rmchat.c
+0.8.3
+    Apr 14,2002
+       Allyson
+         - Updated rmlog.awk and rminternals.c to deal with SINGLE_NACK
+0.8.2
+    Apr 12,2002
+       Allyson
+         - Some otimization on the code in rmcastReceivePackets related to 
+               RET_SND_WAIT event insertion.
+         - Rewritten the generateTimerValue function in rmevent.c. Now we can
+               generate different timer values to each kind of event.
+0.8.1
+    Apr 10,2002
+       Allyson, Milena & Sadoc
+         - Removed some bugs related to some wrong #ifdef in the code
+         - New updates in scripts to deal with SINGLE_NACK (again!)
+0.8 (cvs tag: single_nack_beta2)
+    Apr 08,2002
+       Allyson, Milena & Sadoc
+         - Updated log functions and scripts to deal with SINGLE_NACK
+         - Removed the 0.7 KNOWN BUG
+         - Removed references to the DEFAULT_TIMER_VALUE vector in rmevent.c
+              when RANDOM_TIMERS is enabled.
+         - Update rmcastProcessRefreshPacket function to work properly when
+              SINGLE_NACK is enabled.
+         - New options available in the doc/rmcast.config.sample2 (see that file 
+             for further info):
+             MAX_NAK: indicates the max number of nacks that can be sent for each
+                      sn.
+             MAX_MEMBER_CACHE_SIZE: indicates how many packets we will store for
+                                    each member.
+         - Removed references to MAX_NAK in all files. Now we are using 
+             rmcast_option.max_nak instead of MAX_NAK.
+         - Removed references to MAX_MEMBER_CACHE_SIZE in all files. Now we are using 
+             rmcast_option.max_member_cache_size instead of MAX_MEMBER_CACHE_SIZE.
+           
+0.7 (just a bkp version, not functional. cvs tag: single_nack_bkp)
+    Apr 03,2002
+       Allyson & Milena
+         - Bounded, correctly this time, the max number of nack that we can
+               send for a packet when using SINGLE_NACK. This number of nacks is
+               bounded by the MAX_NAK constant, defined in rmstruct.c
+         - Removed some bugs related to the insertion of events when using
+              SINGLE_NACK.
+         - New debug defines in Makefile:
+              Now if you want to debug the FULL cache content you must define
+                  DCACHE_CONTENTS in addition of DEBUG_SHOW (see Makefile for
+                  further info)
+              Now if you want to debug the FULL message content you must define
+                  DMSG_CONTENTS in addition of DEBUG_SHOW (see Makefile for
+                  further info)
+         - KNOWN BUG: sometimes, in a event list node,the IP string and the PID
+              change their values to strange ones. This stops the sending of 
+              nacks and, in consequence, the sending of data to the application. 
+
+0.6 (cvs tag: single_nack_beta1)
+    Mar 31,2002
+       Allyson
+         - Removed some bugs related to the SINGLE_NACK feature.
+         - Added new fields to the log file to support SINGLE_NACK mask logging.
+         - Updated tools/scripts/rmcastplot.bash script to deal with the new 
+             fields in the log file.
+         - Removed some old scripts from the CVS repository.
+         - Fixed some (not all) FIXME requests in some files.
+         - Improved debug messages.Now we can "barely" understand what they said
+         - Implemented generation of UNIFORM random timers. (You must define 
+             DRANDOM_TIMERS to enable it. See Makefile for details)
+         - New options available in the doc/rmcast.config.sample2 (see that file 
+             for further info):
+             TIMER_LOWER: this option replace the old AVG_DELAY option. It's the
+                          lower bound for the random timers
+             TIMER_UPPER: the upper bound for the random timers
+             TIMER_DISTRIBUTION: the distribution for the random timers. By now
+                                 the only possible distribution is UNIFORM.
+        
+0.5 
+    Mar 19,2002
+       Allyson & Milena
+         First try in optimizing nack sending (compile with SINGLE_NACK to 
+             enable this feature. See Makefile for details)
+0.2
+    Mar 01,2002
+       Allyson
+         Included one example application (see the examples directory)
+         
+0.2pre7
+     Feb 14,2002
+        Allyson
+          Included REFRESH_TIMER option in the option file
+0.2pre6
+     Feb 04,2002
+        Allyson & Sadoc
+          Several bug fixes regarding SUPPORT_FOR_NEW_USERS.
+          Using new TGIF(QPL) version 4.1.41.82
+          We have created a configuration file (see doc/rmcast.config.README e
+            doc/rmcast.config.sample). Now the user can set the protocol
+            through the options in that file.
+          Now TGWB has no need to define SUPPORT_FOR_NEW_USERS (use rmcast.config
+             instead)
+          Now "Unicast Mode" is available
+          Updated CONTENTS file
+0.2pre5
+     Nov 22,2001
+        Allyson, Milena & Sadoc
+          Started testing SUPPORT_FOR_NEW_USERS blocks.
+          The protocol running without the SUPPORT_FOR_NEW_USERS is working well.
+0.2pre4
+     Nov 12
+        Allyson, Milena & Sadoc
+          We did some changes regarding RedHat 7.2 gcc compability.
+          We didn't test SUPPORT_FOR_NEW_USERS routines.
+0.2pre3
+     Oct 30
+        Allyson, Milena & Sadoc
+          Finished first level of SUPPORT_FOR_NEW_USERS
+          Obs: The TGWB Makefile,wb.c and mainloop.c files were update too.
+0.2pre2
+     Oct 22
+        Sadoc & Milena
+          Added some routines related to the support for new users.
+          The changes can be activated defining SUPPORT_FOR_NEW_USERS constant.
+          Obs: The TGWB Makefile,wb.c and mainloop.c files were update too.
+          
+0.2pre1 
+     Oct 18
+        Allyson
+          code clean up 
+          Update of README, AUTHORS and INSTALL files
+
+Pre-release (0.1)
+     Oct 17
+        Actually this was the first release.
+        It was used with Tangram2 Whiteboard (tgwb) in Tgif-4.41 by Bill Cheng. 
+        Further info about Tgif can be found at:
+            http://bourbon.cs.umd.edu:8001/tgif
+

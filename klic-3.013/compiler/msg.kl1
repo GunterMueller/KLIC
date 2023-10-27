@@ -1,0 +1,92 @@
+/* ---------------------------------------------------------- 
+%   (C)1993,1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- module klic_comp_message.
+
+% ----- REPORT ERROR ------
+report_error(Format,Args) :-
+    write_message(Format,Args,Status),
+    compilation_error(Status).
+report_error(Format,Args)+Pool0+Pool :-
+    write_message(Format,Args,Status,Pool0,Pool),
+    compilation_error(Status).
+
+% ----- WARNING -----
+warning(Format,Args) :-
+    write_message(Format,Args,_).
+warning(Format,Args)-Pool :-
+    write_message(Format,Args,_)-Pool.
+
+% ----- WRITE MESSAGE -----
+write_message(Format,Args,Status) :-
+    tell(user_error,Out),
+    klic_comp_obj:klicformat(Format,Args,Out,Out1),
+    Out1 = [#"\n"|Out2],
+    klic_comp_obj:flush(Status,          Out2,[]).
+write_message(Format,Args,Status)+Pool0+Pool :-
+    Pool0 = [empty(compiling_module,A),
+	     empty(compiling_predicate,B)|Pool1],
+    write_message1(Format,Args,Status,A,B)+Pool1+Pool.
+
+write_message1(Format,Args,Status,yes,B)+Pool0+Pool :-
+    Pool0 = [get(compiling_module,Module),
+	     put(compiling_module,Module,_)|Pool1],
+    tell(user_error,Out),
+    klic_comp_obj:klicformat("In ~w:", [Module],Out,Out1),
+    write_message2(Format,Args,Status,B)+Pool1+Pool+Out1+[].
+write_message1(Format,Args,Status,no, B)-Pool :-
+    tell(user_error,Out),
+    write_message2(Format,Args,Status,B)-Pool+Out+[].
+
+write_message2(Format,Args,Status,yes)+Pool0+Pool-Out :-
+    Pool0 = [get(compiling_predicate,Pred),
+	     put(compiling_predicate,Pred,_)|Pool],
+    klic_comp_obj:klicformat("~w: ",[Pred])-Out,
+    klic_comp_obj:klicformat(Format,Args)-Out,
+    Out <= #"\n",
+    klic_comp_obj:flush(Status)-Out.
+write_message2(Format,Args,Status,no )+Pool0+Pool-Out :-
+    Pool0 = Pool,
+    klic_comp_obj:klicformat(Format,Args)-Out,
+    Out <= #"\n",
+    klic_comp_obj:flush(Status)-Out.
+
+compilation_error :-  
+    klic_comp_obj:flush(user_error,Status),
+    compilation_error(Status).
+
+compilation_error(Status) :- wait(Status) |
+    unix:exit(-1).
+
+  %%%%% 2.1  'tell'
+  tell(user_error,OutStream) :-
+	unix:unix([stderr(normal(OutStream))]).
+  otherwise.
+  tell(OutFile,OutStream) :- 
+	unix:unix([write_open(OutFile,OutQ)]),
+	tell1(OutFile,OutQ,OutStream).
+
+tell1(_OutFile,normal(Out),OutStream) :-
+	OutStream = normal(Out).
+otherwise.
+tell1(OutFile,R,OutStream) :-
+      OutStream = R,
+      klic_comp_obj:klicformat_stderr("Cannot open ~s!!\n",[OutFile]).
+
+  %%%%% 2.2  'see'
+  see(InFile,InStream) :- 
+	klicio:klicio([read_open(InFile,InQ)]),
+	see_2(InFile,InQ,InStream).
+
+  see_2(_InFile,normal(In0),InStream) :- 
+      In0=[on_error(-1)|In],
+      InStream = normal(In).
+  otherwise.
+  see_2(InFile,R,InStream) :- 
+      InStream = R,
+      klic_comp_obj:klicformat_stderr("~s does not exist !!\n",[InFile]).
+

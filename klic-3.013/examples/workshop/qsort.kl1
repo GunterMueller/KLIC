@@ -1,0 +1,14 @@
+  :- module main.
+
+  main :- data:sort(X), qsort(X).
+
+  qsort(In) :- true | terminal(In,Out,[]), io:outstream(Out).
+
+  node([]   ,V,N,L,R,Xs,Ys) :-  true   | L = [], R = [], Xs=[print(hist(V,N)),nl|Ys].
+  node([H|T],V,N,L,R,Xs,Ys) :-  H < V  | L = [H|NL], node(T,V,N,NL,R,Xs,Ys).
+  node([H|T],V,N,L,R,Xs,Ys) :-  H > V  | R = [H|NR], node(T,V,N,L,NR,Xs,Ys).
+  node([H|T],V,N,L,R,Xs,Ys) :- H =:= V | M := N+1, node(T,V,M,L,R,Xs,Ys).
+
+  terminal([]   ,Xs ,Ys) :- true | Xs = Ys.
+  terminal([H|T],Xs0,Ys) :- true |
+       terminal(L,Xs0,Xs1), node(T,H,1,L,R,Xs1,Xs2), terminal(R,Xs2,Ys).

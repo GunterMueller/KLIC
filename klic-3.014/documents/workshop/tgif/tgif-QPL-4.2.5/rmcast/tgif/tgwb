@@ -1,0 +1,199 @@
+#!/bin/bash
+
+RML_VERSION=2.0.0
+DEFAULT_TGWB=0
+MCASTPROXY="mcastproxy"
+TGWB_CONFIG_DIR="$HOME/.tgwb"
+TGWB_CONFIG="$TGWB_CONFIG_DIR/tgwb.conf"
+PROXY_CONFIG="$TGWB_CONFIG_DIR/mcastproxy.conf"
+PROXY_PIDFILE="$TGWB_CONFIG_DIR/mcastproxy.pid"
+
+usage(){
+    cat <<END
+
+    Usage:
+        $0 [<--default-tgwb-only>]
+    Where
+        --default-tgwb-only: do not ask anything just run tgwb with default config
+    
+END
+}
+
+create_tgwb_config(){
+
+    cat <<END>$TGWB_CONFIG
+#Reliable Multicast Library configuration file
+
+RM_VERSION=$RML_VERSION
+TRANSMISSION_MODE=0
+DEST_IP=$TGWB_IP
+DEST_PORT=$TGWB_PORT
+TTL=1
+MICROSLEEP=10
+LOG_FILE=$TGWB_LOG
+
+TIMER_DISTRIBUTION=0
+TIMER_PARAM_A=2
+TIMER_PARAM_B=2
+TIMER_PARAM_C=5
+TIMER_PARAM_D=2
+TIMER_PARAM_E=2
+TIMER_PARAM_F=2
+
+HOSTS_IDENTIFIED=0
+DEFAULT 50
+
+MAX_NAK=100
+
+MAX_MEMBER_CACHE_SIZE=4000 
+NEW_MEMBER_SUPPORT=0
+STATISTICS=0
+REFRESH_TIMER=10
+LOSS_PROB=0
+LEAVE_GROUP_WAIT_TIME=500000
+RCV_BUFFER_SIZE=10000
+
+END
+}
+
+create_proxy_config(){
+
+    cat <<END>$PROXY_CONFIG 
+GROUPADDR=$TGWB_IP
+NADDR=1
+ADDRLIST
+$PROXY_IP
+TTL=1
+REUSEADDR=1
+LOOPBACK=1
+UCASTPORT=$PROXY_PORT
+MCASTPORT=$TGWB_PORT
+
+END
+}
+
+create_config_files(){
+    echo "Multicast IP address to use [default 225.1.2.3]:"
+    read TGWB_IP
+    if [ "x"$TGWB_IP = "x" ]; then
+        echo "  Using default IP address 225.1.2.3"
+        TGWB_IP="225.1.2.3"
+    fi
+    echo "Port [default 5151]"
+    read TGWB_PORT
+    if [ "x"$TGWB_PORT = "x" ]; then
+        echo "   Using default Port 5151"
+        TGWB_PORT="5151"
+    fi
+    if [ "x"$RUN_PROXY = "xy" ]; then
+        while [ "x"$PROXY_IP = "x" ];do
+            echo "Receiver mcastproxy IP address:"
+            read PROXY_IP
+        done
+
+        echo "Receiver mcastproxy Port [32566]:"
+        read PROXY_PORT
+        if [ "x"$PROXY_PORT = "x" ]; then
+            echo "  Using default Port 32566"
+            PROXY_PORT=32566
+        fi
+        create_proxy_config
+    fi
+
+    create_tgwb_config
+}
+
+echo
+echo "##########################################"
+echo "    Tangram-II Whiteboard version $RML_VERSION"
+echo "         by Jorge Allyson Azevedo"
+echo "          allyson@land.ufrj.br"
+echo "         http://www.land.ufrj.br"
+echo "#########################################"
+echo
+
+if [ $# -gt 0 ]; then
+    if [ $# = 1 ] && [ "$1" = "--default-tgwb-only" ]; then
+        DEFAULT_TGWB=1
+    else
+        usage
+        exit 1
+    fi
+fi
+
+TGWB_CMD=`which tgwb-bin1`
+if [ $? != 0 ]; then
+    echo
+    echo -n "[Warning] tgwb-bin not found, trying to find tgif ... "
+    TGWB_CMD=`which tgif`
+    if [ $? != 0 ]; then
+        echo
+        echo "[Error] tgif not found."
+        exit 1
+    else
+        tgif -print -justversion 2>&1 | awk '{if(( $3 == 4.1 ) && ( $5 >= 46 )){exit 0}else{exit 1}}'
+        if [ $? != 0 ]; then
+            echo
+            echo "[Error] tgif version must be equal or greater than 4.1.46"
+            echo
+            exit 1
+        else
+            echo "OK"
+            TGWB_CMD="tgif -tgrm2 -tgwb2 -sbim xim"
+        fi
+    fi
+fi
+
+if [ -d $TGWB_CONFIG_DIR ]; then
+    echo "Config directory $TGWB_CONFIG_DIR found."
+else
+    echo "Config directory $TGWB_CONFIG_DIR not found, creating it ..."
+    mkdir $TGWB_CONFIG_DIR && STATUS=0 || STATUS=1
+    if [ $STATUS -eq 0 ]; then
+        echo  "  $TGWB_CONFIG_DIR created."
+    else
+        echo "could not create $TGWB_CONFIG_DIR"
+        exit 1
+    fi
+fi
+
+if [ -e $TGWB_CONFIG ] && [ $DEFAULT_TGWB != 1 ]; then
+    echo "Do you want to change your TGWB configuration? [y|n]"
+    read RECONFIGURE
+fi
+
+while [ "x"$RUN_PROXY != "xy" ] && [ "x"$RUN_PROXY != "xn" ] && [ $DEFAULT_TGWB != 1 ];do
+    echo "Do you want to run the mcastproxy program? [y|n]"
+    read RUN_PROXY
+done
+
+MCASTPROXY_CMD=`which $MCASTPROXY | head -1`
+if [ $? != 0 ] && [ $DEFAULT_TGWB != 1 ]; then
+    echo "[Error] mcastproxy not found. Check your installation!"
+    exit 1
+fi
+
+if [ "x"$RECONFIGURE = "x" ] || [ "x"$RECONFIGURE = "xy" ] && [ $DEFAULT_TGWB != 1 ]; then
+   create_config_files
+fi
+    
+if [ -e $PROXY_PIDFILE ] && [ $DEFAULT_TGWB != 1 ]; then
+    PROXY_PID=`cat $PROXY_PIDFILE`
+    kill -9 $PROXY_PID > /dev/null 2>&1
+    killall -9 mcastproxy > /dev/null 2>&1
+    rm -f $PROXY_PIDFILE 
+fi
+
+# Execute mcastproxy first ...
+if [ "x"$RUN_PROXY = "xy" ]; then
+    $MCASTPROXY_CMD & 
+fi
+
+# ... and then tgwb
+$TGWB_CMD
+
+if [ "x"$RUN_PROXY = "xy" ]; then
+    PROXY_PID=`cat $PROXY_PIDFILE`
+    kill -9 $PROXY_PID > /dev/null 2>&1
+    rm -f $PROXY_PIDFILE
+fi

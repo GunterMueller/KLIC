@@ -1,0 +1,6 @@
+:- module rlib. 
+
+isltoi([Str|_],Int):- string(Str,Len,_) | istoi(0,Len,Str,0,Int). 
+istoi(N,Len,Str,WInt,Int):- N < Len, string_element(Str,N,C), 48=<C, C=<57 | 
+	istoi(~(N+1),Len,Str,~(WInt*10+C-48),Int). 
+istoi(N,Len,_,WInt,Int):- N =:= Len | WInt=Int. 

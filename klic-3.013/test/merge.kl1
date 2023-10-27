@@ -1,0 +1,20 @@
+:- module main.
+
+main :- go(0, 100).
+
+go(K, N) :- K > N | true.
+go(K, N) :- K =< N | m(K), K1 := K+1, go(K1, N).
+
+m(K) :- generic:new(merge, In, Out),
+	generic:new(vector, In0, K),
+	send_and_close(0, K, In0, In),
+	count(Out, 0, K).
+
+send_and_close(N, N, V0, V) :- V = V0.
+send_and_close(K, N, V0, V) :- K < N |
+	generic:set_element(V0, K, _, [1], V1),
+	K1 := K+1,
+	send_and_close(K1, N, V1, V).
+
+count([], N, N).
+count([C|S], K, N) :- K1 := K+C, count(S, K1, N).

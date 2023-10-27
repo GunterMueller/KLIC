@@ -1,0 +1,9 @@
+module_builtin
+predicate_builtin_xprint_1
+predicate_builtin_xprint_2
+predicate_builtin_xputc_2
+predicate_builtin_xreadint_1
+predicate_builtin_xstart__measure_0
+predicate_builtin_xreport__measure_1
+predicate_builtin_xcurrent__node_2
+predicate_builtin_xidle_0

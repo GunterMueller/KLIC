@@ -1,0 +1,363 @@
+\let\es=\tiny
+\let\er=\tt
+%\font\es=cmr5 scaled\magstep1			%%% Font is missing 
+%\font\er=cmssdc10 scaled\magstep1		%%% Font is missing
+%\font\bigcmt=cmssdc10 scaled\magstep2		%%% Never used in text
+%\font\largecmt=cmssdc10 scaled\magstep3	%%% Never used in text
+%\font\hugecmt=cmssdc10 scaled\magstep4		%%% Never used in text
+
+%コミットバーをttフォントで書くためのコマンド
+%\newcommand{\commit}{\ \mbox{$\mid$}\ }
+
+% Mode declaration
+\newcommand{\outarg}{\^{}}
+\newcommand{\mytilde}{\~{}}
+
+%%%%%%% Command for Picture %%%
+\setlength{\unitlength}{1mm}
+% \myPicture{XL}{YL}{XO}{YO}{Caption}{Label}{Contents}
+\newcommand{\myPicture}[7]{\begin{figure}\begin{picture}(#1,#2)(#3,#4)
+	#7	 \end{picture}\caption{#5}\label{#6}\end{figure}}
+% \myPictureH{XL}{YL}{XO}{YO}{Caption}{Label}{Contents}
+\newcommand{\myPictureH}[7]{\begin{figure}[h]\begin{picture}(#1,#2)(#3,#4)
+	#7	 \end{picture}\caption{#5}\label{#6}\end{figure}}
+% \myFigure{Caption}{Label}{Contents}
+\newcommand{\myFigure}[3]{\begin{figure} #3 \caption{#1}\label{#2}\end{figure}}
+% Four directional vectors
+\newcommand{\LVector}[1]{\put(0,0){\vector(-1,0){#1}}}
+\newcommand{\RVector}[1]{\put(0,0){\vector(1,0){#1}}}
+\newcommand{\UVector}[1]{\put(0,0){\vector(0,1){#1}}}
+\newcommand{\DVector}[1]{\put(0,0){\vector(0,-1){#1}}}
+% Stream
+\newcommand{\LStream}[1]{\put(0,0){\LVector{15}}
+	\put(-7.5,1){\makebox(0,0)[b]{#1}}}
+\newcommand{\RStream}[1]{\put(0,0){\RVector{15}}
+	\put(7.5,1){\makebox(0,0)[b]{#1}}}
+\newcommand{\UStream}[1]{\put(0,0){\UVector{15}}
+	\put(5,7.3){\makebox(0,0)[l]{#1}}}
+\newcommand{\DStream}[1]{\put(0,0){\DVector{15}}
+	\put(5,-7.3){\makebox(0,0)[l]{#1}}}
+% Line
+\newcommand{\LLine}[1]{\put(0,0){\line(-1,0){#1}}}
+\newcommand{\RLine}[1]{\put(0,0){\line(1,0){#1}}}
+\newcommand{\ULine}[1]{\put(0,0){\line(0,1){#1}}}
+\newcommand{\DLine}[1]{\put(0,0){\line(0,-1){#1}}}
+
+%
+\newcommand{\fromHere}[1]{\begin{picture}(0,0)(0,0)#1\end{picture}}
+\newcommand{\atHere}[1]{\put(0,0){#1}}
+% Dark Disk
+\newcommand{\Disk}[1]{\put(0,0){\circle*{2}}
+	\put(3,-3){\makebox(0,0){#1}}}
+% Process
+\newcommand{\Process}[1]{\put(0,0){\circle{10}\makebox(0,0){#1}}}
+\newcommand{\CProcess}[2]{\put(20,0){\LStream{#2}}
+	\put(0,0){\Process{#1}}}
+\newcommand{\GProcess}[2]{\put(-5,0){\LStream{#2}}
+	\put(0,0){\Process{#1}}}
+\newcommand{\SProcess}[2]{\put(20,0){\RStream{#2}}
+	\put(0,0){\Process{#1}}}
+\newcommand{\Filter}[3]{\put(20,0){\LStream{#2}}
+	\put(0,0){\Process{#1}}
+	\put(-5,0){\LStream{#3}}}
+% Merger
+\newcommand{\Merge}[4]{\put(0,0){\circle{10}\makebox(0,0){#1}}
+	\put(8,6){\vector(-4,-3){4}}
+	\put(8,6){\line(1,0){12}}
+	\put(14,7){\makebox(0,0)[b]{#2}}
+	\put(8,-6){\vector(-4,3){4}}
+	\put(8,-6){\line(1,0){12}}
+	\put(14,-5){\makebox(0,0)[b]{#3}}
+
+	\put(-5,0){\vector(-1,0){15}}
+	\put(-12.5,1){\makebox(0,0)[b]{#4}}}
+\newcommand{\SanMerge}[5]{\put(0,0){\circle{10}\makebox(0,0){#1}}
+	\put(8,6){\vector(-4,-3){4}}
+	\put(8,6){\RLine{12}}
+	\put(13,7){\makebox(0,0)[b]{#2}}
+	\put(20,0){\LStream{#3}}
+	\put(8,-6){\vector(-4,3){4}}
+	\put(8,-6){\RLine{12}}
+	\put(13,-5){\makebox(0,0)[b]{#4}}
+
+	\put(-5,0){\LStream{#5}}}
+\newcommand{\MMerge}[1]{\put(0,0){\circle{10}\makebox(0,0){#1}}
+	\put(8,6){\vector(-4,-3){4}}
+	\put(8,6){\RLine{12}}
+	\put(8,4){\vector(-2,-1){4}}
+	\put(8,4){\RLine{12}}
+
+	\put(10,0){\makebox(0,0){$\vdots$}}
+
+	\put(8,-4){\vector(-2,1){4}}
+	\put(8,-4){\RLine{12}}
+	\put(8,-6){\vector(-4,3){4}}
+	\put(8,-6){\RLine{12}}
+
+	\put(-5,0){\LVector{15}}}
+
+\newcommand{\lMerge}[4]{\put(0,0){\circle{10}\makebox(0,0){#1}}
+	\put(8,6){\vector(-4,-3){4}}
+	\put(8,6){\line(1,0){22}}
+	\put(19,7){\makebox(0,0)[b]{#2}}
+	\put(8,-6){\vector(-4,3){4}}
+	\put(8,-6){\line(1,0){22}}
+	\put(19,-5){\makebox(0,0)[b]{#3}}
+
+	\put(-5,0){\vector(-1,0){25}}
+	\put(-17.5,1){\makebox(0,0)[b]{#4}}}
+\newcommand{\Mergeb}[8]{
+	\put(0,11){\Merge{#1}{#2}{#3}{#4}}
+	\put(0,-11){\Merge{#5}{#6}{#7}{#8}}
+
+	\put(-20,11){\vector(-2,-1){10}}
+	\put(-20,-11){\vector(-2,1){10}}}
+% Split
+\newcommand{\Split}[4]{\put(0,0){\circle{10}\makebox(0,0){#1}}
+	\put(-8,6){\line(4,-3){4}}
+	\put(-8,6){\vector(-1,0){12}}
+	\put(-14,7){\makebox(0,0)[b]{#3}}
+	\put(-8,-6){\line(4,3){4}}
+	\put(-8,-6){\vector(-1,0){12}}
+	\put(-14,-5){\makebox(0,0)[b]{#4}}
+
+	\put(20,0){\vector(-1,0){15}}
+	\put(12.5,1){\makebox(0,0)[b]{#2}}}
+\newcommand{\lSplit}[4]{\put(0,0){\circle{10}\makebox(0,0){#1}}
+	\put(-8,6){\line(4,-3){4}}
+	\put(-8,6){\vector(-1,0){22}}
+	\put(-19,7){\makebox(0,0)[b]{#3}}
+	\put(-8,-6){\line(4,3){4}}
+	\put(-8,-6){\vector(-1,0){22}}
+	\put(-19,-5){\makebox(0,0)[b]{#4}}
+
+	\put(30,0){\vector(-1,0){25}}
+	\put(17.5,1){\makebox(0,0)[b]{#2}}}
+% Short circuit
+\newcommand{\Short}[3]{\put(0,0){\Process{#1}}
+	\put(6,8){\line(-3,-4){3}}
+	\put(-6,8){\line(3,-4){3}}
+
+	\put(-10,10){\makebox(0,0){#2}}
+	\put(10,10){\makebox(0,0){#3}}}
+
+%%%% Cons Cell
+\newcommand{\Cons}[2]{\put(0,0){\framebox(10,8){#1}}
+	\put(10,0){\framebox(10,8){#2}}}
+% invisible Cell
+\newcommand{\iCons}[1]{\put(5,4){\makebox(0,0){#1}}}
+\newcommand{\emptyCons}[1]{\put(0,4){\makebox(0,0){#1}}}
+\newcommand{\cdrCons}[1]{\put(0,0){\Cons{#1}{}}
+	\put(15,4){\circle*{1}}
+	\put(15,4){\RVector{12}}}
+\newcommand{\carcdrCons}{\put(0,0){\cdrCons{}}
+	\put(5,4){\circle*{1}}
+	\put(5,4){\DVector{12}}}
+\newcommand{\precdrCons}[1]{\put(0,0){\cdrCons{#1}}
+	\put(-5,4){\RVector{5}}}
+% Oblique Pointer
+\newcommand{\Optr}[1]{\put(-8,6){\vector(4,-3){8}}
+	\put(-8,7){\makebox(0,0)[b]{#1}}}
+\newcommand{\rOptr}[1]{\put(-8,-6){\vector(4,3){8}}
+	\put(-8,-10){\makebox(0,0)[b]{#1}}}
+% For dereference list
+\newcommand{\dBox}[9]{
+	\put(-35,-4){\framebox(70,8){}}
+	\put(-17.5,0){\makebox(0,0){#1}}
+	\put(5,0){\makebox(0,0){#2}}
+	\put(22.5,0){\makebox(0,0){#3}}
+
+	\put(0,-4){\line(0,1){8}}
+	\put(10,-4){\line(0,1){8}}
+	\put(35,-4){\line(0,1){8}}
+
+	\put(-35,-12){\UVector{8}}
+	\put(0,-12){\UVector{8}}
+	\put(10,-12){\UVector{8}}
+	\put(35,-12){\UVector{8}}
+
+	\put(-35,-16){\makebox(0,0){#4}}
+	\put(0,-16){\makebox(0,0){#5}}
+	\put(10,-16){\makebox(0,0){#6}}
+	\put(35,-16){\makebox(0,0){#7}}
+
+	\put(-17.5,-22){\makebox(0,0){#8}}
+	\put(22.5,-22){\makebox(0,0){#9}}}
+\newcommand{\udBox}[6]{
+	\put(-35,0){\makebox(0,0){#1}}
+	\put(0,0){\makebox(0,0){#2}}
+	\put(35,0){\makebox(0,0){#3}}
+
+	\put(-35,-6){\makebox(0,0){#4}}
+	\put(5,-6){\makebox(0,0){#5}}
+	\put(35,-6){\makebox(0,0){#6}}}
+
+%%% Structure(String or Vector)
+\newcommand{\Structure}[4]{\put(0,-6){\framebox(15,6){#2}}
+	\put(0,-12){\framebox(15,6){#3}}
+	\put(0,-24){\framebox(15,12){$\vdots$}}
+	\put(0,-30){\framebox(15,6){#4}}
+
+	\put(-4,1){\vector(4,-1){4}}
+	\put(-6,3){\makebox(0,0){#1}}}
+\newcommand{\UStructure}[5]{\put(0,-6){\framebox(15,6){#2}}
+	\put(0,-12){\framebox(15,6){#3}}
+	\put(0,-21){\framebox(15,9){$\vdots$}}
+	\put(0,-27){\framebox(15,6){#4}}
+	\put(0,-36){\framebox(15,9){$\vdots$}}
+	\put(0,-42){\framebox(15,6){#5}}
+
+	\put(-4,1){\vector(4,-1){4}}
+	\put(-6,3){\makebox(0,0){#1}}}
+\newcommand{\UDStructure}[6]{\put(0,-6){\framebox(15,6){#3}}
+	\put(0,-12){\framebox(15,6){#4}}
+	\put(0,-21){\framebox(15,9){$\vdots$}}
+	\put(0,-27){\framebox(15,6){#5}}
+	\put(0,-36){\framebox(15,9){$\vdots$}}
+	\put(0,-42){\framebox(15,6){#6}}
+
+	\multiput(-8,0)(2,0){3}{\RLine{1}}
+	\put(-1,0){\RVector{1}}
+	\put(-10,3){\makebox(0,0){#1}}
+
+	\put(0,7.5){\vector(1,-1){7.5}}
+	\put(-2,9.5){\makebox(0,0){#2}}}
+\newcommand{\USStructure}[5]{\put(0,-6){\framebox(15,6){#2}}
+	\put(0,-12){\framebox(15,6){#3}}
+	\put(0,-21){\framebox(15,9){$\vdots$}}
+	\put(0,-27){\framebox(15,6){#4}}
+	\put(0,-36){\framebox(15,9){$\vdots$}}
+	\put(0,-42){\framebox(15,6){#5}}
+
+	\multiput(-8,0)(2,0){3}{\RLine{1}}
+	\put(-1,0){\RVector{1}}
+	\put(-10,3){\makebox(0,0){#1}}}
+\newcommand{\Optrs}[2]{\put(-4,1){\vector(4,-1){4}}
+	\put(7.5,-3){\makebox(0,0){#2}}
+	\put(-6,3){\makebox(0,0){#1}}}
+\newcommand{\UStructureV}[5]{\put(0,-6){\framebox(15,6){#2}}
+	\put(0,-12){\framebox(15,6){}}	\put(7.5,-9){\circle*{1}}
+	\put(7.5,-9){\RVector{12.5}}
+	\put(25,-9){\makebox(0,0){#3}}
+	\put(0,-21){\framebox(15,9){$\vdots$}}
+	\put(0,-27){\framebox(15,6){}}	\put(7.5,-24){\circle*{1}}
+	\put(7.5,-24){\RVector{12.5}}
+	\put(25,-24){\makebox(0,0){#4}}
+	\put(0,-36){\framebox(15,9){$\vdots$}}
+	\put(0,-42){\framebox(15,6){}}	\put(7.5,-39){\circle*{1}}
+	\put(7.5,-39){\RVector{12.5}}
+	\put(25,-39){\makebox(0,0){#5}}
+
+	\put(-4,1){\vector(4,-1){4}}
+	\put(-6,3){\makebox(0,0){#1}}}
+\newcommand{\UDStructureV}[6]{\put(0,-6){\framebox(15,6){#3}}
+	\put(0,-12){\framebox(15,6){}}	\put(7.5,-9){\circle*{1}}
+	\put(7.5,-9){\RVector{12.5}}
+	\put(25,-9){\makebox(0,0){#4}}
+	\put(0,-21){\framebox(15,9){$\vdots$}}
+	\put(0,-27){\framebox(15,6){}}	\put(7.5,-24){\circle*{1}}
+	\put(7.5,-24){\RVector{12.5}}
+	\put(25,-24){\makebox(0,0){#5}}
+	\put(0,-36){\framebox(15,9){$\vdots$}}
+	\put(0,-42){\framebox(15,6){}}	\put(7.5,-39){\circle*{1}}
+	\put(7.5,-39){\RVector{12.5}}
+	\put(25,-39){\makebox(0,0){#6}}
+
+	\multiput(-8,0)(2,0){3}{\RLine{1}}
+	\put(-1,0){\RVector{1}}
+	\put(-10,3){\makebox(0,0){#1}}
+
+	\put(0,7.5){\vector(1,-1){7.5}}
+	\put(-2,9.5){\makebox(0,0){#2}}}
+\newcommand{\USStructureV}[5]{\put(0,-6){\framebox(15,6){#2}}
+	\put(0,-12){\framebox(15,6){}}	\put(7.5,-9){\circle*{1}}
+	\put(7.5,-9){\RVector{12.5}}
+	\put(25,-9){\makebox(0,0){#3}}
+	\put(0,-21){\framebox(15,9){$\vdots$}}
+	\put(0,-27){\framebox(15,6){}}	\put(7.5,-24){\circle*{1}}
+	\put(7.5,-24){\RVector{12.5}}
+	\put(25,-24){\makebox(0,0){#4}}
+	\put(0,-36){\framebox(15,9){$\vdots$}}
+	\put(0,-42){\framebox(15,6){}}	\put(7.5,-39){\circle*{1}}
+	\put(7.5,-39){\RVector{12.5}}
+	\put(25,-39){\makebox(0,0){#5}}
+
+	\multiput(-8,0)(2,0){3}{\RLine{1}}
+	\put(-1,0){\RVector{1}}
+	\put(-10,3){\makebox(0,0){#1}}}
+\newcommand{\Optl}[1]{\put(35,-22){\vector(-4,-1){4}}
+	\put(40,-20){\makebox(0,0){#1}}}
+\newcommand{\UStructureRV}[3]{\put(0,-6){\framebox(15,6){#2}}
+	\put(0,-12){\framebox(15,6){}}	\put(7.5,-9){\circle*{1}}
+	\put(7.5,-9){\LVector{12.5}}
+	\put(0,-21){\framebox(15,9){$\vdots$}}
+	\put(0,-27){\framebox(15,6){}}	\put(7.5,-24){\circle*{1}}
+	\put(7.5,-24){\RVector{12.5}}
+	\put(25,-24){\makebox(0,0){#3}}
+	\put(0,-36){\framebox(15,9){$\vdots$}}
+	\put(0,-42){\framebox(15,6){}}	\put(7.5,-39){\circle*{1}}
+	\put(7.5,-39){\LVector{12.5}}
+
+	\put(-4,1){\vector(4,-1){4}}
+	\put(-6,3){\makebox(0,0){#1}}}
+
+
+%% Example Environment
+\newtheorem{Ex}{例}[chapter]
+
+\newcommand{\Example}[4]{\begin{Ex}[#1]	\rm	
+	\indent #4	
+	\begin{quotation}
+		呼びだしゴール~~~\verb^#2^
+
+		節定義~~~\verb^#3^
+	\end{quotation}
+	\end{Ex}}
+
+%% Problem Environment
+\newtheorem{Prob}{問題}[chapter]
+
+\newcommand{\Problem}[2]{\begin{Prob}[#1]	\rm	
+	#2
+	\end{Prob}}
+
+%% Problem Environment
+\newtheorem{Exer}{例題}[chapter]
+
+\newcommand{\Exercise}[2]{\begin{Exer}[#1]	\rm	
+	#2
+	\end{Exer}}
+
+%% Trace Environment
+\newtheorem{Trace}{トレース}[chapter]
+\newcounter{myindent}
+
+\newcommand{\TopTrace}[4]{\begin{Trace}[#1] \setcounter{myindent}{0} \rm
+	#4\\
+	\verb^?- #2^\\
+	#3
+	\end{Trace}}
+
+\newcommand{\Tracea}[2]{
+	\hspace*{\themyindent em}	\verb^call  #1^\\
+	\addtocounter{myindent}{2}
+	#2
+	\addtocounter{myindent}{-2}}
+\newcommand{\Traceb}[3]{
+	\hspace*{\themyindent em}	\verb^call  #1^\\
+	\hspace*{\themyindent em}	\verb^call  #2^\\
+	\addtocounter{myindent}{2}
+	#3
+	\addtocounter{myindent}{-2}}
+\newcommand{\Tracez}[1]{
+	\addtocounter{myindent}{-2}
+	\hspace*{\themyindent em}	\verb^ #1^
+	\addtocounter{myindent}{2}\\} 
+
+%%% Dereference List
+\newcommand{\DList}[2]{\tt (#1,#2)}
+
+%%% For Builtin Predicate
+\newcommand{\Builtin}[3]{\subsubsection*{\tt #1~::~#2} 
+	{\leftskip\parindent\noindent #3 \par}  \vspace{2ex}}
+

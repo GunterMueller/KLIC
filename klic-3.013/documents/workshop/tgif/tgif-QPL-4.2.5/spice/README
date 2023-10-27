@@ -1,0 +1,99 @@
+/*
+ * Author:      William Chia-Wei Cheng (bill.cheng@acm.org)
+ *
+ * @(#)$Header: /mm2/home/cvs/bc-src/tgif/spice/README,v 1.1 2004/06/18 23:19:38 william Exp $
+ */
+
+This file is README in the spice subdirectory of the tgif distribution.
+
+Here are some notes on the ports and components feature of tgif.  These
+features first appeared in tgif-4.1.35 and only works with the updated
+files in the spice subdirectory that was in the tgif-4.1.35 release.
+Also, please make sure you are running tgif-4.1.38 or newer since there
+have been bug fixed!
+
+Please read the CONNECTING OBJECTS section of the tgif man pages in
+addition to this note.
+
+tgif demo.obj
+    Select NET as the export format
+    Select Print() from the File Menu
+        demo.net is the netlist file...
+            Any port that's connected to the same signal name are
+                considered "connected"
+            For example, the signal name "BASE" is connected to 2 ports,
+                "!R2!b" and "!Q2!b" (refer to the figure).  R2 is a
+                resistor and it has 2 ports, a and b.  Q2 is a transistor
+                of model type SN.  It has 3 ports, c, b, and e (for
+                collector, base, and emitter).  The connection is between
+                port b of R2 and port b (base) of Q2.
+        demo.cmp is the component file...
+            The beginning of each component is not indented.
+            The first line of a component declares the component and
+                has the format:
+                    <name>: <type>
+                <name> corresponds to the "name" attribute of the component.
+                <type> corresponds to the "type" attribute of the component.
+            All other attributes of the component are listed (indented
+                by a <TAB> character) following the first line.
+            Note that the ports of a component are not listed.
+            For example, if you right click on the Q1 transistor and select
+                the Edit Attribute In Editor submenu of the Context Menu,
+                you can see all the attributes of this component.
+    Manipulating the connection...
+        Select the wire named "VIN" and delete it.  If you print the NetList,
+            you will see that both the .net and the .cmp files are not changed!
+        As I've said, this is a poorman's implemention of ports & connections.
+        What happens is that port "a" of VIN has an attribute called
+            "signal_name" whose value is still "VIN".  Similarly, port "a"
+            of R2 also has an attribute called "signal_name" whose value is
+            still "VIN".  When the wire is deleted, these ports don't know
+            that their signalnames need to be cleared!  Oh well...  So, the
+            truth is, there's really no "connection semantics" implemented
+            in tgif.
+        To clear them, select Clear Signal Name for a Port from the
+            Ports and Signals submenu of the Special Menu.  Mouse over a
+            port (the port will be highlighted) and click the left mouse
+            button.  This will clear the signal_name attribute of the port.
+            Keep finding ports you want to clear... When you are done with
+            all the ports you want to clear, click the right mouse button.
+            Go ahead and clear port "a" of VIN and port "a" of R2.  The
+            port should look different.
+        To make a connection (which is just setting signal_name attributes
+            of ports), there are 2 ways.  One is to select Rename Signal
+            Name for a Port from the Ports and Signals submenu of the Special
+            Menu.  This is very similiar to clearing signalnames.  Let's not
+            do this.  The 2nd way is to select Connect Two Ports by a Wire
+            from the Ports and Signals submenu of the Special Menu.  You
+            must click on 2 ports.  At the end, it will prompt you for a
+            signal name.  Then it will ask you to place it.  You can uncheck
+            Show Wire Signal Name of the Ports and Signals submenu of the
+            Special Menu if you don't want to see the signalname for the
+            (useless) wire.
+    How to constructor a component?
+        Well, this is kind of involved...  I'll just mention a few major
+            points.
+        1)  A component must be instantiated from a .sym file.  So, you should
+            build a symbol.  To build the symbol, start with an empty file.
+            First draw what it should look like.  Don't add any attributes
+            or ports yet.  When you are done with the visual port of the
+            symbol, select everything and select Group from the Arrange Menu.
+        2)  Before you create the symbol object, you should add ports and
+            attributes:
+            a)  For each port you need, instantiate "port.sym" from this
+                directory.  Right click on it and select the "name=" attribute
+                from the Edit Attribute In Editor submenu of the Context Menu
+                and enter the port name.
+            b)  For each attribute you need, create it simply as a text object.
+                A component must have attributes named "name" and "type".
+                Make sure you have created "name=" and "type=<sometype>" text
+                objects (replace <sometype> with the actual type of the
+                component).
+        3)  Select all the text object and the visual part of the symbol,
+            select Attach Attributes from the Attribute submenu of the
+            Special Menu.  Select Hide Attributes from the Attribute submenu
+            of the Special Menu.
+        4)  Move all the ports to the right places.  Select Select All from
+            the Edit Menu and selct Group from the Arrange Menu.  Finally,
+            select Make Symbolic from the Special Menu and save the file as
+            <something>.sym.

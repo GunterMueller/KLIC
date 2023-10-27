@@ -1,0 +1,31 @@
+/* ----------------------------------------------------------
+%   (C)1994,1995 Institute for New Generation Computer Technology
+%       (Read COPYRIGHT for detailed information.)
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+
+:- module floating_arithmetics.
+
+floating_point_add(X,Y,Z)	:- generic:add(X,Y,Z).
+floating_point_subtract(X,Y,Z) 	:- generic:subtract(X,Y,Z).
+floating_point_multiply(X,Y,Z) 	:- generic:multiply(X,Y,Z).
+floating_point_divide(X,Y,Z)	:- generic:divide(X,Y,Z).
+floating_point_power(X,Y,Z)	:- generic:power(X,Y,Z).
+
+floating_point_sin(X,Z)		:- generic:sin(X,Z).
+floating_point_cos(X,Z)		:- generic:cos(X,Z).
+floating_point_tan(X,Z)		:- generic:tan(X,Z).
+floating_point_asin(X,Z)	:- generic:asin(X,Z).
+floating_point_acos(X,Z)	:- generic:acos(X,Z).
+floating_point_atan(X,Z)	:- generic:atan(X,Z).
+floating_point_sinh(X,Z)	:- generic:sinh(X,Z).
+floating_point_cosh(X,Z)	:- generic:cosh(X,Z).
+floating_point_tanh(X,Z)	:- generic:tanh(X,Z).
+floating_point_exp(X,Z)		:- generic:exp(X,Z).
+floating_point_log(X,Z)		:- generic:log(X,Z).
+floating_point_sqrt(X,Z)	:- generic:sqrt(X,Z).
+floating_point_ceil(X,Z)	:- generic:ceil(X,Z).
+floating_point_floor(X,Z)	:- generic:floor(X,Z).
+
+floating_point_to_integer(X,Z)	:- generic:int(X,Z).

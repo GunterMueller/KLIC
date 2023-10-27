@@ -1,0 +1,30 @@
+# ---------------------------------------------------------- 
+#   (C) 1994, 1995 Institute for New Generation Computer Technology 
+#	(Read COPYRIGHT for detailed information.) 
+#   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+#       (Read COPYRIGHT-JIPDEC for detailed information.)
+# ----------------------------------------------------------
+
+for f in $PWD/runtime/config/pvm/*.sh $PWD/runtime/config/pvm/*.mk
+do
+  linkfile=$PWD/runtime/config/pvm-tcp/`basename $f`
+  rm -f $linkfile
+  ln -s $f $linkfile
+done
+
+. runtime/config/pvm/configure
+
+# Bug fix. Temporary
+#TRANSFER_CNT=1L
+
+cat <<GAZONK
+
+###########################################################################
+# CAUTION:
+# If the target is non-SystemV machine (e.g..Linux, FreeBSD, SunOS 4.x,...),
+# please do not forget to say "yes" to the following questionare
+# "Does your system support I/O ready signals?"
+###########################################################################
+
+GAZONK
+

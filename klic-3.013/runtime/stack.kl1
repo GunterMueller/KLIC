@@ -1,0 +1,48 @@
+/* ---------------------------------------------------------- 
+%   (C)1994,1995 Institute for New Generation Computer Technology 
+%       (Read COPYRIGHT for detailed information.) 
+%   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+%       (Read COPYRIGHT-JIPDEC for detailed information.)
+----------------------------------------------------------- */
+:- module stack.
+
+
+create(Stream) :-
+	main(Stream,[],[]).
+
+main([],		 []	   )+Pool.
+main([],		 [S|ST])+Pool :- main(S,ST	  )+Pool.
+main([do(S)|T],	 ST	   )+Pool :- main(S,[T|ST])+Pool.
+otherwise.
+main([Message|T],ST	   )+Pool :- message(Message)-Pool, main(T,ST)+Pool.
+
+
+message(empty(YorN),[]		 )+Pool :-
+	YorN = yes,
+	Pool = [].
+message(empty(YorN),[CAR|CDR])+Pool :-
+	YorN = no,
+	Pool = [CAR|CDR].
+
+
+message(put(Value),Pool1,Pool2) :-
+	Pool2 = [Value|Pool1].
+
+message(get(Value),[CAR|CDR],Pool2) :-
+	Value = CAR,
+	Pool2 = CDR.
+
+message(get_if_any(Value),[],       Pool2) :-
+	Value = {},
+	Pool2 = [].
+message(get_if_any(Value),[CAR|CDR],Pool2) :-
+	Value = {CAR},
+	Pool2 = CDR.
+
+message(get_all(Value),Pool1,Pool2) :-
+	Value = Pool1,
+	Pool2 = [].
+
+message(carbon_copy(Value),Pool1,Pool2) :-
+	Value = Pool1,
+	Pool2 = Pool1.

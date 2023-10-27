@@ -1,0 +1,14 @@
+%  genconwp.kl1
+:- module main.
+
+main:- true |
+     generator(20000,Stream)@lower_priority, consumer(Stream).
+
+generator(0,Stream) :- true | Stream = [].
+generator(N,Stream) :- N =\= 0 |
+     Stream = [N | NextStream],
+     N1 := N - 1,
+     generator(N1,NextStream).
+
+consumer([]):- true | true.
+consumer([N|Stream]):- integer(N) | consumer(Stream).

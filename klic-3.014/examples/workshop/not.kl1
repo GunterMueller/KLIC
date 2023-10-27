@@ -1,0 +1,6 @@
+:- module main.
+
+main :- not(1, X), io:outstream([print(X),nl]).
+
+not(In, Out):- In = 0 | Out = 1.
+not(In, Out):- In = 1 | Out = 0.

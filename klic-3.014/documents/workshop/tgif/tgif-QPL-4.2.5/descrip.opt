@@ -1,0 +1,6 @@
+!
+! @(#)$Header: /mm2/home/cvs/bc-src/tgif/descrip.opt,v 1.1 2004/06/18 23:20:49 william Exp $
+!
+
+!SYS$LIBRARY:VAXCRTL/SHARE
+SYS$LIBRARY:DECW$XLIBSHR/SHARE

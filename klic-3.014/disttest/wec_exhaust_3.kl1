@@ -1,0 +1,99 @@
+% Test for "WEC exhausted" (3)
+
+% Unificatin between chains of exrefs when WEC is exhausted.  
+
+:- module main.
+
+main :- lib:io(Os), 
+	lib:prsl(Os,Os2,'### InterNode Test [WEC exhausted (3)] Begin ###',_), 
+	test_ufy(Os2,Os3), 
+	lib:prsl(Os3,[],'### InterNode Test [WEC exhausted (3)] End ###',_). 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   unify(X = Y)
+%
+%	+---------+       +---------+                      +---------+       
+%     X	|EXREFx  -------->|EXREFx  --------> ...  -------->|         |
+%	+---------+       +---------+                      +---------+
+%
+%	+---------+       +---------+                      +---------+       
+%     Y	|EXREFx  -------->|EXREFx  --------> ...  -------->|         |
+%	+---------+       +---------+                      +---------+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+test_ufy(Os,OsE):- 
+	lib:prs(Os,Os2,'unification of chains of exrefs (a-g) : ',_), 
+	test_ufy(Os2,OsE,Cs), 
+	Cs=[dd(dests([4,-1,-1,-1],[4,-1,-1,-1]),data(term),out(a)),
+	    dd(dests([4,-1,-1,-1],[-4,1,1,1]),data({a,b,c}),out(b)),
+	    dd(dests([36,-8,-7,-6,-5,-4,-3,-2],[44,-9,-8,-7,-6,-5,-4,-3]),
+		data([a,b,c,d,e,f,g]),out(c)),
+	    dd(dests([-8,2,2,2],[-8,1,1,1,1,1,1,1]),
+		data([a,[b,c],[d,e,f],g]),out(d)),
+	    dd(dests([24,-3,-3,-3,-3,-3,-3,-3],
+		     [24,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2]),
+		data([a,[b,c],[d,e,f],g]),out(e)),
+	    dd(dests([0,1,-1,1,-1,1,-1,1],[0,-1,1,-1,1,-1,1,-1]),
+		data([[[]]]),out(f)),
+	    dd(dests([0,1,-1,1,-1,1,-1,1],[-1,1,-1,1,-1,1,-1,1,-1]),
+		data([[a],[b],[c]]),out(g))]. 
+
+test_ufy(Os,OsE,[dd(dests(Ds1,Ds2),data(Data),out(Out))|Cs]):- 
+	testUnifyEXREFs(Ds1,Ds2,Data,Test), pr(Os,Os2,Test,Out), 
+	test_ufy(Os2,OsE,Cs). 
+test_ufy(Os,OsE,[]):- lib:prsl(Os,OsE,'...done',_). 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+testUnifyEXREFs(DXs,DYs,TermData,Test) :- 
+	genWEConeEXREFs(DXs,VX), genWEConeEXREFs(DYs,VY), 
+	unifyXY(VX,VY,Unify), bindTerm(Unify,VX,TermData,Bind), 
+	testUnify(Bind,VY,TermData,Test).
+unifyXY({X},{Y},Unify) :- X = Y, Unify = done.
+bindTerm(done,{X},TermData,Bind) :- X = TermData, Bind = done.
+testUnify(done,{Y},TermData,Test) :- Y = TermData | Test = done.
+otherwise.
+testUnify(_,_,_,Test) :- Test = fail.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+genWEConeEXREFs([D|Ds],VX) :- 
+	nextnode(D,RootNode), startGenEXREFs(RootNode,Ds,VX).
+genWEConeEXREFs([],VX) :- VX = {_}.
+startGenEXREFs(RootNode,Ds,VX) :- wait(RootNode) | 
+	rootEXREFs(Ds,VX)@node(RootNode). 
+rootEXREFs([D|Ds],VX) :- 
+	nextnode(D,NextNode), exportUnbound(done,NextNode,EUNDF,Ds,VX). 
+rootEXREFs([],VX) :- VX = {_}, Gen = done.
+exportUnbound(done,NextNode,Unbound,Ds,VX) :- wait(NextNode) | 
+	genEXREF(Unbound,Ds,VX)@node(NextNode).
+genEXREF(EXREF,[D|Ds],VX) :- 
+	sendWEC(EXREF,Send), nextnode(D,NextNode), 
+	exportUnbound(Send,NextNode,EXREF,Ds,VX).
+genEXREF(EXREF,[],VX) :- 
+	sendWEC(EXREF,Send), bindEXREFs(Send,VX,EXREF).
+bindEXREFs(done,VX,EXREF) :- VX = {EXREF}.
+sendWEC(EXREF,Send) :- 
+	nextnode(OtherNode), sendWEC(done,30,OtherNode,EXREF,Send).
+sendWEC(done,N,DestNode,EXREF,Send) :- N > 0, wait(DestNode) | 
+	consumeWEC(EXREF,Consume)@node(DestNode), 
+	NM1 := N - 1, sendWEC(Consume,NM1,DestNode,EXREF,Send).
+sendWEC(done,N,_,_,Send) :- N = 0 | Send = done. 
+consumeWEC(_,Consume) :- Consume = done. 
+
+%============================================================================
+nextnode(Next) :- nextnode(1,Next).
+
+nextnode(Add,Next):- 
+	current_node(Current,NumberOfNodes), 
+	modNode(~(Current+Add),NumberOfNodes,Next).  
+
+modNode(CalNode,NumberOfNodes,Node) :- CalNode >= 0 | 
+	Node := CalNode mod NumberOfNodes.
+modNode(CalNode,NumberOfNodes,Node) :- CalNode <  0 | 
+	CalNode2 := CalNode + NumberOfNodes, 
+	modNode(CalNode2,NumberOfNodes,Node).
+
+pr(Os,OsE,done,Out):- lib:prs(Os,OsE,Out,_). 
+otherwise. 
+pr(Os,OsE,_,Out):- lib:prs_err(Os,OsE,Out,_). 

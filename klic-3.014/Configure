@@ -1,0 +1,1482 @@
+#! /bin/sh
+# ---------------------------------------------------------- 
+#   (C) 1994, 1995 Institute for New Generation Computer Technology 
+#	(Read COPYRIGHT for detailed information.) 
+#   (C)1996, 1997, 1998, 1999 Japan Information Processing Development Center
+#       (Read COPYRIGHT-JIPDEC for detailed information.)
+# ----------------------------------------------------------
+
+if test $# -ge 1 -a "$1" = '-d';
+  then shift; def_ask=false;
+  else def_ask=true
+fi
+
+def_setting=./config.sh
+CROSS=false
+DEFCROSS="#undef"
+if test $# -eq 1; then
+ if test "$1" = builddist; then
+   BUILDDIST=true
+ elif test "$1" = cross; then
+   BUILDDIST=false
+   CROSS=true
+   DEFCROSS="#define"
+ fi
+else
+  BUILDDIST=false
+fi
+
+if [ x$PWD = x ]; then
+   PWD=`pwd`
+   export PWD
+fi
+
+cat <<GAZONK
+#
+# WELCOME TO KLIC SYSTEM CONFIGURATION SCRIPT
+#
+#  Copyright 1994 Institute for New Generation Computer Technology
+#  Read COPYRIGHT for detailed information
+#
+# In this script, I'll ask you for several options you can make.
+# Default values are presented in brackets as in [default].
+# If the default is OK, simply hit CR.
+# Otherwise, type in whatever is your option.
+# When you want to specify nothing, type in "none".
+
+GAZONK
+
+: ::::::::::::::::::: HELPER FUNCTIONS ::::::::::::::::::::
+: Find how to suppress newline after echo
+if ( echo "test line\c"; echo " ") | grep c >/dev/null 2>/dev/null ; then
+    n='-n'
+    c=''
+else
+    n=''
+    c='\c'
+fi
+
+: Define some handy functions
+
+clean_up_config () {
+  rm -f nmout.tmp nmout.list nmout.all 2>/dev/null
+}
+
+give_up_config () {
+    echo " "
+    for message do
+	echo "!!! $message !!!"
+    done
+    clean_up_config
+    echo "Aborting KLIC configuration script"
+    echo ' '
+    exit 1
+}
+
+ask_yes_or_no () {
+    set_var=$2;
+    do_ask=true;
+    if [ -n "$set_var" ]; then eval "default=\$$set_var"; do_ask=$def_ask;
+    else default=""; fi
+    if [ -z "$default" ]; then default=$1; do_ask=true; fi
+    if [ "$set_var" = USE_DEFAULT ]; then set_var=''; do_ask=$def_ask; fi
+    echo $n " (yes or no)"$c
+    while true ; do
+	echo $n " [$default] "$c
+	if $do_ask ; then read ans; else echo $default; ans=$default; fi
+	if test -z "$ans" ; then ans=$default; fi
+	if [ -n "$set_var" ]; then echo "$set_var='$ans'" >> config.tmp; fi
+	case $ans in
+	yes) return 0;;
+	no) return 1;;
+	*) echo $n "Please input yes or no"$c;;
+	esac
+	do_ask=true
+    done
+}
+
+ask_with_default () {
+    message=$1
+    macroname=$2
+    do_ask=true;
+    eval def_value=\$"DEF_$2"
+    if [ -n "$def_value" ]; then
+	eval "$macroname='$def_value'"; do_ask=$def_ask
+    fi
+    eval default=\$$macroname
+    echo $n "Which $message to use? [$default] "$c
+    if $do_ask ; then read ans; else echo $default; ans=$default; fi
+    case $ans in
+    none) ans='';;
+    '') {
+	if test "$default" = "none"; then
+	    ans=''
+	else
+	    ans=$default
+	fi
+	} ;;
+    esac
+    eval $macroname=\$ans
+    if [ -z "$ans" ]; then ans=none; fi
+    echo "DEF_$macroname='$ans'" >>config.tmp
+}
+
+locate_file () {
+file=$1
+shift
+kind=$1
+shift
+for dir in $*; do
+    if test -$kind $dir/$file; then
+	where=$dir/$file
+	return 0
+    fi
+done
+return 1
+}
+
+locate_executable () {
+    file=$1
+    shift
+    user_path=$*
+    locate_file "$file" x $user_path
+    return
+}
+
+locate_directory () {
+    located_dir=$1
+    test -d $located_dir ||
+    {
+	echo $n "Cannot find $located_dir; Create it now? "$c
+	if ask_yes_or_no yes; then
+	    if mkdir $located_dir ; then
+		return 0
+	    else
+		echo "!!! Couldn't create $located_dir !!!"
+		return 1
+	    fi
+	else
+	    return 1
+	fi
+    }
+}
+
+ask_additional () {
+message=$1
+macroname=$2
+    do_ask=true;
+    eval def_value=\$"DEF_$2"
+    if [ -n "$def_value" ]; then
+	eval "$macroname='$def_value'"; do_ask=$def_ask
+    fi
+
+eval default=\$$macroname
+case $default in
+  '') default="none" ;;
+esac
+echo "# Default $message are: $default"
+echo ' '
+echo $n "Do you want to change the default? "$c
+eval retval="\$DEF_$macroname";
+use_default=''
+if [ $def_ask="false" -a -n "$retval" ];
+then
+  ask_or_not=no
+  use_default=USE_DEFAULT
+else
+  ask_or_not=no
+fi
+
+if ask_yes_or_no $ask_or_not $use_default; then
+  echo ' '
+  if test '$default'!=none; then
+    echo $n "Do you want to delete any of them? "$c
+    if ask_yes_or_no no; then
+      echo ' '
+      echo "# OK, then I'll clear the default."
+      eval $macroname=\"\"
+      default=
+      echo "# Now there are no default $message."
+      echo ' '
+    fi
+  fi
+  echo $n "Specify additions if any: "$c
+  while true; do
+     if $do_ask ; then read ans; else echo $default; ans=$default; fi
+      case $ans in
+      '') eval retval="\$$macroname" 
+	  echo "DEF_$macroname='$retval'" >>config.tmp
+	  return 0;;
+      *) eval $macroname=\"\$$macroname \$ans\"
+      esac
+      echo $n "More? "$c
+      do_ask=true
+  done
+else
+  eval retval="\$$macroname" 
+  echo "DEF_$macroname='$retval'" >>config.tmp
+fi
+}
+
+ask_executable () {
+what=$1
+macroname=$2
+do_ask=true
+eval "def_value=\$DEF_$2"
+if [ -n "$def_value" ];
+   then eval "$macroname='$def_value'"; do_ask=$def_ask;
+fi
+
+while true; do
+    eval default=\$$macroname
+    echo $n "Which $what to use? [$default] "$c
+    if $do_ask ; then read ans; else echo $default; ans=$default; fi
+    case $ans in
+    '') eval result=\$$macroname;;
+    *) result=$ans;;
+    esac
+echo $user_path
+    case $result in
+    /*) {
+#	  if test -x $result; then
+	  if test -x /usr/local/bin/gcc; then
+	      eval $macroname=\$result
+	      echo "DEF_$macroname='$result'" >>config.tmp
+	      return 0
+	  else
+	      echo !!! Can\'t find an executable file \"$result\" !!!
+	  fi
+	};;
+    *)	{
+	  if locate_executable $result $user_path; then
+	      eval $macroname=\$result
+	      echo "DEF_$macroname='$result'" >>config.tmp
+	      return 0
+	  else
+	      echo !!! Can\'t find \"$result\" along your path !!!
+	      echo ' '
+	  fi
+	} ;;
+    esac
+    do_ask=true
+done
+}
+
+ask_directory () {
+what=$1
+macroname=$2
+do_ask=true;
+eval "def_value=\$DEF_$2"
+if [ -n "$def_value" ]; then eval $macroname="$def_value"; do_ask=$def_ask; fi
+while true; do
+    eval default=\$$macroname
+    echo $n "Which $what directory to use? [$default] "$c
+    if $do_ask ; then read ans; else echo $default; ans=$default; fi
+    case $ans in
+    '') eval result=\$$macroname;;
+    *) result=$ans;;
+    esac
+    if locate_directory "$result"; then
+	result=`cd $result; pwd`
+        eval $macroname=\$result
+        echo "DEF_$macroname='$result'" >> config.tmp
+	return 0
+    fi
+done
+}
+
+check_writable () {
+what=$1
+macroname=$2
+eval filename=\$$macroname
+eval filename=$filename
+if test -d $filename; then
+    if test -w $filename; then
+	return
+    else
+#	echo "!!! You do not have write access to $filename !!!"
+	return
+    fi
+elif test -f $filename; then
+    echo "!!! $filename is not a directory"
+else
+    echo "!!! Directory $filename does not exist !!!"
+fi
+ask_directory "$what" $macroname
+}
+
+guess_arch () {
+  if ( uname -m ) | grep "sun4d" >/dev/null 2>/dev/null ; then 
+  CPU="SPARC"
+ elif ( uname -m ) | grep "sun4m" >/dev/null 2>/dev/null ; then 
+  CPU="SPARC"
+ elif ( uname -m ) | grep "sun4u" >/dev/null 2>/dev/null ; then 
+  CPU="SPARC"
+ elif ( uname -m ) | grep "alpha" >/dev/null 2>/dev/null ; then
+   CPU="ALPHA"
+ elif ( uname -m ) | grep "i[3456]86" >/dev/null 2>/dev/null ; then
+: :: CAUTION: INTEL version has been not tested on parallel computers yet.
+: ::          DO NOT USE IT!!
+  CPU="INTEL"
+ elif ( uname -m ) | grep "x86_64" >/dev/null 2>/dev/null ; then
+  CPU="INTEL"
+ else
+  CPU="Unknown_cpu"
+ fi
+}
+
+: ::::::::::::::::::: HELPER FUNCTIONS ::::::::::::::::::::
+
+if [ -f $def_setting ]; then
+  echo  "Previous configuration setting '$def_setting' exists."
+  echo  $n "Do I read default setting from it?"$c
+	if ask_yes_or_no yes;
+	  then  . $def_setting
+	  else def_ask=true
+	fi
+	echo ' '
+else def_ask=true
+fi
+
+rm -f config.tmp
+
+: ::::::::::::::::::: CLEARING UP ::::::::::::::::::::
+echo ' '
+if test -f Makefile; then
+cat <<GAZONK
+# I found Makefile in this directory.  This might mean that you already
+# have installed the KLIC system before.
+
+GAZONK
+echo $n "May I clean-up the directory by \"make clean\" first? "$c
+if ask_yes_or_no yes; then
+  echo ' '
+  make clean ||
+  give_up_config "Make clean ends with non-zero return code"
+  echo ' '
+else
+  give_up_config "OK, then I'll stop reconfiguration."
+fi
+fi
+: ::::::::::::::::::: END CLEARING UP ::::::::::::::::::::
+
+if $CROSS; then
+ARCHIVES="libklicd.a"
+DLLIBS="libklicd\$(DLLEXT)"
+
+cat <<GAZONK
+# You specified to build the cross system.   To build the cross system,
+# an already working KL1 to C compiler (kl1cmp) is required.
+
+GAZONK
+  OLDLIBDIR="/usr/local/lib/klic"
+  ask_directory "KLIC Library" "OLDLIBDIR" || exit 1
+  echo ' '
+  KLIC_CROSS_COMPILER="$OLDLIBDIR/kl1cmp"
+  ask_executable "KL1 to C compiler (kl1cmp)" "KLIC_CROSS_COMPILER" || exit 1
+  echo ' '
+
+else
+
+KLIC_CROSS_COMPILER=false
+
+cat <<GAZONK
+# This version of KLIC contains a sequential core and a
+# distributed-memory parallel implementation that runs
+# also on SMP (symmetric multiprocessor) systems.
+# KLIC is known to work on Linux, Mac OS X Darwin and Cygin (32-bit).
+# Although not tested recently, it used to work on Sparc-based 
+# systems with Solaris 2.X or Alpha-based system with DEC OSF/1.
+#
+# The sequential core is mandatory.
+# Installation of parallel implementation is optional.
+
+GAZONK
+
+ARCHIVES="libklic.a libklict.a libklicm.a"
+DLLIBS="libklic\$(DLLEXT) libklict\$(DLLEXT)"
+fi
+
+: ::: CPU Type
+CPU="Unknown_cpu"
+
+if $CROSS ; then
+PARALLEL=true
+DISTSYSTEM=true
+else
+: :: NORMAL CASE
+echo $n "Configure also for parallel implementations? "$c
+if ask_yes_or_no no DEF_PARALLEL; then
+PARALLEL=true
+# echo $n "Configure for distributed memory parallel KLIC? "$c
+# if ask_yes_or_no no DEF_DISTSYSTEM; then
+DISTSYSTEM=true
+ARCHIVES="$ARCHIVES libklicd.a"
+DLLIBS="$DLLIBS libklicd\$(DLLEXT)"
+# else
+# disttype=pvm
+# #INCLUDESH=runtime/config/$disttype/config.h.sh
+# DISTSYSTEM=false
+# ROOTMAKE=root.mk.sh
+# INCLUDESH="config.h.sh"
+# fi
+else
+PARALLEL=false
+disttype=pvm
+#INCLUDESH=runtime/config/$disttype/config.h.sh
+DISTSYSTEM=false
+ROOTMAKE=root.mk.sh
+INCLUDESH="config.h.sh"
+fi
+fi
+
+if $PARALLEL ; then
+if $DISTSYSTEM ; then
+
+disttypes=`cd runtime/config; ls`
+disttypes=`echo $disttypes | sed -e 's/Makefile//' | sed -e 's/backup//'`
+
+distloop=true
+
+while $distloop; do
+cat <<GAZONK
+
+# KLIC distributed memory implementation can be installed
+# on the following types of systems (see README for details):
+
+    $disttypes.
+
+GAZONK
+disttype=shm
+# echo $n "Which type should be installed? "$c
+ask_with_default "type" disttype
+
+# read disttype
+for i in $disttypes; do
+if test "$i" = "$disttype"; then
+distloop=false
+fi
+done
+done
+
+: :: BEGIN EACH CONFIGURATION ::
+. runtime/config/$disttype/configure
+echo ' '
+
+ROOTMAKE=runtime/config/$disttype/root.mk.sh
+INCLUDESH=runtime/config/$disttype/config.h.sh
+fi
+
+#:if [ "$CROSS" = "false" ]; then
+#:: ::::::::::::::::::: SHARED Memory SETTING ::::::::::::::::::::
+#:echo ' '
+#:echo $n "Configure for shared memory parallel KLIC? "$c
+#:if ask_yes_or_no no DEF_SHMSYSTEM; then
+#:  guess_arch
+#:  if [ $CPU != "Unknown_cpu" ]; then
+#:     ARCHIVES="$ARCHIVES libklics.a"
+#:  else 
+#:    cat <<GAZONK
+#:# I do not know this machine.
+#:# Sorry I cannot install Shared-memory parallel KLIC.
+#:
+#:GAZONK
+#:fi
+#:fi
+#:fi
+fi
+
+user_path=`echo $PATH | sed -e 's/:/ /g'`
+export user_path
+
+if $BUILDDIST; then
+  cat <<GAZONK
+# You specified to rebuild the distribution.  To rebuild the distribution,
+# an already working KL1 to C compiler (kl1cmp) is required.
+
+GAZONK
+  OLDLIBDIR="/usr/local/lib/klic"
+  ask_directory "KLIC Library Directory" "OLDLIBDIR" || exit 1
+  echo ' '
+  KL1CMP="$OLDLIBDIR/kl1cmp"
+  ask_executable "KL1 to C compiler (kl1cmp)" "KL1CMP" || exit 1
+  echo ' '
+else
+  KL1CMP="false"
+fi
+
+if locate_executable "gcc" $user_path; then
+    CC="gcc"
+    cat <<GAZONK
+# Found gcc in $where.
+# I'd recommend using gcc for installing KLIC, as it's been tested
+# mainly with gcc.
+
+GAZONK
+else
+    CC=cc
+fi
+
+ask_executable "C compiler" "CC" || exit 1
+echo ' '
+
+case $CC in
+  gcc)
+	OPTLEVEL="2"
+	DEBUGFLAGS="-g"
+	UOPTFLAGS="-fomit-frame-pointer";;
+  cc)	OPTLEVEL=none
+	DEBUGFLAGS="-g"
+        UOPTFLAGS=none;;
+  *)	OPTLEVEL=none
+	DEBUGFLAGS=none
+        UOPTFLAGS=none;;
+esac
+
+cat <<GAZONK
+# During the installation procedure, the runtime library for the KLIC system
+# will be compiled using $CC.
+#
+# You can choose optimization and debug flags for this compilation now
+# (I'll ask you about setting for compiling user programs later).
+
+GAZONK
+ask_with_default "optimization level" OPTLEVEL
+ask_with_default "debug flags" DEBUGFLAGS
+
+rm -f Configure.ln
+LN="ln -s"
+if $LN Configure Configure.ln 2>/dev/null
+  then true
+  else LN=ln
+fi
+rm -f Configure.ln
+echo ' '
+
+cat <<GAZONK
+# When KL1 programs are compiled, they are compiled into C code and then
+# compiled into executable using $CC.  You can specify optimization level
+# and debug flag for $CC in the command line argument for the KLIC compiler.
+#
+# You can here select flags that'll be only set for optimized compilation,
+# that is, flags that'll be supplied only when you specified -O# when you
+# run the KLIC compiler.
+
+GAZONK
+ask_with_default "additional optimization flags" UOPTFLAGS
+echo " "
+
+case $OPTLEVEL in
+  "none" | "" | 0)
+	OPTFLAGS=""
+	KLICOPT="";;
+  1|2|3|4|5|6|7|8|9)
+	OPTFLAGS="-O$OPTLEVEL $UOPTFLAGS"
+	KLICOPT="-O$OPTLEVEL";;
+  *)	OPTFLAGS=""
+	KLICOPT=""
+	OPTLEVEL=0
+	echo "Illegal optimization level ($OPTLEVEL); set to 0";;
+esac
+
+KLICCFLAGS=none
+
+cat <<GAZONK
+# You can specify addtional flags for $CC.
+# If "-pipe" is available, specify it here.
+
+GAZONK
+ask_with_default "C compiler flags" KLICCFLAGS
+echo ' '
+
+#################
+#:FORT=none
+#:cat <<GAZONK
+#:# If you want to link Fortran code w/ KLIC code, please reply
+#:# to the following questions. 
+#:
+#:GAZONK
+#:ask_with_default "Fortran compiler" FORT
+#:echo ' '
+#:
+#:#####
+#:if locate_executable $FORT $user_path; then
+#:#####
+#:case $FORT in
+#:  g77)	FFLAGS=none;;
+#:  f77)	FFLAGS=none;;
+#:  *)	FFLAGS=none;;
+#:esac
+#:
+#:cat <<GAZONK
+#:# You can specify addtional flags for $FORT.
+#:#
+#:
+#:GAZONK
+#:ask_with_default "additional flags for $FORT" FFLAGS
+#:echo " "
+#:else
+#: FORT=""
+#: FFLAGS=""
+#:fi
+#################
+
+cat <<GAZONK
+# KLIC will normally use $CC for linkage also,
+# but you can specify a different linker.
+
+GAZONK
+echo $n "May I use $CC for linkage also? "$c
+if ask_yes_or_no yes DEF_USECC_AS_LD; then
+  LD=$CC
+  KLICLDFLAGS=""
+else
+  LD=ld
+  ask_executable "link editor" "LD" || exit 1
+  echo ' '
+cat <<GAZONK
+# You can specify additional flags for $LD.
+
+GAZONK
+  KLICLDFLAGS=none
+  ask_with_default "linker flags" KLICLDFLAGS
+fi
+echo ' '
+
+DLTYPE="linux"
+echo $n "May I build shared library too? "$c
+if ask_yes_or_no yes DEF_BUILD_DLL; then
+  ask_with_default "shared library type (linux/solaris/cygwin)" DLTYPE
+  echo " "
+  case $DLTYPE in
+    linux)
+      EXTFLAGS="-fPIC"
+      KLICCFLAGS="$KLICCFLAGS -fPIC"
+      LDSHARED="gcc -m32 -shared"
+      DLLEXT=".so"
+      DLLTARGET="runtimedir-dll"
+      DLLINSTALLTARGET="install-runtime-dll";;
+    solaris)
+      EXTFLAGS="-fPIC"
+      KLICCFLAGS="$KLICCFLAGS -fPIC"
+      LDSHARED="gcc -Wl,-G"
+      DLLEXT=".so"
+      DLLTARGET="runtimedir-dll"
+      DLLINSTALLTARGET="install-runtime-dll";;
+    cygwin)
+      CYGWIN=".exe"
+      EXTFLAGS=""
+      LDSHARED="gcc -shared"
+      DLLEXT=".dll"
+      DLLTARGET="runtimedir-dll"
+      DLLINSTALLTARGET="install-runtime-dll";;
+    *)
+      echo "$DLTYPE is not supported type."
+      DLLTARGET=""
+      DLLINSTALLTARGET="";;
+  esac
+else
+  case $DLTYPE in
+    cygwin)
+      CYGWIN=".exe";;
+    *)
+      ;;
+  esac
+  DLLTARGET=""
+  DLLINSTALLTARGET=""
+fi
+# echo ' '
+
+#if [ ! -z "$FORT" ]; then
+#  echo "May I use $FORT for linkage also "
+#  echo $n "when linking with Fortran code? "$c
+#  if ask_yes_or_no yes DEF_USEFORT_AS_LD; then
+#    FORTLD=$FORT
+#    KLICLDOPTIONS=""
+#  else
+#    FORTLD=ld
+#    echo ' '
+#    cat <<GAZONK
+## You can specify additional flags for $FORTLD.
+#
+#GAZONK
+#    KLICLDFLAGS=none
+#    ask_with_default "linker flags" KLICFORTLDFLAGS
+#  fi
+#  echo ' '
+#fi
+
+if locate_executable "ranlib" $user_path; then
+    RANLIB=ranlib
+else
+    RANLIB=true
+    cat <<GAZONK
+# I couldn't find "ranlib" along your path.
+# Use "true" instead if your system doesn't need running ranlib.
+
+GAZONK
+    ask_executable "library indexer" "RANLIB" || exit 1
+    echo ' '
+fi
+
+cat <<GAZONK
+# link command is used during the system compilation.
+# I'd recommend to use sumbolic link if your system supports.
+
+GAZONK
+ask_with_default "link command" LN
+echo ' '
+
+if locate_executable "make" $user_path; then
+    MAKE=make
+else
+    MAKE=""
+    cat <<GAZONK
+# I couldn't find "make" along your path.
+
+GAZONK
+    ask_executable "make" "MAKE" || exit 1
+    echo ' '
+fi
+
+INSTALL="/bin/cp -p"
+INSTDIR="/bin/mkdir -p"
+
+cat <<GAZONK
+# For KLIC to support asynchronous stream I/O, the system should 
+# deliver signals such as SIGIO or SIGPOLL when I/O becomes possible.
+# However, some systems (such as Linux 1.0) does not support this.
+
+GAZONK
+echo $n "Does your system support I/O ready signals?"$c
+if ask_yes_or_no yes DEF_ASYNCIO; then
+    ASYNCIO="#define"
+else
+    ASYNCIO="#undef"
+fi
+echo ' '
+
+cat <<GAZONK
+# The KLIC system will be installed under certain directories.
+# You have to be able to write into that directory for installation.
+# Also, the installed files under the directory should be visible from
+# all the KLIC users (only yourself for a private installation).
+#
+# First, the root of the installation directory tree.
+
+GAZONK
+
+DIRPREFIX="/usr/local"
+ask_directory "installation root" DIRPREFIX ||
+give_up_config "Coudn't determine installation root directory"
+
+cat <<GAZONK
+
+# By default, KLIC system will be installed in the subdirectories of
+# the directory you specified ($DIRPREFIX).
+# In the default setting, subdirectories used are:
+#    $DIRPREFIX/bin:     for user command (klic)
+#    $DIRPREFIX/lib:     for subprograms and libraries
+#    $DIRPREFIX/include: for header files
+
+GAZONK
+
+KLICBIN=$DIRPREFIX/bin
+KLICLIB=$DIRPREFIX/lib
+KLICLIB_DLL=$DIRPREFIX/lib
+KLICINCLUDE=$DIRPREFIX/include
+
+echo $n  "May I use the default setting?"$c
+ask_yes_or_no yes DEF_USE_DEFAULT_SETTING ||
+{
+    ask_directory "user command" KLICBIN
+    ask_directory "library" KLICLIB
+    ask_directory "include file" KLICINCLUDE
+}
+
+check_writable "user command" KLICBIN
+check_writable "library" KLICLIB
+check_writable "include file" KLICINCLUDE
+if [ "$DEF_BUILD_DLL" = "yes" ]; then
+    ask_with_default "shared library directory" KLICLIB_DLL
+    check_writable "shared library" KLICLIB_DLL
+fi
+
+echo " "
+case $DLTYPE in
+    solaris)
+      XLDFLAGS="-R$KLICLIB";;
+    *)
+      XLDFLAGS="";;
+esac
+KLICLDFLAGS="$KLICLDFLAGS $XLDFLAGS"
+
+LIBPATH=""
+# for dir in /lib /lib32 /usr/lib /usr/lib32 /usr/local/lib /usr/lib/x86_64-linux-gnu; do
+for dir in /lib /lib32 /usr/lib /usr/lib32 /usr/local/lib /usr/lib/system; do
+    if test -d $dir; then
+	LIBPATH="$LIBPATH $dir"
+    fi
+done
+# for NEC EWS4800 Rev 8.1
+case $HOSTTYPE in
+  mips|ews_mips)
+	for dir in /usr/necccs/lib ; do
+	 if test -d $dir; then
+	   LIBPATH="$dir $LIBPATH"
+	  fi
+	done ;;
+  *)
+esac
+
+echo "# Specify directories for library archives."
+ask_additional "library directories" LIBPATH
+echo ' '
+
+INCLUDEDIR=/usr/include
+ask_directory "default include file" INCLUDEDIR
+while test ! -d $INCLUDEDIR; do
+    echo "# I couldn't find $INCLUDEDIR"
+    ask_directory "default include file directory" INCLUDEDIR
+done
+echo ' '
+
+LIBNAMES=""
+locate_file libc_s.a f $LIBPATH && LIBNAMES="$LIBNAMES libc_s"
+# ( locate_file libm.a f $LIBPATH || locate_file libm.so f $LIBPATH ) \
+( locate_file libm.a f $LIBPATH || locate_file libm.so f $LIBPATH || locate_file libm.dylib f $LIBPATH) \
+	&& LIBNAMES="$LIBNAMES libm"
+#( locate_file libelf.a f $LIBPATH || locate_file libelf.so f $LIBPATH ) \
+#	&& LIBNAMES="$LIBNAMES libelf"
+( locate_file libsocket.a f $LIBPATH || locate_file libsocket.so f $LIBPATH ) \
+	&& LIBNAMES="$LIBNAMES libsocket"
+( locate_file libnsl.a f $LIBPATH || locate_file libnsl.so f $LIBPATH ) \
+	&& LIBNAMES="$LIBNAMES libnsl"
+locate_file libmld.a f $LIBPATH && LIBNAMES="$LIBNAMES libmld"
+
+echo "# Specify library archive files."
+ask_additional "library archives" LIBNAMES
+echo ' '
+
+locate_file libc.a f $LIBPATH ||
+locate_file libc_s.a f $LIBPATH ||
+locate_file libc.so f $LIBPATH ||
+locate_file libsystem_c.dylib f $LIBPATH ||
+give_up_config "Couldn't locate libc.a in directories $LIBPATH"
+LIBFILES="$where"
+echo $n "# Using library file(s):"$c
+for lib in $LIBNAMES; do
+  if locate_file $lib.a f $LIBPATH; then
+    LIBFILES="$LIBFILES $where"
+    echo $n " $where"$c
+  elif locate_file $lib.so f $LIBPATH; then
+# for SGI IRIS IRIX 5.2
+    LIBFILES="$LIBFILES $where"
+    echo $n " $where"$c
+  elif locate_file $lib.dylib f $LIBPATH; then
+    LIBFILES="$LIBFILES $where"
+    echo $n " $where"$c
+  else
+    give_up_config "Couldn't find $lib.a in $LIBPATH"
+  fi
+done
+echo ' '
+echo ' '
+
+LIBSWITCHES=`echo " " $LIBNAMES | sed -n -e "s/ lib/ -l/gp"`
+
+for dir in $LIBPATH ; do
+   LIBSWITCHES="-L$dir $LIBSWITCHES"
+done
+
+echo "# Specify directories for header files at KL1 program compilation."
+ask_additional "include directory for compiling KLIC" KLICINCLUDE
+echo ' '
+
+#echo "# Include directory for compiling KLIC are system directory?"
+#echo "# such as /usr/local/include /usr/include ..etc"
+#echo ' '
+echo "Are ["$KLICINCLUDE"] in standard library paths such as"
+echo $n "/usr/local/include and /usr/include ?" $c
+if ask_yes_or_no yes DEF_SPKLICINCLUDE; then
+  KLICINCLUDE0=""
+  else
+# don't remove the space after -I; it's needed when the path starts with ~
+  KLICINCLUDE0="-I $KLICINCLUDE"
+    fi
+  echo ' '
+
+XTERM=""
+if locate_executable "kterm" $user_path; then
+  XTERM=$where
+elif locate_executable "xterm" $user_path; then
+  XTERM=$where
+fi
+
+echo "# KLIC has a multi-window tracer using X window."
+echo ' '
+
+echo $n "Do you want to use X-based multi-window tracer?" $c
+if ask_yes_or_no no; then
+  ask_executable "Terminal program for X" "XTERM"
+  if test "$XTERM" = ""; then
+    echo "Given up to install the multi-window tracer"
+  fi
+else
+  XTERM=""
+fi
+echo ' '
+
+USER=${USER:-unknown}
+case $USER in
+  unknown)
+    if locate_executable "whoami" $user_path; then
+	USER=`$where`
+    fi
+esac
+
+locate_executable "nm" $user_path ||
+give_up_config "Couldn't find "nm" along your path"
+
+echo "# I'll make a summary of libraries for later use in analysis."
+echo $n "# It may take a while."$c
+
+rm -f nmout.all 2>/dev/null
+#for NEC EWS4800 /bin/sh
+case $HOSTTYPE in
+  mips|ews_mips)
+   touch nmout.all;;
+  *)
+esac
+
+for libfile in $LIBFILES; do
+  echo $n .$c
+  nm $libfile 2>/dev/null >>nmout.all
+done
+grep printf <nmout.all >nmout.tmp
+
+try_sed()
+{
+    echo $n .$c
+    sedargs=''
+    for arg do
+	sedargs="$sedargs -e '$arg'"
+    done
+    eval sed -n $sedargs <nmout.tmp >nmout.list
+    grep '^printf$' nmout.list >/dev/null 2>/dev/null
+    return
+}
+
+try_sed 's/^.* [ATDSIW]  *[_.]*//p' 's/^.* [ATDSIW] //p' 's/ (.*)$//p' ||
+try_sed 's/^__*//' 's/^\([a-zA-Z_0-9$]*\).*xtern.*/\1/p' ||
+try_sed '/|UNDEF/d' '/FUNC..GL/s/^.*|__*//p' ||
+try_sed 's/^.* D __*//p' 's/^.* D //p' ||
+try_sed 's/^_//' 's/^\([a-zA-Z_0-9]*\).*xtern.*text.*/\1/p' ||
+try_sed '/|COMMON/d' '/|DATA/d' '/ file/d' 's/^\([^     ]*\).*/\1/p' ||
+try_sed '/|UNDEF/d' 's/^.*|FUNC |GLOB .*|//p' 's/^.*|FUNC |WEAK .*|//p' ||
+try_sed 's/^.*|FUNC |GLOB .*|//p' 's/^.*|FUNC |WEAK .*|//p' ||
+try_sed 's/^[         ]*[0-9][0-9a-f]*[       ]*Def. Text[    ]*//p' ||
+try_sed 's/^.* [AT]  *_[_.]*//p' 's/^.* [AT] //p' ||
+try_sed 's/^.*|Proc.*| //p' ||
+give_up_config "nm didn't seem to work right or libraries are clobbered "
+
+eval sed -n $sedargs <nmout.all >nmout.list
+
+cat <<GAZONK
+ done
+#
+# I now start testing availability of features I might use...
+
+GAZONK
+
+find_label ()
+{
+    grep "^$1\$" nmout.list >/dev/null 2>/dev/null
+}
+
+define="#define"
+undef="#undef"
+
+test_label()
+{
+    testedlabel=$1
+    macroname=$2
+    if find_label $testedlabel; then
+	echo "     found \"$testedlabel\""
+	eval $macroname=\$define
+	return 0
+    else
+	echo "     cannot find \"$testedlabel\"; I'll try without it."
+	eval $macroname=\$undef
+	return 1
+    fi
+}
+
+test_either()
+{
+    onelabel=$1
+    anotherlabel=$2
+    macroname=$3
+    test_label $onelabel $macroname ||
+    test_label $anotherlabel DUMMY ||
+    give_up_config "Can't find either $onelabel or $anotherlabel"
+#    echo "Can't find either $onelabel or $anotherlabel but I'll proceed."
+}
+
+test_include()
+{
+    file=$1
+    macro=$2
+    shift
+    if locate_file "$file" f $INCLUDEDIR; then
+	echo "     found \"$file\""
+	eval $macro=\$define
+	return 0
+    else
+	echo "     cannot find \"$file\"; I'll try without it."
+	eval $macro=\$undef
+	return 1
+    fi
+}
+
+test_include string.h STRINGH
+# test_include stddef.h STDDEFH
+
+test_label setlinebuf SETLINEBUF
+test_label lockf USELOCKF
+test_label sigaction USESIG
+# test_label getrusage GETRUSAGE
+test_label ulimit USEULIMIT
+test_label getdtablesize USEGETDTABLESIZE
+# test_label setitimer USETIMER
+test_label nrand48 USENRAND48
+test_label isastream USEISASTREAM
+# test_either bcmp memcmp USEBCMP
+# test_either bcopy memcpy USEBCOPY
+# test_either bzero memset USEBZERO
+# test_either strchr index USESTRCHR
+test_either usleep sleep USEUSLEEP
+
+# sys_errlist
+cat <<EOF >/tmp/_syserr.c
+#include <stdio.h>
+extern char *sys_errlist[];
+main() {
+    char *str = sys_errlist[0];
+}
+EOF
+
+if ${CC} -o /tmp/_syserr /tmp/_syserr.c >/dev/null 2>&1; then
+  DECL_SYS_ERRLIST="#define"
+else
+  DECL_SYS_ERRLIST="#undef"
+fi
+
+rm -f /tmp/_syserr /tmp/_syserr.c
+
+# fprintf
+cat <<EOF >/tmp/_fprintf.c
+#include <stdio.h>
+main() {
+#ifdef __STDC__
+  void (*fprintf_func)(FILE *out, char *format, ...) =
+    (void (*)(FILE *, char *, ...))(fprintf);
+#else
+  void (*fprintf_func)() = (void (*)())(fprintf);
+#endif
+}
+EOF
+
+if ${CC} -o /tmp/_fprintf /tmp/_fprintf.c >/dev/null 2>&1; then
+  DECL_FPRINTF="#undef"
+else
+  DECL_FPRINTF="#define"
+fi
+
+rm -f /tmp/_fprintf /tmp/_fprintf.c
+
+if test "$XTERM" = ""; then
+  USEXTERM="#undef XTERM"
+else
+  USEXTERM="#define XTERM \"$XTERM\""
+fi
+
+if locate_file stropts.h f $INCLUDEDIR; then
+    USESTREAMINCLUDEDIR=$undef
+else
+    USESTREAMINCLUDEDIR=$define
+fi
+
+if locate_file procset.h f $INCLUDEDIR; then
+    test_include processor.h USEPROCBIND
+else
+    USEPROCBIND=$undef
+fi
+
+test_include sys/select.h USESELECT
+
+if $KLIC_CROSS_COMPILER; then
+ KLIC_COMPILER="$KLIC_CROSS_COMPILER"
+else
+ KLIC_COMPILER="$KLICLIB/klic/kl1cmp"
+fi
+
+cat <<GAZONK
+
+# KLIC can run C compilers and other programs used for program compilation
+# in parallel.  Maximum parallelism (maximum number of processes forked by
+# the compiler driver) can be specified by -P option at compilation time.
+#
+# You can also use this feature during the installation procedure.
+# Note that, too much parallelism may slow down the installation.
+# I'd recommend using no parallelism on uniprocessor systems.
+
+GAZONK
+INSTPARALLEL=0
+ask_with_default "default parallelism in installation" "INSTPARALLEL" || exit 1
+
+echo ""
+
+NODES=16
+
+if $PARALLEL; then
+cat <<GAZONK
+
+# KLIC provide test suites for the sequential/parallel implementation.
+# You can indicate the max. number of processors to use for this
+# testing of the parallel implementation.
+
+GAZONK
+ask_with_default "maximum number of processors for testing" NODES
+fi
+
+echo ""
+
+echo "# Writing out config.h file."
+cat <<GAZONK >config.h
+/*
+  Copyright 1994, 1995 Institute for New Generation Computer Technology
+  Read COPYRIGHT for detailed information
+
+  Copyright 1996, 1997, 1998 Japan Information Processing Development Center
+  Read COPYRIGHT-JIPDEC for detailed information
+
+  KLIC System Configuration Setting
+  This file was created by KLIC configuration script.
+  Date of Confuguration: `date`
+  Configured by: ${USER:-unknown}
+*/
+
+/* CPU name for locking shared-memory parallel */
+
+#define $CPU
+
+/* Directories for installation */
+
+#define KLICBIN "$KLICBIN"
+#define KLICLIB "$KLICLIB"
+#define KLICINCLUDE "$KLICINCLUDE"
+#define KLICINCLUDE0 "$KLICINCLUDE0"
+#define KLIC_COMPILER "$KLIC_COMPILER"
+#define KLIC_DBMAKER "$KLICLIB/klic/klicdb"
+
+/* Laguage and program processing systems */
+
+#define CC "$CC"
+#define LD "$LD"
+#define RANLIB "$RANLIB"
+
+/* Additional CC flags for optimized compilation of KL1 programs */
+
+#define UOPTFLAGS "$UOPTFLAGS"
+
+/* Additional flags for LD */
+
+#define LIBRARIES "-lklic -lklicm $LIBSWITCHES"
+#define LIBRARIES_T "-lklict -lklicm $LIBSWITCHES"
+#define LIBRARIES_D "-lklicd -lklicm $LIBSWITCHES"
+#define LIBRARIES_S "-lklics -lklicm $LIBSWITCHES"
+#define KLIC_CC_OPTIONS "$KLICCFLAGS"
+#define KLIC_LD_OPTIONS "$KLICLDFLAGS"
+
+/* Usual C macros depending on availability */
+
+$ASYNCIO ASYNCIO
+$STRINGH STRINGH
+#define STDDEFH
+$SETLINEBUF SETLINEBUF
+$USELOCKF USELOCKF
+$USESIG USESIG
+#define GETRUSAGE
+#undef USEBCMP
+#undef USEBCOPY
+#undef USEBZERO
+#define USESTRCHR
+
+$USEUSLEEP USEUSLEEP
+$USEULIMIT USEULIMIT
+$USEGETDTABLESIZE USEGETDTABLESIZE
+#define USETIMER
+$USENRAND48 NRAND48
+$USEISASTREAM ISASTREAM
+$USESTREAMINCLUDEDIR USESTREAMINCLUDEDIR
+$USEPROCBIND USEPROCBIND
+$USESELECT USESELECT
+$USEXTERM
+$DECL_SYS_ERRLIST DECL_SYS_ERRLIST
+$DECL_FPRINTF DECL_FPRINTF
+
+#ifdef USEBCMP
+#define BCMP(x,y,len)		bcmp(x,y,len)
+#else
+#define BCMP(x,y,len)		memcmp(x,y,len)
+#endif
+
+#ifdef USEBCOPY
+#define BCOPY(from,to,len)	bcopy(from,to,len)
+#else
+#define BCOPY(from,to,len)	memcpy(to,from,len)
+#endif
+
+#ifdef USEBZERO
+#define BZERO(from,len)		bzero(from,len)
+#else
+#define BZERO(from,len)		memset(from,0,len)
+#endif
+
+#ifdef USESTRCHR
+#define STRCHR			strchr
+#else
+#define STRCHR			index
+#endif
+
+$DEFCROSS CROSS
+
+GAZONK
+
+if [ -n "$TRANSFER_CNT" ]; then
+    cat <<GAZONK >>config.h
+#define TRANSFER_CNT $TRANSFER_CNT
+GAZONK
+fi
+
+#if [ ! -z "$FORT" ]; then
+#cat <<GAZONK >>config.h
+#/* Fortran options */
+#
+##define KLIC_FORT "$FORT"
+##define KLIC_FORT_OPTIONS "$FFLAGS"
+##define KLIC_FORT_LD "$FORTLD"
+##define KLIC_FORT_LD_OPTIONS "$KLICLDOPTIONS"
+#
+#GAZONK
+#fi
+##echo ' '
+
+if [ -n "$INCLUDESH" ] ; then
+. ./$INCLUDESH
+fi
+
+echo "# Writing out Makefile"
+cat <<GAZONK >Makefile
+# Copyright 1993, 1994, 1995 Institute for New Generation Computer Technology
+# Read COPYRIGHT for detailed information
+#
+# Top-level Makefile for KLIC system
+# This file was created by KLIC configuration script.
+# Date of Confuguration: `date`
+# Configured by: ${USER:-unknown}
+
+########################################
+# Shell
+########################################
+
+SHELL = /bin/sh
+
+########################################
+# Directory Names
+########################################
+
+# Include file directory
+KLICINCLUDE = $KLICINCLUDE
+
+# Library directory
+KLICLIB = $KLICLIB
+
+# Shared Library directory
+KLICLIB_DLL = $KLICLIB_DLL
+
+# Executable directory
+KLICBIN = $KLICBIN
+
+########################################
+# Libraries to build
+########################################
+
+ARCHIVES = $ARCHIVES
+
+########################################
+# cygwin switches
+########################################
+
+CYGWIN = $CYGWIN
+
+########################################
+# System-dependent switches
+########################################
+
+# LN: link command to use for system compilation.
+LN = $LN
+
+# KL1CMP: KL1 to C compiler used for compiling the self compiler.
+# Only for system developers and not for normal users.
+KL1CMP = $KL1CMP
+
+# C compiler
+CC = $CC
+LD = $LD
+
+# Optimization flags for compiling the runtime system by CC.
+OPTLEVEL = $OPTLEVEL
+OPTFLAGS = $OPTFLAGS
+KLICOPT = $KLICOPT $DEBUGFLAGS
+DEBUGFLAGS = $DEBUGFLAGS
+
+# Additional CC flags for optimized compilation of KL1 programs.
+UOPTFLAGS = $UOPTFLAGS
+
+# Library search flags
+LIBSWITCHES = $LIBSWITCHES
+
+# Library archive indexer
+RANLIB = $RANLIB
+
+# Shared Library
+XLDFLAGS = $XLDFLAGS
+EXTFLAGS = $EXTFLAGS
+LDSHARED = $LDSHARED
+DLLEXT = $DLLEXT
+DLLIBS = $DLLIBS
+DLLTARGET = $DLLTARGET
+DLLINSTALLTARGET = $DLLINSTALLTARGET
+
+# Make program
+MAKE = $MAKE
+
+# Installer
+INSTALL = $INSTALL
+INSTDIR = $INSTDIR
+INSTALLHDR = /bin/cp -p
+
+# Maximum parallelism in compilation
+PARALLEL = $INSTPARALLEL
+
+GAZONK
+
+if $DISTSYSTEM ; then
+
+cat <<GAZONK >>Makefile
+
+DISTSYSTEM = $disttype
+
+GAZONK
+
+fi
+
+if $PARALLEL; then
+
+cat <<GAZONK >>Makefile
+
+NODES = $NODES
+
+GAZONK
+fi
+
+. ./$ROOTMAKE
+
+cat <Makefile.tail >>Makefile ||
+give_up_config "Can't create makefile properly"
+echo ' '
+
+echo "# Writing out runtime/Makefile"
+cat <runtime/Makefile.head >runtime/Makefile ||
+give_up_config "Can't create runtime/makefile properly"
+echo ' '
+
+if $DISTSYSTEM ; then
+. runtime/config/$disttype/runtime.mk.sh >> runtime/Makefile
+else
+cat <<GAZONK >>runtime/Makefile
+
+DISTCFLAGS = \$(CFLAGS) -DDEBUGLIB -DDIST -I../include
+EXT_OTHER_HEADERS =
+DIST_OTHER_SRCS =
+DIST_OTHER_OBJS =
+
+GAZONK
+fi
+
+cat <runtime/Makefile.tail >>runtime/Makefile ||
+give_up_config "Can't create runtime/makefile properly"
+
+cat <runtime/config/$disttype/runtimedep.mk >>runtime/Makefile ||
+give_up_config "Can't create runtime/makefile properly"
+
+echo "# Writing out include/Makefile"
+
+if $DISTSYSTEM ; then
+. runtime/config/$disttype/include.mk.sh > include/Makefile
+cat <include/Makefile.tail >>include/Makefile ||
+give_up_config "Can't create include/makefile properly"
+echo ' '
+else
+cat <<GAZONK >include/Makefile
+
+DIST_OTHER_HEADERS =
+
+GAZONK
+
+cat < include/Makefile.tail >>include/Makefile ||
+give_up_config "Can't create include/makefile properly"
+echo ' '
+fi
+
+mv config.h include/klic ||
+give_up_config "Can't move config.h to an appropriate place"
+
+clean_up_config
+
+echo "# Writing out $def_setting"
+rm -f $def_setting;mv config.tmp $def_setting
+echo ' '
+
+
+
+if $DISTSYSTEM; then
+
+(cd runtime; LN=$LN ./setupcomm $disttype)
+fi
+
+cat <<GAZONK
+
+# All set!  Now you can compile the KLIC system by typing in "make all".
+# If compilation is OK, I'd recommend testing it by running "make tests".
+GAZONK
+
+if $DISTSYSTEM; then
+cat <<GAZONK
+# And you can check distributed memory implemetation
+# by runnning "make disttests".
+GAZONK
+fi
+
+cat <<GAZONK
+# After checking(s), you can inform us your installation information
+# via e-mail just by running "make mail". We hope that you send us your 
+# report.
+#
+# You can then install the system by "make install".
+#
+# Good Luck!  Please report problems to "klic-bugs@icot.or.jp".
+
+GAZONK

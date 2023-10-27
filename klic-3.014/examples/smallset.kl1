@@ -1,0 +1,33 @@
+% Set server.
+% Start the program and input (from stdin) either of the following messages:
+%   ins(M). (to insert the number M)
+%   has(M). (to check if the set contains the number M)
+%   done.   (to terminate)
+%
+% klic smallset.kl1 tty.kl1
+
+:- module main.
+
+main :- true |
+    emptyset(Cs), driver(Cs,IOs), tty:ttystream(IOs).
+
+emptyset([]) :- true | true.
+emptyset([ins(M)|L]) :- true | elem(L,R,M), emptyset(R).
+emptyset([has(_,A)|L]) :- true | A=false, emptyset(L).
+
+elem([],        R, _) :- true  | R=[].
+elem([ins(M)|L],R0,N) :- M < N | R0=[ins(N)|R], elem(L,R,M).
+elem([ins(M)|L],R, N) :- M=:=N | elem(L,R,N).
+elem([ins(M)|L],R0,N) :- M > N | R0=[ins(M)|R], elem(L,R,N).
+elem([has(M,A)|L], R, N) :- M < N | A=false, elem(L,R,N).
+elem([has(M,A)|L], R, N) :- M=:=N | A=true, elem(L,R,N).
+elem([has(M,A)|L], R0,N) :- M > N | R0=[has(M,A)|R], elem(L,R,N).
+
+driver(Fs,IOs0) :- true |
+    IOs0=[gett(X)|IOs], checkinput(Fs,IOs,X).
+checkinput(Fs, IOs, done) :- true | Fs=[], IOs=[].
+checkinput(Fs0,IOs0,has(N)) :- true |
+    Fs0=[has(N,R)|Fs], IOs0=[putt(R),nl|IOs],
+    driver(Fs,IOs).
+checkinput(Fs0,IOs,M) :- M\=has(*) |
+    Fs0=[M|Fs], driver(Fs,IOs).
